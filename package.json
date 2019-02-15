@@ -1,0 +1,44 @@
+{
+  "name": "sony_visualiseur-plantes-3d",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "nano-css": "^3.5.0",
+    "react": "^16.8.2",
+    "react-dom": "^16.8.2",
+    "react-intl": "^2.8.0",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "2.1.5",
+    "redux": "^4.0.1",
+    "redux-react-hook": "^3.1.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "./node_modules/.bin/standard",
+    "lint-fix": "./node_modules/.bin/standard --fix"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "standard": {
+    "parser": "babel-eslint",
+    "ignore": [
+      "build/*"
+    ]
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "pre-commit": "lint",
+  "mainDir": "src",
+  "devDependencies": {
+    "pre-commit": "^1.2.2",
+    "standard": "^12.0.1"
+  }
+}
