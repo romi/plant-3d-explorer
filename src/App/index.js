@@ -2,7 +2,7 @@ import React, { Component, Suspense } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { FormattedMessage } from 'react-intl'
 
-import { lazy } from 'rd/routing'
+import { lazy } from 'rd/tools/routing'
 import { landingUrl } from 'common/routing'
 
 const LandingPage = lazy(() => import('ScanList'))
