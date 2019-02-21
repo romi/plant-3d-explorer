@@ -3,9 +3,10 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { FormattedMessage } from 'react-intl'
 
 import { lazy } from 'rd/tools/routing'
-import { landingUrl } from 'common/routing'
+import { landingUrl, viewerUrl } from 'common/routing'
 
 const LandingPage = lazy(() => import('ScanList'))
+const ViewerPage = lazy(() => import('Viewer'))
 
 function Loading () {
   return <div style={{
@@ -30,10 +31,11 @@ function NotFound () {
 class App extends Component {
   render () {
     return <div className='App'>
-      <Router basename={window.location.pathname}>
+      <Router>
         <Suspense fallback={<Loading />}>
           <Switch>
             <Route exact path={landingUrl} component={LandingPage} />
+            <Route exact path={viewerUrl} component={ViewerPage} />
             <Route path='*' component={NotFound} />
           </Switch>
         </Suspense>

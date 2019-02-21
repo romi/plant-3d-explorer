@@ -10,6 +10,9 @@ import { addon as addonSheet } from 'nano-css/addon/sheet'
 import { addon as addonJsx } from 'nano-css/addon/jsx'
 import { addon as addonGlobal } from 'nano-css/addon/global'
 import { addon as addonStylis } from 'nano-css/addon/stylis'
+import { addon as addonStyle } from 'nano-css/addon/style'
+import { addon as addonStyled } from 'nano-css/addon/styled'
+import { addon as addonUnitless } from 'nano-css/addon/unitless'
 
 const nano = create({
   // Add prefix to all generated class names.
@@ -29,8 +32,11 @@ addonSheet(nano)
 addonJsx(nano)
 addonGlobal(nano)
 addonStylis(nano)
+addonUnitless(nano)
+addonStyle(nano)
+addonStyled(nano)
 
-const { rule, sheet, jsx, keyframes, global } = nano
+const { rule, sheet, jsx, keyframes, global, styled } = nano
 
 // Export everything.
 export {
@@ -38,6 +44,7 @@ export {
   rule,
   sheet,
   jsx,
+  styled,
   keyframes,
   global
 }
