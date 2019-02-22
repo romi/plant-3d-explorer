@@ -30,7 +30,7 @@ export default class Skeleton {
         new THREE.Line(
           geometry,
           new EnhancedTHREE.LineMaterial({
-            linewidth: 0.0025,
+            linewidth: 0.0015,
             vertexColors: THREE.VertexColors,
             dashed: false
           })

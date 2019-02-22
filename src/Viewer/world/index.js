@@ -22,6 +22,7 @@ export default function WorldComponent (props) {
   const [meshGeometry] = useFetch3dObject(urls.mesh)
   const [pointCloudGeometry] = useFetch3dObject(urls.pointCloud)
   const [skeletonPoints] = useFetch(urls.skeleton)
+  const [metadata] = useFetch(urls.metadata)
   const [layers] = useLayers()
 
   useEffect(
@@ -31,6 +32,13 @@ export default function WorldComponent (props) {
       setWorld(world)
     },
     [canvasRef]
+  )
+
+  useEffect(
+    () => {
+      if (world && metadata) world.setMetaData(metadata)
+    },
+    [world, metadata, meshGeometry, pointCloudGeometry, skeletonPoints]
   )
 
   useEffect(
