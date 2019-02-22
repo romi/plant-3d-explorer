@@ -2,7 +2,6 @@
 import * as THREE from 'three'
 import OrbitControls from 'three-orbitcontrols'
 import { map } from 'lodash'
-import average from 'average'
 
 import Mesh from './entities/mesh'
 import PointCloud from './entities/pointCloud'
@@ -59,10 +58,10 @@ export default class World {
     this.viewerObjects = new THREE.Object3D()
     this.scene.add(this.viewerObjects)
 
-    this.camera = new THREE.PerspectiveCamera(35, width / height, 1, 15000)
-    this.camera.position.set(0, 2000, 0)
+    this.perspectiveCamera = new THREE.PerspectiveCamera(35, width / height, 1, 15000)
+    this.perspectiveCamera.position.set(0, 2000, 0)
 
-    this.controls = new OrbitControls(this.camera, this.elem)
+    this.controls = new OrbitControls(this.perspectiveCamera, this.elem)
     this.controls.minPolarAngle = -Math.PI / 2
     this.controls.maxPolarAngle = Math.PI / 2
     this.controls.enableDamping = true
@@ -84,124 +83,42 @@ export default class World {
 
     this.cameraGroup = new THREE.Object3D()
 
-    var material = new THREE.MeshPhongMaterial({ color: 0xFF0000 })
-    const pts = map(points, (d) => d.tvec)
-    const center = [
-      average(pts.map((d) => d[0])),
-      average(pts.map((d) => d[1])),
-      average(pts.map((d) => d[2]))
-    ]
-    const geometry = new THREE.SphereBufferGeometry(15, 10, 10)
-    this.centerObject = new THREE.Mesh(geometry, material)
-    this.cameraGroup.add(this.centerObject)
+    var material = new THREE.MeshPhongMaterial({ color: 0xFF0000, wireframe: false })
+    this.CameraPointsGroup = new THREE.Object3D()
 
-    this.pointsGroup = new THREE.Object3D()
-    this.pointsRotationGroup = new THREE.Object3D()
+    map(points, (d) => ({ p: d.tvec, r: d.rotmat, q: d.qvec })).forEach(({ p, r, q }) => {
+      const cameraGroup = new THREE.Object3D()
+      const coneGeeometry = new THREE.ConeGeometry(10, 25, 6)
+      const cone = new THREE.Mesh(coneGeeometry, material)
+      cone.rotation.x = -Math.PI / 2
 
-    map(points, (d) => ({ p: d.tvec, r: d.rotmat })).forEach(({ p, r }) => {
-      const g = new THREE.Object3D()
-      const lookAtG = new THREE.Object3D()
-      const geometry = new THREE.ConeGeometry(15, 20, 20)
-      const object = new THREE.Mesh(geometry, material)
-      object.rotation.x = -Math.PI / 2
+      var mrot = new THREE.Matrix3()
+      mrot.set(...r[0], ...r[1], ...r[2])
+      mrot.transpose()
+      mrot.multiplyScalar(-1)
 
-      var m = new THREE.Matrix3()
-      m.set(...r[0], ...r[1], ...r[2])
-      m.transpose()
-      m.multiplyScalar(-1)
+      cameraGroup.position.set(
+        p[0],
+        p[1],
+        p[2]
+      ).applyMatrix3(mrot)
 
-      lookAtG.position.set(
-        p[0] - center[0],
-        p[1] - center[1],
-        p[2] - center[2]
-      ).applyMatrix3(m)
+      var mrotobj = new THREE.Matrix4()
+      mrotobj.set(
+        ...r[0], 0,
+        ...r[1], 0,
+        ...r[2], 0,
+        0, 0, 0, 1
+      )
+      mrotobj.transpose()
+      cameraGroup.rotation.setFromRotationMatrix(mrotobj)
+      cameraGroup.add(cone)
 
-      lookAtG.add(object)
-      // lookAtG.position.x = p[0] - center[0]
-      // lookAtG.position.y = p[1] - center[1]
-      // lookAtG.position.z = p[2] - center[2]
-      lookAtG.lookAt(this.centerObject.position)
-
-      g.add(lookAtG)
-
-      this.pointsRotationGroup.add(g)
+      this.CameraPointsGroup.add(cameraGroup)
     })
 
-    // this.cameraGroup.position.x = 400
-    // this.cameraGroup.position.y = 400
-    // this.cameraGroup.position.z = 50
-    // this.cameraGroup.rotation.x = -0.49// - (Math.PI / 2)
-    this.cameraGroup.add(this.pointsRotationGroup)
+    this.cameraGroup.add(this.CameraPointsGroup)
     this.viewerObjects.add(this.cameraGroup)
-
-    // ------------------------------------------------------------
-
-    // this.pointsGroup = new THREE.Object3D()
-    // this.pointsRotationGroup = new THREE.Object3D()
-    // var material = new THREE.MeshPhongMaterial({ color: 0xFF0000 })
-
-    // map(points, (d) => ({ p: d.tvec, r: d.qvec })).forEach(({ p, r }) => {
-    //   const g = new THREE.Object3D()
-    //   const geometry = new THREE.SphereBufferGeometry(3, 10, 10)
-    //   const object = new THREE.Mesh(geometry, material)
-    //   object.position.x = p[0]
-    //   object.position.y = p[1]
-    //   object.position.z = p[2]
-    //   // g.position.x = 400
-    //   // g.position.y = 400
-    //   // g.position.z = -240
-    //   object.quaternion.set(...r)
-    //   g.add(object)
-    //   // g.rotation.x = -0.49
-    //   this.pointsRotationGroup.add(g)
-    // })
-    // // this.pointsRotationGroup.rotation.x = -Math.PI / 2
-    // this.pointsGroup.add(this.pointsRotationGroup)
-    // // this.pointsGroup.position.x = 400 - 50
-    // // this.pointsGroup.position.y = 400 - 50
-    // // this.pointsGroup.position.z = 0
-    // // this.pointsGroup.rotation.x = -Math.PI / 2
-    // this.viewerObjects.add(this.pointsGroup)
-
-    // const center = map(points, (d) => (d.tvec)).reduce((p, c) => {
-    //   if (!p.length) p = c
-    //   return [
-    //     (p[0] + c[0]) / (p.length),
-    //     (p[1] + c[1]) / (p.length),
-    //     (p[2] + c[2]) / (p.length)
-    //   ]
-    // }, [])
-
-    // const geometry = new THREE.SphereBufferGeometry(30, 10, 10)
-    // const object = new THREE.Mesh(geometry, material)
-    // object.position.x = 400
-    // object.position.y = 400
-    // object.position.z = -50
-    // this.scene.add(object)
-
-    // ------------------------------------------------------------
-
-    // this.pointsGroup = new THREE.Object3D()
-    // var material = new THREE.MeshPhongMaterial({ color: 0xFF0000 })
-    // map(points, (d) => ({ p: d.tvec, r: d.qvec })).forEach(({ p, r }) => {
-    //   const geometry = new THREE.SphereBufferGeometry(3, 10, 10)
-    //   const object = new THREE.Mesh(geometry, material)
-    //   object.position.x = p[0] + 400
-    //   object.position.y = p[1] + 400
-    //   object.position.z = p[2] + 50
-    //   object.quaternion.set(...r)
-    //   this.pointsGroup.add(object)
-    // })
-    // this.pointsGroup.rotation.x = -.049
-    // this.cameraObject = new THREE.Object3D()
-    // this.cameraObject.add(this.pointsGroup)
-    // // this.cameraObject.position
-    // this.scene.add(this.cameraObject)
-    // // this.cameraObject.position.x = -400
-    // // this.cameraObject.position.y = -400
-    // // this.cameraObject.position.z = -400
-    // // this.cameraObject.rotation.z = -Math.PI / 2
-    // // this.viewerObjects.add(this.pointsGroup)
 
     const animate = () => {
       this.render()
@@ -246,6 +163,6 @@ export default class World {
 
   render () {
     this.controls.update()
-    this.renderer.render(this.scene, this.camera)
+    this.renderer.render(this.scene, this.perspectiveCamera)
   }
 }
