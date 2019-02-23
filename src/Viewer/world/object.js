@@ -7,20 +7,14 @@ import Mesh from './entities/mesh'
 import PointCloud from './entities/pointCloud'
 import Skeleton from './entities/skeleton'
 
-import points from '../assets/images.json'
-
-console.log(
-  points[1]
-)
-
 function addShadowedLight (scene, x, y, z, color, intensity) {
-  var directionalLight = new THREE.DirectionalLight(color, intensity)
+  const directionalLight = new THREE.DirectionalLight(color, intensity)
   directionalLight.position.set(x, y, z)
   scene.add(directionalLight)
 
   directionalLight.castShadow = true
 
-  var d = 1
+  const d = 1
   directionalLight.shadow.camera.left = -d
   directionalLight.shadow.camera.right = d
   directionalLight.shadow.camera.top = d
@@ -37,6 +31,8 @@ function addShadowedLight (scene, x, y, z, color, intensity) {
 
 export default class World {
   constructor (width, height, elem) {
+    this.width = width
+    this.height = height
     this.elem = elem
     this.scene = new THREE.Scene()
     // this.scene.fog = new THREE.Fog(0x72645b, 2, 150)
@@ -55,11 +51,13 @@ export default class World {
     plane.receiveShadow = true
     // this.scene.add(plane)
 
+    this.cameraGroup = new THREE.Object3D()
     this.viewerObjects = new THREE.Object3D()
     this.scene.add(this.viewerObjects)
 
     this.perspectiveCamera = new THREE.PerspectiveCamera(35, width / height, 1, 15000)
     this.perspectiveCamera.position.set(0, 2000, 0)
+    this.camera = this.perspectiveCamera
 
     this.controls = new OrbitControls(this.perspectiveCamera, this.elem)
     this.controls.minPolarAngle = -Math.PI / 2
@@ -79,45 +77,6 @@ export default class World {
     this.renderer.shadowMap.enabled = true
     this.elem.appendChild(this.renderer.domElement)
 
-    // ------------------------------------------------------------
-
-    this.cameraGroup = new THREE.Object3D()
-
-    var material = new THREE.MeshPhongMaterial({ color: 0xFF0000, wireframe: false })
-    this.CameraPointsGroup = new THREE.Object3D()
-
-    map(points, (d) => ({ p: d.tvec, r: d.rotmat, q: d.qvec })).forEach(({ p, r, q }) => {
-      const cameraGroup = new THREE.Object3D()
-      const coneGeeometry = new THREE.ConeGeometry(10, 25, 6)
-      const cone = new THREE.Mesh(coneGeeometry, material)
-      cone.rotation.x = -Math.PI / 2
-
-      var mrot = new THREE.Matrix3()
-      mrot.set(...r[0], ...r[1], ...r[2])
-      mrot.transpose()
-      mrot.multiplyScalar(-1)
-
-      cameraGroup.position.set(
-        p[0],
-        p[1],
-        p[2]
-      ).applyMatrix3(mrot)
-
-      var mrotobj = new THREE.Matrix4()
-      mrotobj.set(
-        ...r[0], 0,
-        ...r[1], 0,
-        ...r[2], 0,
-        0, 0, 0, 1
-      )
-      mrotobj.transpose()
-      cameraGroup.rotation.setFromRotationMatrix(mrotobj)
-      cameraGroup.add(cone)
-
-      this.CameraPointsGroup.add(cameraGroup)
-    })
-
-    this.cameraGroup.add(this.CameraPointsGroup)
     this.viewerObjects.add(this.cameraGroup)
 
     const animate = () => {
@@ -127,25 +86,129 @@ export default class World {
     animate()
   }
 
+  setSize (width, height) {
+    this.width = width
+    this.height = height
+    this.renderer.setSize(width, height)
+    this.renderer.render(this.scene, this.controls.object)
+  }
+
   setMetaData (metadata) {
-    this.viewerObjects.rotation.x = Math.PI / 2
+    // this.viewerObjects.rotation.x = Math.PI / 2
     this.viewerObjects.position.x = -(metadata.scanner.workspace.x[1] - metadata.scanner.workspace.x[0])
     this.viewerObjects.position.y = metadata.scanner.workspace.z[1]
+    // this.viewerObjects.position.y = -(metadata.scanner.workspace.z[1] - metadata.scanner.workspace.z[0])
     this.viewerObjects.position.z = -(metadata.scanner.workspace.y[1] - metadata.scanner.workspace.y[0])
+  }
+
+  setCameraPoints (points) {
+    const material = new THREE.MeshPhongMaterial({ color: 0xFF0000, wireframe: false })
+    this.CameraPointsGroup = new THREE.Object3D()
+
+    map(points, (d) => ({ p: d.tvec, r: d.rotmat, q: d.qvec }))
+      .forEach(({ p, r, q }) => {
+        const cameraGroup = new THREE.Object3D()
+        const coneGeeometry = new THREE.ConeGeometry(10, 25, 6)
+        const cone = new THREE.Mesh(coneGeeometry, material)
+        // cone.rotation.x = -Math.PI / 2
+
+        const mrot = new THREE.Matrix3()
+        mrot.set(...r[0], ...r[1], ...r[2])
+        mrot.transpose()
+        mrot.multiplyScalar(-1)
+
+        cameraGroup.position.set(
+          p[0],
+          p[1],
+          p[2]
+        ).applyMatrix3(mrot)
+
+        const mrotobj = new THREE.Matrix4()
+        mrotobj.set(
+          ...r[0], 0,
+          ...r[1], 0,
+          ...r[2], 0,
+          0, 0, 0, 1
+        )
+        const t = new THREE.Matrix4().makeRotationX(-Math.PI / 2)
+        mrotobj.transpose()
+        mrotobj.multiply(t)
+        cameraGroup.rotation.setFromRotationMatrix(mrotobj)
+        cameraGroup.add(cone)
+
+        this.CameraPointsGroup.add(cameraGroup)
+      })
+
+    this.cameraGroup.add(this.CameraPointsGroup)
+  }
+
+  setSelectedCamera (camera) {
+    if (camera) {
+      this.camera = new THREE.PerspectiveCamera(50, this.width / this.height, 1, 15000)
+      this.camera.setLens(24)
+
+      const material = new THREE.MeshPhongMaterial({ color: 0x0000FF, wireframe: false })
+      const coneGeeometry = new THREE.ConeGeometry(10, 25, 6)
+      const cone = new THREE.Mesh(coneGeeometry, material)
+      // cone.rotation.x = -Math.PI / 2
+
+      const mrot = new THREE.Matrix3()
+      mrot.set(...camera.rotmat[0], ...camera.rotmat[1], ...camera.rotmat[2])
+      mrot.transpose()
+      mrot.multiplyScalar(-1)
+
+      cone.position.set(
+        camera.tvec[0],
+        camera.tvec[1],
+        camera.tvec[2]
+      ).applyMatrix3(mrot)
+
+      this.camera.position.set(
+        camera.tvec[0],
+        camera.tvec[1],
+        camera.tvec[2]
+      )
+        .applyMatrix3(mrot)
+        .applyMatrix4(this.viewerObjects.matrix)
+
+      const mrotobj = new THREE.Matrix4()
+      mrotobj.set(
+        ...camera.rotmat[0], 0,
+        ...camera.rotmat[1], 0,
+        ...camera.rotmat[2], 0,
+        0, 0, 0, 1
+      )
+
+      const t = new THREE.Matrix4()
+        .makeRotationX(Math.PI)
+        // .makeRotationY(Math.PI / 2)
+        // .makeRotationY(-0.49)
+      mrotobj.transpose()
+      mrotobj.multiply(t)
+      mrotobj.multiply(this.viewerObjects.matrix)
+
+      cone.rotation.setFromRotationMatrix(mrotobj)
+      this.camera.rotation.setFromRotationMatrix(mrotobj)
+      cone.rotationZ += Math.PI / 2
+
+      this.viewerObjects.add(cone)
+    } else {
+      this.camera = this.perspectiveCamera
+    }
   }
 
   setMeshGeometry (geometry) {
     this.mesh = new Mesh(geometry, this.viewerObjects)
-    this.mesh.setPosition(0, 0, 0)
+    this.mesh.setPosition(0, 0, -30)
   }
 
   setPointcloudGeometry (geometry) {
     geometry.computeBoundingBox()
     this.pointCloud = new PointCloud(geometry, this.viewerObjects)
-    console.log(
-      geometry.boundingBox,
-      geometry.boundingBox.min.z + (geometry.boundingBox.max.z - geometry.boundingBox.min.z)
-    )
+    // console.log(
+    //   geometry.boundingBox,
+    //   geometry.boundingBox.min.z + (geometry.boundingBox.max.z - geometry.boundingBox.min.z)
+    // )
     // this.viewerObjects.position.x = -geometry.boundingSphere.center.x
     // this.viewerObjects.position.y = geometry.boundingBox.min.z + (geometry.boundingBox.max.z - geometry.boundingBox.min.z)
     // this.viewerObjects.position.z = -geometry.boundingSphere.center.y
@@ -163,6 +226,6 @@ export default class World {
 
   render () {
     this.controls.update()
-    this.renderer.render(this.scene, this.perspectiveCamera)
+    this.renderer.render(this.scene, this.camera)
   }
 }
