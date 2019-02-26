@@ -199,7 +199,7 @@ export default class World {
 
   setMeshGeometry (geometry) {
     this.mesh = new Mesh(geometry, this.viewerObjects)
-    this.mesh.setPosition(0, 0, -30)
+    // this.mesh.setPosition(0, 0, 0)
   }
 
   setPointcloudGeometry (geometry) {
