@@ -56,7 +56,7 @@ export default class World {
     this.scene.add(this.viewerObjects)
 
     this.perspectiveCamera = new THREE.PerspectiveCamera(35, width / height, 1, 15000)
-    this.perspectiveCamera.position.set(0, 2000, 0)
+    this.perspectiveCamera.position.set(1000, 100, 0)
     this.camera = this.perspectiveCamera
 
     this.controls = new OrbitControls(this.perspectiveCamera, this.elem)
@@ -94,10 +94,9 @@ export default class World {
   }
 
   setMetaData (metadata) {
-    // this.viewerObjects.rotation.x = Math.PI / 2
+    this.viewerObjects.rotation.x = Math.PI / 2
     this.viewerObjects.position.x = -(metadata.scanner.workspace.x[1] - metadata.scanner.workspace.x[0])
-    this.viewerObjects.position.y = metadata.scanner.workspace.z[1]
-    // this.viewerObjects.position.y = -(metadata.scanner.workspace.z[1] - metadata.scanner.workspace.z[0])
+    this.viewerObjects.position.y = (metadata.scanner.workspace.z[1] - metadata.scanner.workspace.z[0]) / 2
     this.viewerObjects.position.z = -(metadata.scanner.workspace.y[1] - metadata.scanner.workspace.y[0])
   }
 
@@ -110,7 +109,6 @@ export default class World {
         const cameraGroup = new THREE.Object3D()
         const coneGeeometry = new THREE.ConeGeometry(10, 25, 6)
         const cone = new THREE.Mesh(coneGeeometry, material)
-        // cone.rotation.x = -Math.PI / 2
 
         const mrot = new THREE.Matrix3()
         mrot.set(...r[0], ...r[1], ...r[2])
@@ -150,7 +148,6 @@ export default class World {
       const material = new THREE.MeshPhongMaterial({ color: 0x0000FF, wireframe: false })
       const coneGeeometry = new THREE.ConeGeometry(10, 25, 6)
       const cone = new THREE.Mesh(coneGeeometry, material)
-      // cone.rotation.x = -Math.PI / 2
 
       const mrot = new THREE.Matrix3()
       mrot.set(...camera.rotmat[0], ...camera.rotmat[1], ...camera.rotmat[2])
@@ -181,8 +178,6 @@ export default class World {
 
       const t = new THREE.Matrix4()
         .makeRotationX(Math.PI)
-        // .makeRotationY(Math.PI / 2)
-        // .makeRotationY(-0.49)
       mrotobj.transpose()
       mrotobj.multiply(t)
       mrotobj.multiply(this.viewerObjects.matrix)
@@ -199,19 +194,11 @@ export default class World {
 
   setMeshGeometry (geometry) {
     this.mesh = new Mesh(geometry, this.viewerObjects)
-    // this.mesh.setPosition(0, 0, 0)
   }
 
   setPointcloudGeometry (geometry) {
     geometry.computeBoundingBox()
     this.pointCloud = new PointCloud(geometry, this.viewerObjects)
-    // console.log(
-    //   geometry.boundingBox,
-    //   geometry.boundingBox.min.z + (geometry.boundingBox.max.z - geometry.boundingBox.min.z)
-    // )
-    // this.viewerObjects.position.x = -geometry.boundingSphere.center.x
-    // this.viewerObjects.position.y = geometry.boundingBox.min.z + (geometry.boundingBox.max.z - geometry.boundingBox.min.z)
-    // this.viewerObjects.position.z = -geometry.boundingSphere.center.y
   }
 
   setSkeletonPoints (skeleton) {
