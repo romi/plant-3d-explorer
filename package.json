@@ -2,6 +2,7 @@
   "name": "sony_visualiseur-plantes-3d",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://db.romi-project.eu/viz/",
   "dependencies": {
     "@d3fc/d3fc-extent": "^3.1.2",
     "axios": "^0.18.0",
@@ -23,7 +24,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "./node_modules/.bin/standard",
-    "lint-fix": "./node_modules/.bin/standard --fix"
+    "lint-fix": "./node_modules/.bin/standard --fix",
+    "deploy": "sh ./deploy.sh"
   },
   "eslintConfig": {
     "extends": "react-app"

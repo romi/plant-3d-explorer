@@ -28,10 +28,12 @@ function NotFound () {
   </div>
 }
 
+const basename = process.env.NODE_ENV === 'production' ? '/viz' : '/'
+
 class App extends Component {
   render () {
     return <div className='App'>
-      <Router>
+      <Router basename={basename}>
         <Suspense fallback={<Loading />}>
           <Switch>
             <Route exact path={landingUrl} component={LandingPage} />

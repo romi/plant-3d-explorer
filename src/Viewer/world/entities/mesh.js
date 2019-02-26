@@ -8,7 +8,6 @@ export default class Mesh {
     this.object = new THREE.Mesh(geometry, material)
     this.object.castShadow = true
     this.object.receiveShadow = true
-    this.object.position.x = 100
 
     if (parent) parent.add(this.object)
   }
