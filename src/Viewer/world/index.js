@@ -4,7 +4,7 @@ import { styled } from 'rd/nano'
 import useFetch3dObject from 'rd/tools/hooks/fetch3dObject'
 import useFetch from 'rd/tools/hooks/fetch'
 
-import { useLayers } from 'flow/settings/accessors'
+import { useLayers, useSelectedcamera } from 'flow/settings/accessors'
 
 import WorldObject from './object'
 import urls from '../assets'
@@ -23,7 +23,9 @@ export default function WorldComponent (props) {
   const [pointCloudGeometry] = useFetch3dObject(urls.pointCloud)
   const [skeletonPoints] = useFetch(urls.skeleton)
   const [metadata] = useFetch(urls.metadata)
+  const [cameraPoints] = useFetch(urls.cameraPoints)
   const [layers] = useLayers()
+  const [selectedCamera] = useSelectedcamera()
 
   useEffect(
     () => {
@@ -39,6 +41,20 @@ export default function WorldComponent (props) {
       if (world && metadata) world.setMetaData(metadata)
     },
     [world, metadata, meshGeometry, pointCloudGeometry, skeletonPoints]
+  )
+
+  useEffect(
+    () => {
+      if (world && cameraPoints) world.setCameraPoints(cameraPoints)
+    },
+    [world, cameraPoints]
+  )
+
+  useEffect(
+    () => {
+      if (world) world.setSelectedCamera(selectedCamera)
+    },
+    [world, selectedCamera]
   )
 
   useEffect(
