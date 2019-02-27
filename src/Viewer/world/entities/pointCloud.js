@@ -26,6 +26,9 @@ const fragmentShader = `
 
 export default class Mesh {
   constructor (geometry, parent) {
+    console.log(
+      geometry
+    )
     this.geometry = geometry
     this.geometry.computeVertexNormals()
 

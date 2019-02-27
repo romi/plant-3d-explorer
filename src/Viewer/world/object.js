@@ -102,9 +102,11 @@ export default class World {
     )
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true })
     const box = new THREE.Mesh(geometry, material)
-    box.position.x = (metadata.scanner.workspace.x[1] - metadata.scanner.workspace.x[0])
-    box.position.y = (metadata.scanner.workspace.y[1] - metadata.scanner.workspace.y[0])
-    box.position.z = metadata.scanner.workspace.z[0] + (metadata.scanner.workspace.z[1] - metadata.scanner.workspace.z[0]) / 2
+
+    box.position.x = (metadata.scanner.workspace.x[1] + metadata.scanner.workspace.x[0]) / 2
+    box.position.y = (metadata.scanner.workspace.y[1] + metadata.scanner.workspace.y[0]) / 2
+    box.position.z = (metadata.scanner.workspace.z[1] + metadata.scanner.workspace.z[0]) / 2
+    this.viewportBox = box
     this.viewerObjects.add(box)
 
     this.viewerObjects.position.x = -(metadata.scanner.workspace.x[1] - metadata.scanner.workspace.x[0])
@@ -156,12 +158,18 @@ export default class World {
 
   setSelectedCamera (camera) {
     if (camera) {
-      console.log(
-        camera
-      )
-      this.camera = new THREE.PerspectiveCamera(50, this.width / this.height, 1, 15000)
-      this.camera.setFocalLength(24)
-      this.camera.zoom = ((6000 / 4000) / (this.width / this.height))
+      const dist = 2000
+      const height = (dist * (53.1 * Math.PI) / 180) // 53.1 is the vertical angle of a 24mm camera
+
+      const fov = 2 * Math.atan(height / (2 * dist)) * (180 / Math.PI)
+      this.camera = new THREE.PerspectiveCamera(fov, this.width / this.height, 0.1, 5000)
+
+      var distance = dist
+      var aspect = 6000 / 4000
+      var vFov = this.camera.fov * Math.PI / 180
+      var planeHeightAtDistance = 2 * Math.tan(vFov / 2) * distance
+      var planeWidthAtDistance = planeHeightAtDistance * aspect
+
       this.camera.updateProjectionMatrix()
 
       const material = new THREE.MeshPhongMaterial({ color: 0x0000FF, wireframe: false })
@@ -198,18 +206,21 @@ export default class World {
 
       this.camera.rotation.setFromRotationMatrix(mrotobj)
 
+      const imgWidth = planeWidthAtDistance
+      const imgHeight = planeHeightAtDistance
       const imgMaterial = new THREE.MeshBasicMaterial({ map: imgLoader.load(`/images/${camera.name}`), side: THREE.DoubleSide })
-      const imgGeometry = new THREE.PlaneGeometry(510, 340)
+      const imgGeometry = new THREE.PlaneGeometry(imgWidth, imgHeight)
       const mesh = new THREE.Mesh(imgGeometry, imgMaterial)
-
-      mesh.position.x = this.metadata.scanner.workspace.x[1] - this.metadata.scanner.workspace.x[0]
-      mesh.position.y = this.metadata.scanner.workspace.y[1] - this.metadata.scanner.workspace.y[0]
-      mesh.position.z = -30 + (this.metadata.scanner.workspace.z[1] - this.metadata.scanner.workspace.z[0]) / 2
       mesh.rotation.setFromRotationMatrix(mrotobj)
-
-      if (this.imgMesh) this.viewerObjects.remove(this.imgMesh)
-      this.viewerObjects.add(mesh)
+      var startPos = new THREE.Vector3().copy(this.camera.position)
+      var direction = this.camera.getWorldDirection()
+      startPos.add(direction.multiplyScalar(dist))
+      mesh.position.copy(startPos)
+      this.scene.add(mesh)
+      if (this.imgMesh) this.scene.remove(this.imgMesh)
       this.imgMesh = mesh
+
+      window.camera = this.camera
 
       window.imgMesh = this.imgMesh
     } else {
@@ -238,7 +249,7 @@ export default class World {
   }
 
   render () {
-    // snip
+    clock.getDelta()
     this.controls.update(clock.getDelta())
     this.renderer.render(this.scene, this.camera)
   }
