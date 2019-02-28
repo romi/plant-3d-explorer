@@ -7,6 +7,8 @@ import Mesh from './entities/mesh'
 import PointCloud from './entities/pointCloud'
 import Skeleton from './entities/skeleton'
 
+import { basename } from 'common/routing'
+
 const clock = new THREE.Clock()
 const imgLoader = new THREE.TextureLoader()
 
@@ -38,7 +40,6 @@ export default class World {
     this.height = height
     this.elem = elem
     this.scene = new THREE.Scene()
-    // this.scene.fog = new THREE.Fog(0x72645b, 2, 150)
     this.scene.background = new THREE.Color(0xe8e8e8)
 
     this.scene.add(new THREE.HemisphereLight(0x443333, 0x111122))
@@ -48,16 +49,13 @@ export default class World {
     this.cameraGroup = new THREE.Object3D()
     this.viewerObjects = new THREE.Object3D()
     this.scene.add(this.viewerObjects)
-    console.log(this.viewerObjects)
+    window.viewerObjects = this.viewerObjects
 
-    this.perspectiveCamera = new THREE.PerspectiveCamera(35, width / height, 1, 15000)
+    this.perspectiveCamera = new THREE.PerspectiveCamera(35, this.width / this.height, 1, 5000)
     this.perspectiveCamera.position.set(1000, 100, 0)
     this.camera = this.perspectiveCamera
 
     this.controls = new OrbitControls(this.perspectiveCamera, this.elem)
-    // this.controls.rotate(Math.PI / 2, Math.PI / 2)
-    // this.controls.minPolarAngle = -Math.PI / 2
-    // this.controls.maxPolarAngle = Math.PI / 2
     this.controls.enableDamping = true
     this.controls.dampingFactor = 0.30
     this.controls.rotateSpeed = 0.2
@@ -68,8 +66,8 @@ export default class World {
     this.controls.maxDistance = 8000
     this.controls.screenSpacePanning = true
 
+    // Y-upifying needs to be after the creation of the controller instance
     this.camera.up.set(0, 0, -1)
-    // this.camera.rotation.order = 'ZYX'
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true })
     this.renderer.setSize(width, height)
@@ -93,8 +91,6 @@ export default class World {
   }
 
   setMetaData (metadata) {
-    // this.viewerObjects.rotation.x = Math.PI / 2
-
     const geometry = new THREE.BoxGeometry(
       (metadata.scanner.workspace.x[1] - metadata.scanner.workspace.x[0]),
       (metadata.scanner.workspace.y[1] - metadata.scanner.workspace.y[0]),
@@ -117,13 +113,13 @@ export default class World {
   }
 
   setCameraPoints (points) {
-    const material = new THREE.MeshPhongMaterial({ color: 0xFF0000, wireframe: false })
+    const material = new THREE.MeshPhongMaterial({ color: 0x333333, wireframe: true, transparent: true, opacity: 0.1 })
     this.CameraPointsGroup = new THREE.Object3D()
 
     map(points, (d) => ({ p: d.tvec, r: d.rotmat, q: d.qvec }))
       .forEach(({ p, r, q }) => {
         const cameraGroup = new THREE.Object3D()
-        const coneGeeometry = new THREE.ConeGeometry(10, 25, 6)
+        const coneGeeometry = new THREE.ConeGeometry(10, 25, 4)
         const cone = new THREE.Mesh(coneGeeometry, material)
 
         const mrot = new THREE.Matrix3()
@@ -159,7 +155,8 @@ export default class World {
   setSelectedCamera (camera) {
     if (camera) {
       const dist = 2000
-      const height = (dist * (53.1 * Math.PI) / 180) // 53.1 is the vertical angle of a 24mm camera
+      /// / (dist * (53.1 * Math.PI) / 180) // 53.1 is the vertical angle of a 24mm camera
+      const height = (4000 * dist) / 4303.84464954118
 
       const fov = 2 * Math.atan(height / (2 * dist)) * (180 / Math.PI)
       this.camera = new THREE.PerspectiveCamera(fov, this.width / this.height, 0.1, 5000)
@@ -208,7 +205,7 @@ export default class World {
 
       const imgWidth = planeWidthAtDistance
       const imgHeight = planeHeightAtDistance
-      const imgMaterial = new THREE.MeshBasicMaterial({ map: imgLoader.load(`/images/${camera.name}`), side: THREE.DoubleSide })
+      const imgMaterial = new THREE.MeshBasicMaterial({ map: imgLoader.load(`${basename}images/${camera.name}`), side: THREE.DoubleSide })
       const imgGeometry = new THREE.PlaneGeometry(imgWidth, imgHeight)
       const mesh = new THREE.Mesh(imgGeometry, imgMaterial)
       mesh.rotation.setFromRotationMatrix(mrotobj)

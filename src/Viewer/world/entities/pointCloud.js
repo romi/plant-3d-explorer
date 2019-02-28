@@ -11,7 +11,7 @@ const vertexShader = `
   void main() {
     vColor = color;
     vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-    gl_PointSize = clamp(0.8 * ( 500.0 / -mvPosition.z ), 0.8, 500.0);
+    gl_PointSize = clamp(1.0 * ( 500.0 / -mvPosition.z ), 0.8, 500.0);
     gl_Position = projectionMatrix * mvPosition;
   }
 `
