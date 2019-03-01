@@ -5,6 +5,7 @@
   "homepage": "https://db.romi-project.eu/viz/",
   "dependencies": {
     "@d3fc/d3fc-extent": "^3.1.2",
+    "alphanum-sort": "^1.0.2",
     "axios": "^0.18.0",
     "camera-controls": "^1.10.8",
     "lodash": "^4.17.11",
