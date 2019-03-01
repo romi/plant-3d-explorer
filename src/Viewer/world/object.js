@@ -64,6 +64,7 @@ export default class World {
 
     // Y-upifying needs to be after the creation of the controller instance
     this.camera.up.set(0, 0, -1)
+    this.camera.rotation.order = 'YXZ'
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true })
     this.renderer.setSize(width, height)
@@ -91,26 +92,32 @@ export default class World {
     this.renderer.render(this.scene, this.controls.object)
   }
 
-  setMetaData (metadata) {
+  setWorkSpaceBox (workspace) {
+    if (this.viewportBox) this.viewerObjects.remove(this.viewportBox)
+
     const geometry = new THREE.BoxGeometry(
-      (metadata.workspace.x[1] - metadata.workspace.x[0]),
-      (metadata.workspace.y[1] - metadata.workspace.y[0]),
-      (metadata.workspace.z[1] - metadata.workspace.z[0])
+      (workspace.x[1] - workspace.x[0]),
+      (workspace.y[1] - workspace.y[0]),
+      (workspace.z[1] - workspace.z[0])
     )
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true })
     const box = new THREE.Mesh(geometry, material)
 
-    box.position.x = (metadata.workspace.x[1] + metadata.workspace.x[0]) / 2
-    box.position.y = (metadata.workspace.y[1] + metadata.workspace.y[0]) / 2
-    box.position.z = (metadata.workspace.z[1] + metadata.workspace.z[0]) / 2
+    box.position.x = (workspace.x[1] + workspace.x[0]) / 2
+    box.position.y = (workspace.y[1] + workspace.y[0]) / 2
+    box.position.z = (workspace.z[1] + workspace.z[0]) / 2
     this.viewportBox = box
-    this.viewerObjects.add(box)
+    this.viewerObjects.add(this.viewportBox)
+  }
 
-    this.viewerObjects.position.x = -(metadata.workspace.x[1] - metadata.workspace.x[0])
-    this.viewerObjects.position.y = -(metadata.workspace.y[1] - metadata.workspace.y[0])
-    this.viewerObjects.position.z = -(metadata.workspace.z[1] - metadata.workspace.z[0]) / 2
+  setMetaData (metadata) {
+    const workspace = metadata.workspace
     this.metadata = metadata
-    this.camera.rotation.order = 'YXZ'
+    this.setWorkSpaceBox(workspace)
+
+    this.viewerObjects.position.x = -(workspace.x[1] - workspace.x[0])
+    this.viewerObjects.position.y = -(workspace.y[1] - workspace.y[0])
+    this.viewerObjects.position.z = -(workspace.z[1] - workspace.z[0]) / 2
   }
 
   setCameraPoints (points) {
@@ -133,76 +140,45 @@ export default class World {
   }
 
   setSelectedCamera (camera) {
+    if (this.imgMesh) this.scene.remove(this.imgMesh)
+
     if (camera) {
       const cameraModel = this.metadata.camera_model
       const imgDistance = 2000
       const fov = this.computeDynamicFOV(cameraModel, imgDistance)
       this.camera = new THREE.PerspectiveCamera(fov, this.width / this.height, 0.1, 5000)
 
-      var distance = imgDistance
-      var aspect = cameraModel.params[2] / cameraModel.params[3]
-      var vFov = this.camera.fov * Math.PI / 180
-      var planeHeightAtDistance = 2 * Math.tan(vFov / 2) * distance
-      var planeWidthAtDistance = planeHeightAtDistance * aspect
-
-      this.camera.updateProjectionMatrix()
-
-      const material = new THREE.MeshPhongMaterial({ color: 0x0000FF, wireframe: false })
-      const coneGeeometry = new THREE.ConeGeometry(10, 25, 6)
-      const cone = new THREE.Mesh(coneGeeometry, material)
-      this.viewerObjects.add(cone)
-
-      const mrot = new THREE.Matrix3()
-      mrot.set(...camera.rotmat[0], ...camera.rotmat[1], ...camera.rotmat[2])
-      mrot.transpose()
-      mrot.multiplyScalar(-1)
-
       this.camera.position
         .copy(camera.v3position)
         .applyMatrix4(this.viewerObjects.matrix)
-      // this.camera.position.set(
-      //   camera.tvec[0],
-      //   camera.tvec[1],
-      //   camera.tvec[2]
-      // )
-      //   .applyMatrix3(mrot)
-      //   .applyMatrix4(this.viewerObjects.matrix)
 
-      const mrotobj = new THREE.Matrix4()
-      mrotobj.set(
-        ...camera.rotmat[0], 0,
-        ...camera.rotmat[1], 0,
-        ...camera.rotmat[2], 0,
-        0, 0, 0, 1
-      ).transpose()
+      this.camera.rotation.setFromRotationMatrix(
+        new THREE.Matrix4()
+          .copy(camera.vueM4rotation)
+          .multiply(this.viewerObjects.matrix)
+      )
 
-      const t = new THREE.Matrix4()
-        .makeRotationX(-Math.PI)
-      mrotobj
-        .multiply(t)
-        .multiply(this.viewerObjects.matrix)
+      var distance = imgDistance
+      var aspect = cameraModel.params[2] / cameraModel.params[3]
+      var vFov = this.camera.fov * Math.PI / 180
 
-      this.camera.rotation.setFromRotationMatrix(mrotobj)
+      var imgHeight = 2 * Math.tan(vFov / 2) * distance
+      var imgWidth = imgHeight * aspect
+      const imgPlane = new THREE.Mesh(
+        new THREE.PlaneGeometry(imgWidth, imgHeight),
+        new THREE.MeshBasicMaterial({ map: camera.texture, side: THREE.DoubleSide })
+      )
 
-      const imgWidth = planeWidthAtDistance
-      const imgHeight = planeHeightAtDistance
-      const imgMaterial = new THREE.MeshBasicMaterial({ map: camera.texture, side: THREE.DoubleSide })
-      const imgGeometry = new THREE.PlaneGeometry(imgWidth, imgHeight)
-      const mesh = new THREE.Mesh(imgGeometry, imgMaterial)
-      mesh.rotation.setFromRotationMatrix(mrotobj)
       var startPos = new THREE.Vector3().copy(this.camera.position)
       var direction = this.camera.getWorldDirection()
       startPos.add(direction.multiplyScalar(imgDistance))
-      mesh.position.copy(startPos)
-      this.scene.add(mesh)
-      if (this.imgMesh) this.scene.remove(this.imgMesh)
-      this.imgMesh = mesh
 
-      window.camera = this.camera
+      imgPlane.position.copy(startPos)
+      imgPlane.rotation.copy(this.camera.rotation)
 
-      window.imgMesh = this.imgMesh
+      this.scene.add(imgPlane)
+      this.imgMesh = imgPlane
     } else {
-      if (this.imgMesh) this.scene.remove(this.imgMesh)
       this.camera = this.perspectiveCamera
     }
   }
