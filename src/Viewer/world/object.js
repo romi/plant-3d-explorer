@@ -1,11 +1,12 @@
 
 import * as THREE from 'three'
-import OrbitControls from 'three-orbitcontrols'
-import { map } from 'lodash'
+import OrbitControls from 'common/thiers/OrbitController'
 
 import Mesh from './entities/mesh'
 import PointCloud from './entities/pointCloud'
 import Skeleton from './entities/skeleton'
+
+const clock = new THREE.Clock()
 
 function addShadowedLight (scene, x, y, z, color, intensity) {
   const directionalLight = new THREE.DirectionalLight(color, intensity)
@@ -35,33 +36,22 @@ export default class World {
     this.height = height
     this.elem = elem
     this.scene = new THREE.Scene()
-    // this.scene.fog = new THREE.Fog(0x72645b, 2, 150)
     this.scene.background = new THREE.Color(0xe8e8e8)
 
     this.scene.add(new THREE.HemisphereLight(0x443333, 0x111122))
     addShadowedLight(this.scene, 1, 1, 1, 0xffffff, 1.35)
     addShadowedLight(this.scene, 0.5, 1, -1, 0xffaa00, 1)
 
-    const plane = new THREE.Mesh(
-      new THREE.PlaneBufferGeometry(4000, 4000),
-      new THREE.MeshPhongMaterial({ color: 0xe8e8e8, specular: 0x101010 })
-    )
-    plane.rotation.x = -Math.PI / 2
-    plane.position.y = -1.5
-    plane.receiveShadow = true
-    // this.scene.add(plane)
-
     this.cameraGroup = new THREE.Object3D()
     this.viewerObjects = new THREE.Object3D()
     this.scene.add(this.viewerObjects)
+    window.viewerObjects = this.viewerObjects
 
-    this.perspectiveCamera = new THREE.PerspectiveCamera(35, width / height, 1, 15000)
+    this.perspectiveCamera = new THREE.PerspectiveCamera(35, this.width / this.height, 1, 5000)
     this.perspectiveCamera.position.set(1000, 100, 0)
     this.camera = this.perspectiveCamera
 
     this.controls = new OrbitControls(this.perspectiveCamera, this.elem)
-    this.controls.minPolarAngle = -Math.PI / 2
-    this.controls.maxPolarAngle = Math.PI / 2
     this.controls.enableDamping = true
     this.controls.dampingFactor = 0.30
     this.controls.rotateSpeed = 0.2
@@ -69,8 +59,12 @@ export default class World {
     this.controls.panSpeed = 0.2
     this.controls.screenSpacePanning = false
     this.controls.minDistance = 5
-    this.controls.maxDistance = 5000
+    this.controls.maxDistance = 8000
     this.controls.screenSpacePanning = true
+
+    // Y-upifying needs to be after the creation of the controller instance
+    this.camera.up.set(0, 0, -1)
+    this.camera.rotation.order = 'YXZ'
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true })
     this.renderer.setSize(width, height)
@@ -86,6 +80,11 @@ export default class World {
     animate()
   }
 
+  computeDynamicFOV (cameraModel, dist) {
+    const height = ((cameraModel.params[3] * 2) * dist) / cameraModel.params[0]
+    return 2 * Math.atan(height / (2 * dist)) * (180 / Math.PI)
+  }
+
   setSize (width, height) {
     this.width = width
     this.height = height
@@ -93,100 +92,92 @@ export default class World {
     this.renderer.render(this.scene, this.controls.object)
   }
 
+  setWorkSpaceBox (workspace) {
+    if (this.viewportBox) this.viewerObjects.remove(this.viewportBox)
+
+    const geometry = new THREE.BoxGeometry(
+      (workspace.x[1] - workspace.x[0]),
+      (workspace.y[1] - workspace.y[0]),
+      (workspace.z[1] - workspace.z[0])
+    )
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true })
+    const box = new THREE.Mesh(geometry, material)
+
+    box.position.x = (workspace.x[1] + workspace.x[0]) / 2
+    box.position.y = (workspace.y[1] + workspace.y[0]) / 2
+    box.position.z = (workspace.z[1] + workspace.z[0]) / 2
+    this.viewportBox = box
+    this.viewerObjects.add(this.viewportBox)
+  }
+
   setMetaData (metadata) {
-    this.viewerObjects.rotation.x = Math.PI / 2
-    this.viewerObjects.position.x = -(metadata.scanner.workspace.x[1] - metadata.scanner.workspace.x[0])
-    this.viewerObjects.position.y = (metadata.scanner.workspace.z[1] - metadata.scanner.workspace.z[0]) / 2
-    this.viewerObjects.position.z = -(metadata.scanner.workspace.y[1] - metadata.scanner.workspace.y[0])
+    const workspace = metadata.workspace
+    this.metadata = metadata
+    this.setWorkSpaceBox(workspace)
+
+    this.viewerObjects.position.x = -(workspace.x[1] - workspace.x[0])
+    this.viewerObjects.position.y = -(workspace.y[1] - workspace.y[0])
+    this.viewerObjects.position.z = -(workspace.z[1] - workspace.z[0]) / 2
   }
 
   setCameraPoints (points) {
-    const material = new THREE.MeshPhongMaterial({ color: 0xFF0000, wireframe: false })
+    const material = new THREE.MeshPhongMaterial({ color: 0x333333, wireframe: true, transparent: true, opacity: 0.1 })
     this.CameraPointsGroup = new THREE.Object3D()
 
-    map(points, (d) => ({ p: d.tvec, r: d.rotmat, q: d.qvec }))
-      .forEach(({ p, r, q }) => {
-        const cameraGroup = new THREE.Object3D()
-        const coneGeeometry = new THREE.ConeGeometry(10, 25, 6)
-        const cone = new THREE.Mesh(coneGeeometry, material)
+    points.forEach(({ v3position, objM4rotation }) => {
+      const cameraGroup = new THREE.Object3D()
+      const coneGeeometry = new THREE.ConeGeometry(10, 25, 4)
+      const cone = new THREE.Mesh(coneGeeometry, material)
 
-        const mrot = new THREE.Matrix3()
-        mrot.set(...r[0], ...r[1], ...r[2])
-        mrot.transpose()
-        mrot.multiplyScalar(-1)
+      cameraGroup.position.copy(v3position)
+      cameraGroup.rotation.setFromRotationMatrix(objM4rotation)
+      cameraGroup.add(cone)
 
-        cameraGroup.position.set(
-          p[0],
-          p[1],
-          p[2]
-        ).applyMatrix3(mrot)
-
-        const mrotobj = new THREE.Matrix4()
-        mrotobj.set(
-          ...r[0], 0,
-          ...r[1], 0,
-          ...r[2], 0,
-          0, 0, 0, 1
-        )
-        const t = new THREE.Matrix4().makeRotationX(-Math.PI / 2)
-        mrotobj.transpose()
-        mrotobj.multiply(t)
-        cameraGroup.rotation.setFromRotationMatrix(mrotobj)
-        cameraGroup.add(cone)
-
-        this.CameraPointsGroup.add(cameraGroup)
-      })
+      this.CameraPointsGroup.add(cameraGroup)
+    })
 
     this.cameraGroup.add(this.CameraPointsGroup)
   }
 
   setSelectedCamera (camera) {
+    if (this.imgMesh) this.scene.remove(this.imgMesh)
+
     if (camera) {
-      this.camera = new THREE.PerspectiveCamera(50, this.width / this.height, 1, 15000)
-      this.camera.setLens(24)
+      const cameraModel = this.metadata.camera_model
+      const imgDistance = 2000
+      const fov = this.computeDynamicFOV(cameraModel, imgDistance)
+      this.camera = new THREE.PerspectiveCamera(fov, this.width / this.height, 0.1, 5000)
 
-      const material = new THREE.MeshPhongMaterial({ color: 0x0000FF, wireframe: false })
-      const coneGeeometry = new THREE.ConeGeometry(10, 25, 6)
-      const cone = new THREE.Mesh(coneGeeometry, material)
-
-      const mrot = new THREE.Matrix3()
-      mrot.set(...camera.rotmat[0], ...camera.rotmat[1], ...camera.rotmat[2])
-      mrot.transpose()
-      mrot.multiplyScalar(-1)
-
-      cone.position.set(
-        camera.tvec[0],
-        camera.tvec[1],
-        camera.tvec[2]
-      ).applyMatrix3(mrot)
-
-      this.camera.position.set(
-        camera.tvec[0],
-        camera.tvec[1],
-        camera.tvec[2]
-      )
-        .applyMatrix3(mrot)
+      this.camera.position
+        .copy(camera.v3position)
         .applyMatrix4(this.viewerObjects.matrix)
 
-      const mrotobj = new THREE.Matrix4()
-      mrotobj.set(
-        ...camera.rotmat[0], 0,
-        ...camera.rotmat[1], 0,
-        ...camera.rotmat[2], 0,
-        0, 0, 0, 1
+      this.camera.rotation.setFromRotationMatrix(
+        new THREE.Matrix4()
+          .copy(camera.vueM4rotation)
+          .multiply(this.viewerObjects.matrix)
       )
 
-      const t = new THREE.Matrix4()
-        .makeRotationX(Math.PI)
-      mrotobj.transpose()
-      mrotobj.multiply(t)
-      mrotobj.multiply(this.viewerObjects.matrix)
+      var distance = imgDistance
+      var aspect = cameraModel.params[2] / cameraModel.params[3]
+      var vFov = this.camera.fov * Math.PI / 180
 
-      cone.rotation.setFromRotationMatrix(mrotobj)
-      this.camera.rotation.setFromRotationMatrix(mrotobj)
-      cone.rotationZ += Math.PI / 2
+      var imgHeight = 2 * Math.tan(vFov / 2) * distance
+      var imgWidth = imgHeight * aspect
+      const imgPlane = new THREE.Mesh(
+        new THREE.PlaneGeometry(imgWidth, imgHeight),
+        new THREE.MeshBasicMaterial({ map: camera.texture, side: THREE.DoubleSide })
+      )
 
-      this.viewerObjects.add(cone)
+      var startPos = new THREE.Vector3().copy(this.camera.position)
+      var direction = this.camera.getWorldDirection()
+      startPos.add(direction.multiplyScalar(imgDistance))
+
+      imgPlane.position.copy(startPos)
+      imgPlane.rotation.copy(this.camera.rotation)
+
+      this.scene.add(imgPlane)
+      this.imgMesh = imgPlane
     } else {
       this.camera = this.perspectiveCamera
     }
@@ -212,7 +203,8 @@ export default class World {
   }
 
   render () {
-    this.controls.update()
+    clock.getDelta()
+    this.controls.update(clock.getDelta())
     this.renderer.render(this.scene, this.camera)
   }
 }

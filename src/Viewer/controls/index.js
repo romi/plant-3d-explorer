@@ -2,10 +2,9 @@ import React from 'react'
 import { map } from 'lodash'
 
 import { styled } from 'rd/nano'
-import useFetch from 'rd/tools/hooks/fetch'
 import { useLayers, useSelectedcamera } from 'flow/settings/accessors'
 
-import urls from '../assets'
+import { useCameraPoses } from '../world/index'
 
 const Container = styled.div({
   position: 'absolute',
@@ -45,7 +44,7 @@ const Button = styled.div({
 
 export default function Controls (props) {
   const [layers, setLayers] = useLayers()
-  const [cameraPoints] = useFetch(urls.cameraPoints)
+  const cameraPoses = useCameraPoses()
   const [selectedCamera, setSelectedCamera] = useSelectedcamera()
 
   return <Container>
@@ -77,17 +76,18 @@ export default function Controls (props) {
       Cameras:
       <Sublevel>
         <Select
-          value={(selectedCamera && selectedCamera.id) || 'none'}
+          value={(selectedCamera && `${selectedCamera.index}`) || 'none'}
           onChange={(e) => {
-            setSelectedCamera(cameraPoints[e.target.value])
+            console.log(e.target.value)
+            setSelectedCamera(cameraPoses[e.target.value])
           }}
         >
           <option key={'none'} value={'none'}>None</option>
           {
-            cameraPoints && map(
-              cameraPoints,
+            cameraPoses && map(
+              cameraPoses,
               (point) => {
-                return <option key={point.id} value={point.id}>{point.name}</option>
+                return <option key={point.id} value={point.index}>{point.file}</option>
               }
             )
           }
@@ -96,10 +96,10 @@ export default function Controls (props) {
           <Button
             onClick={() => {
               if (selectedCamera) {
-                if (cameraPoints[selectedCamera.id - 1]) {
-                  setSelectedCamera(cameraPoints[selectedCamera.id - 1])
+                if (cameraPoses[selectedCamera.index - 1]) {
+                  setSelectedCamera(cameraPoses[selectedCamera.index - 1])
                 } else {
-                  setSelectedCamera(cameraPoints['0'])
+                  setSelectedCamera(cameraPoses[0])
                 }
               }
             }}
@@ -109,10 +109,10 @@ export default function Controls (props) {
           <Button
             onClick={() => {
               if (selectedCamera) {
-                if (cameraPoints[selectedCamera.id + 1]) {
-                  setSelectedCamera(cameraPoints[selectedCamera.id + 1])
+                if (cameraPoses[selectedCamera.index + 1]) {
+                  setSelectedCamera(cameraPoses[selectedCamera.index + 1])
                 } else {
-                  setSelectedCamera(cameraPoints['0'])
+                  setSelectedCamera(cameraPoses[0])
                 }
               }
             }}

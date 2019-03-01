@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { FormattedMessage } from 'react-intl'
 
 import { lazy } from 'rd/tools/routing'
-import { landingUrl, viewerUrl } from 'common/routing'
+import { basename, landingUrl, viewerUrl } from 'common/routing'
 
 const LandingPage = lazy(() => import('ScanList'))
 const ViewerPage = lazy(() => import('Viewer'))
@@ -27,8 +27,6 @@ function NotFound () {
     404
   </div>
 }
-
-const basename = process.env.NODE_ENV === 'production' ? '/viz' : '/'
 
 class App extends Component {
   render () {
