@@ -5,6 +5,7 @@ import OrbitControls from 'common/thiers/OrbitController'
 import Mesh from './entities/mesh'
 import PointCloud from './entities/pointCloud'
 import Skeleton from './entities/skeleton'
+import Angles from './entities/angles'
 
 const clock = new THREE.Clock()
 
@@ -12,21 +13,16 @@ function addShadowedLight (scene, x, y, z, color, intensity) {
   const directionalLight = new THREE.DirectionalLight(color, intensity)
   directionalLight.position.set(x, y, z)
   scene.add(directionalLight)
-
   directionalLight.castShadow = true
-
   const d = 1
   directionalLight.shadow.camera.left = -d
   directionalLight.shadow.camera.right = d
   directionalLight.shadow.camera.top = d
   directionalLight.shadow.camera.bottom = -d
-
   directionalLight.shadow.camera.near = 1
   directionalLight.shadow.camera.far = 40000
-
   directionalLight.shadow.mapSize.width = 1024
   directionalLight.shadow.mapSize.height = 1024
-
   directionalLight.shadow.bias = -0.001
 }
 
@@ -48,15 +44,15 @@ export default class World {
     window.viewerObjects = this.viewerObjects
 
     this.perspectiveCamera = new THREE.PerspectiveCamera(35, this.width / this.height, 1, 5000)
-    this.perspectiveCamera.position.set(1000, 100, 0)
+    this.perspectiveCamera.position.set(600, 0, 0)
     this.camera = this.perspectiveCamera
 
     this.controls = new OrbitControls(this.perspectiveCamera, this.elem)
     this.controls.enableDamping = true
     this.controls.dampingFactor = 0.30
     this.controls.rotateSpeed = 0.2
-    this.controls.zoomSpeed = 0.2
-    this.controls.panSpeed = 0.2
+    this.controls.zoomSpeed = 0.4
+    this.controls.panSpeed = 0.4
     this.controls.screenSpacePanning = false
     this.controls.minDistance = 5
     this.controls.maxDistance = 8000
@@ -194,6 +190,10 @@ export default class World {
 
   setSkeletonPoints (skeleton) {
     this.skeleton = new Skeleton(skeleton, this.viewerObjects)
+  }
+
+  setAnglesPoints (angles) {
+    this.anlesPoints = new Angles(angles.fruit_points, this.viewerObjects)
   }
 
   setLayers (layers) {

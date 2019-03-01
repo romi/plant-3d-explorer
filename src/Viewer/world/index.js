@@ -95,6 +95,7 @@ export default function WorldComponent (props) {
   const [pointCloudGeometry] = useFetch3dObject(urls.pointCloud)
   const [skeletonPoints] = useFetch(urls.skeleton)
   const [metadata] = useFetch(urls.metadata)
+  const [angles] = useFetch(urls.angles)
   const cameraPoses = useCameraPoses()
   const [layers] = useLayers()
   const [selectedCamera] = useSelectedcamera()
@@ -147,6 +148,13 @@ export default function WorldComponent (props) {
       if (world && skeletonPoints) world.setSkeletonPoints(skeletonPoints)
     },
     [world, skeletonPoints]
+  )
+
+  useEffect(
+    () => {
+      if (world && angles) world.setAnglesPoints(angles)
+    },
+    [world, angles]
   )
 
   useEffect(
