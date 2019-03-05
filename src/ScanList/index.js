@@ -1,7 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { map } from 'lodash'
 
 import { styled } from 'rd/nano'
+
+import scans from 'data/index.json'
 
 const Container = styled.div({
   padding: 20,
@@ -10,7 +13,7 @@ const Container = styled.div({
 })
 
 const Block = styled((props) => <Link {...props} />)({
-  width: 100,
+  width: 200,
   height: 100,
   borderRadius: 3,
   color: 'white',
@@ -32,9 +35,9 @@ const Block = styled((props) => <Link {...props} />)({
 export default function () {
   return <Container>
     {
-      Array(20).fill().map((d, i) => {
-        return <Block key={i} to='/viewer'>
-          SCAN {i + 1}
+      map(scans).map((value, key, i) => {
+        return <Block key={i} to={`/viewer/${key}`}>
+          {value.split('/')[1]}
         </Block>
       })
     }

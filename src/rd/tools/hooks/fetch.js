@@ -1,34 +1,53 @@
 import { useState, useEffect } from 'react'
 import { get } from 'axios'
 
+import { MakeQuerablePromise } from 'rd/tools/promise'
+
 const cache = {}
 
-const useFetch = (url, cached) => {
+function forgeFetchResource (url) {
+  return {
+    data: null,
+    query: MakeQuerablePromise(get(url))
+  }
+}
+
+const useFetch = (url, cached = true) => {
   const cachedData = (cached && cache[url])
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(!!cachedData || true)
   const [data, setData] = useState(!!cachedData)
 
   useEffect(() => {
-    if (cached && cache[url]) {
-      setData(cache[url])
-    } else {
-      (async () => {
+    if (url) {
+      if (cached && cache[url]) {
+        setLoading(false)
+        if (cache[url].data) {
+          setData(cache[url].data)
+        } else {
+          cache[url].query
+            .then((response) => {
+              setData(response.data)
+            })
+        }
+      } else {
         setData(null)
         setLoading(true)
-        try {
-          const response = await get(url)
-          if (response.status === 200) {
+
+        const fetchResource = forgeFetchResource(url)
+        if (cached) cache[url] = fetchResource
+        fetchResource.query
+          .then((response) => {
             if (cached) cache[url] = response.data
             setData(response.data)
-          } else {
-            setError(new Error(response.statusText))
-          }
-        } catch (e) {
-          setError(e)
-        }
-        setLoading(false)
-      })()
+            setLoading(false)
+          })
+          .catch((error) => {
+            console.log(error) // DEV
+            setError(new Error(error))
+            setLoading(false)
+          })
+      }
     }
   }, [url])
 

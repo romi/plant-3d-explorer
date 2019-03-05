@@ -12,12 +12,14 @@
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
     "react-intl": "^2.8.0",
-    "react-router-dom": "^4.3.1",
+    "react-router": "^4.4.0-beta.7",
+    "react-router-dom": "^4.4.0-beta.7",
     "react-scripts": "2.1.5",
     "redux": "^4.0.1",
     "redux-react-hook": "^3.1.0",
     "three": "^0.101.1",
-    "three-orbitcontrols": "github:dataveyes/three-orbitcontrols"
+    "three-orbitcontrols": "github:dataveyes/three-orbitcontrols",
+    "use-react-router": "^1.0.3"
   },
   "scripts": {
     "start": "react-scripts start",

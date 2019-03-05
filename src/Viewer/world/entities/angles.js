@@ -1,29 +1,45 @@
 import * as THREE from 'three'
-import { first } from 'lodash'
+import { first, flatten } from 'lodash'
+
+import setLineSegmentsGeometry from 'common/thiers/LineSegmentsGeometry'
+import setLineGeometry from 'common/thiers/LineGeometry'
+import setLineMaterial from 'common/thiers/LineMaterial'
+import setWireframe2 from 'common/thiers/WireframeGeometry2'
+import setLineSegements2 from 'common/thiers/LineSegement2'
+import setLine2 from 'common/thiers/Line2'
+
+let EnhancedTHREE
+EnhancedTHREE = setLineSegmentsGeometry(THREE)
+EnhancedTHREE = setLineGeometry(EnhancedTHREE)
+EnhancedTHREE = setLineMaterial(EnhancedTHREE)
+EnhancedTHREE = setWireframe2(EnhancedTHREE)
+EnhancedTHREE = setLineSegements2(EnhancedTHREE)
+EnhancedTHREE = setLine2(EnhancedTHREE)
 
 export default class Angles {
   constructor (angles, parent) {
     this.group = new THREE.Object3D()
 
+    this.group = new THREE.Object3D()
+
     const toDrawAngles = [first(angles)]
     toDrawAngles.forEach((points) => {
-      const angleGroup = new THREE.Object3D()
-      points.forEach((p) => {
-        const geometry = new THREE.SphereBufferGeometry(4, 5, 5)
-        const material = new THREE.MeshBasicMaterial({
-          color: 0x111111,
-          // wireframe: true
-          transparent: true,
-          // opacity: 0.1,
-          blending: THREE.AdditiveBlending,
-          depthTest: true,
-          depthWrite: true
+      const geometry = new EnhancedTHREE.LineGeometry()
+      geometry.setPositions(flatten(points))
+
+      const obj = new EnhancedTHREE.Line2(
+        geometry,
+        new EnhancedTHREE.LineMaterial({
+          linewidth: 0.0065,
+          color: 0xFF0000,
+          dashed: true,
+          depthTest: false
         })
-        const sphere = new THREE.Mesh(geometry, material)
-        sphere.position.fromArray(p)
-        angleGroup.add(sphere)
-      })
-      this.group.add(angleGroup)
+      )
+      obj.computeLineDistances()
+      obj.renderOrder = 1
+
+      this.group.add(obj)
     })
 
     if (parent) parent.add(this.group)
@@ -38,34 +54,8 @@ export default class Angles {
   }
 
   setVisible (boolean) {
-    this.object.visible = boolean
+    this.group.children.forEach((child) => {
+      child.visible = boolean
+    })
   }
 }
-
-// import setLineSegmentsGeometry from 'common/thiers/LineSegmentsGeometry'
-// import setLineGeometry from 'common/thiers/LineGeometry'
-// import setLineMaterial from 'common/thiers/LineMaterial'
-
-// let EnhancedTHREE
-// EnhancedTHREE = setLineSegmentsGeometry(THREE)
-// EnhancedTHREE = setLineGeometry(EnhancedTHREE)
-// EnhancedTHREE = setLineMaterial(EnhancedTHREE)
-
-// angles.forEach((points) => {
-//   const geometry = new EnhancedTHREE.LineGeometry()
-//   geometry.setPositions(flatten(points))
-//   geometry.setColors(
-//     flatten(points.map((d) => [255, 65, 58].map((d) => (d / 255) - 0.3)))
-//   )
-//   const obj = new THREE.Line(
-//     geometry,
-//     new EnhancedTHREE.LineMaterial({
-//       linewidth: 10,
-//       color: 0xFF0000,
-//       dashed: false,
-//       resolution: new THREE.Vector2(window.innerWidth, window.innerHeight)
-//     })
-//   )
-//   // obj.position.fromArray(p)
-//   this.group.add(obj)
-// })
