@@ -4,7 +4,12 @@ export default class Mesh {
   constructor (geometry, parent) {
     geometry.computeVertexNormals()
 
-    const material = new THREE.MeshStandardMaterial({ transparent: false, opacity: 0.5, color: 0x0055ff, flatShading: true })
+    const material = new THREE.MeshStandardMaterial({
+      transparent: false,
+      opacity: 0.5,
+      color: 0x0055ff,
+      flatShading: true
+    })
     this.object = new THREE.Mesh(geometry, material)
     this.object.castShadow = true
     this.object.receiveShadow = true

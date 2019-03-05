@@ -29,18 +29,18 @@ export default class Mesh {
     this.geometry = geometry
     this.geometry.computeVertexNormals()
 
+    console.log('COUCOU')
+
     this.material = new THREE.ShaderMaterial({
       uniforms: {
         color: { type: 'c', value: new THREE.Color(0x0077ff) }
       },
       vertexShader,
-      fragmentShader,
-      transparent: true,
-      depthTest: true,
-      depthWrite: false
+      fragmentShader
     })
 
     this.object = new THREE.Points(this.geometry, this.material)
+    this.object.renderOrder = -1
 
     if (parent) parent.add(this.object)
     return this

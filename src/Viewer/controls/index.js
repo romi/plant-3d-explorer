@@ -4,7 +4,8 @@ import { map } from 'lodash'
 import { styled } from 'rd/nano'
 import { useLayers, useSelectedcamera } from 'flow/settings/accessors'
 
-import { useCameraPoses } from '../world/index'
+import { forgeCameraPoints } from '../world/index'
+import { useScan } from 'flow/scans/accessors'
 
 const Container = styled.div({
   position: 'absolute',
@@ -44,7 +45,8 @@ const Button = styled.div({
 
 export default function Controls (props) {
   const [layers, setLayers] = useLayers()
-  const cameraPoses = useCameraPoses()
+  const [scan] = useScan()
+  const cameraPoses = forgeCameraPoints(scan && scan.camera.poses)
   const [selectedCamera, setSelectedCamera] = useSelectedcamera()
 
   return <Container>
@@ -78,7 +80,6 @@ export default function Controls (props) {
         <Select
           value={(selectedCamera && `${selectedCamera.index}`) || 'none'}
           onChange={(e) => {
-            console.log(e.target.value)
             setSelectedCamera(cameraPoses[e.target.value])
           }}
         >
@@ -87,7 +88,7 @@ export default function Controls (props) {
             cameraPoses && map(
               cameraPoses,
               (point) => {
-                return <option key={point.id} value={point.index}>{point.file}</option>
+                return <option key={point.id} value={point.index}>{point.fileName}</option>
               }
             )
           }

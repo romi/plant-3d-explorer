@@ -21,7 +21,7 @@ function loadAsync (url) {
   })
 }
 
-const useFetch3dObject = (url, cached) => {
+function useFetch3dObject (url, cached = true) {
   const cachedData = (cached && cache[url])
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(!!cachedData || true)

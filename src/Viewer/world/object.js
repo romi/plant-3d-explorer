@@ -76,8 +76,8 @@ export default class World {
     animate()
   }
 
-  computeDynamicFOV (cameraModel, dist) {
-    const height = ((cameraModel.params[3] * 2) * dist) / cameraModel.params[0]
+  computeDynamicFOV (cameraParams, dist) {
+    const height = ((cameraParams[3] * 2) * dist) / cameraParams[0]
     return 2 * Math.atan(height / (2 * dist)) * (180 / Math.PI)
   }
 
@@ -106,14 +106,21 @@ export default class World {
     this.viewerObjects.add(this.viewportBox)
   }
 
-  setMetaData (metadata) {
-    const workspace = metadata.workspace
-    this.metadata = metadata
+  setWorkSpace (workspace) {
+    this.workspace = workspace
     this.setWorkSpaceBox(workspace)
 
     this.viewerObjects.position.x = -(workspace.x[1] - workspace.x[0])
     this.viewerObjects.position.y = -(workspace.y[1] - workspace.y[0])
-    this.viewerObjects.position.z = -(workspace.z[1] - workspace.z[0]) / 2
+    this.viewerObjects.position.z = -(workspace.z[1] - workspace.z[0])
+
+    this.viewerObjects.position.x = -(workspace.x[1] - workspace.x[0])
+    this.viewerObjects.position.y = -(workspace.y[1] - workspace.y[0])
+    this.viewerObjects.position.z = workspace.z[1] - (workspace.z[1] - workspace.z[0])
+  }
+
+  setCamera (camera) {
+    this.cameraData = camera
   }
 
   setCameraPoints (points) {
@@ -139,9 +146,8 @@ export default class World {
     if (this.imgMesh) this.scene.remove(this.imgMesh)
 
     if (camera) {
-      const cameraModel = this.metadata.camera_model
       const imgDistance = 2000
-      const fov = this.computeDynamicFOV(cameraModel, imgDistance)
+      const fov = this.computeDynamicFOV(this.cameraData.params, imgDistance)
       this.camera = new THREE.PerspectiveCamera(fov, this.width / this.height, 0.1, 5000)
 
       this.camera.position
@@ -155,7 +161,7 @@ export default class World {
       )
 
       var distance = imgDistance
-      var aspect = cameraModel.params[2] / cameraModel.params[3]
+      var aspect = this.cameraData.params[2] / this.cameraData.params[3]
       var vFov = this.camera.fov * Math.PI / 180
 
       var imgHeight = 2 * Math.tan(vFov / 2) * distance
@@ -165,8 +171,9 @@ export default class World {
         new THREE.MeshBasicMaterial({ map: camera.texture, side: THREE.DoubleSide })
       )
 
+      const center = new THREE.Vector3()
       var startPos = new THREE.Vector3().copy(this.camera.position)
-      var direction = this.camera.getWorldDirection()
+      var direction = this.camera.getWorldDirection(center)
       startPos.add(direction.multiplyScalar(imgDistance))
 
       imgPlane.position.copy(startPos)
