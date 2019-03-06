@@ -33,6 +33,7 @@ export default class World {
     this.elem = elem
     this.scene = new THREE.Scene()
     this.scene.background = new THREE.Color(0xe8e8e8)
+    this.unmounted = false
 
     this.scene.add(new THREE.HemisphereLight(0x443333, 0x111122))
     addShadowedLight(this.scene, 1, 1, 1, 0xffffff, 1.35)
@@ -71,9 +72,13 @@ export default class World {
 
     const animate = () => {
       this.render()
-      window.requestAnimationFrame(animate)
+      if (!this.unmounted) window.requestAnimationFrame(animate)
     }
     animate()
+  }
+
+  unmount () {
+    this.unmounted = true
   }
 
   computeDynamicFOV (cameraParams, dist) {
