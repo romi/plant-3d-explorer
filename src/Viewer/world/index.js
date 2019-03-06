@@ -99,6 +99,8 @@ export default function WorldComponent (props) {
       const { width, height } = getSize(canvasRef.current)
       const world = new WorldObject(width, height, canvasRef.current)
       setWorld(world)
+
+      return () => world.unmount()
     },
     [canvasRef]
   )
@@ -144,7 +146,6 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world && pointCloudGeometry) {
-        console.log('HERE')
         world.setPointcloudGeometry(pointCloudGeometry)
       }
     },

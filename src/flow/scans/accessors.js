@@ -9,10 +9,6 @@ import useFetch3dObject from 'rd/tools/hooks/fetch3dObject'
 import { basename } from 'common/routing'
 import scans from 'data/index.json'
 
-console.log(
-  scans
-)
-
 export function useScan () {
   const [state, setState] = useState(null)
   const { match } = useReactRouter()
@@ -36,9 +32,6 @@ export function useScan () {
 }
 
 export function useScanFiles (scan) {
-  console.log(
-    scan
-  )
   return [
     useFetch3dObject(scan && (basename + scan.filesUri.mesh)),
     useFetch3dObject(scan && (basename + scan.filesUri.pointCloud))

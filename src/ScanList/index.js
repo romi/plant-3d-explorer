@@ -35,8 +35,8 @@ const Block = styled((props) => <Link {...props} />)({
 export default function () {
   return <Container>
     {
-      map(scans).map((value, key, i) => {
-        return <Block key={i} to={`/viewer/${key}`}>
+      map(scans).map((value, key) => {
+        return <Block key={key} to={`/viewer/${key}`}>
           {value.split('/')[1]}
         </Block>
       })
