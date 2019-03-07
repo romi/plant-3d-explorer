@@ -48,25 +48,12 @@ export default class World {
     this.perspectiveCamera.position.set(600, 0, 0)
     this.camera = this.perspectiveCamera
 
-    this.controls = new OrbitControls(this.perspectiveCamera, this.elem)
-    this.controls.enableDamping = true
-    this.controls.dampingFactor = 0.30
-    this.controls.rotateSpeed = 0.2
-    this.controls.zoomSpeed = 0.4
-    this.controls.panSpeed = 0.4
-    this.controls.screenSpacePanning = false
-    this.controls.minDistance = 5
-    this.controls.maxDistance = 8000
-    this.controls.screenSpacePanning = true
-
-    // Y-upifying needs to be after the creation of the controller instance
-    this.camera.up.set(0, 0, -1)
-    this.camera.rotation.order = 'YXZ'
+    this.setControls()
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true })
-    this.renderer.setSize(width, height)
     this.renderer.shadowMap.enabled = true
     this.elem.appendChild(this.renderer.domElement)
+    this.setSize(width, height)
 
     this.viewerObjects.add(this.cameraGroup)
 
@@ -86,11 +73,39 @@ export default class World {
     return 2 * Math.atan(height / (2 * dist)) * (180 / Math.PI)
   }
 
+  setControls () {
+    this.controls = new OrbitControls(this.perspectiveCamera, this.elem)
+    this.controls.enableDamping = true
+    this.controls.dampingFactor = 0.30
+    this.controls.rotateSpeed = 0.2
+    this.controls.zoomSpeed = 0.4
+    this.controls.panSpeed = 0.4
+    this.controls.screenSpacePanning = false
+    this.controls.minDistance = 5
+    this.controls.maxDistance = 8000
+    this.controls.screenSpacePanning = true
+
+    // Y-upifying needs to be after the creation of the controller instance
+    this.camera.up.set(0, 0, -1)
+    this.camera.rotation.order = 'YXZ'
+  }
+
   setSize (width, height) {
     this.width = width
     this.height = height
     this.renderer.setSize(width, height)
     this.renderer.render(this.scene, this.controls.object)
+  }
+
+  setViewport (zoomLevel, x, y, width, height) {
+    this.renderer.setViewport(x, y, width, height)
+    if (this.pointCloud) {
+      this.pointCloud.setZoomLevel(zoomLevel)
+    }
+  }
+
+  getViewport () {
+    return this.renderer.getCurrentViewport()
   }
 
   setWorkSpaceBox (workspace) {
@@ -151,6 +166,7 @@ export default class World {
     if (this.imgMesh) this.scene.remove(this.imgMesh)
 
     if (camera) {
+      this.controls.enabled = false
       const imgDistance = 2000
       const fov = this.computeDynamicFOV(this.cameraData.params, imgDistance)
       this.camera = new THREE.PerspectiveCamera(fov, this.width / this.height, 0.1, 5000)
@@ -188,6 +204,7 @@ export default class World {
       this.imgMesh = imgPlane
     } else {
       this.camera = this.perspectiveCamera
+      this.controls.enabled = true
     }
   }
 
