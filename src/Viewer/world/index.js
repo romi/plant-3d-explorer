@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react'
 import NaturalSort from 'alphanum-sort'
 import * as THREE from 'three'
 import { last } from 'lodash'
+import { useWindowSize } from 'react-use'
 
 import { basename } from 'common/routing'
 
@@ -11,6 +12,7 @@ import { useLayers, useSelectedcamera } from 'flow/settings/accessors'
 import { useScanFiles, useScan } from 'flow/scans/accessors'
 
 import WorldObject from './object'
+import useViewport2d from './behaviors/viewport2d'
 
 const Container = styled.div({
   width: '100%',
@@ -83,10 +85,24 @@ export function forgeCameraPoints (poses) {
 }
 
 export default function WorldComponent (props) {
+  const windowSider = useWindowSize()
   const canvasRef = useRef(null)
   const [world, setWorld] = useState(null)
   const [layers] = useLayers()
   const [selectedCamera] = useSelectedcamera()
+  const [lastSelectedCamera] = useState({ camera: null })
+  const [viewport, eventFns, resetViewport2d] = useViewport2d(
+    () => {
+      let width
+      let height
+      if (canvasRef.current) {
+        const size = getSize(canvasRef.current)
+        width = size.width
+        height = size.height
+      }
+      return [width, height]
+    }
+  )
 
   const [scan] = useScan()
   const [
@@ -103,6 +119,23 @@ export default function WorldComponent (props) {
       return () => world.unmount()
     },
     [canvasRef]
+  )
+
+  useEffect(
+    () => {
+      if (world) {
+        const { width, height } = getSize(canvasRef.current)
+        world.setSize(width, height)
+      }
+    },
+    [windowSider, world]
+  )
+
+  useEffect(
+    () => {
+      if (world) world.setViewport(...viewport)
+    },
+    [world, viewport]
   )
 
   useEffect(
@@ -133,6 +166,8 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world) world.setSelectedCamera(selectedCamera)
+      if (lastSelectedCamera.camera !== selectedCamera) resetViewport2d()
+      lastSelectedCamera.camera = selectedCamera
     },
     [world, selectedCamera]
   )
@@ -178,6 +213,11 @@ export default function WorldComponent (props) {
   )
 
   return <Container
+    onMouseDown={eventFns.onMouseDown}
+    onMouseUp={eventFns.onMouseUp}
+    onMouseMove={eventFns.onMouseMove}
+    onWheel={eventFns.onWheel}
+
     $ref={canvasRef}
   />
 }
