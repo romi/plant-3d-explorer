@@ -95,9 +95,16 @@ export default class World {
     this.height = height
     this.renderer.setSize(width, height)
     this.renderer.render(this.scene, this.controls.object)
+    this.setAspectRatio(width, height)
+  }
+
+  setAspectRatio (width = this.width, height = this.height) {
+    this.camera.aspect = width / height
+    this.camera.updateProjectionMatrix()
   }
 
   setViewport (zoomLevel, x, y, width, height) {
+    this.viewport = [zoomLevel, x, y, width, height]
     this.renderer.setViewport(x, y, width, height)
     if (this.pointCloud) {
       this.pointCloud.setZoomLevel(zoomLevel)
@@ -202,8 +209,10 @@ export default class World {
 
       this.scene.add(imgPlane)
       this.imgMesh = imgPlane
+      this.setAspectRatio()
     } else {
       this.camera = this.perspectiveCamera
+      this.setAspectRatio()
       this.controls.enabled = true
     }
   }

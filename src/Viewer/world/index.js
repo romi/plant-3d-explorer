@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react'
 import NaturalSort from 'alphanum-sort'
 import * as THREE from 'three'
 import { last } from 'lodash'
+import { useWindowSize } from 'react-use'
 
 import { basename } from 'common/routing'
 
@@ -11,6 +12,7 @@ import { useLayers, useSelectedcamera } from 'flow/settings/accessors'
 import { useScanFiles, useScan } from 'flow/scans/accessors'
 
 import WorldObject from './object'
+import useViewport2d from './behaviors/viewport2d'
 
 const Container = styled.div({
   width: '100%',
@@ -83,15 +85,24 @@ export function forgeCameraPoints (poses) {
 }
 
 export default function WorldComponent (props) {
+  const windowSider = useWindowSize()
   const canvasRef = useRef(null)
   const [world, setWorld] = useState(null)
   const [layers] = useLayers()
   const [selectedCamera] = useSelectedcamera()
-  const [dragging, setDragging] = useState(false)
-  const [zoom, setZoom] = useState(1)
-  const [center] = useState({ x: 0, y: 0 })
-  const [targetZoom, setTargetZoom] = useState({ x: 0, y: 0 })
-  const [event, setEvent] = useState(null)
+  const [lastSelectedCamera] = useState({ camera: null })
+  const [viewport, eventFns, resetViewport2d] = useViewport2d(
+    () => {
+      let width
+      let height
+      if (canvasRef.current) {
+        const size = getSize(canvasRef.current)
+        width = size.width
+        height = size.height
+      }
+      return [width, height]
+    }
+  )
 
   const [scan] = useScan()
   const [
@@ -103,9 +114,6 @@ export default function WorldComponent (props) {
     () => {
       const { width, height } = getSize(canvasRef.current)
       const world = new WorldObject(width, height, canvasRef.current)
-      console.log('ok')
-      center.x = width / 2
-      center.y = height / 2
       setWorld(world)
 
       return () => world.unmount()
@@ -117,36 +125,17 @@ export default function WorldComponent (props) {
     () => {
       if (world) {
         const { width, height } = getSize(canvasRef.current)
-
-        const newWidth = width * zoom
-        const newHeight = height * zoom
-
-        if (event === 'pan') {
-          center.x += (targetZoom.mx / zoom)
-          center.y += (targetZoom.my / zoom)
-        }
-
-        const margin = {
-          x: -(
-            (newWidth / 2) -
-            ((width / 2) + ((width / 2) - center.x) * -zoom)
-          ),
-          y: -(
-            (newHeight / 2) -
-            ((height / 2) + ((height / 2) - center.y) * -zoom)
-          )
-        }
-
-        world.setViewport(
-          zoom,
-          margin.x,
-          margin.y,
-          newWidth,
-          newHeight
-        )
+        world.setSize(width, height)
       }
     },
-    [world, zoom, targetZoom, event]
+    [windowSider, world]
+  )
+
+  useEffect(
+    () => {
+      if (world) world.setViewport(...viewport)
+    },
+    [world, viewport]
   )
 
   useEffect(
@@ -177,6 +166,8 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world) world.setSelectedCamera(selectedCamera)
+      if (lastSelectedCamera.camera !== selectedCamera) resetViewport2d()
+      lastSelectedCamera.camera = selectedCamera
     },
     [world, selectedCamera]
   )
@@ -222,35 +213,11 @@ export default function WorldComponent (props) {
   )
 
   return <Container
-    onMouseDown={() => setDragging(true)}
-    onMouseUp={() => setDragging(false)}
-    onMouseMove={(e) => {
-      if (dragging) {
-        setTargetZoom({
-          mx: e.movementX,
-          my: e.movementY,
-          x: targetZoom.x + e.movementX,
-          y: targetZoom.y + e.movementY,
-          last: targetZoom.last
-        })
-        setEvent('pan')
-      }
-    }}
-    onWheel={(e) => {
-      const newZoom = Math.min(
-        Math.max(zoom + (-(e.deltaY) / 200), 1),
-        15
-      )
+    onMouseDown={eventFns.onMouseDown}
+    onMouseUp={eventFns.onMouseUp}
+    onMouseMove={eventFns.onMouseMove}
+    onWheel={eventFns.onWheel}
 
-      if (newZoom !== zoom) {
-        setZoom(Math.round(newZoom * 100) / 100)
-        setEvent('zoom')
-      }
-    }}
     $ref={canvasRef}
   />
 }
-
-// function useZoom () {
-//   const [zoom, setZoom] = setState(1)
-// }

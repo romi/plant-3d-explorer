@@ -6,16 +6,39 @@ export default function useViewport2d (getSize) {
   const [center] = useState({ x: 0, y: 0 })
   const [targetZoom, setTargetZoom] = useState({ x: 0, y: 0 })
   const [event, setEvent] = useState(null)
+  const [result, setResult] = useState(null)
 
-  const { width, height } = getSize()
-  center.x = width / 2
-  center.y = height / 2
+  function reset () {
+    const [width, height] = getSize()
+    setDragging(false)
+    setZoom(1)
+    initCenter()
+    setEvent(null)
+    setTargetZoom({
+      mx: 0,
+      my: 0
+    })
+    setResult([
+      zoom,
+      0,
+      0,
+      width,
+      height
+    ])
+  }
 
-  const [result, setResult] = useState([
-    zoom,
-    center.x, center.y,
-    width, height
-  ])
+  function initCenter () {
+    const [width, height] = getSize()
+    if (width && height) {
+      center.x = width / 2
+      center.y = height / 2
+    }
+  }
+
+  useState(
+    initCenter,
+    [1]
+  )
 
   const eventFns = {
     onMouseDown: () => setDragging(true),
@@ -24,22 +47,21 @@ export default function useViewport2d (getSize) {
       if (dragging) {
         setTargetZoom({
           mx: e.movementX,
-          my: e.movementY,
-          x: targetZoom.x + e.movementX,
-          y: targetZoom.y + e.movementY,
-          last: targetZoom.last
+          my: e.movementY
         })
         setEvent('pan')
       }
     },
     onWheel: (e) => {
-      const newZoom = Math.min(
-        Math.max(zoom + (-(e.deltaY) / 200), 1),
-        15
-      )
+      const newZoom = Math.round(
+        Math.min(
+          Math.max(zoom + (-(e.deltaY) / 200), 1),
+          15
+        ) * 100
+      ) / 100
 
       if (newZoom !== zoom) {
-        setZoom(Math.round(newZoom * 100) / 100)
+        setZoom(newZoom)
         setEvent('zoom')
       }
     }
@@ -47,7 +69,8 @@ export default function useViewport2d (getSize) {
 
   useEffect(
     () => {
-      const { width, height } = getSize()
+      if (!result) initCenter()
+      const [width, height] = getSize()
       if (width && height) {
         const newWidth = width * zoom
         const newHeight = height * zoom
@@ -77,11 +100,12 @@ export default function useViewport2d (getSize) {
         ])
       }
     },
-    [zoom, targetZoom, event]
+    [zoom, targetZoom, event, dragging]
   )
 
   return [
     result,
-    eventFns
+    eventFns,
+    reset
   ]
 }

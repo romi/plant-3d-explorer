@@ -204,7 +204,6 @@ THREE.OrbitControls = function (object, domElement, changeFn) {
   }())
 
   this.dispose = function () {
-    console.log('ok')
     scope.domElement.removeEventListener('contextmenu', onContextMenu, false)
     scope.domElement.removeEventListener('mousedown', onMouseDown, false)
     scope.domElement.removeEventListener('wheel', onMouseWheel, false)
@@ -566,6 +565,7 @@ THREE.OrbitControls = function (object, domElement, changeFn) {
     if (scope.enabled === false) return
 
     event.preventDefault()
+    event.stopPropagation()
 
     switch (event.button) {
       case scope.mouseButtons.LEFT:
