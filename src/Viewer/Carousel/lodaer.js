@@ -21,8 +21,6 @@ export default function useImgLoader (urls) {
         image.height = moduleHeight * 2
 
         image.onload = () => {
-          // tmpImgs[url] = image
-
           const croppedImg = new window.Image()
           context.drawImage(
             image,
