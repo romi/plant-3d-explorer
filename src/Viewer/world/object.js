@@ -42,7 +42,6 @@ export default class World {
     this.cameraGroup = new THREE.Object3D()
     this.viewerObjects = new THREE.Object3D()
     this.scene.add(this.viewerObjects)
-    window.viewerObjects = this.viewerObjects
 
     this.perspectiveCamera = new THREE.PerspectiveCamera(35, this.width / this.height, 1, 5000)
     this.perspectiveCamera.position.set(600, 0, 0)
@@ -130,7 +129,7 @@ export default class World {
     box.position.y = (workspace.y[1] + workspace.y[0]) / 2
     box.position.z = (workspace.z[1] + workspace.z[0]) / 2
     this.viewportBox = box
-    this.viewerObjects.add(this.viewportBox)
+    // this.viewerObjects.add(this.viewportBox)
   }
 
   setWorkSpace (workspace) {

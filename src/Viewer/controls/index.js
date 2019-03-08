@@ -4,7 +4,7 @@ import { map } from 'lodash'
 import { styled } from 'rd/nano'
 import { useLayers, useSelectedcamera } from 'flow/settings/accessors'
 
-import { forgeCameraPoints } from '../world/index'
+import { forgeCameraPoints } from '../World/index'
 import { useScan } from 'flow/scans/accessors'
 
 const Container = styled.div({
