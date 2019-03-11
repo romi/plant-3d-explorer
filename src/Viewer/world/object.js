@@ -174,7 +174,7 @@ export default class World {
     if (camera) {
       this.controls.enabled = false
       const imgDistance = 2000
-      const fov = this.computeDynamicFOV(this.cameraData.params, imgDistance)
+      const fov = this.computeDynamicFOV(this.cameraData.model.params, imgDistance)
       this.camera = new THREE.PerspectiveCamera(fov, this.width / this.height, 0.1, 5000)
 
       this.camera.position
@@ -188,7 +188,7 @@ export default class World {
       )
 
       var distance = imgDistance
-      var aspect = this.cameraData.params[2] / this.cameraData.params[3]
+      var aspect = this.cameraData.model.params[2] / this.cameraData.model.params[3]
       var vFov = this.camera.fov * Math.PI / 180
 
       var imgHeight = 2 * Math.tan(vFov / 2) * distance

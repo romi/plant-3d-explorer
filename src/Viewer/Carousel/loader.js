@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 
 import { scaleCanvas } from 'rd/tools/canvas'
 
-const moduleHeight = 100
+const moduleHeight = 125
 const imgWidth = moduleHeight * (6000 / 4000)
 
 const canvas = document.createElement('canvas')
@@ -17,11 +17,13 @@ export default function useImgLoader (urls) {
     () => {
       urls.forEach((url) => {
         const image = new window.Image()
+        image.crossOrigin = 'Anonymous'
         image.width = imgWidth * 2
         image.height = moduleHeight * 2
 
         image.onload = () => {
           const croppedImg = new window.Image()
+          croppedImg.crossOrigin = 'Anonymous'
           context.drawImage(
             image,
             0,

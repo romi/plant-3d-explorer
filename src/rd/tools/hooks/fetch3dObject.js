@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react'
 import PLYLoader from 'common/thiers/PLYLoader'
 import * as THREE from 'three'
 
-const cache = {}
-
 const enhancedTHREE = PLYLoader(THREE)
-var loader = new enhancedTHREE.PLYLoader()
+const cache = {}
+export const loader = new enhancedTHREE.PLYLoader()
+
 function loadAsync (url) {
   return new Promise((resolve, reject) => {
     loader.load(

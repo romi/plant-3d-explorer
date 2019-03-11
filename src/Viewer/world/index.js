@@ -4,8 +4,6 @@ import * as THREE from 'three'
 import { last } from 'lodash'
 import { useWindowSize } from 'react-use'
 
-import { basename } from 'common/routing'
-
 import { styled } from 'rd/nano'
 
 import { useLayers, useSelectedcamera } from 'flow/settings/accessors'
@@ -22,6 +20,7 @@ const Container = styled.div({
 const getSize = (elem) => elem.getBoundingClientRect()
 
 const imgLoader = new THREE.TextureLoader()
+imgLoader.crossOrigin = 'Anonymous'
 
 export function forgeCameraPoints (poses) {
   if (poses) {
@@ -76,7 +75,7 @@ export function forgeCameraPoints (poses) {
         v3position,
         objM4rotation,
         vueM4rotation,
-        texture: imgLoader.load(`${basename}data/${point.photoUri}`)
+        texture: imgLoader.load(point.photoUri)
       }
     })
   } else {
