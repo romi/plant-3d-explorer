@@ -13,7 +13,6 @@ function forgeFetchResource (url, source, options) {
         url,
         {
           headers: {
-            Authorization: 'Basic ' + window.btoa('sony:plantes'),
             'Access-Control-Allow-Headers': 'x-requested-with, x-requested-by'
           }
         }

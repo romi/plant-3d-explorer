@@ -32,10 +32,10 @@ export default function Carousel () {
   const [scan] = useScan()
   const [urlList, setUrlList] = useState([])
   const [context, setContext] = useState(null)
-  const [hovered, setHovered] = useHoveredCamera()
   const [picturesLayout, setPicturesLayout] = useState([])
   const cameraPoses = ((scan && scan.camera.poses) || [])
   const [imgs] = useImgLoader(urlList)
+  const [hovered, setHovered] = useHoveredCamera()
 
   useEffect(
     () => {
@@ -80,9 +80,10 @@ export default function Carousel () {
         }
 
         let last = { x: 0, width: 0, normalX: 0, normalWidth: 0 }
+
         setPicturesLayout(
           cameraPoses.map((d, i) => {
-            const isHovered = d === hovered
+            const isHovered = hovered && d.id === hovered.id
             const x = last.x + last.width
             const normalX = last.normalX + last.normalWidth
 

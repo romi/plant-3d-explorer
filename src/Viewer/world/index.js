@@ -2,9 +2,10 @@ import React, { useRef, useEffect, useState } from 'react'
 import { useWindowSize } from 'react-use'
 
 import { styled } from 'rd/nano'
+import { useElementMouse } from 'rd/tools/hooks/mouse'
 
 import { useLayers } from 'flow/settings/accessors'
-import { useSelectedcamera } from 'flow/interactions/accessors'
+import { useSelectedcamera, useHoveredCamera } from 'flow/interactions/accessors'
 import { useScanFiles, useScan } from 'flow/scans/accessors'
 
 import WorldObject from './object'
@@ -23,7 +24,11 @@ export default function WorldComponent (props) {
   const [world, setWorld] = useState(null)
   const [layers] = useLayers()
   const [selectedCamera] = useSelectedcamera()
+  const [hoveredCamera, setHoveredCamera] = useHoveredCamera()
+  const mouse = useElementMouse(canvasRef)
   const [lastSelectedCamera] = useState({ camera: null })
+  const [scan] = useScan()
+  const [[meshGeometry], [pointCloudGeometry]] = useScanFiles(scan)
   const [viewport, eventFns, resetViewport2d] = useViewport2d(
     () => {
       let width
@@ -37,16 +42,13 @@ export default function WorldComponent (props) {
     }
   )
 
-  const [scan] = useScan()
-  const [
-    [meshGeometry],
-    [pointCloudGeometry]
-  ] = useScanFiles(scan)
-
   useEffect(
     () => {
       const { width, height } = getSize(canvasRef.current)
       const world = new WorldObject(width, height, canvasRef.current)
+      world.onHover((data) => {
+        setHoveredCamera(data)
+      })
       setWorld(world)
 
       return () => world.unmount()
@@ -105,6 +107,13 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
+      if (world) world.setHoveredCamera(hoveredCamera)
+    },
+    [world, hoveredCamera]
+  )
+
+  useEffect(
+    () => {
       if (world && meshGeometry) world.setMeshGeometry(meshGeometry)
     },
     [world, meshGeometry]
@@ -138,6 +147,13 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
+      if (world) world.setMouse(mouse)
+    },
+    [world, mouse]
+  )
+
+  useEffect(
+    () => {
       if (world) world.setLayers(layers)
     },
     [world, layers]
@@ -148,7 +164,6 @@ export default function WorldComponent (props) {
     onMouseUp={eventFns.onMouseUp}
     onMouseMove={eventFns.onMouseMove}
     onWheel={eventFns.onWheel}
-
     $ref={canvasRef}
   />
 }

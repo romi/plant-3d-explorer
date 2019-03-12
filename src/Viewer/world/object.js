@@ -33,6 +33,10 @@ export default class World {
     this.elem = elem
     this.scene = new THREE.Scene()
     this.scene.background = new THREE.Color(0xe8e8e8)
+    this.raycaster = new THREE.Raycaster()
+    this.mouse = { x: 0, y: 0, moving: false }
+    this.oldMouse = { ...this.mouse }
+    this.onHoverFn = () => {}
     this.unmounted = false
 
     this.scene.add(new THREE.HemisphereLight(0x443333, 0x111122))
@@ -61,6 +65,10 @@ export default class World {
       if (!this.unmounted) window.requestAnimationFrame(animate)
     }
     animate()
+  }
+
+  onHover (fn) {
+    this.onHoverFn = fn
   }
 
   unmount () {
@@ -100,6 +108,14 @@ export default class World {
   setAspectRatio (width = this.width, height = this.height) {
     this.camera.aspect = width / height
     this.camera.updateProjectionMatrix()
+  }
+
+  setMouse (value) {
+    this.mouse = {
+      moving: (this.mouse.x !== value.x) || (this.mouse.y !== value.y),
+      ...value,
+      old: this.mouse
+    }
   }
 
   setViewport (zoomLevel, x, y, width, height) {
@@ -150,22 +166,38 @@ export default class World {
   }
 
   setCameraPoints (points) {
-    const material = new THREE.MeshPhongMaterial({ color: 0x333333, wireframe: true, transparent: true, opacity: 0.1 })
     this.CameraPointsGroup = new THREE.Object3D()
 
-    points.forEach(({ v3position, objM4rotation }) => {
-      const cameraGroup = new THREE.Object3D()
+    points.forEach((p) => {
+      const material = new THREE.MeshPhongMaterial({ color: 0x333333, wireframe: true, transparent: true, opacity: 0.1 })
+      const { v3position, objM4rotation } = p
       const coneGeeometry = new THREE.ConeGeometry(10, 25, 4)
       const cone = new THREE.Mesh(coneGeeometry, material)
+      cone.data = p
 
-      cameraGroup.position.copy(v3position)
-      cameraGroup.rotation.setFromRotationMatrix(objM4rotation)
-      cameraGroup.add(cone)
+      cone.position.copy(v3position)
+      cone.rotation.setFromRotationMatrix(objM4rotation)
 
-      this.CameraPointsGroup.add(cameraGroup)
+      this.CameraPointsGroup.add(cone)
     })
 
     this.cameraGroup.add(this.CameraPointsGroup)
+  }
+
+  setHoveredCamera (camera) {
+    if (this.CameraPointsGroup) {
+      this.CameraPointsGroup.children.forEach((d) => {
+        if (camera && d.data.id === camera.id) {
+          d.material.wireframe = false
+          d.material.color.set('red')
+          d.material.opacity = 1
+        } else {
+          d.material.wireframe = true
+          d.material.color.set('#a1a1a1')
+          d.material.opacity = 0.1
+        }
+      })
+    }
   }
 
   setSelectedCamera (camera) {
@@ -239,8 +271,42 @@ export default class World {
     if (this.skeleton) this.skeleton.setVisible(layers.skeleton)
   }
 
+  interaction () {
+    if (
+      (this.mouse.x !== this.oldMouse.x) || (this.mouse.y !== this.oldMouse.y)
+    ) {
+      const { width, height } = this.renderer.getSize()
+
+      const virtualMouse = new THREE.Vector2(
+        (this.mouse.x / width) * 2 - 1,
+        -(this.mouse.y / height) * 2 + 1
+      )
+
+      this.raycaster.setFromCamera(virtualMouse, this.controls.object)
+      const intersects = this.raycaster
+        .intersectObjects(this.scene.children, true)
+
+      if (intersects.length) {
+        if (intersects[0].object.uuid !== this.hoveredUUID) {
+          if (intersects[0].object.data) {
+            this.onHoverFn({
+              ...intersects[0].object.data,
+              mouse: this.mouse
+            })
+          }
+          this.hoveredUUID = intersects[0].object.uuid
+        }
+      } else {
+        this.onHoverFn(null)
+        this.hoveredUUID = null
+      }
+      this.oldMouse = this.mouse
+    }
+  }
+
   render () {
     clock.getDelta()
+    this.interaction()
     this.controls.update(clock.getDelta())
     this.renderer.render(this.scene, this.camera)
   }
