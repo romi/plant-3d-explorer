@@ -20,7 +20,7 @@ const useMouse = () => {
 
 export default useMouse
 
-export const useElementMouse = (element, id) => {
+export const useElementMouse = (element) => {
   const [ state, setState ] = useState({ x: 0, y: 0 })
 
   useEffect(() => {

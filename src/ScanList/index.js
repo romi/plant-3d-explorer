@@ -4,7 +4,8 @@ import { map } from 'lodash'
 
 import { styled } from 'rd/nano'
 
-import scans from 'data/index.json'
+import useFetch from 'rd/tools/hooks/fetch'
+import { scansURI } from 'common/api'
 
 const Container = styled.div({
   padding: 20,
@@ -33,13 +34,16 @@ const Block = styled((props) => <Link {...props} />)({
 })
 
 export default function () {
+  const [scans] = useFetch(scansURI, true)
   return <Container>
     {
-      map(scans).map((value, key) => {
-        return <Block key={key} to={`/viewer/${key}`}>
-          {value.split('/')[1]}
-        </Block>
-      })
+      scans
+        ? map(scans).map((value) => {
+          return <Block key={value.id} to={`/viewer/${value.id}`}>
+            {value.id}
+          </Block>
+        })
+        : 'LOADING'
     }
   </Container>
 }

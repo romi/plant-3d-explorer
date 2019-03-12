@@ -5,21 +5,16 @@ import { MakeQuerablePromise } from 'rd/tools/promise'
 
 const cache = {}
 
-function forgeFetchResource (url, source) {
+function forgeFetchResource (url, source, options) {
   return {
     data: null,
     query: MakeQuerablePromise(
-      get(
-        url,
-        {
-          CancelToken: source.token
-        }
-      )
+      get(url)
     )
   }
 }
 
-const useFetch = (url, cached = true) => {
+const useFetch = (url, cached = true, options = {}) => {
   const cachedData = (cached && cache[url])
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(!!cachedData || true)
@@ -50,7 +45,7 @@ const useFetch = (url, cached = true) => {
         setData(null)
         setLoading(true)
         source = CancelToken.source()
-        const fetchResource = forgeFetchResource(url, source)
+        const fetchResource = forgeFetchResource(url, source, options)
 
         if (cached) cache[url] = fetchResource
 

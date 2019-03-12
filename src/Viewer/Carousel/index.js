@@ -1,16 +1,15 @@
-import React, { useMemo, useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useWindowSize } from 'react-use'
 
 import { styled } from 'rd/nano'
 import { scaleCanvas } from 'rd/tools/canvas'
 
 import { useScan } from 'flow/scans/accessors'
-import { basename } from 'common/routing'
 
-import { forgeCameraPoints } from '../World/index'
-import useImgLoader from './lodaer'
+import useImgLoader from './loader'
+import { useHoveredCamera } from 'flow/interactions/accessors'
 
-const moduleHeight = 100
+const moduleHeight = 125
 
 const Container = styled.div({
   width: '100%',
@@ -27,25 +26,21 @@ const Canvas = styled.canvas({
 const getSize = (elem) => elem.getBoundingClientRect()
 
 export default function Carousel () {
+  const canvasRef = useRef(null)
+  const containerRef = useRef(null)
   const windowSider = useWindowSize()
   const [scan] = useScan()
   const [urlList, setUrlList] = useState([])
   const [context, setContext] = useState(null)
-  const [hovered, setHovered] = useState(null)
   const [picturesLayout, setPicturesLayout] = useState([])
-  const canvasRef = useRef(null)
-  const cameraPoses = useMemo(
-    () => forgeCameraPoints(scan && scan.camera.poses),
-    [scan]
-  )
+  const cameraPoses = ((scan && scan.camera.poses) || [])
   const [imgs] = useImgLoader(urlList)
+  const [hovered, setHovered] = useHoveredCamera()
 
   useEffect(
     () => {
       setUrlList(
-        cameraPoses.map((d) => {
-          return `${basename}data/${d.photoUri}`
-        })
+        cameraPoses.map((d) => d.photoUri)
       )
     },
     [cameraPoses]
@@ -53,20 +48,20 @@ export default function Carousel () {
 
   useEffect(
     () => {
-      const { width, height } = getSize(canvasRef.current)
+      const { width, height } = getSize(containerRef.current)
       const context = canvasRef.current.getContext('2d')
       scaleCanvas(canvasRef.current, context, width, height)
       context.width = width
       context.height = height
       setContext(context)
     },
-    [windowSider, canvasRef.current]
+    [windowSider, containerRef.current, canvasRef.current]
   )
 
   useEffect(
     () => {
       if (context) {
-        const { width, height } = getSize(canvasRef.current)
+        const { width, height } = getSize(containerRef.current)
         const large = moduleHeight * (6000 / 4000)
         const sizes = {
           width,
@@ -85,9 +80,10 @@ export default function Carousel () {
         }
 
         let last = { x: 0, width: 0, normalX: 0, normalWidth: 0 }
+
         setPicturesLayout(
           cameraPoses.map((d, i) => {
-            const isHovered = d === hovered
+            const isHovered = hovered && d.id === hovered.id
             const x = last.x + last.width
             const normalX = last.normalX + last.normalWidth
 
@@ -114,21 +110,21 @@ export default function Carousel () {
   useEffect(
     () => {
       if (context) {
-        const { width, height } = getSize(canvasRef.current)
+        const { width, height } = getSize(containerRef.current)
         const large = moduleHeight * (6000 / 4000)
         context.clearRect(0, 0, width, height)
 
         picturesLayout.forEach((d, i) => {
-          if (imgs[`${basename}data/${d.item.photoUri}`]) {
-            const imgWidth = imgs[`${basename}data/${d.item.photoUri}`].width
-            const imgHeight = imgs[`${basename}data/${d.item.photoUri}`].height
+          if (imgs[d.item.photoUri]) {
+            const imgWidth = imgs[d.item.photoUri].width
+            const imgHeight = imgs[d.item.photoUri].height
             const ratio = imgWidth / large
             const sx = (imgWidth / 2) - (d.width * ratio * 0.5)
             const sy = 0
 
             context.globalAlpha = d.hovered ? 1 : 0.5
             context.drawImage(
-              imgs[`${basename}data/${d.item.photoUri}`],
+              imgs[d.item.photoUri],
               sx,
               sy,
               d.width * ratio,
@@ -155,14 +151,19 @@ export default function Carousel () {
     [context, picturesLayout, imgs]
   )
 
-  return <Container>
+  return <Container $ref={containerRef}>
     <Canvas
       $ref={canvasRef}
       onMouseMove={(e) => {
-        const pictureHovered = picturesLayout.find((d) => d.normalX <= e.clientX && (d.normalX + d.normalWidth) >= e.clientX)
-        setHovered(pictureHovered ? pictureHovered.item : null)
+        const pictureHovered = picturesLayout
+          .find((d) => d.normalX <= e.clientX && (d.normalX + d.normalWidth) >= e.clientX)
+        if (hovered !== pictureHovered.item) {
+          setHovered(pictureHovered ? pictureHovered.item : null)
+        }
       }}
-      onMouseOut={(e) => setHovered(null)}
+      onMouseOut={(e) => {
+        setHovered(null)
+      }}
     />
   </Container>
 }
