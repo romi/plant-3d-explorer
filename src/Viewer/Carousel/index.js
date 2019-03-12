@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useWindowSize } from 'react-use'
 
 import { styled } from 'rd/nano'
@@ -6,9 +6,8 @@ import { scaleCanvas } from 'rd/tools/canvas'
 
 import { useScan } from 'flow/scans/accessors'
 
-import { forgeCameraPoints } from '../World/index'
 import useImgLoader from './loader'
-import { useSelectedcamera } from 'flow/settings/accessors'
+import { useHoveredCamera } from 'flow/interactions/accessors'
 
 const moduleHeight = 125
 
@@ -33,14 +32,10 @@ export default function Carousel () {
   const [scan] = useScan()
   const [urlList, setUrlList] = useState([])
   const [context, setContext] = useState(null)
-  const [hovered, setHovered] = useState(null)
+  const [hovered, setHovered] = useHoveredCamera()
   const [picturesLayout, setPicturesLayout] = useState([])
-  const cameraPoses = useMemo(
-    () => forgeCameraPoints(scan && scan.camera.poses),
-    [scan]
-  )
+  const cameraPoses = ((scan && scan.camera.poses) || [])
   const [imgs] = useImgLoader(urlList)
-  const [, setSelectedCamera] = useSelectedcamera()
 
   useEffect(
     () => {
@@ -159,15 +154,14 @@ export default function Carousel () {
     <Canvas
       $ref={canvasRef}
       onMouseMove={(e) => {
-        const pictureHovered = picturesLayout.find((d) => d.normalX <= e.clientX && (d.normalX + d.normalWidth) >= e.clientX)
+        const pictureHovered = picturesLayout
+          .find((d) => d.normalX <= e.clientX && (d.normalX + d.normalWidth) >= e.clientX)
         if (hovered !== pictureHovered.item) {
           setHovered(pictureHovered ? pictureHovered.item : null)
-          setSelectedCamera(pictureHovered.item)
         }
       }}
       onMouseOut={(e) => {
         setHovered(null)
-        setSelectedCamera(null)
       }}
     />
   </Container>

@@ -3,9 +3,11 @@ import { createStore, combineReducers } from 'redux'
 import { StoreContext } from 'redux-react-hook'
 
 import settingsReducer from 'flow/settings/reducer'
+import interactionsReducer from 'flow/interactions/reducer'
 
 const rootReducer = combineReducers({
-  settings: settingsReducer
+  settings: settingsReducer,
+  interactions: interactionsReducer
 })
 const store = createStore(rootReducer)
 

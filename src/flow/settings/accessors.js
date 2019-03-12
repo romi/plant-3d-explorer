@@ -13,17 +13,3 @@ export const useLayers = useAccessor(
     })
   ]
 )
-
-export const useSelectedcamera = useAccessor(
-  [
-    (state) => {
-      return state.settings.selectedCamera
-    }
-  ],
-  [
-    (value) => ({
-      type: 'SELECT_CAMERA',
-      value
-    })
-  ]
-)
