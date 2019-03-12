@@ -9,14 +9,7 @@ function forgeFetchResource (url, source, options) {
   return {
     data: null,
     query: MakeQuerablePromise(
-      get(
-        url,
-        {
-          headers: {
-            'Access-Control-Allow-Headers': 'x-requested-with, x-requested-by'
-          }
-        }
-      )
+      get(url)
     )
   }
 }
