@@ -6,6 +6,7 @@ import { useLayers } from 'flow/settings/accessors'
 import { useSelectedcamera } from 'flow/interactions/accessors'
 
 import { useScan } from 'flow/scans/accessors'
+import { useWorldReset } from 'Viewer/World/shares'
 
 const Container = styled.div({
   position: 'absolute',
@@ -48,6 +49,7 @@ export default function Controls (props) {
   const [scan] = useScan()
   const cameraPoses = ((scan && scan.camera.poses) || [])
   const [selectedCamera, setSelectedCamera] = useSelectedcamera()
+  const [worldViewReset] = useWorldReset()
 
   return <Container>
     <div>
@@ -124,6 +126,11 @@ export default function Controls (props) {
           {/* <input type='button'>-</input> */}
         </div>
       </Sublevel>
+      {
+        worldViewReset && <Sublevel>
+          <input type='button' value='RESET' onClick={() => worldViewReset()} />
+        </Sublevel>
+      }
     </div>
   </Container>
 }

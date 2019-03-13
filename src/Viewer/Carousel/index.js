@@ -122,7 +122,7 @@ export default function Carousel () {
             const sx = (imgWidth / 2) - (d.width * ratio * 0.5)
             const sy = 0
 
-            context.globalAlpha = d.hovered ? 1 : 0.5
+            context.globalAlpha = d.hovered ? 1 : 0.4
             context.drawImage(
               imgs[d.item.photoUri],
               sx,

@@ -95,13 +95,19 @@ export default class World {
     // Y-upifying needs to be after the creation of the controller instance
     this.camera.up.set(0, 0, -1)
     this.camera.rotation.order = 'YXZ'
+
+    this.controls.update(clock.getDelta())
+  }
+
+  resetControls = () => {
+    this.controls.reset()
   }
 
   setSize (width, height) {
     this.width = width
     this.height = height
     this.renderer.setSize(width, height)
-    this.renderer.render(this.scene, this.controls.object)
+    this.renderer.render(this.scene, this.camera)
     this.setAspectRatio(width, height)
   }
 
@@ -200,28 +206,29 @@ export default class World {
     }
   }
 
-  setSelectedCamera (camera) {
+  setSelectedCamera (camera, percent) {
     if (this.imgMesh) this.scene.remove(this.imgMesh)
 
     if (camera) {
+      this.originPosition = new THREE.Vector3().copy(this.perspectiveCamera.position)
+      this.originQuaternion = new THREE.Quaternion().copy(this.perspectiveCamera.quaternion)
       this.controls.enabled = false
       const imgDistance = 2000
       const fov = this.computeDynamicFOV(this.cameraData.model.params, imgDistance)
-      this.camera = new THREE.PerspectiveCamera(fov, this.width / this.height, 0.1, 5000)
+      const overlapCamera = new THREE.PerspectiveCamera(fov, this.width / this.height, 0.1, 5000)
 
-      this.camera.position
+      overlapCamera.position
         .copy(camera.v3position)
         .applyMatrix4(this.viewerObjects.matrix)
 
-      this.camera.rotation.setFromRotationMatrix(
+      overlapCamera.rotation.setFromRotationMatrix(
         new THREE.Matrix4()
           .copy(camera.vueM4rotation)
           .multiply(this.viewerObjects.matrix)
       )
-
       var distance = imgDistance
       var aspect = this.cameraData.model.params[2] / this.cameraData.model.params[3]
-      var vFov = this.camera.fov * Math.PI / 180
+      var vFov = overlapCamera.fov * Math.PI / 180
 
       var imgHeight = 2 * Math.tan(vFov / 2) * distance
       var imgWidth = imgHeight * aspect
@@ -231,12 +238,17 @@ export default class World {
       )
 
       const center = new THREE.Vector3()
-      var startPos = new THREE.Vector3().copy(this.camera.position)
-      var direction = this.camera.getWorldDirection(center)
+      var startPos = new THREE.Vector3().copy(overlapCamera.position)
+      var direction = overlapCamera.getWorldDirection(center)
       startPos.add(direction.multiplyScalar(imgDistance))
 
       imgPlane.position.copy(startPos)
-      imgPlane.rotation.copy(this.camera.rotation)
+      imgPlane.rotation.copy(overlapCamera.rotation)
+
+      this.overlapCamera = overlapCamera
+      this.overlapCamera.data = camera
+
+      this.camera = this.overlapCamera
 
       this.scene.add(imgPlane)
       this.imgMesh = imgPlane
@@ -245,6 +257,25 @@ export default class World {
       this.camera = this.perspectiveCamera
       this.setAspectRatio()
       this.controls.enabled = true
+    }
+  }
+
+  animateCamera (percent, active) {
+    if (this.thiscamera && active) {
+      this.perspectiveCamera.position.copy(
+        new THREE.Vector3()
+          .copy(this.originPosition)
+          .lerp(this.thiscamera.position, percent)
+      )
+
+      this.perspectiveCamera.quaternion.copy(
+        new THREE.Quaternion()
+          .copy(this.originQuaternion)
+          .slerp(this.thiscamera.quaternion, percent)
+      )
+
+      this.perspectiveCamera.fov -= (this.perspectiveCamera.fov - this.thiscamera.fov) * percent
+      this.perspectiveCamera.updateProjectionMatrix()
     }
   }
 
@@ -305,9 +336,9 @@ export default class World {
   }
 
   render () {
-    clock.getDelta()
     this.interaction()
-    this.controls.update(clock.getDelta())
+    if (this.thiscamera) this.thiscamera.matrixAutoUpdate = false
+    if (this.controls.enabled) this.controls.update(clock.getDelta())
     this.renderer.render(this.scene, this.camera)
   }
 }

@@ -16,6 +16,7 @@
     "react-router": "^4.4.0-beta.7",
     "react-router-dom": "^4.4.0-beta.7",
     "react-scripts": "2.1.5",
+    "react-spring": "^8.0.14",
     "react-use": "^5.5.5",
     "redux": "^4.0.1",
     "redux-react-hook": "^3.1.0",
