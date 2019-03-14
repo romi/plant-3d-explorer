@@ -10,6 +10,7 @@ import { useScanFiles, useScan } from 'flow/scans/accessors'
 
 import WorldObject from './object'
 import useViewport2d from './behaviors/viewport2d'
+import { useWorld3dReset, useWorld2dReset } from './shares'
 
 const Container = styled.div({
   width: '100%',
@@ -41,6 +42,8 @@ export default function WorldComponent (props) {
       return [width, height]
     }
   )
+  const [, setWorldViewResetShare] = useWorld3dReset(null)
+  const [, setWorld2dViewResetShare] = useWorld2dReset(null)
 
   useEffect(
     () => {
@@ -50,6 +53,8 @@ export default function WorldComponent (props) {
         setHoveredCamera(data)
       })
       setWorld(world)
+      setWorldViewResetShare(world.resetControls)
+      setWorld2dViewResetShare(resetViewport2d)
 
       return () => world.unmount()
     },
@@ -167,3 +172,27 @@ export default function WorldComponent (props) {
     $ref={canvasRef}
   />
 }
+
+/**
+|--------------------------------------------------
+| ANIMATION
+|--------------------------------------------------
+*/
+
+// import { config } from 'react-spring'
+// import { Spring } from 'react-spring/renderprops'
+//
+// <CameraTransitionner world={world} selectedCamera={selectedCamera} />
+// function CameraTransitionner ({ world, selectedCamera }) {
+//   return <Spring
+//     from={{ transition: 0 }}
+//     to={{ transition: selectedCamera ? 1 : 0 }}
+//   >
+//     {
+//       props => {
+//         if (world) world.animateCamera(props.transition, !!selectedCamera)
+//         return null
+//       }
+//     }
+//   </Spring>
+// }

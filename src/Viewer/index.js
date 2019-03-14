@@ -30,7 +30,7 @@ const BottomContainer = styled.div({
 })
 
 const AnglesTestBlock = styled.div({
-  width: 1,
+  width: 400,
   height: '100%'
 })
 
