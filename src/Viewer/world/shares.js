@@ -1,5 +1,9 @@
 import useShares from 'rd/tools/shares'
 
-export const useWorldReset = () => {
-  return useShares('world:view:reset')
+export const useWorld3dReset = () => {
+  return useShares('world:view:3d:reset')
+}
+
+export const useWorld2dReset = () => {
+  return useShares('world:view:2d:reset')
 }

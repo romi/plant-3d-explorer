@@ -10,7 +10,7 @@ import { useScanFiles, useScan } from 'flow/scans/accessors'
 
 import WorldObject from './object'
 import useViewport2d from './behaviors/viewport2d'
-import { useWorldReset } from './shares'
+import { useWorld3dReset, useWorld2dReset } from './shares'
 
 const Container = styled.div({
   width: '100%',
@@ -42,7 +42,8 @@ export default function WorldComponent (props) {
       return [width, height]
     }
   )
-  const [, setWorldViewResetShare] = useWorldReset(null)
+  const [, setWorldViewResetShare] = useWorld3dReset(null)
+  const [, setWorld2dViewResetShare] = useWorld2dReset(null)
 
   useEffect(
     () => {
@@ -53,6 +54,7 @@ export default function WorldComponent (props) {
       })
       setWorld(world)
       setWorldViewResetShare(world.resetControls)
+      setWorld2dViewResetShare(resetViewport2d)
 
       return () => world.unmount()
     },
