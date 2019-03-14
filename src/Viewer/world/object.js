@@ -192,6 +192,7 @@ export default class World {
 
   setHoveredCamera (camera) {
     if (this.CameraPointsGroup) {
+      this.hoveredCamera = camera
       this.CameraPointsGroup.children.forEach((d) => {
         if (camera && d.data.id === camera.id) {
           d.material.wireframe = false
@@ -210,6 +211,8 @@ export default class World {
     if (this.imgMesh) this.scene.remove(this.imgMesh)
 
     if (camera) {
+      this.CameraPointsGroup.visible = false
+
       this.originPosition = new THREE.Vector3().copy(this.perspectiveCamera.position)
       this.originQuaternion = new THREE.Quaternion().copy(this.perspectiveCamera.quaternion)
       this.controls.enabled = false
@@ -226,20 +229,20 @@ export default class World {
           .copy(camera.vueM4rotation)
           .multiply(this.viewerObjects.matrix)
       )
-      var distance = imgDistance
-      var aspect = this.cameraData.model.params[2] / this.cameraData.model.params[3]
-      var vFov = overlapCamera.fov * Math.PI / 180
+      const distance = imgDistance
+      const aspect = this.cameraData.model.params[2] / this.cameraData.model.params[3]
+      const vFov = overlapCamera.fov * Math.PI / 180
 
-      var imgHeight = 2 * Math.tan(vFov / 2) * distance
-      var imgWidth = imgHeight * aspect
+      const imgHeight = 2 * Math.tan(vFov / 2) * distance
+      const imgWidth = imgHeight * aspect
       const imgPlane = new THREE.Mesh(
         new THREE.PlaneGeometry(imgWidth, imgHeight),
         new THREE.MeshBasicMaterial({ map: camera.texture, side: THREE.DoubleSide })
       )
 
       const center = new THREE.Vector3()
-      var startPos = new THREE.Vector3().copy(overlapCamera.position)
-      var direction = overlapCamera.getWorldDirection(center)
+      const startPos = new THREE.Vector3().copy(overlapCamera.position)
+      const direction = overlapCamera.getWorldDirection(center)
       startPos.add(direction.multiplyScalar(imgDistance))
 
       imgPlane.position.copy(startPos)
@@ -254,6 +257,8 @@ export default class World {
       this.imgMesh = imgPlane
       this.setAspectRatio()
     } else {
+      if (this.CameraPointsGroup) this.CameraPointsGroup.visible = true
+
       this.camera = this.perspectiveCamera
       this.setAspectRatio()
       this.controls.enabled = true
@@ -328,8 +333,10 @@ export default class World {
           this.hoveredUUID = intersects[0].object.uuid
         }
       } else {
-        this.onHoverFn(null)
-        this.hoveredUUID = null
+        if (this.hoveredCamera && this.hoveredCamera.mouse) {
+          this.onHoverFn(null)
+          this.hoveredUUID = null
+        }
       }
       this.oldMouse = this.mouse
     }
