@@ -24,7 +24,11 @@ const Svg = styled.svg({
   width: '100%',
   height: 'calc(100% + 30px)',
   marginTop: -30,
-  left: 0
+  left: 0,
+
+  '& g': {
+    cursor: 'pointer'
+  }
 })
 
 const Canvas = styled.canvas({
@@ -36,6 +40,20 @@ const Canvas = styled.canvas({
   pointerEvents: 'none'
 })
 
+const SvgDnG = styled.svg({
+  width: '100%',
+  height: '100%',
+  pointerEvents: 'none',
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  zIndex: 1,
+
+  '& rect': {
+    pointerEvents: 'all'
+  }
+})
+
 const getSize = (elem) => elem.getBoundingClientRect()
 
 export default function Carousel () {
@@ -45,6 +63,7 @@ export default function Carousel () {
   const [scan] = useScan()
   const [urlList, setUrlList] = useState([])
   const [context, setContext] = useState(null)
+  const [dragging, setDragging] = useState(false)
   const [picturesLayout, setPicturesLayout] = useState([])
   const [hoveredLayout, setHoveredLayout] = useState(null)
   const [selectedLayout, setSelectedLayout] = useState(null)
@@ -53,6 +72,8 @@ export default function Carousel () {
   const [hovered, setHovered] = useHoveredCamera()
   const [selected, setSelected] = useSelectedcamera()
   const large = moduleHeight * (6000 / 4000)
+  const [update, setUpdate] = useState({ countObj: { value: 1 } })
+  let sizes
 
   useEffect(
     () => {
@@ -79,7 +100,7 @@ export default function Carousel () {
     () => {
       if (context) {
         const { width, height } = getSize(containerRef.current)
-        const sizes = {
+        sizes = {
           width,
           large,
           normal: (width / cameraPoses.length),
@@ -146,6 +167,10 @@ export default function Carousel () {
     () => {
       if (context) {
         const { width, height } = getSize(containerRef.current)
+
+        update.countObj.value += 1
+        setUpdate(update)
+
         context.clearRect(0, 0, width, height)
 
         picturesLayout.forEach((d, i) => {
@@ -187,10 +212,15 @@ export default function Carousel () {
 
   const eventsFn = {
     onMouseMove: (e) => {
+      const dX = hoveredLayout
+        ? e.movementX < 0
+          ? e.clientX - (hoveredLayout.width * 0.5) + hoveredLayout.normalWidth
+          : e.clientX + (hoveredLayout.width * 0.5)
+        : e.clientX
       const pictureHovered = picturesLayout
-        .find((d) => d.x <= e.clientX && (d.x + d.width) >= e.clientX)
+        .find((d) => d.x <= dX && (d.x + d.width) >= dX)
 
-      if (hovered !== pictureHovered.item) {
+      if (pictureHovered && hovered !== pictureHovered.item) {
         setHovered(pictureHovered ? pictureHovered.item : null)
       }
     },
@@ -208,18 +238,47 @@ export default function Carousel () {
     }
   }
 
-  return <Container
-    $ref={containerRef}
-  >
-    <Svg
-    >
+  useEffect(
+    () => {
+      const handler = (e) => {
+        setDragging(false)
+        document.body.style.cursor = null
+      }
+      const moveHander = (e) => {
+        if (dragging && e.movementX !== 0) {
+          const dX = e.movementX < 0
+            ? e.clientX - (dragging.from - dragging.triggerLeft)
+            : e.clientX - (dragging.from - (dragging.triggerLeft + dragging.triggerWidth))
+          const pictureDragged = picturesLayout
+            .find((d) => d.x <= dX && (d.x + d.width) >= dX)
+
+          if (pictureDragged) {
+            setSelected(pictureDragged.item)
+          }
+        }
+      }
+      if (dragging) {
+        window.addEventListener('mouseup', handler)
+        window.addEventListener('mousemove', moveHander)
+      } else {
+        window.removeEventListener('mouseup', handler)
+        window.removeEventListener('mousemove', moveHander)
+      }
+
+      return () => {
+        window.removeEventListener('mouseup', handler)
+        window.removeEventListener('mousemove', moveHander)
+      }
+    },
+    [dragging, picturesLayout]
+  )
+
+  return <Container $ref={containerRef}>
+    <Svg>
       <g
         onMouseMove={eventsFn.onMouseMove}
         onMouseLeave={eventsFn.onMouseOut}
         onClick={eventsFn.onClick}
-        style={{
-          cursor: 'pointer'
-        }}
       >
         {
           (!selectedLayout && hoveredLayout) && <rect
@@ -244,9 +303,6 @@ export default function Carousel () {
           />
         }
         <rect
-          style={{
-            cursor: 'pointer'
-          }}
           width='100%'
           height='100%'
           x={0}
@@ -256,5 +312,172 @@ export default function Carousel () {
       </g>
     </Svg>
     <Canvas $ref={canvasRef} />
+
+    {
+      selectedLayout && <SvgDnG>
+        <g transform={`translate(0, ${moduleHeight * 0.5})`}>
+          <line
+            x1={0}
+            x2={'100%'}
+            y1={0}
+            y2={0}
+            strokeWidth={1}
+            stroke={green}
+          />
+          <rect
+            x={selectedLayout.x}
+            y={-15}
+            width={selectedLayout.width}
+            height={30}
+            rx={15}
+            ry={15}
+            fill={green}
+            onMouseDown={(e) => {
+              const bb = e.target.getBoundingClientRect()
+              document.body.style.cursor = 'grabbing'
+              setDragging({
+                from: e.clientX,
+                triggerLeft: bb.left,
+                triggerWidth: bb.width
+              })
+            }}
+          />
+        </g>
+      </SvgDnG>
+    }
   </Container>
 }
+
+/**
+|--------------------------------------------------
+| ANIMATION SAMPLE
+| @TODO TO REMOVE
+|--------------------------------------------------
+*/
+
+// {/* <RenderSpring key='render' update={update} /> */}
+// const RenderSpring = ({ update, imgs, large, height, d, context, debug }) => {
+//   const [activated, setActivated] = useState(false)
+//   return <Spring
+//     from={{ t: 0 }}
+//     to={{ t: activated ? update.countObj.value : 1 }}
+//   >
+//     {
+//       ({ t }) => {
+//         if (t === 1) setActivated(true)
+//         console.log(
+//           t / (update.countObj.value - 1)
+//         )
+//         // console.log(
+//         //   ((update.countObj.value - t) - 2) > 0
+//         //     ? 0
+//         //     : ((update.countObj.value - t) - 2)
+//         // )
+
+//         return null
+//       }
+//     }
+//   </Spring>
+// }
+
+/* <Svg style={{
+    pointerEvents: 'none',
+    marginTop: -70
+  }}>
+    {
+      picturesLayout
+        .map((d) => {
+          return <Image key={d.item.id} height={moduleHeight} large={large} imgs={imgs} context={context} d={d} />
+        })
+    }
+  </Svg>
+*/
+
+// const Image = memo(({ imgs, large, height, d, context, debug }) => {
+//   return <Spring
+//     from={{ x: d.x, width: d.width }}
+//     to={{ x: d.x, width: d.width }}>
+//     {({ x, width }) => {
+//       // if (imgs[d.item.photoUri]) {
+//       //   const imgWidth = imgs[d.item.photoUri].width
+//       //   const imgHeight = imgs[d.item.photoUri].height
+//       //   const ratio = imgWidth / large
+//       //   const sx = (imgWidth / 2) - (width * ratio * 0.5)
+//       //   const sy = 0
+
+//       //   // context.globalAlpha = (d.hovered || d.selected) ? 1 : 0.5
+//       //   context.drawImage(
+//       //     imgs[d.item.photoUri],
+//       //     sx,
+//       //     sy,
+//       //     width * ratio,
+//       //     imgHeight,
+
+//       //     x,
+//       //     0,
+//       //     width,
+//       //     height
+//       //   )
+//       // } else {
+//       //   context.fillStyle = d.hovered ? 'white' : 'grey'
+//       //   context.fillRect(
+//       //     x,
+//       //     0,
+//       //     width,
+//       //     height
+//       //   )
+//       //   context.fillStyle = 'black'
+//       // }
+
+//       if (debug) console.log(x, width)
+
+//       return <image
+//         xlinkHref={d.item.photoUri}
+//         x={x}
+//         y={0}
+//         width={width}
+//         height={height}
+//       />
+//     }}
+//   </Spring>
+// })
+
+// const Image = memo(({ imgs, large, height, d, context }) => {
+//   return <Spring
+//     from={{ x: d.x, width: d.width }}
+//     to={{ x: d.x, width: 10 }}>
+//     {({ x, width }) => {
+//       if (imgs[d.item.photoUri]) {
+//         const imgWidth = imgs[d.item.photoUri].width
+//         const imgHeight = imgs[d.item.photoUri].height
+//         const ratio = imgWidth / large
+//         const sx = (imgWidth / 2) - (width * ratio * 0.5)
+//         const sy = 0
+
+//         // context.globalAlpha = (d.hovered || d.selected) ? 1 : 0.5
+//         context.drawImage(
+//           imgs[d.item.photoUri],
+//           sx,
+//           sy,
+//           width * ratio,
+//           imgHeight,
+
+//           x,
+//           0,
+//           width,
+//           height
+//         )
+//       } else {
+//         context.fillStyle = d.hovered ? 'white' : 'grey'
+//         context.fillRect(
+//           x,
+//           0,
+//           width,
+//           height
+//         )
+//         context.fillStyle = 'black'
+//       }
+//       return null
+//     }}
+//   </Spring>
+// })
