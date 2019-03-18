@@ -16,7 +16,7 @@ import { addon as addonUnitless } from 'nano-css/addon/unitless'
 
 const nano = create({
   // Add prefix to all generated class names.
-  pfx: 'redoute-',
+  pfx: 'redoute',
   // Set hyperscript function of your virtual DOM library, for jsx() addon.
   h: createElement
 })

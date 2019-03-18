@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import useReactRouter from 'use-react-router'
 
 import useFetch from 'rd/tools/hooks/fetch'
+import useAccessor from 'rd/tools/hooks/accessor'
 import useFetch3dObject from 'rd/tools/hooks/fetch3dObject'
 import { chain } from 'rd/tools/enhancers'
 
@@ -36,3 +37,17 @@ export function useScanFiles (scan) {
     useFetch3dObject(scan && (getScanFile(scan.filesUri.pointCloud)))
   ]
 }
+
+export const useSearchQuery = useAccessor(
+  [
+    (state) => {
+      return state.scans.searchQuery
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_SEARCH_QUERY',
+      value
+    })
+  ]
+)

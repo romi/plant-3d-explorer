@@ -4,10 +4,12 @@ import { StoreContext } from 'redux-react-hook'
 
 import settingsReducer from 'flow/settings/reducer'
 import interactionsReducer from 'flow/interactions/reducer'
+import scansReducer from 'flow/scans/reducer'
 
 const rootReducer = combineReducers({
   settings: settingsReducer,
-  interactions: interactionsReducer
+  interactions: interactionsReducer,
+  scans: scansReducer
 })
 const store = createStore(rootReducer)
 

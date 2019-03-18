@@ -1,4 +1,47 @@
 {
   "misc-loading": "Loading…",
-  "hello-world": "Hello World"
+  "hello-world": "Hello World",
+
+  "app-title": "SCAN",
+  "app-intro": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+
+  "filter-title": "Filter results",
+  "filter-placeholder": "Type a keyword",
+  "filter-submit": "Search",
+
+  "scanlist-title": "{NB_SCANS} {NB_SCANS, plural, =1 {scan} other {scans}}",
+  "scanlist-title-link": " for ",
+  "scanlist-title-search-value": "‘‘{SEARCH}’’",
+  "scanlist-sort-name": "Name",
+  "scanlist-sort-species": "Species",
+  "scanlist-sort-environment": "Environment",
+  "scanlist-sort-date": "Date",
+  "scanlist-data-availability": "Available data",
+  "scanlist-link-download": "Download files",
+  "scanlist-link-metadata": "Show metadata",
+  "scanlist-cta": "Open",
+
+  "header-back": "All scans",
+
+  "tooltip-mesh": "Mesh",
+  "tooltip-pointcloud": "Point cloud",
+  "tooltip-skeleton": "Skeleton",
+  "tooltip-organs": "Organs",
+
+  "tooltip-cameras-hide": "Hide cameras",
+  "tooltip-cameras-show": "Show cameras",
+  "tooltip-reset": "Reset view",
+
+  "tooltip-help-rotate": "Click left and hold to rotate",
+  "tooltip-help-pan": "Click right and hold to pan",
+  "tooltip-help-zoom": "Scroll to zoom",
+
+  "carrousel-open": "Open",
+  "carrousel-close": "Close",
+
+  "angles-title": "Divergence angles",
+  "angles-tooltip": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+  "angles-legend-automated": "Automated measure",
+  "angles-legend-manuel": "Manual measure",
+  "angles-axis-y": "Organ rank"
 }

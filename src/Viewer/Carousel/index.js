@@ -6,7 +6,7 @@ import { scaleCanvas } from 'rd/tools/canvas'
 
 import { useScan } from 'flow/scans/accessors'
 
-import { green } from 'common/global/colors'
+import { green } from 'common/styles/colors'
 
 import useImgLoader from './loader'
 import { useHoveredCamera, useSelectedcamera } from 'flow/interactions/accessors'
