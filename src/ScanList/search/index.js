@@ -8,6 +8,8 @@ import { H1Rules } from 'rd/UI/Text/titles'
 import { green, grey } from 'common/styles/colors'
 import { H3 } from 'common/styles/UI/Text/titles'
 
+import searchIcon from './assets/ico.search.30x30.svg'
+
 const Container = styled.form({
   position: 'relative',
   width: '100%',
@@ -17,7 +19,7 @@ const Container = styled.form({
 
 const Input = styled.input({
   ...H1Rules,
-  width: 'calc(100% - 160px)',
+  width: 'calc(100% - 147px)',
   fontSize: 34,
   color: green,
   outline: 'none',
@@ -33,7 +35,7 @@ const Input = styled.input({
   }
 })
 
-const Button = styled.input({
+const Button = styled.button({
   position: 'absolute',
   bottom: 0,
   height: 80,
@@ -46,6 +48,12 @@ const Button = styled.input({
   opacity: 0.9,
   transition: 'all 0.15s ease',
   boxShadow: 'inset 0px 0px 0px 0px white',
+  margin: 0,
+  padding: 0,
+  paddingLeft: 45,
+  backgroundImage: `url(${searchIcon})`,
+  backgroundRepeat: 'no-repeat',
+  backgroundPosition: '0px center',
 
   '&:focus, &:hover': {
     boxShadow: `inset 0px -5px 0px 0px ${green}`,
@@ -64,12 +72,30 @@ const Button = styled.input({
 export default function Search (props) {
   const intl = useFormatMessage()
   const [value, setvalue] = useState('')
+  const [focused, setFocus] = useState(false)
 
   useEffect(
     () => {
       if (!props.search && value !== '') setvalue('')
     },
     [props.search]
+  )
+
+  useEffect(
+    () => {
+      const handler = (e) => {
+        if (e.key === 'Escape') setvalue('')
+      }
+
+      if (focused) {
+        document.addEventListener('keydown', handler, false)
+      } else {
+        document.removeEventListener('keydown', handler, false)
+      }
+
+      return () => document.removeEventListener('keydown', handler, false)
+    },
+    [focused]
   )
 
   return <Container
@@ -83,13 +109,16 @@ export default function Search (props) {
     </H3>
     <Input
       value={value}
+      onFocus={(e) => setFocus(true)}
+      onBlur={(e) => setFocus(false)}
       onChange={(e) => setvalue(e.target.value)}
       placeholder={intl('filter-placeholder')}
     />
     <Button
       nonActive={value === ''}
       type='submit'
-      value={intl('filter-submit')}
-    />
+    >
+      <FormattedMessage id='filter-submit' />
+    </Button>
   </Container>
 }

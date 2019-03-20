@@ -11,7 +11,7 @@ const ViewerPage = lazy(() => import('Viewer'))
 function Loading () {
   return <div style={{
     fontSize: '10rem',
-    fontWeight: 'bold',
+    fontWeight: 500,
     width: '100vw',
     overflowWrap: 'break-word',
     lineHeight: '77%',

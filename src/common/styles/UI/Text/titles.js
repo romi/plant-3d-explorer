@@ -9,7 +9,7 @@ export const H1 = styled(rdH1)({
 })
 
 export const H3 = styled(rdH3)({
-  fontWeight: 'bold',
+  fontWeight: 500,
   textTransform: 'uppercase',
   color: grey,
   lineHeight: 'normal'

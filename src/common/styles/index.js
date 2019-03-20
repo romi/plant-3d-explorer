@@ -2,18 +2,25 @@ import { global } from 'rd/nano'
 
 import InterRegular from './assets/Inter-Regular.ttf'
 import InterMedium from './assets/Inter-Medium.ttf'
+import InterBold from './assets/Inter-Bold.ttf'
 
 global(`
   @font-face {
     font-family: Inter;
     src: url('${InterRegular}') format('truetype');
-    font-weight: normal;
+    font-weight: 400;
   }
 
   @font-face {
     font-family: Inter;
     src: url('${InterMedium}') format('truetype');
-    font-weight: bold;
+    font-weight: 500;
+  }
+
+  @font-face {
+    font-family: Inter;
+    src: url('${InterBold}') format('truetype');
+    font-weight: 700;
   }
 
   * {
@@ -24,6 +31,7 @@ global(`
   html {
     font-size: 62.5%;
     line-height: 1.35rem;
+    height: 100%;
   }
 
   body {
@@ -32,8 +40,10 @@ global(`
     font-family: Inter;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    height: 100%;
 
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: scroll;
   }
 
   input[type=number]::-webkit-inner-spin-button,
