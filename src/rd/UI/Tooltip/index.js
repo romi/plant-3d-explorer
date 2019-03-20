@@ -1,7 +1,7 @@
 import React, { Children, cloneElement, useState, useRef, useEffect } from 'react'
 
 import useBB from 'rd/tools/hooks/bb'
-import { styled } from 'rd/nano'
+import styled from '@emotion/styled'
 
 const InivisibleContent = styled.div({
   pointerEvents: 'none',
@@ -49,7 +49,7 @@ export default function (props) {
         : null
     }
     {
-      !contentBb && <InivisibleContent $ref={contentRef}>
+      !contentBb && <InivisibleContent ref={contentRef}>
         {childrenContent}
       </InivisibleContent>
     }
@@ -66,18 +66,19 @@ const ContentContainer = styled.div({
   background: 'white',
   pointerEvents: 'none',
   marginTop: 10
+}, (props) => {
+  return {
+    marginLeft: props.contentBb
+      ? (
+        -(props.contentBb.width || 0) / 2
+      ) + (props.parentBb.width * 0.5)
+      : 0
+  }
 })
 
 export function TooltipContent (props) {
   return <ContentContainer
     className={props.className}
-    style={{
-      marginLeft: props.contentBb
-        ? (
-          -(props.contentBb.width || 0) / 2
-        ) + (props.parentBb.width * 0.5)
-        : 0
-    }}
     parentBb={props.parentBb}
     contentBb={props.contentBb}
   >

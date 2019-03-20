@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useWindowSize } from 'react-use'
+import styled from '@emotion/styled'
 
-import { styled } from 'rd/nano'
 import { scaleCanvas } from 'rd/tools/canvas'
 
 import { useScan } from 'flow/scans/accessors'
@@ -273,7 +273,7 @@ export default function Carousel () {
     [dragging, picturesLayout]
   )
 
-  return <Container $ref={containerRef}>
+  return <Container ref={containerRef}>
     <Svg>
       <g
         onMouseMove={eventsFn.onMouseMove}
@@ -311,7 +311,7 @@ export default function Carousel () {
         />
       </g>
     </Svg>
-    <Canvas $ref={canvasRef} />
+    <Canvas ref={canvasRef} />
 
     {
       selectedLayout && <SvgDnG>

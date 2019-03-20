@@ -1,7 +1,8 @@
 import React from 'react'
 import { map } from 'lodash'
 
-import { styled } from 'rd/nano'
+import styled from '@emotion/styled'
+
 import { useLayers } from 'flow/settings/accessors'
 import { useSelectedcamera } from 'flow/interactions/accessors'
 

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { useWindowSize } from 'react-use'
+import styled from '@emotion/styled'
 
-import { styled } from 'rd/nano'
 import { useElementMouse } from 'rd/tools/hooks/mouse'
 
 import { useLayers } from 'flow/settings/accessors'
@@ -165,11 +165,11 @@ export default function WorldComponent (props) {
   )
 
   return <Container
+    ref={canvasRef}
     onMouseDown={eventFns.onMouseDown}
     onMouseUp={eventFns.onMouseUp}
     onMouseMove={eventFns.onMouseMove}
     onWheel={eventFns.onWheel}
-    $ref={canvasRef}
   />
 }
 

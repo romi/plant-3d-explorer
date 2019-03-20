@@ -1,10 +1,11 @@
-import { global } from 'rd/nano'
+import React from 'react'
+import { Global, css } from '@emotion/core'
 
 import InterRegular from './assets/Inter-Regular.ttf'
 import InterMedium from './assets/Inter-Medium.ttf'
 import InterBold from './assets/Inter-Bold.ttf'
 
-global(`
+const rules = css(`
   @font-face {
     font-family: Inter;
     src: url('${InterRegular}') format('truetype');
@@ -65,3 +66,7 @@ global(`
     background-color: #A7A7A7;
   }
 `)
+
+export default () => {
+  return <Global styles={rules} />
+}

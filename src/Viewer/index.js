@@ -1,6 +1,5 @@
 import React from 'react'
-
-import { styled } from 'rd/nano'
+import styled from '@emotion/styled'
 
 import World from './World'
 import Controls from './Controls'

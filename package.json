@@ -5,6 +5,8 @@
   "homepage": "https://db.romi-project.eu/viz/",
   "dependencies": {
     "@d3fc/d3fc-extent": "^3.1.2",
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9",
     "alphanum-sort": "^1.0.2",
     "axios": "^0.18.0",
     "axios-cancel": "^0.2.2",

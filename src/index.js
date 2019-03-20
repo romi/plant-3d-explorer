@@ -5,7 +5,7 @@ import * as serviceWorker from './serviceWorker'
 
 import IntlProvider from 'rd/tools/intl'
 
-import 'common/styles'
+import GlobalStyles from 'common/styles'
 import messages from 'common/intl/en.json'
 import ReduxProvider from 'common/redux'
 
@@ -16,11 +16,14 @@ serviceWorker.unregister()
 
 const render = (Component) => {
   return ReactDOM.render(
-    <ReduxProvider>
-      <IntlProvider messages={messages}>
-        <App />
-      </IntlProvider>
-    </ReduxProvider>,
+    <div>
+      <GlobalStyles />
+      <ReduxProvider>
+        <IntlProvider messages={messages}>
+          <App />
+        </IntlProvider>
+      </ReduxProvider>>
+    </div>,
     document.getElementById('root')
   )
 }

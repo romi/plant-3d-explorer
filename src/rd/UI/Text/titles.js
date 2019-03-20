@@ -1,4 +1,4 @@
-import { styled } from 'rd/nano'
+import styled from '@emotion/styled'
 
 export const H1Rules = {
   fontSize: 34,

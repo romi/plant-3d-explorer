@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import { map, omit } from 'lodash'
 import { format } from 'date-fns'
 
-import { styled } from 'rd/nano'
+import styled from '@emotion/styled'
+
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
 
 import { green, darkGreen } from 'common/styles/colors'
@@ -50,12 +51,7 @@ const Thumbail = styled.div({
   height: 90,
   borderRadius: 2,
   backgroundSize: 'auto 110%',
-  backgroundPosition: 'center',
-  transition: 'all 0.15s ease',
-
-  '&:hover': {
-    backgroundSize: 'auto 150%'
-  }
+  backgroundPosition: 'center'
 }, (props) => {
   return {
     backgroundImage: `url(${props.uri})`

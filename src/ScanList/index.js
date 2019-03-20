@@ -3,7 +3,7 @@ import { omit } from 'lodash'
 import { FormattedMessage } from 'react-intl'
 import { Transition } from 'react-spring/renderprops'
 
-import { styled } from 'rd/nano'
+import styled from '@emotion/styled'
 
 import { H1 } from 'common/styles/UI/Text/titles'
 import { green, grey } from 'common/styles/colors'
