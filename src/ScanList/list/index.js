@@ -1,19 +1,23 @@
 import React, { useState, memo } from 'react'
 import { Link } from 'react-router-dom'
-import { map, omit } from 'lodash'
+import { omit } from 'lodash'
 import { format } from 'date-fns'
+import { FormattedMessage } from 'react-intl'
+import { orderBy } from 'natural-orderby'
 
-import { styled } from 'rd/nano'
+import styled from '@emotion/styled'
+
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
 
+import { useSorting } from 'flow/scans/accessors'
+
 import { green, darkGreen } from 'common/styles/colors'
+import { H3 } from 'common/styles/UI/Text/titles'
 
 import MeshIcon from './assets/ico.mesh.21x21.svg'
 import PointCloudIcon from './assets/ico.point_cloud.21x21.svg'
 import SekeletonIcon from './assets/ico.skeleton.21x21.svg'
 import NodeIcon from './assets/ico.internodes.21x21.svg'
-import { FormattedMessage } from 'react-intl'
-import { H3 } from 'common/styles/UI/Text/titles'
 
 const Blocks = styled.div({
   '& > :nth-child(even)': {
@@ -32,7 +36,7 @@ const Block = styled.div({
   alignItems: 'center',
 
   display: 'grid',
-  gridTemplateColumns: 'auto 9.8% 15.7% 10% 10.3% 11% 300px',
+  gridTemplateColumns: '105px 9.8% 15.7% 10% 10.3% 11% 300px',
   gridColumnGap: 16,
 
   '&:hover': {
@@ -50,12 +54,7 @@ const Thumbail = styled.div({
   height: 90,
   borderRadius: 2,
   backgroundSize: 'auto 110%',
-  backgroundPosition: 'center',
-  transition: 'all 0.15s ease',
-
-  '&:hover': {
-    backgroundSize: 'auto 150%'
-  }
+  backgroundPosition: 'center'
 }, (props) => {
   return {
     backgroundImage: `url(${props.uri})`
@@ -151,7 +150,7 @@ const DocLink = styled.a({
   }
 })
 
-const Item = ({ item }) => {
+const Item = memo(({ item }) => {
   return <Block>
     <Thumbail uri={item.thumbnailUri} />
     <Name>{item.metadata.plant}</Name>
@@ -214,13 +213,36 @@ const Item = ({ item }) => {
       </OpenButton>
     </Actions>
   </Block>
-}
+})
 
 export default memo(function (props) {
   const [items] = useState(props.items)
+  const [sorting] = useSorting()
+
+  const sortingFn = sorting.type === 'natural'
+    ? (items) => orderBy(
+      items,
+      (d) => {
+        switch (sorting.label) {
+          case 'name':
+            return d.metadata.plant
+          case 'species':
+            return d.metadata.species
+          case 'environment':
+            return d.metadata.environment
+        }
+      },
+      sorting.method
+    )
+    : (items) => items.sort((a, b) => {
+      return sorting.method === 'asc'
+        ? new Date(a.metadata.date) - new Date(b.metadata.date)
+        : new Date(b.metadata.date) - new Date(a.metadata.date)
+    })
+
   return <Blocks>
     {
-      map(items).map((item) => {
+      sortingFn(items).map((item) => {
         return <Item key={item.id} item={item}>
           {item.id}
         </Item>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { FormattedMessage } from 'react-intl'
 
-import { styled } from 'rd/nano'
+import styled from '@emotion/styled'
+
 import { useFormatMessage } from 'rd/tools/intl'
 import { H1Rules } from 'rd/UI/Text/titles'
 
@@ -71,7 +72,7 @@ const Button = styled.button({
 
 export default function Search (props) {
   const intl = useFormatMessage()
-  const [value, setvalue] = useState('')
+  const [value, setvalue] = useState(props.search || '')
   const [focused, setFocus] = useState(false)
 
   useEffect(

@@ -1,4 +1,4 @@
-import NaturalSort from 'alphanum-sort'
+import { orderBy } from 'natural-orderby'
 import * as THREE from 'three'
 import { last } from 'lodash'
 
@@ -54,11 +54,10 @@ export const forgeCameraPointsEnhancer = (scan) => {
     ...scan,
     camera: {
       ...scan.camera,
-      poses: NaturalSort(
-        poses.map((d) => d.photoUri)
-      ).map((key) => {
-        const point = poses.find((d) => d.photoUri === key)
-
+      poses: orderBy(
+        poses,
+        (d) => d.photoUri
+      ).map((point) => {
         const m3rotation = new THREE.Matrix3()
         m3rotation.set(
           ...point.rotmat[0],
@@ -97,7 +96,7 @@ export const forgeCameraPointsEnhancer = (scan) => {
 
         return {
           index: index++,
-          id: key,
+          id: point.photoUri,
           fileName: last(point.photoUri.split('/')),
           ...point,
           v3position,

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { useWindowSize } from 'react-use'
+import styled from '@emotion/styled'
 
-import { styled } from 'rd/nano'
 import { useElementMouse } from 'rd/tools/hooks/mouse'
 
 import { useLayers } from 'flow/settings/accessors'
@@ -28,7 +28,9 @@ export default function WorldComponent (props) {
   const [hoveredCamera, setHoveredCamera] = useHoveredCamera()
   const mouse = useElementMouse(canvasRef)
   const [lastSelectedCamera] = useState({ camera: null })
+
   const [scan] = useScan()
+
   const [[meshGeometry], [pointCloudGeometry]] = useScanFiles(scan)
   const [viewport, eventFns, resetViewport2d] = useViewport2d(
     () => {
@@ -165,11 +167,11 @@ export default function WorldComponent (props) {
   )
 
   return <Container
+    ref={canvasRef}
     onMouseDown={eventFns.onMouseDown}
     onMouseUp={eventFns.onMouseUp}
     onMouseMove={eventFns.onMouseMove}
     onWheel={eventFns.onWheel}
-    $ref={canvasRef}
   />
 }
 

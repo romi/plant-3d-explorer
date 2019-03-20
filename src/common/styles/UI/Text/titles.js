@@ -1,5 +1,5 @@
 import { H1 as rdH1, H3 as rdH3 } from 'rd/UI/Text/titles'
-import { styled } from 'rd/nano'
+import styled from '@emotion/styled'
 
 import { grey, green } from '../../colors'
 

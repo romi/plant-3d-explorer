@@ -3,7 +3,7 @@ import { omit } from 'lodash'
 import { FormattedMessage } from 'react-intl'
 import { Transition } from 'react-spring/renderprops'
 
-import { styled } from 'rd/nano'
+import styled from '@emotion/styled'
 
 import { H1 } from 'common/styles/UI/Text/titles'
 import { green, grey } from 'common/styles/colors'
@@ -12,8 +12,10 @@ import { useSearchQuery, useScans } from 'flow/scans/accessors'
 
 import Logo from './assets/ico.logo.160x30.svg'
 import closePicto from './assets/ico.deselect.20x20.svg'
+
 import Search from './search'
 import List from './list'
+import Sorting from './sorting'
 
 const Container = styled.div({
   margin: 'auto',
@@ -61,7 +63,7 @@ const ClearButton = styled((props) => {
 const ResultsTitleContainer = styled.div({
   borderBottom: '1px solid rgba(21,119,65, 0.15)',
   marginTop: 51,
-  height: 68
+  height: 65
 })
 
 function ResultsTitle ({ scans = [], search, clear }) {
@@ -105,7 +107,7 @@ function Results (props) {
       search={search}
       clear={props.clear}
     />
-    <br />
+    <Sorting />
     <List items={props.scans} />
   </div>
 }
