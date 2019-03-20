@@ -7,7 +7,7 @@ import { getScanPhotoURI } from 'common/api'
 const imgLoader = new THREE.TextureLoader()
 imgLoader.crossOrigin = 'Anonymous'
 
-export const relativePhotoURIEnhancer = (scan) => {
+export const relativeScanPhotoURIEnhancer = (scan) => {
   return {
     ...scan,
     camera: {
@@ -20,6 +20,30 @@ export const relativePhotoURIEnhancer = (scan) => {
       })
     }
   }
+}
+
+export const relativeScansPhotoURIEnhancer = (scans) => {
+  return scans.map((d) => {
+    return {
+      ...d,
+      thumbnailUri: getScanPhotoURI(d.thumbnailUri)
+    }
+  })
+}
+
+export const relativeScansFilesURIEnhancer = (scans) => {
+  return scans.map((d) => {
+    return {
+      ...d,
+      metadata: {
+        ...d.metadata,
+        files: {
+          archive: getScanPhotoURI(d.metadata.files.archive),
+          metadatas: getScanPhotoURI(d.metadata.files.metadatas)
+        }
+      }
+    }
+  })
 }
 
 export const forgeCameraPointsEnhancer = (scan) => {

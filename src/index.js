@@ -3,10 +3,11 @@ import ReactDOM from 'react-dom'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
 
-import 'common/global/style'
+import IntlProvider from 'rd/tools/intl'
 
+import 'common/styles'
+import messages from 'common/intl/en.json'
 import ReduxProvider from 'common/redux'
-import IntlProvider from 'common/intl'
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
@@ -16,7 +17,7 @@ serviceWorker.unregister()
 const render = (Component) => {
   return ReactDOM.render(
     <ReduxProvider>
-      <IntlProvider>
+      <IntlProvider messages={messages}>
         <App />
       </IntlProvider>
     </ReduxProvider>,
@@ -27,8 +28,8 @@ const render = (Component) => {
 render(App)
 
 if (module.hot) {
-  // module.hot.accept('./App', () => {
-  //   const NextApp = require('./App').default
-  //   render(NextApp)
-  // })
+  module.hot.accept('./App', () => {
+    const NextApp = require('./App').default
+    render(NextApp)
+  })
 }

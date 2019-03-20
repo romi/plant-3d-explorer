@@ -1,4 +1,4 @@
-import useAccessor from 'rd/tools/accessor'
+import useAccessor from 'rd/tools/hooks/accessor'
 
 export const useHoveredCamera = useAccessor(
   [

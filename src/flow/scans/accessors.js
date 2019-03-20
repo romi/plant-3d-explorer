@@ -3,12 +3,18 @@ import { useMemo } from 'react'
 import useReactRouter from 'use-react-router'
 
 import useFetch from 'rd/tools/hooks/fetch'
+import useAccessor from 'rd/tools/hooks/accessor'
 import useFetch3dObject from 'rd/tools/hooks/fetch3dObject'
 import { chain } from 'rd/tools/enhancers'
 
-import { getScanFile, getScanURI } from 'common/api'
+import { scansURIQuery, getScanFile, getScanURI } from 'common/api'
 
-import { relativePhotoURIEnhancer, forgeCameraPointsEnhancer } from './enhancers'
+import {
+  relativeScansPhotoURIEnhancer,
+  relativeScansFilesURIEnhancer,
+  relativeScanPhotoURIEnhancer,
+  forgeCameraPointsEnhancer
+} from './enhancers'
 
 export function useScan () {
   const { match } = useReactRouter()
@@ -19,7 +25,7 @@ export function useScan () {
     () => {
       if (scanData) {
         return chain([
-          relativePhotoURIEnhancer,
+          relativeScanPhotoURIEnhancer,
           forgeCameraPointsEnhancer
         ], scanData)
       }
@@ -36,3 +42,35 @@ export function useScanFiles (scan) {
     useFetch3dObject(scan && (getScanFile(scan.filesUri.pointCloud)))
   ]
 }
+
+export function useScans (search) {
+  const [scans] = useFetch(scansURIQuery(search), false)
+
+  const enhancedScans = useMemo(
+    () => {
+      if (scans) {
+        return chain([
+          relativeScansPhotoURIEnhancer,
+          relativeScansFilesURIEnhancer
+        ], scans)
+      }
+    },
+    [scans]
+  )
+
+  return [enhancedScans]
+}
+
+export const useSearchQuery = useAccessor(
+  [
+    (state) => {
+      return state.scans.searchQuery
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_SEARCH_QUERY',
+      value
+    })
+  ]
+)
