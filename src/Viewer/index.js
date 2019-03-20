@@ -4,9 +4,10 @@ import styled from '@emotion/styled'
 import World from './World'
 import Controls from './Controls'
 import Carousel from './Carousel'
+import Angles from './Angles'
 
 const Container = styled.div({
-  width: '100vw',
+  width: '100%',
   height: '100vh'
 })
 
@@ -28,18 +29,13 @@ const BottomContainer = styled.div({
   width: '100%'
 })
 
-const AnglesTestBlock = styled.div({
-  width: 400,
-  height: '100%'
-})
-
 export default function Viewer (props) {
   return <Container>
     <Controls />
     <ModuleContainer>
       <TopContainer>
         <World />
-        <AnglesTestBlock />
+        <Angles />
       </TopContainer>
       <BottomContainer>
         <Carousel />

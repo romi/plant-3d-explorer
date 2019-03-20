@@ -1,10 +1,20 @@
-import { H1 as rdH1, H3 as rdH3 } from 'rd/UI/Text/titles'
 import styled from '@emotion/styled'
 
-import { grey, green } from '../../colors'
+import {
+  H1 as rdH1,
+  H2 as rdH2,
+  H3 as rdH3
+} from 'rd/UI/Text/titles'
+
+import { grey, green, darkGreen } from '../../colors'
 
 export const H1 = styled(rdH1)({
   color: green,
+  lineHeight: 'normal'
+})
+
+export const H2 = styled(rdH2)({
+  color: darkGreen,
   lineHeight: 'normal'
 })
 

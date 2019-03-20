@@ -7,6 +7,13 @@ export const H1Rules = {
 }
 export const H1 = styled.h1(H1Rules)
 
+export const H2Rules = {
+  fontSize: 18,
+  lineHeight: '22px',
+  fontWeight: 'normal'
+}
+export const H2 = styled.h2(H2Rules)
+
 export const H3Rules = {
   fontSize: 11,
   letterSpacing: 1,
