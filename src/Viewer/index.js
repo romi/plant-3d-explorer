@@ -1,14 +1,16 @@
 import React from 'react'
 import styled from '@emotion/styled'
 
+import Header from './Header'
 import World from './World'
-import Controls from './Controls'
 import Carousel from './Carousel'
 import Angles from './Angles'
 
 const Container = styled.div({
   width: '100%',
-  height: '100vh'
+  height: '100vh',
+  overflow: 'hidden',
+  userSelect: 'none'
 })
 
 const ModuleContainer = styled.div({
@@ -31,8 +33,8 @@ const BottomContainer = styled.div({
 
 export default function Viewer (props) {
   return <Container>
-    <Controls />
     <ModuleContainer>
+      <Header />
       <TopContainer>
         <World />
         <Angles />

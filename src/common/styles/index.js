@@ -26,7 +26,6 @@ const rules = css(`
 
   * {
     box-sizing: border-box;
-    user-select: none;
   }
 
   html {
@@ -44,7 +43,6 @@ const rules = css(`
     height: 100%;
 
     overflow-x: hidden;
-    overflow-y: scroll;
   }
 
   input[type=number]::-webkit-inner-spin-button,

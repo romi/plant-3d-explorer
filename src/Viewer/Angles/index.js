@@ -5,13 +5,14 @@ import { FormattedMessage } from 'react-intl'
 import { H2 } from 'common/styles/UI/Text/titles'
 
 import helpIcon from './assets/ico.help.14x14.svg'
-import { grey, green, orange } from 'common/styles/colors'
+import { grey, green, orange, lightGrey } from 'common/styles/colors'
 
 const Container = styled.div({
   padding: '30px 40px',
   width: 300,
   height: '100%',
-  flexShrink: 0
+  flexShrink: 0,
+  borderTop: `1px solid ${lightGrey}`
 })
 
 const Title = styled(H2)({
