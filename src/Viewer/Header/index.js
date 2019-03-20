@@ -33,7 +33,12 @@ const Column = styled.div({
 })
 
 const AllScans = styled((props) => <Link {...props} />)({
-  textDecoration: 'none'
+  textDecoration: 'none',
+  color: green,
+
+  '&:hover': {
+    textDecoration: 'underline'
+  }
 })
 const BackH2 = styled(H2)({
   color: green
