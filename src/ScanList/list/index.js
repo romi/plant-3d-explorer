@@ -138,7 +138,7 @@ const Links = styled.div({
   paddingLeft: 8
 })
 
-const DocLink = styled.a({
+export const DocLink = styled.a({
   display: 'block',
   fontSize: 13,
   lineHeight: '18px',
