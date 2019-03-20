@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 
 import useMutationObserver from './mutationObserver'
 
-export default function (mutator = true) {
+export default function (obeserver = true) {
   const ref = useRef()
   const [value, setValue] = useState()
 
@@ -13,7 +13,7 @@ export default function (mutator = true) {
     [ref.current]
   )
 
-  if (mutator) {
+  if (obeserver) {
     useMutationObserver(
       ref,
       () => setValue(ref.current.getBoundingClientRect())

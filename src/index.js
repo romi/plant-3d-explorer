@@ -1,13 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './App'
-import * as serviceWorker from './serviceWorker'
 
 import IntlProvider from 'rd/tools/intl'
 
 import GlobalStyles from 'common/styles'
 import messages from 'common/intl/en.json'
 import ReduxProvider from 'common/redux'
+
+import App from './App'
+import * as serviceWorker from './serviceWorker'
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
@@ -22,7 +23,7 @@ const render = (Component) => {
         <IntlProvider messages={messages}>
           <App />
         </IntlProvider>
-      </ReduxProvider>>
+      </ReduxProvider>
     </div>,
     document.getElementById('root')
   )

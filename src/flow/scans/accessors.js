@@ -9,6 +9,8 @@ import { chain } from 'rd/tools/enhancers'
 
 import { scansURIQuery, getScanFile, getScanURI } from 'common/api'
 
+import { sortingMethods } from './reducer'
+
 import {
   relativeScansPhotoURIEnhancer,
   relativeScansFilesURIEnhancer,
@@ -18,8 +20,8 @@ import {
 
 export function useScan () {
   const { match } = useReactRouter()
-  const selectedid = match.params.scanId
-  const [scanData] = useFetch(getScanURI(selectedid), true)
+  const selectedId = match.params.scanId
+  const [scanData] = useFetch(getScanURI(selectedId), true)
 
   const enhancedScan = useMemo(
     () => {
@@ -70,6 +72,41 @@ export const useSearchQuery = useAccessor(
   [
     (value) => ({
       type: 'SET_SEARCH_QUERY',
+      value
+    })
+  ]
+)
+
+export const useSorting = useAccessor(
+  [
+    (state) => {
+      return state.scans.sorting
+    },
+    (state) => [
+      ...sortingMethods.map((d) => {
+        return d.label !== state.scans.sorting.label
+          ? d
+          : state.scans.sorting
+      })
+    ]
+  ],
+  [
+    (value) => ({
+      type: 'SET_SORTING',
+      value
+    })
+  ]
+)
+
+export const useSortingMethod = useAccessor(
+  [
+    (state) => {
+      return state.scans.sorting || 'date'
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_SORTING',
       value
     })
   ]

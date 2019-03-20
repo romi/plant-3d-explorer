@@ -28,7 +28,9 @@ export default function WorldComponent (props) {
   const [hoveredCamera, setHoveredCamera] = useHoveredCamera()
   const mouse = useElementMouse(canvasRef)
   const [lastSelectedCamera] = useState({ camera: null })
+
   const [scan] = useScan()
+
   const [[meshGeometry], [pointCloudGeometry]] = useScanFiles(scan)
   const [viewport, eventFns, resetViewport2d] = useViewport2d(
     () => {

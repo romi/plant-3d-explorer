@@ -72,7 +72,7 @@ const Button = styled.button({
 
 export default function Search (props) {
   const intl = useFormatMessage()
-  const [value, setvalue] = useState('')
+  const [value, setvalue] = useState(props.search || '')
   const [focused, setFocus] = useState(false)
 
   useEffect(
