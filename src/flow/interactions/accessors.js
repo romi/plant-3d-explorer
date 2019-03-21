@@ -27,3 +27,31 @@ export const useSelectedcamera = useAccessor(
     })
   ]
 )
+
+export const useReset2dView = useAccessor(
+  [
+    (state) => {
+      return state.interactions.reset2dViewFn
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_RESET_2D_VIEW',
+      value
+    })
+  ]
+)
+
+export const useReset3dView = useAccessor(
+  [
+    (state) => {
+      return state.interactions.reset3dViewFn
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_RESET_3D_VIEW',
+      value
+    })
+  ]
+)

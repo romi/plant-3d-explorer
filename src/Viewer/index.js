@@ -3,10 +3,12 @@ import styled from '@emotion/styled'
 
 import Header from './Header'
 import World from './World'
+import { LayersInteractors, CameraInteractors } from './Interactors'
 import Carousel from './Carousel'
 import Angles from './Angles'
 
 const Container = styled.div({
+  position: 'relative',
   width: '100%',
   height: '100vh',
   overflow: 'hidden',
@@ -14,6 +16,8 @@ const Container = styled.div({
 })
 
 const ModuleContainer = styled.div({
+  position: 'relative',
+  justifyContent: 'space-between',
   width: '100%',
   height: '100%',
   display: 'flex',
@@ -21,8 +25,16 @@ const ModuleContainer = styled.div({
 })
 
 const TopContainer = styled.div({
+  position: 'relative',
   display: 'flex',
   width: '100%',
+  justifyContent: 'space-between',
+  flexGrow: 1
+})
+
+const WorldContainer = styled.div({
+  position: 'relative',
+  height: '100%',
   flexGrow: 1
 })
 
@@ -36,7 +48,11 @@ export default function Viewer (props) {
     <ModuleContainer>
       <Header />
       <TopContainer>
-        <World />
+        <WorldContainer>
+          <World />
+          <LayersInteractors />
+          <CameraInteractors />
+        </WorldContainer>
         <Angles />
       </TopContainer>
       <BottomContainer>

@@ -28,21 +28,23 @@ function useFetch3dObject (url, cached = true) {
   const [data, setData] = useState(!!cachedData)
 
   useEffect(() => {
-    if (cached && cache[url]) {
-      setData(cache[url])
-    } else {
-      (async () => {
-        setData(null)
-        setLoading(true)
-        try {
-          const data = await loadAsync(url)
-          if (cached) cache[url] = data
-          setData(data)
-        } catch (e) {
-          setError(e)
-        }
-        setLoading(false)
-      })()
+    if (url) {
+      if (cached && cache[url]) {
+        setData(cache[url])
+      } else {
+        (async () => {
+          setData(null)
+          setLoading(true)
+          try {
+            const data = await loadAsync(url)
+            if (cached) cache[url] = data
+            setData(data)
+          } catch (e) {
+            setError(e)
+          }
+          setLoading(false)
+        })()
+      }
     }
   }, [url])
 

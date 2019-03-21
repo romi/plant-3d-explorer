@@ -33,6 +33,8 @@ export default class World {
     this.elem = elem
     this.scene = new THREE.Scene()
     this.scene.background = new THREE.Color(0xe8e8e8)
+    this.originalBackground = new THREE.Color(0xe8e8e8)
+    this.blackBackground = new THREE.Color(0x232122)
     this.raycaster = new THREE.Raycaster()
     this.mouse = { x: 0, y: 0, moving: false }
     this.oldMouse = { ...this.mouse }
@@ -211,6 +213,7 @@ export default class World {
     if (this.imgMesh) this.scene.remove(this.imgMesh)
 
     if (camera) {
+      this.scene.background = this.blackBackground
       this.CameraPointsGroup.visible = false
 
       this.originPosition = new THREE.Vector3().copy(this.perspectiveCamera.position)
@@ -258,6 +261,7 @@ export default class World {
       this.setAspectRatio()
     } else {
       if (this.CameraPointsGroup) this.CameraPointsGroup.visible = true
+      this.scene.background = this.originalBackground
 
       this.camera = this.perspectiveCamera
       this.setAspectRatio()
@@ -305,6 +309,8 @@ export default class World {
     if (this.mesh) this.mesh.setVisible(layers.mesh)
     if (this.pointCloud) this.pointCloud.setVisible(layers.pointCloud)
     if (this.skeleton) this.skeleton.setVisible(layers.skeleton)
+    if (this.anlesPoints) this.anlesPoints.setVisible(layers.angles)
+    if (this.CameraPointsGroup) this.CameraPointsGroup.visible = layers.cameras
   }
 
   interaction () {

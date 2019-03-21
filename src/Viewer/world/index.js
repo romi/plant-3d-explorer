@@ -1,18 +1,24 @@
 import React, { useRef, useEffect, useState } from 'react'
-import { useWindowSize } from 'react-use'
 import styled from '@emotion/styled'
 
 import { useElementMouse } from 'rd/tools/hooks/mouse'
+import useRfaBb from 'rd/tools/hooks/rfaBb'
 
 import { useLayers } from 'flow/settings/accessors'
-import { useSelectedcamera, useHoveredCamera } from 'flow/interactions/accessors'
+import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView } from 'flow/interactions/accessors'
 import { useScanFiles, useScan } from 'flow/scans/accessors'
 
 import WorldObject from './object'
 import useViewport2d from './behaviors/viewport2d'
-import { useWorld3dReset, useWorld2dReset } from './shares'
 
 const Container = styled.div({
+  position: 'relative',
+  width: '100%',
+  height: '100%'
+})
+
+const CanvasContainer = styled.div({
+  position: 'absolute',
   width: '100%',
   height: '100%'
 })
@@ -20,8 +26,8 @@ const Container = styled.div({
 const getSize = (elem) => elem.getBoundingClientRect()
 
 export default function WorldComponent (props) {
-  const windowSider = useWindowSize()
-  const canvasRef = useRef(null)
+  const [containerRef, containerBb] = useRfaBb()
+  const canvasRef = useRef()
   const [world, setWorld] = useState(null)
   const [layers] = useLayers()
   const [selectedCamera] = useSelectedcamera()
@@ -44,33 +50,48 @@ export default function WorldComponent (props) {
       return [width, height]
     }
   )
-  const [, setWorldViewResetShare] = useWorld3dReset(null)
-  const [, setWorld2dViewResetShare] = useWorld2dReset(null)
+  const [, setReset3dView] = useReset3dView()
+  const [, setReset2dView] = useReset2dView()
 
   useEffect(
     () => {
-      const { width, height } = getSize(canvasRef.current)
-      const world = new WorldObject(width, height, canvasRef.current)
-      world.onHover((data) => {
-        setHoveredCamera(data)
-      })
-      setWorld(world)
-      setWorldViewResetShare(world.resetControls)
-      setWorld2dViewResetShare(resetViewport2d)
+      if (canvasRef.current && containerBb) {
+        const { width, height } = containerBb
+        const world = new WorldObject(width, height, canvasRef.current)
+        world.onHover((data) => setHoveredCamera(data))
+        setWorld(world)
 
-      return () => world.unmount()
+        return () => {
+          world.unmount()
+        }
+      }
     },
-    [canvasRef]
+    [canvasRef.current]
   )
 
   useEffect(
     () => {
       if (world) {
-        const { width, height } = getSize(canvasRef.current)
+        setReset3dView({
+          fn: world.resetControls
+        })
+        setReset2dView({
+          fn: resetViewport2d
+        })
+      }
+    },
+    [world]
+  )
+
+  useEffect(
+    () => {
+      if (world) {
+        const { width, height } = containerBb
+
         world.setSize(width, height)
       }
     },
-    [windowSider, world]
+    [containerBb, world, scan]
   )
 
   useEffect(
@@ -98,6 +119,7 @@ export default function WorldComponent (props) {
     () => {
       if (world && scan && scan.camera) {
         world.setCameraPoints(scan.camera.poses)
+        world.setLayers(layers)
       }
     },
     [world, scan]
@@ -121,7 +143,10 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
-      if (world && meshGeometry) world.setMeshGeometry(meshGeometry)
+      if (world && meshGeometry) {
+        world.setMeshGeometry(meshGeometry)
+        world.setLayers(layers)
+      }
     },
     [world, meshGeometry]
   )
@@ -129,6 +154,7 @@ export default function WorldComponent (props) {
     () => {
       if (world && pointCloudGeometry) {
         world.setPointcloudGeometry(pointCloudGeometry)
+        world.setLayers(layers)
       }
     },
     [world, pointCloudGeometry]
@@ -136,18 +162,20 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
-      if (
-        world && scan && scan.data.skeleton
-      ) world.setSkeletonPoints(scan.data.skeleton)
+      if (world && scan && scan.data.skeleton) {
+        world.setSkeletonPoints(scan.data.skeleton)
+        world.setLayers(layers)
+      }
     },
     [world, scan]
   )
 
   useEffect(
     () => {
-      if (
-        world && scan && scan.data.angles
-      ) world.setAnglesPoints(scan.data.angles)
+      if (world && scan && scan.data.angles) {
+        world.setAnglesPoints(scan.data.angles)
+        world.setLayers(layers)
+      }
     },
     [world, scan]
   )
@@ -166,13 +194,15 @@ export default function WorldComponent (props) {
     [world, layers]
   )
 
-  return <Container
-    ref={canvasRef}
-    onMouseDown={eventFns.onMouseDown}
-    onMouseUp={eventFns.onMouseUp}
-    onMouseMove={eventFns.onMouseMove}
-    onWheel={eventFns.onWheel}
-  />
+  return <Container ref={containerRef}>
+    <CanvasContainer
+      ref={canvasRef}
+      onMouseDown={eventFns.onMouseDown}
+      onMouseUp={eventFns.onMouseUp}
+      onMouseMove={eventFns.onMouseMove}
+      onWheel={eventFns.onWheel}
+    />
+  </Container>
 }
 
 /**

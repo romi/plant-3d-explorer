@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { first, flatten } from 'lodash'
+import { flatten } from 'lodash'
 
 import setLineSegmentsGeometry from 'common/thiers/LineSegmentsGeometry'
 import setLineGeometry from 'common/thiers/LineGeometry'
@@ -22,8 +22,7 @@ export default class Angles {
 
     this.group = new THREE.Object3D()
 
-    const toDrawAngles = [first(angles)]
-    toDrawAngles.forEach((points) => {
+    angles.forEach((points) => {
       const geometry = new EnhancedTHREE.LineGeometry()
       geometry.setPositions(flatten(points))
 
@@ -31,7 +30,7 @@ export default class Angles {
         geometry,
         new EnhancedTHREE.LineMaterial({
           linewidth: 0.0065,
-          color: 0xFF0000,
+          color: 0x78D89D,
           dashed: true,
           depthTest: false
         })
