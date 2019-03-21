@@ -2,7 +2,9 @@ const initialState = {
   layers: {
     mesh: true,
     pointCloud: true,
-    skeleton: true
+    skeleton: true,
+    angles: false,
+    cameras: true
   }
 }
 

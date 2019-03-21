@@ -6,6 +6,7 @@ import { H2 } from 'common/styles/UI/Text/titles'
 
 import helpIcon from './assets/ico.help.14x14.svg'
 import { grey, green, orange, lightGrey } from 'common/styles/colors'
+import { useScan } from 'flow/scans/accessors'
 
 const Container = styled.div({
   padding: '30px 40px',
@@ -76,6 +77,8 @@ const ValueWording = styled.span({
 })
 
 export default function () {
+  const [scan] = useScan()
+  if (!(scan && scan.data.angles)) return null
   return <Container>
     <Title>
       <FormattedMessage id='angles-title' />

@@ -14,10 +14,10 @@ import { useSorting } from 'flow/scans/accessors'
 import { green, darkGreen } from 'common/styles/colors'
 import { H3 } from 'common/styles/UI/Text/titles'
 
-import MeshIcon from './assets/ico.mesh.21x21.svg'
-import PointCloudIcon from './assets/ico.point_cloud.21x21.svg'
-import SekeletonIcon from './assets/ico.skeleton.21x21.svg'
-import NodeIcon from './assets/ico.internodes.21x21.svg'
+import MeshIcon from 'common/assets/ico.mesh.21x21.svg'
+import PointCloudIcon from 'common/assets/ico.point_cloud.21x21.svg'
+import SekeletonIcon from 'common/assets/ico.skeleton.21x21.svg'
+import NodeIcon from 'common/assets/ico.internodes.21x21.svg'
 
 const Blocks = styled.div({
   '& > :nth-child(even)': {

@@ -70,7 +70,6 @@ const MarginedDocLink = styled(DocLink)({
 
 export default function () {
   const [scan] = useScan()
-  console.log(scan)
   return <Container>
     <Column>
       <img src={Logo} />
