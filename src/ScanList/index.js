@@ -41,7 +41,7 @@ const TaintedFormattedMessage = styled((props) => <span className={props.classNa
 
 const ClearButton = styled((props) => {
   return <button type='button' {...props}>
-    <img src={closePicto} />
+    <img src={closePicto} alt='' />
   </button>
 })({
   border: 'none',
@@ -144,7 +144,7 @@ export default function () {
   return <Container>
     <div style={{ position: 'relative' }}>
       <AppTitle>
-        <img src={Logo} />
+        <img src={Logo} alt='' />
       </AppTitle>
 
       <Search search={search} onSearch={setSearch} />
@@ -177,7 +177,7 @@ export default function () {
               ...omit(props, ['deviation']),
               position: 'absolute',
               width: '100%',
-              filter: 'url("#' + `motionblur-${Math.round(props.deviation)}` + '")'
+              filter: `url("#motionblur-${Math.round(props.deviation)})`
             }}
             key={item.key}
           >

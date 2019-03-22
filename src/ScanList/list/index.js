@@ -230,6 +230,8 @@ export default memo(function (props) {
             return d.metadata.species
           case 'environment':
             return d.metadata.environment
+          default:
+            return d.metadata.plant
         }
       },
       sorting.method
