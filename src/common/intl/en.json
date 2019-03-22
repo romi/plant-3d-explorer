@@ -24,13 +24,13 @@
   "header-back": "All scans",
 
   "tooltip-mesh": "Mesh",
-  "tooltip-pointcloud": "Point cloud",
+  "tooltip-pointcloud": "Point cloud",
   "tooltip-skeleton": "Skeleton",
   "tooltip-organs": "Organs",
 
-  "tooltip-cameras-hide": "Hide cameras",
-  "tooltip-cameras-show": "Show cameras",
-  "tooltip-reset": "Reset view",
+  "tooltip-cameras-hide": "Hide cameras",
+  "tooltip-cameras-show": "Show cameras",
+  "tooltip-reset": "Reset view",
 
   "tooltip-help-rotate": "Click left and hold to rotate",
   "tooltip-help-pan": "Click right and hold to pan",
@@ -43,5 +43,5 @@
   "angles-tooltip": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   "angles-legend-automated": "Automated measure",
   "angles-legend-manuel": "Manual measure",
-  "angles-axis-y": "Organ rank"
+  "angles-axis-y": "Organ order"
 }
