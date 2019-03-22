@@ -72,7 +72,7 @@ export default function () {
   const [scan] = useScan()
   return <Container>
     <Column>
-      <img src={Logo} />
+      <img src={Logo} alt='' />
     </Column>
     <Column>
       <AllScans to={landingUrl}>

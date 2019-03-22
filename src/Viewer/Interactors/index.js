@@ -45,7 +45,7 @@ const Interactor = styled(
     {...omit(props, ['activated', 'isDisabled', 'img', 'onClick', 'isButton'])}
     onClick={!props.isDisabled ? props.onClick : () => {}}
   >
-    <img src={props.img} />
+    <img src={props.img} alt='' />
   </div>
 )({
   width: 41,

@@ -3,17 +3,28 @@ import styled from '@emotion/styled'
 import { FormattedMessage } from 'react-intl'
 
 import { H2 } from 'common/styles/UI/Text/titles'
+import { grey, green, orange, lightGrey } from 'common/styles/colors'
+
+import { useScan } from 'flow/scans/accessors'
 
 import helpIcon from './assets/ico.help.14x14.svg'
-import { grey, green, orange, lightGrey } from 'common/styles/colors'
-import { useScan } from 'flow/scans/accessors'
+import Graph from './graph'
 
 const Container = styled.div({
   padding: '30px 40px',
+  paddingBottom: 19,
   width: 300,
   height: '100%',
   flexShrink: 0,
-  borderTop: `1px solid ${lightGrey}`
+  borderTop: `1px solid ${lightGrey}`,
+
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between'
+})
+
+const Top = styled.div({
+  width: '100%'
 })
 
 const Title = styled(H2)({
@@ -79,28 +90,40 @@ const ValueWording = styled.span({
 export default function () {
   const [scan] = useScan()
   if (!(scan && scan.data.angles)) return null
+
+  scan.data.angles.manualAngles = scan.data.angles.angles
+    .map((d) => Math.random() * Math.PI)
+
+  const ifManualData = !!scan.data.angles.manualAngles
+
   return <Container>
-    <Title>
-      <FormattedMessage id='angles-title' />
-      <HelpIcon src={helpIcon} />
-    </Title>
-    <Values>
-      <LegendItem>
-        <ValueWording>
-          <FormattedMessage id='angles-legend-automated' />
-        </ValueWording>
-        <Value>
+    <Top>
+      <Title>
+        <FormattedMessage id='angles-title' />
+        <HelpIcon src={helpIcon} />
+      </Title>
+      <Values>
+        <LegendItem>
+          <ValueWording>
+            <FormattedMessage id='angles-legend-automated' />
+          </ValueWording>
+          <Value>
           137.5 °
-        </Value>
-      </LegendItem>
-      <LegendItem>
-        <ValueWording>
-          <FormattedMessage id='angles-legend-manuel' />
-        </ValueWording>
-        <Value secondary>
+          </Value>
+        </LegendItem>
+        {
+          ifManualData && <LegendItem>
+            <ValueWording>
+              <FormattedMessage id='angles-legend-manuel' />
+            </ValueWording>
+            <Value secondary>
           137.5 °
-        </Value>
-      </LegendItem>
-    </Values>
+            </Value>
+          </LegendItem>
+        }
+      </Values>
+    </Top>
+
+    <Graph data={scan.data.angles} />
   </Container>
 }
