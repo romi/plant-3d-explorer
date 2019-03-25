@@ -3,13 +3,16 @@ import styled from '@emotion/styled'
 import { FormattedMessage } from 'react-intl'
 import { scaleLinear } from 'd3-scale'
 import { line as lineFactory, area as areaFactory } from 'd3-shape'
-import { first, last, omit } from 'lodash'
+import { first, last, omit, filter } from 'lodash'
 import Color from 'color'
 
 import sceneWrapper from 'rd/tools/scene'
 
 import { H3 } from 'common/styles/UI/Text/titles'
 import { grey, green, orange, darkGreen } from 'common/styles/colors'
+import closePicto from 'common/assets/ico.deselect.20x20.svg'
+
+import { useHoveredAngle, useSelectedAngle } from 'flow/interactions/accessors'
 
 const Container = styled.div({
   width: '100%',
@@ -120,6 +123,88 @@ const GoalLine = styled((props) => <line {...props} strokeDasharray='3 3' />)({
   opacity: 0.6
 })
 
+const InteractorContainer = styled.div({
+  position: 'absolute',
+  top: 0,
+  left: 0
+}, (props) => ({
+  left: props.left,
+  width: props.width,
+  height: props.height
+}))
+const Interactor = styled.div({
+  position: 'absolute',
+  left: 0,
+  width: '100%',
+  marginLeft: 35,
+  background: 'transparent',
+  cursor: 'pointer'
+}, (props) => {
+  return {
+    top: props.top,
+    height: props.height,
+    background: props.selected || props.hovered
+      ? Color(green).alpha(0.7).toString()
+      : 'transparent',
+
+    ...(
+      props.selected
+        ? {
+          '&:hover:after': {
+            transform: 'scale(1.10)',
+            boxShadow: '0 1px 4px 0 rgba(10,61,33,0.15)'
+          },
+
+          '&:after': {
+            position: 'absolute',
+            top: 'calc(50% - 11px)',
+            right: -10,
+            display: 'block',
+            content: '""',
+            width: 20,
+            height: 20,
+            borderRadius: 20,
+            background: 'white',
+            backgroundImage: `url(${closePicto})`,
+            transition: 'all 0.15s ease',
+            boxShadow: '0 1px 1px 0 rgba(10,61,33,0.15)'
+          }
+        }
+        : {}
+    )
+  }
+})
+
+const HighlightedIndex = styled(H3)({
+  position: 'absolute',
+  width: 'auto',
+  height: 1,
+  borderRight: `12px solid ${green}`,
+  right: 0,
+  paddingRight: 7,
+  lineHeight: 0,
+  margin: 0,
+  marginRight: 5,
+  color: green,
+  fontWeight: 700
+}, (props) => ({
+  top: props.top
+}))
+
+const HoveredPoint = styled.div({
+  width: 10,
+  height: 10,
+  borderRadius: 10,
+  background: green,
+  pointerEvents: 'none',
+  border: '1px solid white',
+  position: 'absolute'
+}, (props) => ({
+  background: props.orange ? orange : green,
+  top: props.top,
+  left: props.left
+}))
+
 const horizontalScale = scaleLinear()
 const verticalScale = scaleLinear()
 const area = areaFactory()
@@ -131,6 +216,9 @@ const line = lineFactory()
   .y((d) => d.y)
 
 const Chart = sceneWrapper(({ data, containerWidth, containerHeight }) => {
+  const [hoveredAngle, setHoveredAngle] = useHoveredAngle()
+  const [selectedAngle, setSelectedAngle] = useSelectedAngle()
+
   const ifManualData = !!data.manualAngles
 
   const goal = 137.5
@@ -143,7 +231,7 @@ const Chart = sceneWrapper(({ data, containerWidth, containerHeight }) => {
     .concat(data.fruit_points.length - 1)
   verticalScale
     .domain([first(verticalTicks), last(verticalTicks)])
-    .range([containerHeight - 37, 0])
+    .rangeRound([containerHeight - 37, 0])
 
   const horizontalTickNb = 360
   const horizontalTicks = Array(Math.ceil(horizontalTickNb / 90))
@@ -152,8 +240,9 @@ const Chart = sceneWrapper(({ data, containerWidth, containerHeight }) => {
     .concat([horizontalTickNb])
   horizontalScale
     .domain([first(horizontalTicks), last(horizontalTicks)])
-    .range([37, containerWidth])
+    .rangeRound([0, containerWidth - 37])
 
+  const barHeight = Math.floor(containerHeight / data.angles.length)
   const points = data.angles
     .map((rad, i) => {
       return {
@@ -216,8 +305,8 @@ const Chart = sceneWrapper(({ data, containerWidth, containerHeight }) => {
           </g>
         }
         <GoalLine
-          x1={horizontalScale(goal) - 37}
-          x2={horizontalScale(goal) - 37}
+          x1={horizontalScale(goal)}
+          x2={horizontalScale(goal)}
           y1={0}
           y2={containerHeight - 37}
         />
@@ -228,7 +317,7 @@ const Chart = sceneWrapper(({ data, containerWidth, containerHeight }) => {
         horizontalTicks.map((index) => {
           return <HorizontalTick
             key={index}
-            left={horizontalScale(index)}
+            left={horizontalScale(index) + 37}
           >
             <span>
               {index} °
@@ -238,7 +327,7 @@ const Chart = sceneWrapper(({ data, containerWidth, containerHeight }) => {
       }
       <GoalHorizontalTick
         key={'goal'}
-        left={horizontalScale(goal)}
+        left={horizontalScale(goal) + 37}
       >
         <span>
           {goal} °
@@ -246,6 +335,67 @@ const Chart = sceneWrapper(({ data, containerWidth, containerHeight }) => {
 
       </GoalHorizontalTick>
     </HorizontalAxis>
+    <InteractorContainer
+      width={containerWidth - 37}
+      height={containerHeight - 37}
+      onMouseLeave={() => setHoveredAngle(null)}
+    >
+      {
+        points.map((d, i) => {
+          return <Interactor key={i}
+            top={d.y - (barHeight * 0.5)}
+            height={barHeight}
+            selected={selectedAngle === i}
+            hovered={hoveredAngle === i}
+            onMouseEnter={() => setHoveredAngle(i)}
+            onClick={() => {
+              selectedAngle === i ? setSelectedAngle(null) : setSelectedAngle(i)
+            }}
+          />
+        })
+      }
+      {
+        (hoveredAngle !== null && hoveredAngle !== undefined) && <div
+          style={{
+            position: 'absolute',
+            width: 37,
+            top: 0,
+            left: 0
+          }}
+        >
+          <HighlightedIndex
+            top={verticalScale(hoveredAngle + 1)}
+          >
+            {hoveredAngle + 2}
+          </HighlightedIndex>
+          <HighlightedIndex
+            top={verticalScale(hoveredAngle)}
+          >
+            {hoveredAngle + 1}
+          </HighlightedIndex>
+        </div>
+      }
+      {
+        filter([selectedAngle, hoveredAngle])
+          .map((d, i) => {
+            return <div key={i}>
+              <HoveredPoint
+                key={'main'}
+                top={verticalScale(d + 1) + (barHeight / 2) - 5}
+                left={horizontalScale(data.angles[d] * 57.2958) + 37 - 5}
+              />
+              {
+                ifManualData && <HoveredPoint
+                  orange
+                  key={'secondary'}
+                  top={verticalScale(d + 1) + (barHeight / 2) - 5}
+                  left={horizontalScale(data.manualAngles[d] * 57.2958) + 37 - 5}
+                />
+              }
+            </div>
+          })
+      }
+    </InteractorContainer>
   </Content>
 })
 

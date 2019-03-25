@@ -7,11 +7,16 @@ import { scaleCanvas } from 'rd/tools/canvas'
 import { useScan } from 'flow/scans/accessors'
 
 import { green } from 'common/styles/colors'
+import closeIco from 'common/assets/ico.deselect-white.20x20.svg'
+
+import { useHoveredCamera, useSelectedcamera } from 'flow/interactions/accessors'
+import { useFormatMessage } from 'rd/tools/intl'
 
 import useImgLoader from './loader'
-import { useHoveredCamera, useSelectedcamera } from 'flow/interactions/accessors'
+import openIco from './assets/ico.open_photo.16x16.svg'
+import dragNdropIco from './assets/ico.drag_photos.40x16.svg'
 
-const moduleHeight = 70
+export const moduleHeight = 70
 
 const Container = styled.div({
   width: '100%',
@@ -54,9 +59,18 @@ const SvgDnG = styled.svg({
   }
 })
 
+const CTAWording = styled.text({
+  fontSize: 11,
+  fill: 'white',
+  letterSpacing: 1,
+  textTransform: 'uppercase',
+  fontWeight: 600
+})
+
 const getSize = (elem) => elem.getBoundingClientRect()
 
 export default function Carousel () {
+  const intl = useFormatMessage()
   const canvasRef = useRef(null)
   const containerRef = useRef(null)
   const windowSider = useWindowSize()
@@ -275,32 +289,65 @@ export default function Carousel () {
 
   return <Container ref={containerRef}>
     <Svg>
+      <defs>
+        <filter id='pictureFilter'>
+          <feMorphology operator='erode' radius='2' />
+        </filter>
+      </defs>
       <g
         onMouseMove={eventsFn.onMouseMove}
         onMouseLeave={eventsFn.onMouseOut}
         onClick={eventsFn.onClick}
       >
         {
-          (!selectedLayout && hoveredLayout) && <rect
-            width={large}
-            height={moduleHeight + 30}
-            x={hoveredLayout.x}
-            y={0}
-            fill={green}
-            rx={2}
-            ry={2}
-          />
+          (!selectedLayout && hoveredLayout) && <g
+            transform={`translate(${hoveredLayout.x}, 0)`}
+          >
+            <rect
+              width={large}
+              height={moduleHeight + 30}
+              y={0}
+              fill={green}
+              rx={2}
+              ry={2}
+            />
+            <CTAWording
+              x={10}
+              y={20}
+            >
+              {intl('carrousel-open')}
+            </CTAWording>
+            <image
+              x={large - (10 + 16)}
+              y={7}
+              xlinkHref={openIco}
+            />
+          </g>
         }
         {
-          selectedLayout && <rect
-            width={large}
-            height={moduleHeight + 30}
-            x={selectedLayout.x}
-            y={0}
-            fill={green}
-            rx={2}
-            ry={2}
-          />
+          selectedLayout && <g
+            transform={`translate(${selectedLayout.x}, 0)`}
+          >
+            <rect
+              width={large}
+              height={moduleHeight + 30}
+              y={0}
+              fill={green}
+              rx={2}
+              ry={2}
+            />
+            <CTAWording
+              x={10}
+              y={20}
+            >
+              {intl('carrousel-close')}
+            </CTAWording>
+            <image
+              x={large - (10 + 16)}
+              y={5}
+              xlinkHref={closeIco}
+            />
+          </g>
         }
         <rect
           width='100%'
@@ -324,24 +371,35 @@ export default function Carousel () {
             strokeWidth={1}
             stroke={green}
           />
-          <rect
-            x={selectedLayout.x}
-            y={-15}
-            width={selectedLayout.width}
-            height={30}
-            rx={15}
-            ry={15}
-            fill={green}
-            onMouseDown={(e) => {
-              const bb = e.target.getBoundingClientRect()
-              document.body.style.cursor = 'grabbing'
-              setDragging({
-                from: e.clientX,
-                triggerLeft: bb.left,
-                triggerWidth: bb.width
-              })
-            }}
-          />
+          <g
+            transform={`translate(${selectedLayout.x}, 0)`}
+          >
+            <rect
+              style={{
+                cursor: !dragging && 'grab'
+              }}
+              y={-15}
+              width={selectedLayout.width}
+              height={30}
+              rx={15}
+              ry={15}
+              fill={green}
+              onMouseDown={(e) => {
+                const bb = e.target.getBoundingClientRect()
+                document.body.style.cursor = 'grabbing'
+                setDragging({
+                  from: e.clientX,
+                  triggerLeft: bb.left,
+                  triggerWidth: bb.width
+                })
+              }}
+            />
+            <image
+              xlinkHref={dragNdropIco}
+              x={(large * 0.5) - 20}
+              y={-8}
+            />
+          </g>
         </g>
       </SvgDnG>
     }

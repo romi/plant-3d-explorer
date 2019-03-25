@@ -15,9 +15,11 @@ import { DocLink } from 'ScanList/list/index'
 import Logo from './assets/ico.logo_minified.25x31.svg'
 import chevronIco from './assets/ico.chevron.8x12.svg'
 
+export const headerHeight = 80
+
 const Container = styled.div({
   width: '100%',
-  height: 80,
+  height: headerHeight,
   background: 'white',
   padding: '0px 40px',
 

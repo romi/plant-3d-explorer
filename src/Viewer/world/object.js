@@ -1,11 +1,13 @@
 
 import * as THREE from 'three'
+
 import OrbitControls from 'common/thiers/OrbitController'
 
 import Mesh from './entities/mesh'
 import PointCloud from './entities/pointCloud'
 import Skeleton from './entities/skeleton'
 import Angles from './entities/angles'
+import { green } from 'common/styles/colors'
 
 const clock = new THREE.Clock()
 
@@ -50,7 +52,7 @@ export default class World {
     this.scene.add(this.viewerObjects)
 
     this.perspectiveCamera = new THREE.PerspectiveCamera(35, this.width / this.height, 1, 5000)
-    this.perspectiveCamera.position.set(600, 0, 0)
+    this.perspectiveCamera.position.set(900, 0, 0)
     this.camera = this.perspectiveCamera
 
     this.setControls()
@@ -198,7 +200,7 @@ export default class World {
       this.CameraPointsGroup.children.forEach((d) => {
         if (camera && d.data.id === camera.id) {
           d.material.wireframe = false
-          d.material.color.set('red')
+          d.material.color.set(green)
           d.material.opacity = 1
         } else {
           d.material.wireframe = true
@@ -286,6 +288,11 @@ export default class World {
       this.perspectiveCamera.fov -= (this.perspectiveCamera.fov - this.thiscamera.fov) * percent
       this.perspectiveCamera.updateProjectionMatrix()
     }
+  }
+
+  setHighlightedAngle (indexes) {
+    if (!this.anlesPoints || !indexes.length) return
+    this.anlesPoints.setHighlighted(indexes)
   }
 
   setMeshGeometry (geometry) {

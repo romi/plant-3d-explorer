@@ -1,6 +1,10 @@
 const initialState = {
-  selectedCamera: null,
   hoveredCamera: null,
+  selectedCamera: null,
+
+  hoveredAngle: null,
+  selectedAngle: null,
+
   reset3dViewFn: null,
   reset2dViewFn: null
 }
@@ -16,6 +20,16 @@ export default function settingsReducer (state = initialState, action) {
       return {
         ...state,
         selectedCamera: action.value
+      }
+    case 'HOVER_ANGLE':
+      return {
+        ...state,
+        hoveredAngle: action.value
+      }
+    case 'SELECT_ANGLE':
+      return {
+        ...state,
+        selectedAngle: action.value
       }
     case 'SET_RESET_2D_VIEW':
       return {

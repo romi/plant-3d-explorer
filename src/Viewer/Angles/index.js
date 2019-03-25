@@ -9,11 +9,14 @@ import { useScan } from 'flow/scans/accessors'
 
 import helpIcon from './assets/ico.help.14x14.svg'
 import Graph from './graph'
+import { useHoveredAngle, useSelectedAngle } from 'flow/interactions/accessors'
+
+export const moduleWidth = 300
 
 const Container = styled.div({
   padding: '30px 40px',
   paddingBottom: 19,
-  width: 300,
+  width: moduleWidth,
   height: '100%',
   flexShrink: 0,
   borderTop: `1px solid ${lightGrey}`,
@@ -89,12 +92,20 @@ const ValueWording = styled.span({
 
 export default function () {
   const [scan] = useScan()
+  const [hoveredAngle] = useHoveredAngle()
+  const [selectedAngle] = useSelectedAngle()
+
+  const highlightedAngle = hoveredAngle || selectedAngle
+
   if (!(scan && scan.data.angles)) return null
 
-  scan.data.angles.manualAngles = scan.data.angles.angles
-    .map((d) => Math.random() * Math.PI)
+  // Debug
+  // @TODO remove
+  // scan.data.angles.manualAngles = scan.data.angles.angles
+  //   .map((d) => Math.random() * Math.PI)
 
   const ifManualData = !!scan.data.angles.manualAngles
+  const ifHighligthed = (highlightedAngle !== null) && (highlightedAngle !== undefined)
 
   return <Container>
     <Top>
@@ -107,8 +118,14 @@ export default function () {
           <ValueWording>
             <FormattedMessage id='angles-legend-automated' />
           </ValueWording>
-          <Value>
-          137.5 °
+          <Value
+            condensed={!ifHighligthed}
+          >
+            {
+              ifHighligthed
+                ? (scan.data.angles.angles[highlightedAngle] * 57.2958).toFixed(0) + ' °'
+                : ''
+            }
           </Value>
         </LegendItem>
         {
@@ -116,8 +133,15 @@ export default function () {
             <ValueWording>
               <FormattedMessage id='angles-legend-manuel' />
             </ValueWording>
-            <Value secondary>
-          137.5 °
+            <Value
+              condensed={!ifHighligthed}
+              secondary
+            >
+              {
+                ifHighligthed
+                  ? (scan.data.angles.manualAngles[highlightedAngle] * 57.2958).toFixed(0) + ' °'
+                  : ''
+              }
             </Value>
           </LegendItem>
         }

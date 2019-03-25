@@ -20,8 +20,6 @@ export default class Angles {
   constructor (angles, parent) {
     this.group = new THREE.Object3D()
 
-    this.group = new THREE.Object3D()
-
     angles.forEach((points) => {
       const geometry = new EnhancedTHREE.LineGeometry()
       geometry.setPositions(flatten(points))
@@ -29,10 +27,12 @@ export default class Angles {
       const obj = new EnhancedTHREE.Line2(
         geometry,
         new EnhancedTHREE.LineMaterial({
-          linewidth: 0.0065,
+          linewidth: 0.0105,
           color: 0x78D89D,
-          dashed: true,
-          depthTest: false
+          dashed: false,
+          depthTest: false,
+          transparent: true,
+          opacity: 0.2
         })
       )
       obj.computeLineDistances()
@@ -55,6 +55,15 @@ export default class Angles {
   setVisible (boolean) {
     this.group.children.forEach((child) => {
       child.visible = boolean
+    })
+  }
+
+  setHighlighted (indexes) {
+    const nextIndexed = indexes.reduce((p, c) => {
+      return [...p, c, c + 1]
+    }, [])
+    this.group.children.forEach((child, i) => {
+      child.visible = nextIndexed.includes(i)
     })
   }
 }
