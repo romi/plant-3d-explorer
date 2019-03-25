@@ -219,7 +219,7 @@ const Chart = sceneWrapper(({ data, containerWidth, containerHeight }) => {
   const [hoveredAngle, setHoveredAngle] = useHoveredAngle()
   const [selectedAngle, setSelectedAngle] = useSelectedAngle()
 
-  const ifManualData = !!data.manualAngles
+  const ifManualData = !!data.measured_angles
 
   const goal = 137.5
 
@@ -250,7 +250,7 @@ const Chart = sceneWrapper(({ data, containerWidth, containerHeight }) => {
         y: verticalScale(i + 0.5)
       }
     })
-  const manualPoints = (!ifManualData ? [] : data.manualAngles)
+  const manualPoints = (!ifManualData ? [] : data.measured_angles)
     .map((rad, i) => {
       return {
         x: horizontalScale((rad) * 57.2958),
@@ -389,7 +389,7 @@ const Chart = sceneWrapper(({ data, containerWidth, containerHeight }) => {
                   orange
                   key={'secondary'}
                   top={verticalScale(d + 1) + (barHeight / 2) - 5}
-                  left={horizontalScale(data.manualAngles[d] * 57.2958) + 37 - 5}
+                  left={horizontalScale(data.measured_angles[d] * 57.2958) + 37 - 5}
                 />
               }
             </div>

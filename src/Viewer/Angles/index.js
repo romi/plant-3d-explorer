@@ -101,10 +101,10 @@ export default function () {
 
   // Debug
   // @TODO remove
-  // scan.data.angles.manualAngles = scan.data.angles.angles
+  // scan.data.angles.measured_angles = scan.data.angles.angles
   //   .map((d) => Math.random() * Math.PI)
 
-  const ifManualData = !!scan.data.angles.manualAngles
+  const ifManualData = !!scan.data.angles.measured_angles
   const ifHighligthed = (highlightedAngle !== null) && (highlightedAngle !== undefined)
 
   return <Container>
@@ -139,7 +139,7 @@ export default function () {
             >
               {
                 ifHighligthed
-                  ? (scan.data.angles.manualAngles[highlightedAngle] * 57.2958).toFixed(0) + ' °'
+                  ? (scan.data.angles.measured_angles[highlightedAngle] * 57.2958).toFixed(0) + ' °'
                   : ''
               }
             </Value>
