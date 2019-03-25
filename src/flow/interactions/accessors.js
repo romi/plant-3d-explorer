@@ -13,7 +13,6 @@ export const useHoveredCamera = useAccessor(
     })
   ]
 )
-
 export const useSelectedcamera = useAccessor(
   [
     (state) => {
@@ -23,6 +22,33 @@ export const useSelectedcamera = useAccessor(
   [
     (value) => ({
       type: 'SELECT_CAMERA',
+      value
+    })
+  ]
+)
+
+export const useHoveredAngle = useAccessor(
+  [
+    (state) => {
+      return state.interactions.hoveredAngle
+    }
+  ],
+  [
+    (value) => ({
+      type: 'HOVER_ANGLE',
+      value
+    })
+  ]
+)
+export const useSelectedAngle = useAccessor(
+  [
+    (state) => {
+      return state.interactions.selectedAngle
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SELECT_ANGLE',
       value
     })
   ]

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="16px" viewBox="0 0 40 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>ico.drag_photos.40x16</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="2b-desktop-photo_mode" transform="translate(-579.000000, -687.000000)" fill="#FFFFFF" fill-rule="nonzero">
+            <g id="Group-11" transform="translate(543.000000, 680.000000)">
+                <path d="M44,23 L36,15 L44,7 L45.42,8.42 L39.83,14 L52,14 L52,16 L39.83,16 L45.41,21.59 L44,23 Z M68,23 L66.59,21.59 L72.17,16 L60,16 L60,14 L72.17,14 L66.58,8.42 L68,7 L76,15 L68,23 Z" id="ico.drag_photos.40x16"></path>
+            </g>
+        </g>
+    </g>
+</svg>
