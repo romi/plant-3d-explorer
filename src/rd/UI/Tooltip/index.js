@@ -64,8 +64,9 @@ const ContentContainer = styled.div({
   borderRadius: 2,
   padding: '0px 12px',
   background: 'white',
-  pointerEvents: 'none'
-  // marginTop: 10
+  pointerEvents: 'none',
+  marginTop: 10,
+  zIndex: 1000
 }, (props) => {
   return {
     top: (props.contentBb && props.top)

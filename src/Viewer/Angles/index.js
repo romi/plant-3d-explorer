@@ -2,7 +2,7 @@ import React from 'react'
 import styled from '@emotion/styled'
 import { FormattedMessage } from 'react-intl'
 
-import { H2 } from 'common/styles/UI/Text/titles'
+import { H2, H3 } from 'common/styles/UI/Text/titles'
 import { grey, green, orange, lightGrey } from 'common/styles/colors'
 
 import { useScan } from 'flow/scans/accessors'
@@ -10,6 +10,7 @@ import { useHoveredAngle, useSelectedAngle } from 'flow/interactions/accessors'
 
 import helpIcon from './assets/ico.help.14x14.svg'
 import Graph from './graph'
+import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
 
 export const moduleWidth = 300
 
@@ -90,6 +91,11 @@ const ValueWording = styled.span({
   display: 'inline-block'
 })
 
+const HelpContent = styled(H3)({
+  width: 220,
+  padding: 10
+})
+
 export default function () {
   const [scan] = useScan()
   const [hoveredAngle] = useHoveredAngle()
@@ -111,7 +117,19 @@ export default function () {
     <Top>
       <Title>
         <FormattedMessage id='angles-title' />
-        <HelpIcon src={helpIcon} />
+        <div style={{ position: 'relative' }}>
+          <Tooltip>
+            <HelpIcon src={helpIcon} />
+            <TooltipContent style={{
+              left: -40,
+              boxShadow: '0 1px 3px 0 rgba(10,61,33,0.2)'
+            }}>
+              <HelpContent>
+                <FormattedMessage id='angles-tooltip' />
+              </HelpContent>
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </Title>
       <Values>
         <LegendItem>
