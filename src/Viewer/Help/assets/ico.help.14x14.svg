@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="14px" viewBox="0 0 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>ico.help.14x14</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="2a-desktop-interaction_w_graph" transform="translate(-1183.000000, -112.000000)" fill="white" fill-rule="nonzero">
+            <g id="Group-18" transform="translate(980.000000, 80.000000)">
+                <path d="M210,32 C206.136,32 203,35.136 203,39 C203,42.864 206.136,46 210,46 C213.864,46 217,42.864 217,39 C217,35.136 213.864,32 210,32 Z M210.7,43.9 L209.3,43.9 L209.3,42.5 L210.7,42.5 L210.7,43.9 Z M212.149,38.475 L211.519,39.119 C211.015,39.63 210.7,40.05 210.7,41.1 L209.3,41.1 L209.3,40.75 C209.3,39.98 209.615,39.28 210.119,38.769 L210.987,37.887 C211.246,37.635 211.4,37.285 211.4,36.9 C211.4,36.13 210.77,35.5 210,35.5 C209.23,35.5 208.6,36.13 208.6,36.9 L207.2,36.9 C207.2,35.353 208.453,34.1 210,34.1 C211.547,34.1 212.8,35.353 212.8,36.9 C212.8,37.516 212.548,38.076 212.149,38.475 Z" id="ico.help.14x14"></path>
+            </g>
+        </g>
+    </g>
+</svg>

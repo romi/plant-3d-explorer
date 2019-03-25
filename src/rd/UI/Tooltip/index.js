@@ -64,10 +64,13 @@ const ContentContainer = styled.div({
   borderRadius: 2,
   padding: '0px 12px',
   background: 'white',
-  pointerEvents: 'none',
-  marginTop: 10
+  pointerEvents: 'none'
+  // marginTop: 10
 }, (props) => {
   return {
+    top: (props.contentBb && props.top)
+      ? -props.contentBb.height - 20
+      : 'normal',
     marginLeft: props.contentBb
       ? (
         -(props.contentBb.width || 0) / 2
@@ -78,9 +81,11 @@ const ContentContainer = styled.div({
 
 export function TooltipContent (props) {
   return <ContentContainer
+    top={props.top}
     className={props.className}
     parentBb={props.parentBb}
     contentBb={props.contentBb}
+    style={props.style}
   >
     <div>
       {props.children}

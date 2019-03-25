@@ -6,10 +6,10 @@ import { H2 } from 'common/styles/UI/Text/titles'
 import { grey, green, orange, lightGrey } from 'common/styles/colors'
 
 import { useScan } from 'flow/scans/accessors'
+import { useHoveredAngle, useSelectedAngle } from 'flow/interactions/accessors'
 
 import helpIcon from './assets/ico.help.14x14.svg'
 import Graph from './graph'
-import { useHoveredAngle, useSelectedAngle } from 'flow/interactions/accessors'
 
 export const moduleWidth = 300
 

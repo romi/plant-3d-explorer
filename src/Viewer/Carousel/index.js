@@ -226,7 +226,7 @@ export default function Carousel () {
 
   const eventsFn = {
     onMouseMove: (e) => {
-      const dX = hoveredLayout
+      const dX = !selectedLayout && hoveredLayout
         ? e.movementX < 0
           ? e.clientX - (hoveredLayout.width * 0.5) + hoveredLayout.normalWidth
           : e.clientX + (hoveredLayout.width * 0.5)
@@ -284,7 +284,7 @@ export default function Carousel () {
         window.removeEventListener('mousemove', moveHander)
       }
     },
-    [dragging, picturesLayout]
+    [dragging, picturesLayout, selectedLayout]
   )
 
   return <Container ref={containerRef}>

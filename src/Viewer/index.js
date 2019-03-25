@@ -6,6 +6,7 @@ import World from './World'
 import { LayersInteractors, CameraInteractors } from './Interactors'
 import Carousel from './Carousel'
 import Angles from './Angles'
+import Help from './Help'
 
 const Container = styled.div({
   position: 'relative',
@@ -52,6 +53,7 @@ export default function Viewer (props) {
           <World />
           <LayersInteractors />
           <CameraInteractors />
+          <Help />
         </WorldContainer>
         <Angles />
       </TopContainer>
