@@ -50,6 +50,10 @@ const rules = css(`
     opacity: 1;
   }
 
+  input, button {
+    background-color: transparent
+  }
+
   ::-webkit-scrollbar {
     width: 12px;
   }

@@ -78,15 +78,15 @@ export default function Carousel () {
   const [context, setContext] = useState(null)
   const [dragging, setDragging] = useState(false)
   const [picturesLayout, setPicturesLayout] = useState([])
-  const [hoveredLayout, setHoveredLayout] = useState(null)
-  const [selectedLayout, setSelectedLayout] = useState(null)
   const cameraPoses = ((scan && scan.camera.poses) || [])
   const [imgs] = useImgLoader(urlList)
   const [hovered, setHovered] = useHoveredCamera()
   const [selected, setSelected] = useSelectedcamera()
   const large = moduleHeight * (6000 / 4000)
-  const [update, setUpdate] = useState({ countObj: { value: 1 } })
   let sizes
+
+  const hoveredLayout = useRef(null)
+  const selectedLayout = useRef(null)
 
   useEffect(
     () => {
@@ -135,8 +135,8 @@ export default function Carousel () {
 
         let last = { x: 0, width: 0, normalX: 0, normalWidth: 0 }
 
-        setHoveredLayout(null)
-        setSelectedLayout(null)
+        hoveredLayout.current = null
+        selectedLayout.current = null
 
         setPicturesLayout(
           cameraPoses.map((d, i) => {
@@ -165,8 +165,8 @@ export default function Carousel () {
 
             last = obj
 
-            if (isHovered) setHoveredLayout(obj)
-            if (isSelected) setSelectedLayout(obj)
+            if (isHovered) hoveredLayout.current = obj
+            if (isSelected) selectedLayout.current = obj
 
             return obj
           })
@@ -176,52 +176,42 @@ export default function Carousel () {
     [windowSider, context, cameraPoses, hovered, selected]
   )
 
-  useEffect(
-    () => {
-      if (context) {
-        const { width, height } = getSize(containerRef.current)
+  if (context) {
+    const { width, height } = getSize(containerRef.current)
+    context.clearRect(0, 0, width, height)
+    picturesLayout.forEach((d, i) => {
+      if (imgs[d.item.photoUri]) {
+        const imgWidth = imgs[d.item.photoUri].width
+        const imgHeight = imgs[d.item.photoUri].height
+        const ratio = imgWidth / large
+        const sx = (imgWidth / 2) - (d.width * ratio * 0.5)
+        const sy = 0
 
-        update.countObj.value += 1
-        setUpdate(update)
+        context.globalAlpha = (d.hovered || d.selected) ? 1 : 0.5
+        context.drawImage(
+          imgs[d.item.photoUri],
+          sx,
+          sy,
+          d.width * ratio,
+          imgHeight,
 
-        context.clearRect(0, 0, width, height)
-
-        picturesLayout.forEach((d, i) => {
-          if (imgs[d.item.photoUri]) {
-            const imgWidth = imgs[d.item.photoUri].width
-            const imgHeight = imgs[d.item.photoUri].height
-            const ratio = imgWidth / large
-            const sx = (imgWidth / 2) - (d.width * ratio * 0.5)
-            const sy = 0
-
-            context.globalAlpha = (d.hovered || d.selected) ? 1 : 0.5
-            context.drawImage(
-              imgs[d.item.photoUri],
-              sx,
-              sy,
-              d.width * ratio,
-              imgHeight,
-
-              d.x,
-              0,
-              d.width,
-              height
-            )
-          } else {
-            context.fillStyle = d.hovered ? 'white' : 'grey'
-            context.fillRect(
-              d.x,
-              0,
-              d.width,
-              height
-            )
-            context.fillStyle = 'black'
-          }
-        })
+          d.x,
+          0,
+          d.width,
+          height
+        )
+      } else {
+        context.fillStyle = d.hovered ? 'white' : 'grey'
+        context.fillRect(
+          d.x,
+          0,
+          d.width,
+          height
+        )
+        context.fillStyle = 'black'
       }
-    },
-    [context, picturesLayout, imgs]
-  )
+    })
+  }
 
   useEffect(
     () => {
@@ -260,10 +250,10 @@ export default function Carousel () {
 
   const eventsFn = {
     onMouseMove: (e) => {
-      const dX = !selectedLayout && hoveredLayout
+      const dX = !selectedLayout.current && hoveredLayout.current
         ? e.movementX < 0
-          ? e.clientX - (hoveredLayout.width * 0.5) + hoveredLayout.normalWidth
-          : e.clientX + (hoveredLayout.width * 0.5)
+          ? e.clientX - (hoveredLayout.current.width * 0.5) + hoveredLayout.current.normalWidth
+          : e.clientX + (hoveredLayout.current.width * 0.5)
         : e.clientX
       const pictureHovered = picturesLayout
         .find((d) => d.x <= dX && (d.x + d.width) >= dX)
@@ -290,15 +280,15 @@ export default function Carousel () {
 
     <SVGCartridge
       large={large}
-      hoveredLayout={hoveredLayout}
-      selectedLayout={selectedLayout}
+      hoveredLayout={hoveredLayout.current}
+      selectedLayout={selectedLayout.current}
       eventsFn={eventsFn}
     />
 
     <Canvas ref={canvasRef} />
 
     {
-      selectedLayout && <SvgDnG>
+      selectedLayout.current && <SvgDnG>
         <g transform={`translate(0, ${moduleHeight * 0.5})`}>
           <line
             x1={0}
@@ -309,14 +299,14 @@ export default function Carousel () {
             stroke={green}
           />
           <g
-            transform={`translate(${selectedLayout.x}, 0)`}
+            transform={`translate(${selectedLayout.current.x}, 0)`}
           >
             <rect
               style={{
                 cursor: !dragging && 'grab'
               }}
               y={-15}
-              width={selectedLayout.width}
+              width={selectedLayout.current.width}
               height={30}
               rx={15}
               ry={15}

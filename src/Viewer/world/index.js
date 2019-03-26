@@ -47,7 +47,7 @@ export default function WorldComponent (props) {
   const [scan] = useScan()
 
   const [[meshGeometry], [pointCloudGeometry]] = useScanFiles(scan)
-  const [viewport, eventFns, resetViewport2d] = useViewport2d(
+  const [viewport, event2dFns, resetViewport2d] = useViewport2d(
     () => {
       let width
       let height
@@ -66,6 +66,9 @@ export default function WorldComponent (props) {
   )
   const [, setReset3dView] = useReset3dView()
   const [, setReset2dView] = useReset2dView()
+  const eventFns = selectedCamera
+    ? event2dFns
+    : {}
 
   useEffect(
     () => {
@@ -121,21 +124,27 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
-      if (world) world.setViewport(...viewport)
+      if (world) {
+        world.setViewport(...viewport)
+      }
     },
     [world, viewport]
   )
 
   useEffect(
     () => {
-      if (world && scan && scan.workspace) world.setWorkSpace(scan.workspace)
+      if (world && scan && scan.workspace) {
+        world.setWorkSpace(scan.workspace)
+      }
     },
     [world, scan]
   )
 
   useEffect(
     () => {
-      if (world && scan && scan.camera) world.setCamera(scan.camera)
+      if (world && scan && scan.camera) {
+        world.setCamera(scan.camera)
+      }
     },
     [world, scan, meshGeometry, pointCloudGeometry]
   )
@@ -159,9 +168,11 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
-      if (world) world.setSelectedCamera(selectedCamera)
-      if (lastSelectedCamera.camera !== selectedCamera) resetViewport2d()
-      lastSelectedCamera.camera = selectedCamera
+      if (world) {
+        world.setSelectedCamera(selectedCamera)
+        if (lastSelectedCamera.camera !== selectedCamera) resetViewport2d()
+        lastSelectedCamera.camera = selectedCamera
+      }
     },
     [world, selectedCamera]
   )
