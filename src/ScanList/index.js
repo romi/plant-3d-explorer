@@ -1,11 +1,11 @@
-import React, { useState, memo } from 'react'
+import React, { useState } from 'react'
 import { omit } from 'lodash'
 import { FormattedMessage } from 'react-intl'
-import { Transition } from 'react-spring/renderprops'
+import { Global } from '@emotion/core'
 
 import styled from '@emotion/styled'
 
-import { H1 } from 'common/styles/UI/Text/titles'
+import { H1, H2 } from 'common/styles/UI/Text/titles'
 import { green, grey } from 'common/styles/colors'
 
 import { useSearchQuery, useScans } from 'flow/scans/accessors'
@@ -26,8 +26,16 @@ const Container = styled.div({
   position: 'relative'
 })
 
-const AppTitle = styled.div({
-  height: 100
+const AppHeader = styled.div({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  paddingBottom: 50
+})
+
+const AppIntro = styled(H2)({
+  display: 'block',
+  color: green
 })
 
 const TaintedFormattedMessage = styled((props) => <span className={props.className}>
@@ -142,63 +150,33 @@ export default function () {
   ]
 
   return <Container>
+    <Global styles={{
+      'body': {
+        overflowY: 'scroll'
+      }
+    }} />
     <div style={{ position: 'relative' }}>
-      <AppTitle>
+      <AppHeader>
         <img src={Logo} alt='' />
-      </AppTitle>
+
+        <AppIntro>
+          <FormattedMessage id='app-intro' />
+        </AppIntro>
+      </AppHeader>
 
       <Search search={search} onSearch={setSearch} />
 
       <br />
 
-      <Filters />
-
-      <Transition
-        items={elements} keys={item => item.key}
-        from={{
-          transform: 'translate3d(' + (!search ? -window.innerWidth : window.innerWidth) + 'px,0px,0) skewX(-5deg)',
-          opacity: 0.9,
-          deviation: 30
-        }}
-        enter={{
-          transform: 'translate3d(0,0px,0) skewX(0deg)',
-          opacity: 1,
-          deviation: 0
-        }}
-        leave={{
-          transform: 'translate3d(' + (!search ? window.innerWidth : -window.innerWidth) + 'px,0px,0) skewX(5deg)',
-          opacity: 0.9,
-          deviation: 30
+      <div
+        key={'result'}
+        style={{
+          position: 'absolute',
+          width: '100%'
         }}
       >
-        {(item) => (props) => {
-          return <div
-            style={{
-              ...omit(props, ['deviation']),
-              position: 'absolute',
-              width: '100%',
-              filter: `url("#motionblur-${Math.round(props.deviation)})`
-            }}
-            key={item.key}
-          >
-            {item.element}
-          </div>
-        }}
-      </Transition>
+        {elements[0].element}
+      </div>
     </div>
   </Container>
 }
-
-const Filters = memo(() => {
-  return <svg xmlns='http://www.w3.org/2000/svg' version='1.1' height={0} style={{ position: 'absolute' }}>
-    <defs>
-      {
-        Array(30).fill().map((_, i) => {
-          return <filter key={`motionblur-${i}`} id={`motionblur-${i}`}>
-            <feGaussianBlur in='SourceGraphic' stdDeviation={i + ',0'} />
-          </filter>
-        })
-      }
-    </defs>
-  </svg>
-})

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, memo } from 'react'
 import { useWindowSize } from 'react-use'
 import styled from '@emotion/styled'
 
@@ -70,7 +70,6 @@ const CTAWording = styled.text({
 const getSize = (elem) => elem.getBoundingClientRect()
 
 export default function Carousel () {
-  const intl = useFormatMessage()
   const canvasRef = useRef(null)
   const containerRef = useRef(null)
   const windowSider = useWindowSize()
@@ -224,34 +223,6 @@ export default function Carousel () {
     [context, picturesLayout, imgs]
   )
 
-  const eventsFn = {
-    onMouseMove: (e) => {
-      const dX = !selectedLayout && hoveredLayout
-        ? e.movementX < 0
-          ? e.clientX - (hoveredLayout.width * 0.5) + hoveredLayout.normalWidth
-          : e.clientX + (hoveredLayout.width * 0.5)
-        : e.clientX
-      const pictureHovered = picturesLayout
-        .find((d) => d.x <= dX && (d.x + d.width) >= dX)
-
-      if (pictureHovered && hovered !== pictureHovered.item) {
-        setHovered(pictureHovered ? pictureHovered.item : null)
-      }
-    },
-    onMouseOut: (e) => {
-      setHovered(null)
-    },
-    onClick: () => {
-      if (hovered) {
-        setSelected(
-          (selected && selected.id === hovered.id)
-            ? null
-            : hovered
-        )
-      }
-    }
-  }
-
   useEffect(
     () => {
       const handler = (e) => {
@@ -287,77 +258,43 @@ export default function Carousel () {
     [dragging, picturesLayout, selectedLayout]
   )
 
+  const eventsFn = {
+    onMouseMove: (e) => {
+      const dX = !selectedLayout && hoveredLayout
+        ? e.movementX < 0
+          ? e.clientX - (hoveredLayout.width * 0.5) + hoveredLayout.normalWidth
+          : e.clientX + (hoveredLayout.width * 0.5)
+        : e.clientX
+      const pictureHovered = picturesLayout
+        .find((d) => d.x <= dX && (d.x + d.width) >= dX)
+
+      if (pictureHovered && hovered !== pictureHovered.item) {
+        setHovered(pictureHovered ? pictureHovered.item : null)
+      }
+    },
+    onMouseOut: (e) => {
+      setHovered(null)
+    },
+    onClick: () => {
+      if (hovered) {
+        setSelected(
+          (selected && selected.id === hovered.id)
+            ? null
+            : hovered
+        )
+      }
+    }
+  }
+
   return <Container ref={containerRef}>
-    <Svg>
-      <defs>
-        <filter id='pictureFilter'>
-          <feMorphology operator='erode' radius='2' />
-        </filter>
-      </defs>
-      <g
-        onMouseMove={eventsFn.onMouseMove}
-        onMouseLeave={eventsFn.onMouseOut}
-        onClick={eventsFn.onClick}
-      >
-        {
-          (!selectedLayout && hoveredLayout) && <g
-            transform={`translate(${hoveredLayout.x}, 0)`}
-          >
-            <rect
-              width={large}
-              height={moduleHeight + 30}
-              y={0}
-              fill={green}
-              rx={2}
-              ry={2}
-            />
-            <CTAWording
-              x={10}
-              y={20}
-            >
-              {intl('carrousel-open')}
-            </CTAWording>
-            <image
-              x={large - (10 + 16)}
-              y={7}
-              xlinkHref={openIco}
-            />
-          </g>
-        }
-        {
-          selectedLayout && <g
-            transform={`translate(${selectedLayout.x}, 0)`}
-          >
-            <rect
-              width={large}
-              height={moduleHeight + 30}
-              y={0}
-              fill={green}
-              rx={2}
-              ry={2}
-            />
-            <CTAWording
-              x={10}
-              y={20}
-            >
-              {intl('carrousel-close')}
-            </CTAWording>
-            <image
-              x={large - (10 + 16)}
-              y={5}
-              xlinkHref={closeIco}
-            />
-          </g>
-        }
-        <rect
-          width='100%'
-          height='100%'
-          x={0}
-          y={30}
-          fill={'black'}
-        />
-      </g>
-    </Svg>
+
+    <SVGCartridge
+      large={large}
+      hoveredLayout={hoveredLayout}
+      selectedLayout={selectedLayout}
+      eventsFn={eventsFn}
+    />
+
     <Canvas ref={canvasRef} />
 
     {
@@ -405,6 +342,76 @@ export default function Carousel () {
     }
   </Container>
 }
+
+const SVGCartridge = memo(({ hoveredLayout, selectedLayout, large, eventsFn }) => {
+  const intl = useFormatMessage()
+
+  return <Svg>
+    <g
+      onMouseMove={eventsFn.onMouseMove}
+      onMouseLeave={eventsFn.onMouseOut}
+      onClick={eventsFn.onClick}
+    >
+      {
+        (!selectedLayout && hoveredLayout) && <g
+          transform={`translate(${hoveredLayout.x}, 0)`}
+        >
+          <rect
+            width={large}
+            height={moduleHeight + 30}
+            y={0}
+            fill={green}
+            rx={2}
+            ry={2}
+          />
+          <CTAWording
+            x={10}
+            y={20}
+          >
+            {intl('carrousel-open')}
+          </CTAWording>
+          <image
+            x={large - (10 + 16)}
+            y={7}
+            xlinkHref={openIco}
+          />
+        </g>
+      }
+      {
+        selectedLayout && <g
+          transform={`translate(${selectedLayout.x}, 0)`}
+        >
+          <rect
+            width={large}
+            height={moduleHeight + 30}
+            y={0}
+            fill={green}
+            rx={2}
+            ry={2}
+          />
+          <CTAWording
+            x={10}
+            y={20}
+          >
+            {intl('carrousel-close')}
+          </CTAWording>
+          <image
+            x={large - (10 + 16)}
+            y={5}
+            xlinkHref={closeIco}
+          />
+        </g>
+      }
+      <rect
+        width='100%'
+        height='100%'
+        x={0}
+        y={30}
+        fill={'black'}
+      />
+    </g>
+  </Svg>
+})
 
 /**
 |--------------------------------------------------

@@ -131,7 +131,7 @@ export default function WorldComponent (props) {
     () => {
       if (world && scan && scan.workspace) world.setWorkSpace(scan.workspace)
     },
-    [world, scan, meshGeometry, pointCloudGeometry]
+    [world, scan]
   )
 
   useEffect(

@@ -4,7 +4,7 @@ const initialState = {
     pointCloud: true,
     skeleton: true,
     angles: false,
-    cameras: true
+    cameras: false
   }
 }
 
