@@ -59,6 +59,11 @@ export default class World {
     this.setControls()
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true })
+    this.renderer.setPixelRatio(
+      window.devicePixelRatio
+        ? window.devicePixelRatio
+        : 1
+    )
     this.renderer.shadowMap.enabled = true
     this.elem.appendChild(this.renderer.domElement)
     this.setSize(width, height)

@@ -5,7 +5,7 @@ import { Global } from '@emotion/core'
 
 import styled from '@emotion/styled'
 
-import { H1 } from 'common/styles/UI/Text/titles'
+import { H1, H2 } from 'common/styles/UI/Text/titles'
 import { green, grey } from 'common/styles/colors'
 
 import { useSearchQuery, useScans } from 'flow/scans/accessors'
@@ -26,8 +26,16 @@ const Container = styled.div({
   position: 'relative'
 })
 
-const AppTitle = styled.div({
-  height: 100
+const AppHeader = styled.div({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  paddingBottom: 50
+})
+
+const AppIntro = styled(H2)({
+  display: 'block',
+  color: green
 })
 
 const TaintedFormattedMessage = styled((props) => <span className={props.className}>
@@ -148,9 +156,13 @@ export default function () {
       }
     }} />
     <div style={{ position: 'relative' }}>
-      <AppTitle>
+      <AppHeader>
         <img src={Logo} alt='' />
-      </AppTitle>
+
+        <AppIntro>
+          <FormattedMessage id='app-intro' />
+        </AppIntro>
+      </AppHeader>
 
       <Search search={search} onSearch={setSearch} />
 

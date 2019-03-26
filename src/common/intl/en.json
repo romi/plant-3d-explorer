@@ -3,7 +3,7 @@
   "hello-world": "Hello World",
 
   "app-title": "SCAN",
-  "app-intro": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+  "app-intro": "Review 3D plant scans by matching them with their photos and data.",
 
   "filter-title": "Filter results",
   "filter-placeholder": "Type a keyword",
@@ -40,7 +40,7 @@
   "carrousel-close": "Close",
 
   "angles-title": "Divergence angles",
-  "angles-tooltip": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+  "angles-tooltip": "Divergence angles are the angular differences between two consecutive organs. In the graph below, the angles are presented from bottom to top, starting with the angle between organs 1 and 2. The ideal angle is represented by the dotted line and corresponds to the golden angle of 137.5°.",
   "angles-legend-automated": "Automated measure",
   "angles-legend-manuel": "Manual measure",
   "angles-axis-y": "Organ order"
