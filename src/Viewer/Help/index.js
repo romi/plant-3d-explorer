@@ -19,6 +19,9 @@ const Container = styled.div({
   position: 'absolute',
   bottom: 20,
   right: 20,
+  zIndex: 1
+})
+const Background = styled.div({
   borderRadius: 2,
   background: Color(darkGreen).alpha(0.4).toString(),
   padding: 8,
@@ -45,10 +48,12 @@ export default function Help () {
   const [ selectedCamera ] = useSelectedcamera()
   return <Container>
     <Tooltip>
-      <img
-        alt=''
-        src={helpIcon}
-      />
+      <Background>
+        <img
+          alt=''
+          src={helpIcon}
+        />
+      </Background>
       <TooltipContent
         top
         style={{

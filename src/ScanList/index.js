@@ -168,13 +168,7 @@ export default function () {
 
       <br />
 
-      <div
-        key={'result'}
-        style={{
-          position: 'absolute',
-          width: '100%'
-        }}
-      >
+      <div key={'result'}>
         {elements[0].element}
       </div>
     </div>

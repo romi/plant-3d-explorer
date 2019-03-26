@@ -95,7 +95,7 @@ export default class World {
     this.controls.enableDamping = true
     this.controls.dampingFactor = 0.30
     this.controls.rotateSpeed = 0.2
-    this.controls.zoomSpeed = 0.4
+    this.controls.zoomSpeed = 0.7
     this.controls.panSpeed = 0.4
     this.controls.screenSpacePanning = false
     this.controls.minDistance = 5
