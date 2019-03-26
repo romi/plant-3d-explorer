@@ -1,7 +1,7 @@
-import React, { useState, memo } from 'react'
+import React, { useState } from 'react'
 import { omit } from 'lodash'
 import { FormattedMessage } from 'react-intl'
-import { Transition } from 'react-spring/renderprops'
+import { Global } from '@emotion/core'
 
 import styled from '@emotion/styled'
 
@@ -142,6 +142,11 @@ export default function () {
   ]
 
   return <Container>
+    <Global styles={{
+      'body': {
+        overflowY: 'scroll'
+      }
+    }} />
     <div style={{ position: 'relative' }}>
       <AppTitle>
         <img src={Logo} alt='' />
@@ -151,54 +156,15 @@ export default function () {
 
       <br />
 
-      <Filters />
-
-      <Transition
-        items={elements} keys={item => item.key}
-        from={{
-          transform: 'translate3d(' + (!search ? -window.innerWidth : window.innerWidth) + 'px,0px,0) skewX(-5deg)',
-          opacity: 0.9,
-          deviation: 30
-        }}
-        enter={{
-          transform: 'translate3d(0,0px,0) skewX(0deg)',
-          opacity: 1,
-          deviation: 0
-        }}
-        leave={{
-          transform: 'translate3d(' + (!search ? window.innerWidth : -window.innerWidth) + 'px,0px,0) skewX(5deg)',
-          opacity: 0.9,
-          deviation: 30
+      <div
+        key={'result'}
+        style={{
+          position: 'absolute',
+          width: '100%'
         }}
       >
-        {(item) => (props) => {
-          return <div
-            style={{
-              ...omit(props, ['deviation']),
-              position: 'absolute',
-              width: '100%',
-              filter: `url("#motionblur-${Math.round(props.deviation)})`
-            }}
-            key={item.key}
-          >
-            {item.element}
-          </div>
-        }}
-      </Transition>
+        {elements[0].element}
+      </div>
     </div>
   </Container>
 }
-
-const Filters = memo(() => {
-  return <svg xmlns='http://www.w3.org/2000/svg' version='1.1' height={0} style={{ position: 'absolute' }}>
-    <defs>
-      {
-        Array(30).fill().map((_, i) => {
-          return <filter key={`motionblur-${i}`} id={`motionblur-${i}`}>
-            <feGaussianBlur in='SourceGraphic' stdDeviation={i + ',0'} />
-          </filter>
-        })
-      }
-    </defs>
-  </svg>
-})

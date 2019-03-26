@@ -2,12 +2,13 @@
 import * as THREE from 'three'
 
 import OrbitControls from 'common/thiers/OrbitController'
+import { green } from 'common/styles/colors'
 
 import Mesh from './entities/mesh'
 import PointCloud from './entities/pointCloud'
 import Skeleton from './entities/skeleton'
 import Angles from './entities/angles'
-import { green } from 'common/styles/colors'
+import Workspace from './entities/workspace'
 
 const clock = new THREE.Clock()
 
@@ -52,7 +53,7 @@ export default class World {
     this.scene.add(this.viewerObjects)
 
     this.perspectiveCamera = new THREE.PerspectiveCamera(35, this.width / this.height, 1, 5000)
-    this.perspectiveCamera.position.set(900, 0, 0)
+    this.perspectiveCamera.position.set(1000, 0, 0)
     this.camera = this.perspectiveCamera
 
     this.setControls()
@@ -142,20 +143,7 @@ export default class World {
 
   setWorkSpaceBox (workspace) {
     if (this.viewportBox) this.viewerObjects.remove(this.viewportBox)
-
-    const geometry = new THREE.BoxGeometry(
-      (workspace.x[1] - workspace.x[0]),
-      (workspace.y[1] - workspace.y[0]),
-      (workspace.z[1] - workspace.z[0])
-    )
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true })
-    const box = new THREE.Mesh(geometry, material)
-
-    box.position.x = (workspace.x[1] + workspace.x[0]) / 2
-    box.position.y = (workspace.y[1] + workspace.y[0]) / 2
-    box.position.z = (workspace.z[1] + workspace.z[0]) / 2
-    this.viewportBox = box
-    // this.viewerObjects.add(this.viewportBox)
+    this.viewportBox = new Workspace(workspace, this.viewerObjects)
   }
 
   setWorkSpace (workspace) {
@@ -179,7 +167,7 @@ export default class World {
     this.CameraPointsGroup = new THREE.Object3D()
 
     points.forEach((p) => {
-      const material = new THREE.MeshPhongMaterial({ color: 0x333333, wireframe: true, transparent: true, opacity: 0.1 })
+      const material = new THREE.MeshPhongMaterial({ color: green, wireframe: true, transparent: true, opacity: 0.1 })
       const { v3position, objM4rotation } = p
       const coneGeeometry = new THREE.ConeGeometry(10, 25, 4)
       const cone = new THREE.Mesh(coneGeeometry, material)
@@ -200,11 +188,9 @@ export default class World {
       this.CameraPointsGroup.children.forEach((d) => {
         if (camera && d.data.id === camera.id) {
           d.material.wireframe = false
-          d.material.color.set(green)
           d.material.opacity = 1
         } else {
           d.material.wireframe = true
-          d.material.color.set('#a1a1a1')
           d.material.opacity = 0.1
         }
       })
