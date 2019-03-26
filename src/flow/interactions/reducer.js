@@ -11,6 +11,11 @@ const initialState = {
 
 export default function settingsReducer (state = initialState, action) {
   switch (action.type) {
+    case 'RESET_INTERACTIONS':
+      return {
+        ...state,
+        ...initialState
+      }
     case 'HOVER_CAMERA':
       return {
         ...state,

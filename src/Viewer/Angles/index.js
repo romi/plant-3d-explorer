@@ -141,7 +141,9 @@ export default function () {
           >
             {
               ifHighligthed
-                ? (scan.data.angles.angles[highlightedAngle] * 57.2958).toFixed(0) + ' °'
+                ? scan.data.angles.angles[highlightedAngle] !== null
+                  ? (scan.data.angles.angles[highlightedAngle] * 57.2958).toFixed(0) + ' °'
+                  : 'NA'
                 : ''
             }
           </Value>
@@ -157,7 +159,9 @@ export default function () {
             >
               {
                 ifHighligthed
-                  ? (scan.data.angles.measured_angles[highlightedAngle] * 57.2958).toFixed(0) + ' °'
+                  ? scan.data.angles.measured_angles[highlightedAngle] !== null
+                    ? (scan.data.angles.measured_angles[highlightedAngle] * 57.2958).toFixed(0) + ' °'
+                    : 'NA'
                   : ''
               }
             </Value>

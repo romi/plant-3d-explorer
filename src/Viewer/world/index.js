@@ -172,6 +172,7 @@ export default function WorldComponent (props) {
         world.setSelectedCamera(selectedCamera)
         if (lastSelectedCamera.camera !== selectedCamera) resetViewport2d()
         lastSelectedCamera.camera = selectedCamera
+        if (!selectedCamera) world.setLayers(layers)
       }
     },
     [world, selectedCamera]

@@ -207,7 +207,7 @@ export default class World {
 
     if (camera) {
       this.scene.background = this.blackBackground
-      this.CameraPointsGroup.visible = false
+      if (this.CameraPointsGroup) this.CameraPointsGroup.visible = false
 
       this.originPosition = new THREE.Vector3().copy(this.perspectiveCamera.position)
       this.originQuaternion = new THREE.Quaternion().copy(this.perspectiveCamera.quaternion)

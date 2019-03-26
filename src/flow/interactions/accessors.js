@@ -1,5 +1,15 @@
 import useAccessor from 'rd/tools/hooks/accessor'
 
+export const useResetInteraction = useAccessor(
+  [],
+  [
+    (value) => ({
+      type: 'RESET_INTERACTIONS',
+      value
+    })
+  ]
+)
+
 export const useHoveredCamera = useAccessor(
   [
     (state) => {
