@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react'
 import styled from '@emotion/styled'
-import { filter } from 'lodash'
 
 import { useElementMouse } from 'rd/tools/hooks/mouse'
 
@@ -171,7 +170,10 @@ export default function WorldComponent (props) {
     () => {
       if (world) {
         world.setLayers(layers)
-        world.setHighlightedAngle(filter([selectedAngle, hoveredAngle]))
+        world.setHighlightedAngle(
+          [selectedAngle, hoveredAngle]
+            .filter((d) => d !== null && d !== undefined)
+        )
       }
     },
     [world, hoveredAngle, selectedAngle, layers]
