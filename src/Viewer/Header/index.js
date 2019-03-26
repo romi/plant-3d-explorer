@@ -14,6 +14,8 @@ import { DocLink } from 'ScanList/list/index'
 
 import Logo from './assets/ico.logo_minified.25x31.svg'
 import chevronIco from './assets/ico.chevron.8x12.svg'
+import { useResetSettings } from 'flow/settings/accessors'
+import { useResetInteraction } from 'flow/interactions/accessors'
 
 export const headerHeight = 80
 
@@ -72,12 +74,21 @@ const MarginedDocLink = styled(DocLink)({
 
 export default function () {
   const [scan] = useScan()
+  const [resetSettings] = useResetSettings()
+  const [resetInteractions] = useResetInteraction()
+
   return <Container>
     <Column>
       <img src={Logo} alt='' />
     </Column>
     <Column>
-      <AllScans to={landingUrl}>
+      <AllScans
+        to={landingUrl}
+        onClick={() => {
+          resetSettings()
+          resetInteractions()
+        }}
+      >
         <BackH2>
           <FormattedMessage id='header-back' />
         </BackH2>

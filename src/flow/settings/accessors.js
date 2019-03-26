@@ -1,5 +1,15 @@
 import useAccessor from 'rd/tools/hooks/accessor'
 
+export const useResetSettings = useAccessor(
+  [],
+  [
+    (value) => ({
+      type: 'RESET_SETTINGS',
+      value
+    })
+  ]
+)
+
 export const useLayers = useAccessor(
   [
     (state) => {

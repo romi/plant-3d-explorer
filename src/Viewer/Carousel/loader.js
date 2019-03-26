@@ -15,6 +15,7 @@ export default function useImgLoader (urls) {
 
   useEffect(
     () => {
+      let unmounted = false
       urls.forEach((url) => {
         const image = new window.Image()
         image.crossOrigin = 'Anonymous'
@@ -22,23 +23,29 @@ export default function useImgLoader (urls) {
         image.height = moduleHeight * 2
 
         image.onload = () => {
-          const croppedImg = new window.Image()
-          croppedImg.crossOrigin = 'Anonymous'
-          context.drawImage(
-            image,
-            0,
-            0,
-            imgWidth,
-            moduleHeight
-          )
-          croppedImg.src = canvas.toDataURL()
-          tmpImgs[url] = croppedImg
+          if (!unmounted) {
+            const croppedImg = new window.Image()
+            croppedImg.crossOrigin = 'Anonymous'
+            context.drawImage(
+              image,
+              0,
+              0,
+              imgWidth,
+              moduleHeight
+            )
+            croppedImg.src = canvas.toDataURL()
+            tmpImgs[url] = croppedImg
 
-          setImgs({ ...tmpImgs })
+            setImgs({ ...tmpImgs })
+          }
         }
 
         image.src = url
       })
+
+      return () => {
+        unmounted = true
+      }
     },
     [urls]
   )
