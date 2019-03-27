@@ -2,10 +2,11 @@ import React from 'react'
 import styled from '@emotion/styled'
 import Color from 'color'
 import { FormattedMessage } from 'react-intl'
+import { omit } from 'lodash'
 
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
 
-import { useSelectedcamera } from 'flow/interactions/accessors'
+import { useSelectedcamera, useHoveredCamera } from 'flow/interactions/accessors'
 
 import { darkGreen } from 'common/styles/colors'
 import { H3 } from 'common/styles/UI/Text/titles'
@@ -15,11 +16,14 @@ import leftMouseIco from './assets/ico.left_click_to_rotate.14x20.svg'
 import rightMouseIco from './assets/ico.right_click_to_pan.14x20.svg'
 import WheelMouseIco from './assets/ico.scroll_to_zoom.14x20.svg'
 
-const Container = styled.div({
+const Container = styled((props) => <div {...omit(props, 'onTop')} />)({
   position: 'absolute',
   bottom: 20,
-  right: 20,
-  zIndex: 1
+  right: 20
+}, (props) => {
+  return {
+    zIndex: !props.onTop ? 1 : 'normal'
+  }
 })
 const Background = styled.div({
   borderRadius: 2,
@@ -45,8 +49,9 @@ const Content = styled.div({
 })
 
 export default function Help () {
+  const [ hoveredCamera ] = useHoveredCamera()
   const [ selectedCamera ] = useSelectedcamera()
-  return <Container>
+  return <Container onTop={!!(hoveredCamera || selectedCamera)}>
     <Tooltip>
       <Background>
         <img

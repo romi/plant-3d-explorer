@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from '@emotion/styled'
 import { FormattedMessage } from 'react-intl'
+import { first } from 'lodash'
 
 import { H2, H3 } from 'common/styles/UI/Text/titles'
 import { grey, green, orange, lightGrey } from 'common/styles/colors'
@@ -101,17 +102,13 @@ export default function () {
   const [hoveredAngle] = useHoveredAngle()
   const [selectedAngle] = useSelectedAngle()
 
-  const highlightedAngle = hoveredAngle || selectedAngle
+  const highlightedAngle = first([hoveredAngle, selectedAngle]
+    .filter((value) => ((value !== null) && (value !== undefined))))
 
   if (!(scan && scan.data.angles)) return null
 
-  // Debug
-  // @TODO remove
-  // scan.data.angles.measured_angles = scan.data.angles.angles
-  //   .map((d) => Math.random() * Math.PI)
-
   const ifManualData = !!scan.data.angles.measured_angles
-  const ifHighligthed = (highlightedAngle !== null) && (highlightedAngle !== undefined)
+  const ifHighligthed = highlightedAngle !== null && highlightedAngle !== undefined
 
   return <Container>
     <Top>
