@@ -28,7 +28,6 @@ const Input = styled.input({
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
   overflow: 'hidden',
-  letterSpacing: '2px',
 
   '&::placeholder': {
     opacity: 0.5,

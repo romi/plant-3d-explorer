@@ -4,6 +4,7 @@ import { Global, css } from '@emotion/core'
 import InterRegular from './assets/Inter-Regular.ttf'
 import InterMedium from './assets/Inter-Medium.ttf'
 import InterBold from './assets/Inter-Bold.ttf'
+import { green, darkGreen } from './colors'
 
 const rules = css(`
   @font-face {
@@ -54,18 +55,22 @@ const rules = css(`
     background-color: transparent
   }
 
+  /* width */
   ::-webkit-scrollbar {
-    width: 12px;
+    width: 10px;
+    height: 10px;
   }
-
+  /* Track */
   ::-webkit-scrollbar-track {
-    border-radius: 5px;
-    background: #606060;
+    background: rgba(151, 172, 163, 0.1);
   }
-
+  /* Handle */
   ::-webkit-scrollbar-thumb {
-    width: 3px;
-    background-color: #A7A7A7;
+    background: ${green};
+  }
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: ${darkGreen};
   }
 `)
 

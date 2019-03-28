@@ -25,7 +25,7 @@ const Container = styled.div({
   background: 'white',
   padding: '0px 40px',
 
-  gridTemplateColumns: '50px 29.5% 18% 15.2% 17% 220px',
+  gridTemplateColumns: '0.55fr 1fr 210px',
   display: 'grid',
   gridColumnGap: 0
 })
@@ -34,6 +34,10 @@ const Column = styled.div({
   display: 'flex',
   alignItems: 'center',
   height: '100%'
+})
+const InlineElement = styled.div({
+  display: 'flex',
+  alignItems: 'center'
 })
 
 const AllScans = styled((props) => <Link {...props} />)({
@@ -54,11 +58,18 @@ const Chevron = styled.img({
   marginTop: 2
 })
 
+const TypeContainer = styled.div({
+  marginRight: 35
+})
+
 const TypeWording = styled(H3)({
+  margin: 0,
+  marginBottom: 3,
   marginRight: 11
 })
 
 const TypeValue = styled(H3)({
+  margin: 0,
   textTransform: 'none',
   fontWeight: 700,
   color: darkGreen,
@@ -69,7 +80,8 @@ const TypeValue = styled(H3)({
 })
 
 const MarginedDocLink = styled(DocLink)({
-  marginRight: 10
+  marginRight: 10,
+  display: 'inline-block'
 })
 
 export default function () {
@@ -79,64 +91,80 @@ export default function () {
 
   return <Container>
     <Column>
-      <img src={Logo} alt='' />
+      <InlineElement style={{ marginRight: 10 }}>
+        <img src={Logo} alt='' />
+      </InlineElement>
+      <InlineElement>
+        <AllScans
+          to={landingUrl}
+          onClick={() => {
+            resetSettings()
+            resetInteractions()
+          }}
+        >
+          <BackH2>
+            <FormattedMessage id='header-back' />
+          </BackH2>
+        </AllScans>
+        <Chevron src={chevronIco} />
+        <H2>
+          {scan && scan.id}
+        </H2>
+      </InlineElement>
+    </Column>
+    <Column
+      style={{
+        marginRight: 50,
+        justifyContent: 'flex-end'
+      }}
+    >
+      <TypeContainer>
+        <TypeWording>
+          <FormattedMessage id='scanlist-sort-species' />
+        </TypeWording>
+        <TypeValue>
+          {scan && scan.metadata.species}
+        </TypeValue>
+      </TypeContainer>
+      <TypeContainer>
+        <TypeWording>
+          <FormattedMessage id='scanlist-sort-environment' />
+        </TypeWording>
+        <TypeValue>
+          {scan && scan.metadata.environment}
+        </TypeValue>
+      </TypeContainer>
+      <TypeContainer>
+        <TypeWording>
+          <FormattedMessage id='scanlist-sort-date' />
+        </TypeWording>
+        <TypeValue>
+          {scan && format(
+            new Date(scan.metadata.date),
+            'MMM DD YYYY HH:mm:ss'
+          )}
+        </TypeValue>
+      </TypeContainer>
     </Column>
     <Column>
-      <AllScans
-        to={landingUrl}
-        onClick={() => {
-          resetSettings()
-          resetInteractions()
+      <TypeContainer
+        style={{
+          justifyContent: 'space-between',
+          marginRight: 0
         }}
       >
-        <BackH2>
-          <FormattedMessage id='header-back' />
-        </BackH2>
-      </AllScans>
-      <Chevron src={chevronIco} />
-      <H2>
-        {scan && scan.id}
-      </H2>
-    </Column>
-    <Column>
-      <TypeWording>
-        <FormattedMessage id='scanlist-sort-species' />
-      </TypeWording>
-      <TypeValue>
-        {scan && scan.metadata.species}
-      </TypeValue>
-    </Column>
-    <Column>
-      <TypeWording>
-        <FormattedMessage id='scanlist-sort-environment' />
-      </TypeWording>
-      <TypeValue>
-        {scan && scan.metadata.environment}
-      </TypeValue>
-    </Column>
-    <Column>
-      <TypeWording>
-        <FormattedMessage id='scanlist-sort-date' />
-      </TypeWording>
-      <TypeValue>
-        {scan && format(
-          new Date(scan.metadata.date),
-          'MMM DD YYYY HH:mm:ss'
-        )}
-      </TypeValue>
-    </Column>
-    <Column>
-      {
-        scan && <MarginedDocLink href={scan.metadata.files.archive} target='_blank'>
-          <FormattedMessage id='scanlist-link-download' />
-        </MarginedDocLink>
-      }
-      {
-        scan && <MarginedDocLink href={scan.metadata.files.metadatas} target='_blank'>
-          <FormattedMessage id='scanlist-link-metadata' />
-        </MarginedDocLink>
-      }
+        {
+          scan && <MarginedDocLink href={scan.metadata.files.archive} target='_blank'>
+            <FormattedMessage id='scanlist-link-download' />
+          </MarginedDocLink>
+        }
+        {
+          scan && <MarginedDocLink href={scan.metadata.files.metadatas} target='_blank'>
+            <FormattedMessage id='scanlist-link-metadata' />
+          </MarginedDocLink>
+        }
 
+      </TypeContainer>
     </Column>
   </Container>
 }

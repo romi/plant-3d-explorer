@@ -183,7 +183,16 @@ export default function WorldComponent (props) {
       if (world) {
         world.setLayers(layers)
         world.setHighlightedAngle(
-          [selectedAngle, hoveredAngle]
+          [
+            selectedAngle && {
+              index: selectedAngle,
+              type: 'selected'
+            },
+            hoveredAngle && {
+              index: hoveredAngle,
+              type: 'hovered'
+            }
+          ]
             .filter((d) => d !== null && d !== undefined)
         )
       }
