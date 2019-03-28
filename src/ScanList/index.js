@@ -19,7 +19,7 @@ import Sorting from './sorting'
 
 const Container = styled.div({
   margin: 'auto',
-  maxWidth: 1270,
+  maxWidth: 1420,
   padding: '80px 60px',
   height: '100%',
   color: green,

@@ -28,7 +28,7 @@ export default class Angles {
         geometry,
         new EnhancedTHREE.LineMaterial({
           linewidth: 0.0105,
-          color: 0x78D89D,
+          color: 0x7ee7b0,
           dashed: false,
           depthTest: false,
           transparent: true,
@@ -60,10 +60,14 @@ export default class Angles {
 
   setHighlighted (indexes) {
     const nextIndexed = indexes.reduce((p, c) => {
-      return [...p, c, c + 1]
+      return [...p, c, { ...c, index: c.index + 1 }]
     }, [])
     this.group.children.forEach((child, i) => {
-      child.visible = nextIndexed.includes(i)
+      const ref = nextIndexed.find((d) => d.index === i)
+      child.visible = !!ref
+      child.material.color = ref && ref.type === 'selected'
+        ? new THREE.Color(0x84eee6)
+        : new THREE.Color(0x7ee7b0)
     })
   }
 }

@@ -17,6 +17,7 @@ export const moduleWidth = 300
 
 const Container = styled.div({
   padding: '30px 40px',
+  paddingTop: 12,
   paddingBottom: 19,
   width: moduleWidth,
   height: '100%',
@@ -39,7 +40,7 @@ const Title = styled(H2)({
 
 const HelpIcon = styled.img({
   marginLeft: 6,
-  marginBottom: -3,
+  marginBottom: -1,
   transition: 'all 0.15s ease',
 
   '&:hover': {
@@ -58,6 +59,7 @@ const LegendItem = styled.div({
   fontWeight: 700,
   display: 'flex',
   alignItems: 'center',
+  marginBottom: 5,
 
   '& *': {
     display: 'inline-block'
@@ -69,7 +71,6 @@ const Value = styled.div({
   opacity: 0.8,
   borderRadius: 1,
   padding: '0px 7px',
-  marginBottom: 5,
   letterSpacing: '0',
   transition: 'width 0.15s ease'
 }, (props) => {
@@ -94,7 +95,9 @@ const ValueWording = styled.span({
 
 const HelpContent = styled(H3)({
   width: 220,
-  padding: 10
+  padding: 10,
+  textTransform: 'initial',
+  lineHeight: '17px'
 })
 
 export default function () {

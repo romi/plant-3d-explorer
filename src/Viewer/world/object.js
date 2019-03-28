@@ -12,31 +12,14 @@ import Workspace from './entities/workspace'
 
 const clock = new THREE.Clock()
 
-function addShadowedLight (scene, x, y, z, color, intensity) {
-  const directionalLight = new THREE.DirectionalLight(color, intensity)
-  directionalLight.position.set(x, y, z)
-  scene.add(directionalLight)
-  directionalLight.castShadow = true
-  const d = 1
-  directionalLight.shadow.camera.left = -d
-  directionalLight.shadow.camera.right = d
-  directionalLight.shadow.camera.top = d
-  directionalLight.shadow.camera.bottom = -d
-  directionalLight.shadow.camera.near = 1
-  directionalLight.shadow.camera.far = 40000
-  directionalLight.shadow.mapSize.width = 1024
-  directionalLight.shadow.mapSize.height = 1024
-  directionalLight.shadow.bias = -0.001
-}
-
 export default class World {
   constructor (width, height, elem) {
     this.width = width
     this.height = height
     this.elem = elem
     this.scene = new THREE.Scene()
-    this.scene.background = new THREE.Color(0xe8e8e8)
-    this.originalBackground = new THREE.Color(0xe8e8e8)
+    this.scene.background = new THREE.Color(0xECF3F0)
+    this.originalBackground = new THREE.Color(0xECF3F0)
     this.blackBackground = new THREE.Color(0x232122)
     this.raycaster = new THREE.Raycaster()
     this.mouse = { x: 0, y: 0, moving: false }
@@ -44,9 +27,11 @@ export default class World {
     this.onHoverFn = () => {}
     this.unmounted = false
 
-    this.scene.add(new THREE.HemisphereLight(0x443333, 0x111122))
-    addShadowedLight(this.scene, 1, 1, 1, 0xffffff, 1.35)
-    addShadowedLight(this.scene, 0.5, 1, -1, 0xffaa00, 1)
+    var light = new THREE.HemisphereLight(0xBBBBBFF, 0xffffff, 0.5)
+    var helper = new THREE.HemisphereLightHelper(light, 10)
+    this.scene.add(light)
+    light.position.set(0, 0, -500)
+    this.scene.add(helper)
 
     this.cameraGroup = new THREE.Object3D()
     this.viewerObjects = new THREE.Object3D()
@@ -55,6 +40,11 @@ export default class World {
     this.perspectiveCamera = new THREE.PerspectiveCamera(35, this.width / this.height, 1, 5000)
     this.perspectiveCamera.position.set(1000, 0, 0)
     this.camera = this.perspectiveCamera
+
+    this.camLight = new THREE.PointLight(0xffffff)
+    this.camLight.position.set(0, 1, 0)
+    this.camera.add(this.camLight)
+    this.scene.add(this.camera)
 
     this.setControls()
 
@@ -215,6 +205,7 @@ export default class World {
       const imgDistance = 2000
       const fov = this.computeDynamicFOV(this.cameraData.model.params, imgDistance)
       const overlapCamera = new THREE.PerspectiveCamera(fov, this.width / this.height, 0.1, 5000)
+      overlapCamera.add(this.camLight)
 
       overlapCamera.position
         .copy(camera.v3position)
@@ -247,6 +238,8 @@ export default class World {
       this.overlapCamera = overlapCamera
       this.overlapCamera.data = camera
 
+      this.scene.remove(this.camera)
+      this.scene.add(overlapCamera)
       this.camera = this.overlapCamera
 
       this.scene.add(imgPlane)
@@ -256,7 +249,10 @@ export default class World {
       if (this.CameraPointsGroup) this.CameraPointsGroup.visible = true
       this.scene.background = this.originalBackground
 
+      this.scene.remove(this.camera)
       this.camera = this.perspectiveCamera
+      this.camera.add(this.camLight)
+      this.scene.add(this.camera)
       this.setAspectRatio()
       this.controls.enabled = true
     }

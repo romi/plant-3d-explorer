@@ -32,7 +32,7 @@ export default class Mesh {
 
     this.material = new THREE.ShaderMaterial({
       uniforms: {
-        color: { type: 'c', value: new THREE.Color(0x0077ff) },
+        color: { type: 'c', value: new THREE.Color(0x00A960) },
         zoom: { type: 'f', value: 1 }
       },
       vertexShader,

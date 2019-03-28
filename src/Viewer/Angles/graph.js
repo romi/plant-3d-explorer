@@ -24,7 +24,8 @@ const Container = styled.div({
 })
 
 const Title = styled(H3)({
-  textTransform: 'initial'
+  textTransform: 'initial',
+  letterSpacing: 0
 })
 
 const Content = styled.div({
@@ -91,9 +92,11 @@ const GoalHorizontalTick = styled(HorizontalTick)({
   color: darkGreen
 })
 
+const pointsOffset = 3
 const SVG = styled.svg((props) => ({
   width: props.width,
-  height: props.height
+  height: props.height + pointsOffset,
+  marginLeft: -pointsOffset
 }))
 
 const Area = styled.path({
@@ -143,8 +146,10 @@ const Interactor = styled.div({
   return {
     top: props.top,
     height: props.height,
-    background: props.selected || props.hovered
-      ? Color(green).alpha(0.7).toString()
+    background: (props.selected || props.hovered)
+      ? props.selected
+        ? Color(green).rotate(30).lighten(1.1).alpha(0.7).toString()
+        : Color(green).alpha(0.7).lighten(1.05).toString()
       : 'transparent',
 
     ...(
@@ -208,7 +213,7 @@ const HoveredPoint = styled.div({
 const horizontalScale = scaleLinear()
 const verticalScale = scaleLinear()
 const area = areaFactory()
-  .x0((d) => 0)
+  .x0((d) => pointsOffset)
   .x1((d) => d.x)
   .y((d) => d.y)
 const line = lineFactory()
@@ -246,14 +251,14 @@ const Chart = sceneWrapper(({ data, containerWidth, containerHeight }) => {
   const points = data.angles
     .map((rad, i) => {
       return {
-        x: horizontalScale(rad * 57.2958),
+        x: horizontalScale(rad * 57.2958) + pointsOffset,
         y: verticalScale(i + 0.5)
       }
     })
   const manualPoints = (!ifManualData ? [] : data.measured_angles)
     .map((rad, i) => {
       return {
-        x: horizontalScale((rad) * 57.2958),
+        x: horizontalScale((rad) * 57.2958) + pointsOffset,
         y: verticalScale(i + 0.5)
       }
     })

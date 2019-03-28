@@ -62,7 +62,6 @@ const SvgDnG = styled.svg({
 const CTAWording = styled.text({
   fontSize: 11,
   fill: 'white',
-  letterSpacing: 1,
   textTransform: 'uppercase',
   fontWeight: 600
 })
