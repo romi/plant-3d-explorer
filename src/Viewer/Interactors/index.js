@@ -5,20 +5,20 @@ import { omit } from 'lodash'
 import Color from 'color'
 
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
+import { IconStateCatcher } from 'rd/UI/Icon'
 
 import { useLayers } from 'flow/settings/accessors'
 import { useScan, useScanFiles } from 'flow/scans/accessors'
 
 import { darkGreen } from 'common/styles/colors'
 import { H3 } from 'common/styles/UI/Text/titles'
-import meshIco from 'common/assets/ico.mesh.21x21.svg'
-import pointCloudIco from 'common/assets/ico.point_cloud.21x21.svg'
-import skeletonIcon from 'common/assets/ico.skeleton.21x21.svg'
-import angleIco from 'common/assets/ico.internodes.21x21.svg'
 
-import cameraIco from './assets/ico.cameras.15x9.svg'
-import resetIco from './assets/ico.reset_view.14x14.svg'
 import { useReset2dView, useReset3dView, useSelectedcamera } from 'flow/interactions/accessors'
+
+import {
+  MeshIcon, PointCloudIcon, SkeletonIcon, InternodesIcon,
+  CamerasIcon, ResetIcon
+} from './icons'
 
 const Container = styled.div({
   position: 'absolute',
@@ -42,11 +42,9 @@ const CameraContainer = styled(Container)({
 
 const Interactor = styled(
   (props) => <div
-    {...omit(props, ['activated', 'isDisabled', 'img', 'onClick', 'isButton'])}
+    {...omit(props, ['activated', 'isDisabled', 'onClick', 'isButton'])}
     onClick={!props.isDisabled ? props.onClick : () => {}}
-  >
-    <img src={props.img} alt='' />
-  </div>
+  />
 )({
   width: 41,
   height: 30,
@@ -124,11 +122,18 @@ export function LayersInteractors () {
   return <Container>
     <Tooltip>
       <Interactor
-        img={meshIco}
         isDisabled={!meshGeometry}
         activated={layers.mesh}
         onClick={() => setLayers({ ...layers, mesh: !layers.mesh })}
-      />
+      >
+        <IconStateCatcher style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }} >
+          <MeshIcon isActivated={layers.mesh} />
+        </IconStateCatcher>
+      </Interactor>
       <TooltipContent>
         <H3>
           <FormattedMessage id='tooltip-mesh' />
@@ -138,11 +143,18 @@ export function LayersInteractors () {
 
     <Tooltip>
       <Interactor
-        img={pointCloudIco}
         isDisabled={!pointCloudGeometry}
         activated={layers.pointCloud}
         onClick={() => setLayers({ ...layers, pointCloud: !layers.pointCloud })}
-      />
+      >
+        <IconStateCatcher style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }} >
+          <PointCloudIcon isActivated={layers.pointCloud} />
+        </IconStateCatcher>
+      </Interactor>
       <TooltipContent>
         <H3>
           <FormattedMessage id='tooltip-pointcloud' />
@@ -152,11 +164,18 @@ export function LayersInteractors () {
 
     <Tooltip>
       <Interactor
-        img={skeletonIcon}
         isDisabled={!(scan && scan.data.skeleton)}
         activated={layers.skeleton}
         onClick={() => setLayers({ ...layers, skeleton: !layers.skeleton })}
-      />
+      >
+        <IconStateCatcher style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }} >
+          <SkeletonIcon isActivated={layers.skeleton} />
+        </IconStateCatcher>
+      </Interactor>
       <TooltipContent>
         <H3>
           <FormattedMessage id='tooltip-skeleton' />
@@ -166,11 +185,18 @@ export function LayersInteractors () {
 
     <Tooltip>
       <Interactor
-        img={angleIco}
         isDisabled={!(scan && scan.data.angles)}
         activated={layers.angles}
         onClick={() => setLayers({ ...layers, angles: !layers.angles })}
-      />
+      >
+        <IconStateCatcher style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }} >
+          <InternodesIcon isActivated={layers.angles} />
+        </IconStateCatcher>
+      </Interactor>
       <TooltipContent>
         <H3>
           <FormattedMessage id='tooltip-organs' />
@@ -190,10 +216,17 @@ export function CameraInteractors () {
     {
       !selectedCamera && <Tooltip>
         <Interactor
-          img={cameraIco}
           activated={layers.cameras}
           onClick={() => setLayers({ ...layers, cameras: !layers.cameras })}
-        />
+        >
+          <IconStateCatcher style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }} >
+            <CamerasIcon isActivated={layers.cameras} />
+          </IconStateCatcher>
+        </Interactor>
         <TooltipContent>
           <H3>
             <FormattedMessage
@@ -211,13 +244,20 @@ export function CameraInteractors () {
     <Tooltip>
       <Interactor
         isButton
-        img={resetIco}
         activated={false}
         onClick={() => selectedCamera
           ? (reset2dView && reset2dView.fn())
           : (reset3dView && reset3dView.fn())
         }
-      />
+      >
+        <IconStateCatcher style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }} >
+          <ResetIcon />
+        </IconStateCatcher>
+      </Interactor>
       <TooltipContent>
         <H3>
           <FormattedMessage id='tooltip-reset' />

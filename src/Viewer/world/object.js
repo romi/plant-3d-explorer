@@ -28,10 +28,8 @@ export default class World {
     this.unmounted = false
 
     var light = new THREE.HemisphereLight(0xBBBBBFF, 0xffffff, 0.5)
-    var helper = new THREE.HemisphereLightHelper(light, 10)
     this.scene.add(light)
     light.position.set(0, 0, -500)
-    this.scene.add(helper)
 
     this.cameraGroup = new THREE.Object3D()
     this.viewerObjects = new THREE.Object3D()

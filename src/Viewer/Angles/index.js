@@ -97,7 +97,8 @@ const HelpContent = styled(H3)({
   width: 220,
   padding: 10,
   textTransform: 'initial',
-  lineHeight: '17px'
+  lineHeight: '17px',
+  letterSpacing: 'normal'
 })
 
 export default function () {
