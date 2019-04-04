@@ -226,7 +226,7 @@ const Chart = sceneWrapper(({ data, containerWidth, containerHeight }) => {
 
   const ifManualData = !!data.measured_angles
 
-  const goal = 137.5
+  const goal = 137.5 // degree
 
   const vertiaclTickNb = data.fruit_points.length
   const verticalTicks = Array(Math.ceil(vertiaclTickNb / 5))

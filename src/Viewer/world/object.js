@@ -26,6 +26,7 @@ export default class World {
     this.oldMouse = { ...this.mouse }
     this.onHoverFn = () => {}
     this.unmounted = false
+    this.hoveringCameraEnable = false
 
     var light = new THREE.HemisphereLight(0xBBBBBFF, 0xffffff, 0.5)
     this.scene.add(light)
@@ -341,7 +342,7 @@ export default class World {
   }
 
   render () {
-    this.interaction()
+    if (this.hoveringCameraEnable) this.interaction()
     if (this.thiscamera) this.thiscamera.matrixAutoUpdate = false
     if (this.controls.enabled) this.controls.update(clock.getDelta())
     this.renderer.render(this.scene, this.camera)
