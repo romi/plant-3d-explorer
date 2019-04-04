@@ -120,7 +120,9 @@ export default function () {
         <FormattedMessage id='angles-title' />
         <div style={{ position: 'relative' }}>
           <Tooltip>
+
             <HelpIcon src={helpIcon} />
+
             <TooltipContent style={{
               left: -40,
               boxShadow: '0 1px 3px 0 rgba(10,61,33,0.2)'
