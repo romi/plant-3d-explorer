@@ -3,6 +3,7 @@ import * as THREE from 'three'
 const vertexShader = `
   uniform vec3 color;
   uniform float zoom;
+  uniform float ratio;
 
   attribute float value;
   attribute vec3 customColor;
@@ -12,7 +13,7 @@ const vertexShader = `
   void main() {
     vColor = color;
     vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-    gl_PointSize = zoom * clamp(1.0 * ( 500.0 / -mvPosition.z ), 0.8, 500.0);
+    gl_PointSize = ratio * zoom * clamp(1.0 * ( 500.0 / -mvPosition.z ), 0.8, 500.0);
     gl_Position = projectionMatrix * mvPosition;
   }
 `
@@ -30,8 +31,13 @@ export default class Mesh {
     this.geometry = geometry
     this.geometry.computeVertexNormals()
 
+    const pixelRatio = window.devicePixelRatio
+      ? window.devicePixelRatio
+      : 1
+
     this.material = new THREE.ShaderMaterial({
       uniforms: {
+        ratio: { type: 'f', value: pixelRatio * 2 },
         color: { type: 'c', value: new THREE.Color(0x00A960) },
         zoom: { type: 'f', value: 1 }
       },
