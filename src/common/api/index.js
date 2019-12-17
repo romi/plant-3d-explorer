@@ -1,7 +1,7 @@
 
 export const serverURL = process.env.NODE_ENV === 'production'
   ? ''
-  : 'https://localhost:5000'
+  : 'http://localhost:5000'
 
 export const scansURI = serverURL + '/scans'
 export const scansURIQuery = (search) => `${scansURI}${search ? `?filterQuery=${search}` : ''}`
