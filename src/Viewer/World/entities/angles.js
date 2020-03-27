@@ -48,21 +48,23 @@ export default class Angles {
   constructor (angles, parent) {
     this.group = new THREE.Object3D()
 
-    angles.forEach((points) => {
+    angles.forEach((points, index) => {
       const geometry = new EnhancedTHREE.LineGeometry()
       geometry.setPositions(flatten(points))
 
+      const color = new THREE.Color(index % 2 === 0 ? 0x78D89D : 0x145445)
       const obj = new EnhancedTHREE.Line2(
         geometry,
         new EnhancedTHREE.LineMaterial({
           linewidth: 0.0105,
-          color: 0x7ee7b0,
+          color,
           dashed: false,
           depthTest: false,
           transparent: true,
           opacity: 0.2
         })
       )
+      obj.defaultColor = color
       obj.computeLineDistances()
       obj.renderOrder = 1
 
@@ -95,7 +97,7 @@ export default class Angles {
       child.visible = !!ref
       child.material.color = ref && ref.type === 'selected'
         ? new THREE.Color(0x84eee6)
-        : new THREE.Color(0x7ee7b0)
+        : child.defaultColor
     })
   }
 }
