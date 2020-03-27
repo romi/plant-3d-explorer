@@ -48,7 +48,7 @@ export default class Angles {
   constructor (angles, parent) {
     this.group = new THREE.Object3D()
 
-    angles.forEach((points) => {
+    angles.forEach((points, index) => {
       const geometry = new EnhancedTHREE.LineGeometry()
       geometry.setPositions(flatten(points))
 
@@ -56,7 +56,7 @@ export default class Angles {
         geometry,
         new EnhancedTHREE.LineMaterial({
           linewidth: 0.0105,
-          color: 0x7ee7b0,
+          color: index % 2 === 0 ? 0x78D89D : 0x145445,
           dashed: false,
           depthTest: false,
           transparent: true,
