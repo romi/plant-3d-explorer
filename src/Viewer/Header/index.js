@@ -136,7 +136,7 @@ export default function () {
         </AllScans>
         <Chevron src={chevronIco} />
         <H2>
-          {scan && scan.id}
+          {scan && scan.metadata.plant}
         </H2>
       </InlineElement>
     </Column>
