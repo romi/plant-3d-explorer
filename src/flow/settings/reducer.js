@@ -28,10 +28,10 @@ License along with this program.  If not, see
 */
 const initialState = {
   layers: {
-    mesh: true,
-    pointCloud: true,
+    mesh: false,
+    pointCloud: false,
     skeleton: true,
-    angles: false,
+    angles: true,
     cameras: false
   }
 }
