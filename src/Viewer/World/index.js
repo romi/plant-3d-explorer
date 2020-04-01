@@ -41,7 +41,6 @@ import useViewport2d from './behaviors/viewport2d'
 
 import { headerHeight } from 'Viewer/Header'
 import { moduleHeight as carouselHeight } from 'Viewer/Carousel'
-import { moduleWidth as angleModuleWidth } from 'Viewer/Panels/Angles'
 
 const Container = styled.div({
   position: 'relative',
@@ -77,17 +76,10 @@ export default function WorldComponent (props) {
   const [[meshGeometry], [pointCloudGeometry]] = useScanFiles(scan)
   const [viewport, event2dFns, resetViewport2d] = useViewport2d(
     () => {
-      let width
-      let height
-      if (canvasRef.current) {
-        const size = getSize()
-        width = size.width
-        height = size.height
-      }
+      let width = bounds[0] || getSize().width
+      let height = bounds[1] || getSize().height
       return [
-        scan && scan.data.angles
-          ? width - angleModuleWidth
-          : width,
+        width,
         height
       ]
     }
