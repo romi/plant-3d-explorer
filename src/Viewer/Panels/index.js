@@ -79,15 +79,14 @@ export default function Panels () {
         fruitPoints: get(scan, 'data.angles.fruit_points'),
         unit: 'mm',
         bounds: [
-          interNodesBounds[0],
-          interNodesBounds[1] * 1.1
+          Math.floor(interNodesBounds[0] / 5) * 5,
+          Math.round(interNodesBounds[0] + interNodesBounds[1]) * 0.5,
+          Math.ceil(interNodesBounds[1] / 5) * 5
         ],
         valueTransform: valueToValue
       }
     }
   }, [scan])
-
-  console.log(panelsData)
 
   return <Container>
     {

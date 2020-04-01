@@ -48,6 +48,7 @@ const Container = styled.div({
   height: '100%',
   flexShrink: 0,
   borderTop: `1px solid ${lightGrey}`,
+  borderRight: `1px solid ${lightGrey}`,
 
   display: 'flex',
   flexDirection: 'column',
@@ -77,14 +78,14 @@ export default function GraphPanel (props) {
       data={props.data}
       automatedValue={
         ifHighligthed
-          ? props.data.automated[highlightedAngle] !== null
+          ? props.data.automated[highlightedAngle] !== null && props.data.automated[highlightedAngle] !== undefined
             ? valueTransformFn(props.data.automated[highlightedAngle]).toFixed(0) + ` ${props.data.unit}`
             : 'NA'
           : ''
       }
       manualValue={
         !!props.data.manual && ifHighligthed
-          ? props.data.manual[highlightedAngle] !== null
+          ? props.data.manual[highlightedAngle] !== null && props.data.manual[highlightedAngle] !== undefined
             ? valueTransformFn(props.data.manual[highlightedAngle]).toFixed(0) + ` ${props.data.unit}`
             : 'NA'
           : ''

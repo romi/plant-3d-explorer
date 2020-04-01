@@ -32,7 +32,7 @@ import styled from '@emotion/styled'
 import { FormattedMessage } from 'react-intl'
 
 import { H2, H3 } from 'common/styles/UI/Text/titles'
-import { grey, green, orange } from 'common/styles/colors'
+import { grey, blue, red } from 'common/styles/colors'
 
 import helpIcon from '../assets/ico.help.14x14.svg'
 import closeIcon from '../assets/ico.close.12.5x12.5.svg'
@@ -101,7 +101,7 @@ const Value = styled.div({
   transition: 'width 0.15s ease'
 }, (props) => {
   return {
-    backgroundColor: !props.secondary ? green : orange,
+    backgroundColor: !props.secondary ? blue : red,
     padding: !props.condensed
       ? '0px 7px'
       : '0',

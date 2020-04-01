@@ -37,7 +37,7 @@ import Color from 'color'
 import sceneWrapper from 'rd/tools/scene'
 
 import { H3 } from 'common/styles/UI/Text/titles'
-import { grey, green, orange, darkGreen } from 'common/styles/colors'
+import { grey, blue, red, darkGreen } from 'common/styles/colors'
 import closePicto from 'common/assets/ico.deselect.20x20.svg'
 
 import { useHoveredAngle, useSelectedAngle } from 'flow/interactions/accessors'
@@ -82,8 +82,8 @@ const VerticalTick = styled(H3)({
   width: 'auto',
   height: 1,
   borderRight: `12px solid ${grey}`,
-  right: 0,
-  paddingRight: 7,
+  right: -2,
+  paddingRight: 5,
   lineHeight: 0,
   margin: 0,
   marginRight: 5
@@ -132,7 +132,7 @@ const SVG = styled.svg((props) => ({
 }))
 
 const Area = styled.path({
-  fill: Color(green).alpha(0.1).toString()
+  fill: Color(blue).alpha(0.1).toString()
 })
 
 const Line = styled.path({
@@ -140,16 +140,16 @@ const Line = styled.path({
   strokeWidth: 1.5
 },
 (props) => ({
-  stroke: props.orange ? orange : green
+  stroke: props.red ? red : blue
 })
 )
 
-const Point = styled((props) => <circle {...omit(props, ['orange'])} r={3} />)(
+const Point = styled((props) => <circle {...omit(props, ['red'])} r={3} />)(
   {
     stroke: 'white'
   },
   (props) => ({
-    fill: props.orange ? orange : green
+    fill: props.red ? red : blue
   })
 )
 
@@ -161,7 +161,7 @@ const GoalLine = styled((props) => <line {...props} strokeDasharray='3 3' />)({
 const InteractorContainer = styled.div({
   position: 'absolute',
   top: 37,
-  left: 0
+  left: 2
 }, (props) => ({
   left: props.left,
   width: props.width,
@@ -170,8 +170,8 @@ const InteractorContainer = styled.div({
 const Interactor = styled.div({
   position: 'absolute',
   left: 0,
-  width: '100%',
-  marginLeft: 35,
+  width: 'calc(100% + 15px)',
+  marginLeft: 20,
   background: 'transparent',
   cursor: 'pointer'
 }, (props) => {
@@ -180,8 +180,8 @@ const Interactor = styled.div({
     height: props.height,
     background: (props.selected || props.hovered)
       ? props.selected
-        ? Color(green).rotate(30).lighten(1.1).alpha(0.7).toString()
-        : Color(green).alpha(0.7).lighten(1.05).toString()
+        ? Color('#78D89D').alpha(0.7).toString()
+        : Color('#84EEE6').alpha(0.7).toString()
       : 'transparent',
 
     ...(
@@ -214,30 +214,50 @@ const Interactor = styled.div({
 
 const HighlightedIndex = styled(H3)({
   position: 'absolute',
-  width: 'auto',
-  height: 1,
-  borderRight: `12px solid ${green}`,
-  right: 0,
-  paddingRight: 7,
+  width: 30,
+  right: 12,
+  paddingRight: 0,
   lineHeight: 0,
   margin: 0,
   marginRight: 5,
-  color: green,
+  color: blue,
   fontWeight: 700
 }, (props) => ({
-  top: props.top
+  top: props.top,
+  color: props.color
 }))
+
+const HighlightedIndexContent = styled.div`
+  display: block;
+  position: absolute;
+  width: auto;
+  height: 18px;
+  right: 5px;
+  text-align: right;
+  text-transform: capitalize;
+  line-height: 12px;
+  border-color: ${props => props.color};
+`
+
+const HighlightedIndexContentTop = styled(HighlightedIndexContent)`
+  border-bottom: 2px solid;
+  height: 16px;
+`
+const HighlightedIndexContentBottom = styled(HighlightedIndexContent)`
+  border-top: 2px solid;
+  line-height: 14px;
+`
 
 const HoveredPoint = styled.div({
   width: 10,
   height: 10,
   borderRadius: 10,
-  background: green,
+  background: blue,
   pointerEvents: 'none',
   border: '1px solid white',
   position: 'absolute'
 }, (props) => ({
-  background: props.orange ? orange : green,
+  background: props.red ? red : blue,
   top: props.top,
   left: props.left
 }))
@@ -255,6 +275,7 @@ const line = lineFactory()
 const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, containerWidth, containerHeight }) => {
   const [hoveredAngle, setHoveredAngle] = useHoveredAngle()
   const [selectedAngle, setSelectedAngle] = useSelectedAngle()
+  const height = containerHeight - (37 * 2)
 
   const goal = data.goal
 
@@ -268,39 +289,40 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
     .fill()
     .map((_, i) => (i * 5) - (i !== 0 ? 1 : 0))
     .filter((d) => (vertiaclTickNb - d) > 3)
-    .concat(data.fruitPoints.length - 1)
-    .concat(vertiaclTickNb)
+    // .concat(data.fruitPoints.length - 1)
+    .concat(vertiaclTickNb - 1)
   verticalScale
     .domain([first(verticalTicks), last(verticalTicks)])
-    .rangeRound([containerHeight - 37, 0])
+    .rangeRound([height, 5])
 
-  const horizontalTicks = [
-    0, Math.round(data.bounds[1])
-  ]
+  const horizontalTicks = data.bounds
 
   horizontalScale
     .domain([first(horizontalTicks), last(horizontalTicks)])
     .rangeRound([0, containerWidth - 37])
 
-  const barHeight = Math.floor(containerHeight / vertiaclTickNb)
+  const barHeight = Math.floor(height / vertiaclTickNb)
 
   const points = data.automated
     .map((rad, i) => {
       return {
         x: horizontalScale(valueTransformFn(rad)) + pointsOffset,
-        y: verticalScale(i + 0.5)
+        y: verticalScale(i)
       }
     })
   const manualPoints = (!ifManualData ? [] : data.manual)
     .map((rad, i) => {
       return {
         x: horizontalScale(valueTransformFn(rad)) + pointsOffset,
-        y: verticalScale(i + 0.5)
+        y: verticalScale(i)
       }
     })
 
+  const Highligthed = [hoveredAngle, selectedAngle]
+    .filter((d) => d !== null && d !== undefined)[0]
+
   return <Content>
-    <TopPart height={containerHeight - 37}>
+    <TopPart height={height}>
       <HorizontalAxis>
         {
           horizontalTicks.map((index) => {
@@ -340,8 +362,8 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
           }
         </VerticalAxis>
         <SVG
-          width={containerWidth - 37}
-          height={containerHeight - 37}
+          width={containerWidth - 37 + 5}
+          height={height}
         >
           <Area d={area(points)} />
           <g>
@@ -358,11 +380,11 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
           </g>
           {
             ifManualData && <g>
-              <Line d={line(manualPoints)} orange />
+              <Line d={line(manualPoints)} red />
               {
                 manualPoints.map((d, index) => {
                   return <Point
-                    orange
+                    red
                     key={`manual-point-${index}`}
                     cx={d.x}
                     cy={d.y}
@@ -376,7 +398,7 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
               x1={horizontalScale(goal)}
               x2={horizontalScale(goal)}
               y1={0}
-              y2={containerHeight - 37}
+              y2={height}
             />
           }
         </SVG>
@@ -384,42 +406,73 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
     </TopPart>
     <InteractorContainer
       width={containerWidth - 37}
-      height={containerHeight - 37}
+      height={height}
       onMouseLeave={() => setHoveredAngle(null)}
     >
       {
-        points.map((d, i) => {
-          return <Interactor
-            key={`interactor-${i}`}
-            top={d.y - (barHeight * 0.5)}
-            height={barHeight}
-            selected={selectedAngle === i}
-            hovered={hoveredAngle === i}
-            onMouseEnter={() => setHoveredAngle(i)}
-            onClick={() => {
-              selectedAngle === i ? setSelectedAngle(null) : setSelectedAngle(i)
-            }}
-          />
-        })
+        new Array(vertiaclTickNb)
+          .fill()
+          .map((_, i) => {
+            const d = points[i] || manualPoints[i]
+            return <Interactor
+              key={`interactor-${i}`}
+              top={d.y - (barHeight * 0.5)}
+              height={barHeight}
+              selected={selectedAngle === i}
+              hovered={hoveredAngle === i}
+              onMouseEnter={() => setHoveredAngle(i)}
+              onClick={() => {
+                selectedAngle === i ? setSelectedAngle(null) : setSelectedAngle(i)
+              }}
+            />
+          })
       }
       {
-        (hoveredAngle !== null && hoveredAngle !== undefined) && <div
+        Highligthed && <div
           style={{
             position: 'absolute',
             width: 37,
-            top: 0,
+            top: -6,
             left: 0
           }}
         >
           <HighlightedIndex
-            top={verticalScale(hoveredAngle + 1)}
+            top={verticalScale(Highligthed) - 20 + 3}
+            color={
+              hoveredAngle
+                ? Color('#009BB0').toString()
+                : darkGreen
+            }
           >
-            {hoveredAngle + 2}
+            <HighlightedIndexContentTop>
+              {`Org.${Highligthed + 2}`}
+            </HighlightedIndexContentTop>
           </HighlightedIndex>
+
           <HighlightedIndex
-            top={verticalScale(hoveredAngle)}
+            top={verticalScale(Highligthed)}
+            color={
+              hoveredAngle
+                ? Color('#84EEE6').toString()
+                : Color('#78D89D').toString()
+            }
           >
-            {hoveredAngle + 1}
+            <HighlightedIndexContent>
+              {Highligthed + 1}
+            </HighlightedIndexContent>
+          </HighlightedIndex>
+
+          <HighlightedIndex
+            top={verticalScale(Highligthed) + 20 - 7}
+            color={
+              hoveredAngle
+                ? Color('#84EEE6').toString()
+                : Color('#78D89D').toString()
+            }
+          >
+            <HighlightedIndexContentBottom>
+              {`Org.${Highligthed + 1}`}
+            </HighlightedIndexContentBottom>
           </HighlightedIndex>
         </div>
       }
@@ -430,22 +483,28 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
             return <div
               key={`interacted-angle-${i}`}
             >
-              <HoveredPoint
-                key={'main'}
-                top={verticalScale(d + 1) + (barHeight / 2) - 5}
-                left={horizontalScale(
-                  valueTransformFn(data.automated[d])
-                ) + 37 - 5}
-              />
               {
-                ifManualData && <HoveredPoint
-                  orange
-                  key={'secondary'}
-                  top={verticalScale(d + 1) + (barHeight / 2) - 5}
-                  left={horizontalScale(
-                    valueTransformFn(data.manual[d])
-                  ) + 37 - 5}
-                />
+                (data.automated[d] !== null && data.automated[d] !== undefined) && (
+                  <HoveredPoint
+                    key={'main'}
+                    top={verticalScale(d + 1) + barHeight - 4}
+                    left={horizontalScale(
+                      valueTransformFn(data.automated[d])
+                    ) + 37 - 7}
+                  />
+                )
+              }
+              {
+                (ifManualData && data.manual[d] !== null && data.manual[d] !== undefined) && (
+                  <HoveredPoint
+                    red
+                    key={'secondary'}
+                    top={verticalScale(d + 1) + barHeight - 4}
+                    left={horizontalScale(
+                      valueTransformFn(data.manual[d])
+                    ) + 37 - 7}
+                  />
+                )
               }
             </div>
           })

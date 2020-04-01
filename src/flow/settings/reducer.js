@@ -35,7 +35,7 @@ const initialState = {
     cameras: false
   },
   panels: {
-    'panels-angles': false,
+    'panels-angles': true,
     'panels-distances': false
   }
 }
