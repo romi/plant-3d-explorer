@@ -41,7 +41,11 @@
 
   "angles-title": "Divergence angles",
   "angles-tooltip": "Divergence angles are the angular differences between two consecutive organs. In the graph below, the angles are presented from bottom to top, starting with the angle between organs 1 and 2. The ideal angle is represented by the dotted line and corresponds to the golden angle of 137.5°.",
-  "angles-legend-automated": "Automated measure",
-  "angles-legend-manuel": "Manual measure",
-  "angles-axis-y": "Organ order"
+  "angles-legend-automated": "AUTOMATED",
+  "angles-legend-manuel": "MANUAL",
+  "angles-axis-y": "Intervals",
+
+  "panels-add": "Add panel",
+  "panels-angles": "Divergence angles",
+  "panels-distances": "Internode distances"
 }

@@ -26,36 +26,19 @@ License along with this program.  If not, see
 <https://www.gnu.org/licenses/>.
 
 */
+
 import React from 'react'
 import styled from '@emotion/styled'
 import { FormattedMessage } from 'react-intl'
-import { first } from 'lodash'
 
 import { H2, H3 } from 'common/styles/UI/Text/titles'
-import { grey, green, orange, lightGrey } from 'common/styles/colors'
+import { grey, green, orange } from 'common/styles/colors'
 
-import { useScan } from 'flow/scans/accessors'
-import { useHoveredAngle, useSelectedAngle } from 'flow/interactions/accessors'
-
-import helpIcon from './assets/ico.help.14x14.svg'
-import Graph from './graph'
+import helpIcon from '../assets/ico.help.14x14.svg'
+import closeIcon from '../assets/ico.close.12.5x12.5.svg'
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
 
 export const moduleWidth = 300
-
-const Container = styled.div({
-  padding: '30px 40px',
-  paddingTop: 12,
-  paddingBottom: 19,
-  width: moduleWidth,
-  height: '100%',
-  flexShrink: 0,
-  borderTop: `1px solid ${lightGrey}`,
-
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between'
-})
 
 const Top = styled.div({
   width: '100%'
@@ -63,7 +46,8 @@ const Top = styled.div({
 
 const Title = styled(H2)({
   display: 'flex',
-  alignItems: 'center'
+  alignItems: 'center',
+  justifyContent: 'space-between'
 })
 
 const HelpIcon = styled.img({
@@ -76,12 +60,25 @@ const HelpIcon = styled.img({
   }
 })
 
+const CloseIcon = styled.img({
+  cursor: 'pointer',
+  marginLeft: 6,
+  marginBottom: -1,
+  transition: 'all 0.15s ease',
+
+  '&:hover': {
+    transform: 'scale(1.20)'
+  }
+})
+
 const Values = styled.div({
-  marginTop: 32
+  marginTop: 32,
+  display: 'flex',
+  justifyContent: 'space-between'
 })
 
 const LegendItem = styled.div({
-  fontSize: 11,
+  fontSize: 9,
   color: grey,
   lineHeight: '18px',
   fontWeight: 700,
@@ -98,6 +95,7 @@ const Value = styled.div({
   color: 'white',
   opacity: 0.8,
   borderRadius: 1,
+  fontSize: 11,
   padding: '0px 7px',
   letterSpacing: '0',
   transition: 'width 0.15s ease'
@@ -117,7 +115,7 @@ const Value = styled.div({
 })
 
 const ValueWording = styled.span({
-  width: 123,
+  marginRight: 7,
   display: 'inline-block'
 })
 
@@ -129,23 +127,11 @@ const HelpContent = styled(H3)({
   letterSpacing: 'normal'
 })
 
-export default function () {
-  const [scan] = useScan()
-  const [hoveredAngle] = useHoveredAngle()
-  const [selectedAngle] = useSelectedAngle()
-
-  const highlightedAngle = first([hoveredAngle, selectedAngle]
-    .filter((value) => ((value !== null) && (value !== undefined))))
-
-  if (!(scan && scan.data.angles)) return null
-
-  const ifManualData = !!scan.data.angles.measured_angles
-  const ifHighligthed = highlightedAngle !== null && highlightedAngle !== undefined
-
-  return <Container>
+export default function Header (props) {
+  return <>
     <Top>
       <Title>
-        <FormattedMessage id='angles-title' />
+        <FormattedMessage id={props.id} />
         <div style={{ position: 'relative' }}>
           <Tooltip>
 
@@ -161,6 +147,10 @@ export default function () {
             </TooltipContent>
           </Tooltip>
         </div>
+        <CloseIcon
+          src={closeIcon}
+          onClick={props.onClose}
+        />
       </Title>
       <Values>
         <LegendItem>
@@ -168,39 +158,25 @@ export default function () {
             <FormattedMessage id='angles-legend-automated' />
           </ValueWording>
           <Value
-            condensed={!ifHighligthed}
+            condensed={!props.ifHighligthed}
           >
-            {
-              ifHighligthed
-                ? scan.data.angles.angles[highlightedAngle] !== null
-                  ? (scan.data.angles.angles[highlightedAngle] * 57.2958).toFixed(0) + ' °'
-                  : 'NA'
-                : ''
-            }
+            {props.automatedValue}
           </Value>
         </LegendItem>
         {
-          ifManualData && <LegendItem>
+          props.ifManualData && <LegendItem>
             <ValueWording>
               <FormattedMessage id='angles-legend-manuel' />
             </ValueWording>
             <Value
-              condensed={!ifHighligthed}
+              condensed={!props.ifHighligthed}
               secondary
             >
-              {
-                ifHighligthed
-                  ? scan.data.angles.measured_angles[highlightedAngle] !== null
-                    ? (scan.data.angles.measured_angles[highlightedAngle] * 57.2958).toFixed(0) + ' °'
-                    : 'NA'
-                  : ''
-              }
+              {props.manualValue}
             </Value>
           </LegendItem>
         }
       </Values>
     </Top>
-
-    <Graph data={scan.data.angles} />
-  </Container>
+  </>
 }

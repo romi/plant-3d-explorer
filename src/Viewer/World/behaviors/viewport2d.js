@@ -36,11 +36,18 @@ export default function useViewport2d (getSize) {
   const [event, setEvent] = useState(null)
   const [result, setResult] = useState(null)
 
-  function reset () {
+  function reset (
+    opts = {
+      center: true,
+      zoom: true
+    }
+  ) {
     const [width, height] = getSize()
     setDragging(false)
-    setZoom(1)
-    initCenter()
+
+    if (opts.zoom) setZoom(1)
+    if (opts.center) initCenter()
+
     setEvent(null)
     setTargetZoom({
       mx: 0,

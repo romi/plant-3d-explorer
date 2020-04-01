@@ -31,7 +31,7 @@ import styled from '@emotion/styled'
 import { FormattedMessage } from 'react-intl'
 import { scaleLinear } from 'd3-scale'
 import { line as lineFactory, area as areaFactory } from 'd3-shape'
-import { first, last, omit, filter } from 'lodash'
+import { first, last, omit } from 'lodash'
 import Color from 'color'
 
 import sceneWrapper from 'rd/tools/scene'
@@ -62,11 +62,15 @@ const Content = styled.div({
 })
 
 const TopPart = styled.div({
-  width: '100%',
-  display: 'flex'
+  width: '100%'
+  // display: 'flex'
 }, (props) => ({
   height: props.height
 }))
+
+const GraphPart = styled.div({
+  display: 'flex'
+})
 
 const VerticalAxis = styled.div({
   position: 'relative',
@@ -90,16 +94,16 @@ const VerticalTick = styled(H3)({
 const HorizontalAxis = styled.div({
   position: 'relative',
   width: '100%',
-  paddingLeft: 37,
+  // paddingLeft: 37,
   height: 37
 })
 const HorizontalTick = styled(H3)({
   position: 'absolute',
   width: 1,
   height: 0,
-  borderTop: `12px solid ${grey}`,
+  borderBottom: `12px solid ${grey}`,
   top: 0,
-  paddingTop: 12,
+  paddingBottom: 12,
   lineHeight: 0,
   margin: 0,
   marginTop: 5,
@@ -116,7 +120,7 @@ const HorizontalTick = styled(H3)({
 const GoalHorizontalTick = styled(HorizontalTick)({
   fontWeight: 700,
   borderTop: `0px`,
-  marginTop: 0,
+  marginTop: 5,
   color: darkGreen
 })
 
@@ -156,7 +160,7 @@ const GoalLine = styled((props) => <line {...props} strokeDasharray='3 3' />)({
 
 const InteractorContainer = styled.div({
   position: 'absolute',
-  top: 0,
+  top: 37,
   left: 0
 }, (props) => ({
   left: props.left,
@@ -248,126 +252,136 @@ const line = lineFactory()
   .x((d) => d.x)
   .y((d) => d.y)
 
-const Chart = sceneWrapper(({ data, containerWidth, containerHeight }) => {
+const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, containerWidth, containerHeight }) => {
   const [hoveredAngle, setHoveredAngle] = useHoveredAngle()
   const [selectedAngle, setSelectedAngle] = useSelectedAngle()
 
-  const ifManualData = !!data.measured_angles
+  const goal = data.goal
 
-  const goal = 137.5 // degree
+  const vertiaclTickNb = Math.max(
+    data.fruitPoints.length,
+    data.automated.length,
+    (data.manual ? data.manual.length : 0)
+  )
 
-  const vertiaclTickNb = data.fruit_points.length
   const verticalTicks = Array(Math.ceil(vertiaclTickNb / 5))
     .fill()
     .map((_, i) => (i * 5) - (i !== 0 ? 1 : 0))
-    .filter((d) => (data.fruit_points.length - d) > 3)
-    .concat(data.fruit_points.length - 1)
+    .filter((d) => (vertiaclTickNb - d) > 3)
+    .concat(data.fruitPoints.length - 1)
+    .concat(vertiaclTickNb)
   verticalScale
     .domain([first(verticalTicks), last(verticalTicks)])
     .rangeRound([containerHeight - 37, 0])
 
-  const horizontalTickNb = 360
-  const horizontalTicks = Array(Math.ceil(horizontalTickNb / 90))
-    .fill()
-    .map((_, i) => i * 90)
-    .concat([horizontalTickNb])
+  const horizontalTicks = [
+    0, Math.round(data.bounds[1])
+  ]
+
   horizontalScale
     .domain([first(horizontalTicks), last(horizontalTicks)])
     .rangeRound([0, containerWidth - 37])
 
-  const barHeight = Math.floor(containerHeight / data.angles.length)
-  const points = data.angles
+  const barHeight = Math.floor(containerHeight / vertiaclTickNb)
+
+  const points = data.automated
     .map((rad, i) => {
       return {
-        x: horizontalScale(rad * 57.2958) + pointsOffset,
+        x: horizontalScale(valueTransformFn(rad)) + pointsOffset,
         y: verticalScale(i + 0.5)
       }
     })
-  const manualPoints = (!ifManualData ? [] : data.measured_angles)
+  const manualPoints = (!ifManualData ? [] : data.manual)
     .map((rad, i) => {
       return {
-        x: horizontalScale((rad) * 57.2958) + pointsOffset,
+        x: horizontalScale(valueTransformFn(rad)) + pointsOffset,
         y: verticalScale(i + 0.5)
       }
     })
 
   return <Content>
     <TopPart height={containerHeight - 37}>
-      <VerticalAxis>
+      <HorizontalAxis>
         {
-          verticalTicks.map((index) => {
-            return <VerticalTick
-              key={index}
-              top={verticalScale(index)}
+          horizontalTicks.map((index) => {
+            return <HorizontalTick
+              key={`horizontal-tick-${index}`}
+              left={horizontalScale(index) + 34}
             >
-              {index + 1}
-            </VerticalTick>
+              <span>
+                {index} {unit}
+              </span>
+            </HorizontalTick>
           })
         }
-      </VerticalAxis>
-      <SVG
-        width={containerWidth - 37}
-        height={containerHeight - 37}
-      >
-        <Area d={area(points)} />
-        <g>
-          <Line d={line(points)} />
+        {
+          goal && <GoalHorizontalTick
+            key={'horizontal-tick-goal'}
+            left={horizontalScale(goal) + 34}
+          >
+            <span>
+              {goal} {unit}
+            </span>
+
+          </GoalHorizontalTick>
+        }
+      </HorizontalAxis>
+      <GraphPart>
+        <VerticalAxis>
           {
-            points.map((d, i) => {
-              return <Point
-                key={i}
-                cx={d.x}
-                cy={d.y}
-              />
+            verticalTicks.map((index) => {
+              return <VerticalTick
+                key={`vertical-tick-${index}`}
+                top={verticalScale(index)}
+              >
+                {index + 1}
+              </VerticalTick>
             })
           }
-        </g>
-        {
-          ifManualData && <g>
-            <Line d={line(manualPoints)} orange />
+        </VerticalAxis>
+        <SVG
+          width={containerWidth - 37}
+          height={containerHeight - 37}
+        >
+          <Area d={area(points)} />
+          <g>
+            <Line d={line(points)} />
             {
-              manualPoints.map((d, i) => {
+              points.map((d, index) => {
                 return <Point
-                  orange
-                  key={i}
+                  key={`point-${index}`}
                   cx={d.x}
                   cy={d.y}
                 />
               })
             }
           </g>
-        }
-        <GoalLine
-          x1={horizontalScale(goal)}
-          x2={horizontalScale(goal)}
-          y1={0}
-          y2={containerHeight - 37}
-        />
-      </SVG>
+          {
+            ifManualData && <g>
+              <Line d={line(manualPoints)} orange />
+              {
+                manualPoints.map((d, index) => {
+                  return <Point
+                    orange
+                    key={`manual-point-${index}`}
+                    cx={d.x}
+                    cy={d.y}
+                  />
+                })
+              }
+            </g>
+          }
+          {
+            goal && <GoalLine
+              x1={horizontalScale(goal)}
+              x2={horizontalScale(goal)}
+              y1={0}
+              y2={containerHeight - 37}
+            />
+          }
+        </SVG>
+      </GraphPart>
     </TopPart>
-    <HorizontalAxis>
-      {
-        horizontalTicks.map((index) => {
-          return <HorizontalTick
-            key={index}
-            left={horizontalScale(index) + 37}
-          >
-            <span>
-              {index} °
-            </span>
-          </HorizontalTick>
-        })
-      }
-      <GoalHorizontalTick
-        key={'goal'}
-        left={horizontalScale(goal) + 37}
-      >
-        <span>
-          {goal} °
-        </span>
-
-      </GoalHorizontalTick>
-    </HorizontalAxis>
     <InteractorContainer
       width={containerWidth - 37}
       height={containerHeight - 37}
@@ -375,7 +389,8 @@ const Chart = sceneWrapper(({ data, containerWidth, containerHeight }) => {
     >
       {
         points.map((d, i) => {
-          return <Interactor key={i}
+          return <Interactor
+            key={`interactor-${i}`}
             top={d.y - (barHeight * 0.5)}
             height={barHeight}
             selected={selectedAngle === i}
@@ -409,20 +424,27 @@ const Chart = sceneWrapper(({ data, containerWidth, containerHeight }) => {
         </div>
       }
       {
-        filter([selectedAngle, hoveredAngle])
+        [selectedAngle, hoveredAngle]
+          .filter((d) => d !== null && d !== undefined)
           .map((d, i) => {
-            return <div key={i}>
+            return <div
+              key={`interacted-angle-${i}`}
+            >
               <HoveredPoint
                 key={'main'}
                 top={verticalScale(d + 1) + (barHeight / 2) - 5}
-                left={horizontalScale(data.angles[d] * 57.2958) + 37 - 5}
+                left={horizontalScale(
+                  valueTransformFn(data.automated[d])
+                ) + 37 - 5}
               />
               {
                 ifManualData && <HoveredPoint
                   orange
                   key={'secondary'}
                   top={verticalScale(d + 1) + (barHeight / 2) - 5}
-                  left={horizontalScale(data.measured_angles[d] * 57.2958) + 37 - 5}
+                  left={horizontalScale(
+                    valueTransformFn(data.manual[d])
+                  ) + 37 - 5}
                 />
               }
             </div>
@@ -432,12 +454,17 @@ const Chart = sceneWrapper(({ data, containerWidth, containerHeight }) => {
   </Content>
 })
 
-export default function Graph ({ data }) {
+export default function Graph ({ ifManualData, data, unit, valueTransformFn }) {
   return <Container>
     <Title>
       <FormattedMessage id='angles-axis-y' />
     </Title>
 
-    <Chart data={data} />
+    <Chart
+      ifManualData={ifManualData}
+      valueTransformFn={valueTransformFn}
+      data={data}
+      unit={unit}
+    />
   </Container>
 }
