@@ -75,14 +75,8 @@ export default function WorldComponent (props) {
 
   const [[meshGeometry], [pointCloudGeometry]] = useScanFiles(scan)
   const [viewport, event2dFns, resetViewport2d] = useViewport2d(
-    () => {
-      let width = bounds[0] || getSize().width
-      let height = bounds[1] || getSize().height
-      return [
-        width,
-        height
-      ]
-    }
+    bounds.width || getSize().width,
+    bounds.height || getSize().height
   )
   const [, setReset3dView] = useReset3dView()
   const [, setReset2dView] = useReset2dView()
