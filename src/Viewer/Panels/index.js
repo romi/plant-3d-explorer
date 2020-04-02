@@ -60,7 +60,7 @@ export default function Panels () {
     const internodes = [
       ...(get(scan, 'data.angles.measured_internodes') || []),
       ...(get(scan, 'data.angles.internodes') || [])
-    ].filter((d) => !!d)
+    ]
     const interNodesBounds = extent(internodes)
 
     return {

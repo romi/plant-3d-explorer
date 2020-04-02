@@ -158,7 +158,7 @@ export default function Header (props) {
             <FormattedMessage id='angles-legend-automated' />
           </ValueWording>
           <Value
-            condensed={!props.ifHighligthed}
+            condensed={!props.automatedValue}
           >
             {props.automatedValue}
           </Value>
@@ -169,7 +169,7 @@ export default function Header (props) {
               <FormattedMessage id='angles-legend-manuel' />
             </ValueWording>
             <Value
-              condensed={!props.ifHighligthed}
+              condensed={!props.manualValue}
               secondary
             >
               {props.manualValue}

@@ -43,6 +43,7 @@ import closePicto from 'common/assets/ico.deselect.20x20.svg'
 import { useHoveredAngle, useSelectedAngle } from 'flow/interactions/accessors'
 
 const Container = styled.div({
+  position: 'relative',
   width: '100%',
   height: '100%',
 
@@ -52,8 +53,11 @@ const Container = styled.div({
 })
 
 const Title = styled(H3)({
+  position: 'absolute',
   textTransform: 'initial',
-  letterSpacing: 0
+  letterSpacing: 0,
+  left: -20,
+  top: 10
 })
 
 const Content = styled.div({
@@ -101,7 +105,7 @@ const HorizontalTick = styled(H3)({
   position: 'absolute',
   width: 1,
   height: 0,
-  borderBottom: `12px solid ${grey}`,
+  borderBottom: `8px solid ${grey}`,
   top: 0,
   paddingBottom: 12,
   lineHeight: 0,
@@ -179,9 +183,9 @@ const Interactor = styled.div({
     top: props.top,
     height: props.height,
     background: (props.selected || props.hovered)
-      ? props.selected
-        ? Color('#78D89D').alpha(0.7).toString()
-        : Color('#84EEE6').alpha(0.7).toString()
+      ? props.hovered && props.selectedAngle
+        ? Color('#84EEE6').alpha(0.7).toString()
+        : Color('#78D89D').alpha(0.7).toString()
       : 'transparent',
 
     ...(
@@ -272,6 +276,8 @@ const line = lineFactory()
   .x((d) => d.x)
   .y((d) => d.y)
 
+const isNotNullAndUndefiend = (v) => (v != null && v !== undefined)
+
 const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, containerWidth, containerHeight }) => {
   const [hoveredAngle, setHoveredAngle] = useHoveredAngle()
   const [selectedAngle, setSelectedAngle] = useSelectedAngle()
@@ -290,7 +296,7 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
     .map((_, i) => (i * 5) - (i !== 0 ? 1 : 0))
     .filter((d) => (vertiaclTickNb - d) > 3)
     // .concat(data.fruitPoints.length - 1)
-    .concat(vertiaclTickNb - 1)
+    .concat(vertiaclTickNb)
   verticalScale
     .domain([first(verticalTicks), last(verticalTicks)])
     .rangeRound([height, 5])
@@ -306,6 +312,7 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
   const points = data.automated
     .map((rad, i) => {
       return {
+        datum: rad,
         x: horizontalScale(valueTransformFn(rad)) + pointsOffset,
         y: verticalScale(i)
       }
@@ -318,8 +325,9 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
       }
     })
 
-  const Highligthed = [hoveredAngle, selectedAngle]
-    .filter((d) => d !== null && d !== undefined)[0]
+  const highligthed = [hoveredAngle, selectedAngle]
+    .filter((d) => isNotNullAndUndefiend(d))
+    .filter((d) => d < vertiaclTickNb)[0]
 
   return <Content>
     <TopPart height={height}>
@@ -337,7 +345,7 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
           })
         }
         {
-          goal && <GoalHorizontalTick
+          isNotNullAndUndefiend(goal) && <GoalHorizontalTick
             key={'horizontal-tick-goal'}
             left={horizontalScale(goal) + 34}
           >
@@ -394,7 +402,7 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
             </g>
           }
           {
-            goal && <GoalLine
+            isNotNullAndUndefiend(goal) && <GoalLine
               x1={horizontalScale(goal)}
               x2={horizontalScale(goal)}
               y1={0}
@@ -418,6 +426,7 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
               key={`interactor-${i}`}
               top={d.y - (barHeight * 0.5)}
               height={barHeight}
+              selectedAngle={isNotNullAndUndefiend(selectedAngle)}
               selected={selectedAngle === i}
               hovered={hoveredAngle === i}
               onMouseEnter={() => setHoveredAngle(i)}
@@ -428,7 +437,7 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
           })
       }
       {
-        Highligthed && <div
+        isNotNullAndUndefiend(highligthed) && <div
           style={{
             position: 'absolute',
             width: 37,
@@ -437,54 +446,54 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
           }}
         >
           <HighlightedIndex
-            top={verticalScale(Highligthed) - 20 + 3}
+            top={verticalScale(highligthed) - 20 + 3}
             color={
-              hoveredAngle
+              (isNotNullAndUndefiend(selectedAngle) && isNotNullAndUndefiend(hoveredAngle))
                 ? Color('#009BB0').toString()
                 : darkGreen
             }
           >
             <HighlightedIndexContentTop>
-              {`Org.${Highligthed + 2}`}
+              {`Org.${highligthed + 2}`}
             </HighlightedIndexContentTop>
           </HighlightedIndex>
 
           <HighlightedIndex
-            top={verticalScale(Highligthed)}
+            top={verticalScale(highligthed)}
             color={
-              hoveredAngle
+              (isNotNullAndUndefiend(selectedAngle) && isNotNullAndUndefiend(hoveredAngle))
                 ? Color('#84EEE6').toString()
                 : Color('#78D89D').toString()
             }
           >
             <HighlightedIndexContent>
-              {Highligthed + 1}
+              {highligthed + 1}
             </HighlightedIndexContent>
           </HighlightedIndex>
 
           <HighlightedIndex
-            top={verticalScale(Highligthed) + 20 - 7}
+            top={verticalScale(highligthed) + 20 - 7}
             color={
-              hoveredAngle
+              (isNotNullAndUndefiend(selectedAngle) && isNotNullAndUndefiend(hoveredAngle))
                 ? Color('#84EEE6').toString()
                 : Color('#78D89D').toString()
             }
           >
             <HighlightedIndexContentBottom>
-              {`Org.${Highligthed + 1}`}
+              {`Org.${highligthed + 1}`}
             </HighlightedIndexContentBottom>
           </HighlightedIndex>
         </div>
       }
       {
         [selectedAngle, hoveredAngle]
-          .filter((d) => d !== null && d !== undefined)
+          .filter((d) => isNotNullAndUndefiend(d))
           .map((d, i) => {
             return <div
               key={`interacted-angle-${i}`}
             >
               {
-                (data.automated[d] !== null && data.automated[d] !== undefined) && (
+                (isNotNullAndUndefiend(data.automated[d])) && (
                   <HoveredPoint
                     key={'main'}
                     top={verticalScale(d + 1) + barHeight - 4}
@@ -495,7 +504,7 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
                 )
               }
               {
-                (ifManualData && data.manual[d] !== null && data.manual[d] !== undefined) && (
+                (ifManualData && isNotNullAndUndefiend(data.manual[d])) && (
                   <HoveredPoint
                     red
                     key={'secondary'}
