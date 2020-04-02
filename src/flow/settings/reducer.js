@@ -33,6 +33,10 @@ const initialState = {
     skeleton: true,
     angles: true,
     cameras: false
+  },
+  panels: {
+    'panels-angles': true,
+    'panels-distances': false
   }
 }
 
@@ -47,6 +51,11 @@ export default function settingsReducer (state = initialState, action) {
       return {
         ...state,
         layers: action.value
+      }
+    case 'SET_PANELS':
+      return {
+        ...state,
+        panels: action.value
       }
     default:
       return state

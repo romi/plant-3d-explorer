@@ -7,6 +7,6 @@ ssh -i ~/.ssh/sony dataveyes@188.165.230.125 <<'ENDSSH'
   rm -rf *
   exit
 ENDSSH
-scp -i ~/.ssh/sony -rp build/. dataveyes@188.165.230.125:/home/dataveyes/html
+scp -i ~/.ssh/sony -rp build/* dataveyes@188.165.230.125:/home/dataveyes/html
 echo 'Cleaning'
 rm -rf archive.zip

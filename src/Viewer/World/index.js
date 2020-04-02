@@ -27,6 +27,7 @@ License along with this program.  If not, see
 
 */
 import React, { useRef, useEffect, useState } from 'react'
+import useMeasure from 'react-use-measure'
 import styled from '@emotion/styled'
 
 import { useElementMouse } from 'rd/tools/hooks/mouse'
@@ -40,8 +41,6 @@ import useViewport2d from './behaviors/viewport2d'
 
 import { headerHeight } from 'Viewer/Header'
 import { moduleHeight as carouselHeight } from 'Viewer/Carousel'
-import { moduleWidth as angleModuleWidth } from 'Viewer/Angles'
-import { useWindowSize } from 'react-use'
 
 const Container = styled.div({
   position: 'relative',
@@ -55,14 +54,14 @@ const CanvasContainer = styled.div({
   height: '100%'
 })
 
-const getSize = (elem) => ({
+const getSize = () => ({
   width: window.innerWidth,
   height: window.innerHeight - headerHeight - carouselHeight
 })
 
 export default function WorldComponent (props) {
-  const windowSize = useWindowSize()
   const canvasRef = useRef()
+  const [containerRef, bounds] = useMeasure()
   const [world, setWorld] = useState(null)
   const [layers] = useLayers()
   const [selectedCamera] = useSelectedcamera()
@@ -77,17 +76,10 @@ export default function WorldComponent (props) {
   const [[meshGeometry], [pointCloudGeometry]] = useScanFiles(scan)
   const [viewport, event2dFns, resetViewport2d] = useViewport2d(
     () => {
-      let width
-      let height
-      if (canvasRef.current) {
-        const size = getSize()
-        width = size.width
-        height = size.height
-      }
+      let width = bounds[0] || getSize().width
+      let height = bounds[1] || getSize().height
       return [
-        scan && scan.data.angles
-          ? width - angleModuleWidth
-          : width,
+        width,
         height
       ]
     }
@@ -101,12 +93,9 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (canvasRef.current && !world) {
-        const { width, height } = getSize()
         const world = new WorldObject(
-          scan && scan.data.angles
-            ? width - angleModuleWidth
-            : width,
-          height,
+          bounds.width,
+          bounds.height,
           canvasRef.current
         )
         world.onHover((data) => setHoveredCamera(data))
@@ -137,17 +126,13 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world) {
-        const { width, height } = getSize()
-
         world.setSize(
-          scan && scan.data.angles
-            ? width - angleModuleWidth
-            : width,
-          height
+          bounds.width,
+          bounds.height
         )
       }
     },
-    [world, scan, windowSize]
+    [world, scan, bounds]
   )
 
   useEffect(
@@ -198,7 +183,7 @@ export default function WorldComponent (props) {
     () => {
       if (world) {
         world.setSelectedCamera(selectedCamera)
-        if (lastSelectedCamera.camera !== selectedCamera) resetViewport2d()
+        if (lastSelectedCamera.camera !== selectedCamera) resetViewport2d({ zoom: false, center: false })
         lastSelectedCamera.camera = selectedCamera
         if (!selectedCamera) world.setLayers(layers)
       }
@@ -212,16 +197,16 @@ export default function WorldComponent (props) {
         world.setLayers(layers)
         world.setHighlightedAngle(
           [
-            selectedAngle && {
+            (selectedAngle !== undefined && selectedAngle !== null) && {
               index: selectedAngle,
               type: 'selected'
             },
-            hoveredAngle && {
+            (hoveredAngle !== undefined && hoveredAngle !== null) && {
               index: hoveredAngle,
               type: 'hovered'
             }
           ]
-            .filter((d) => d !== null && d !== undefined)
+            .filter((d) => d)
         )
       }
     },
@@ -274,7 +259,7 @@ export default function WorldComponent (props) {
     [world, mouse]
   )
 
-  return <Container>
+  return <Container ref={containerRef}>
     <CanvasContainer
       ref={canvasRef}
       onMouseDown={eventFns.onMouseDown}

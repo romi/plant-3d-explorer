@@ -141,6 +141,19 @@ export default class World {
   setAspectRatio (width = this.width, height = this.height) {
     this.camera.aspect = width / height
     this.camera.updateProjectionMatrix()
+
+    const aspect = { x: window.innerWidth, y: window.innerHeight }
+
+    if (this.anlesPoints) {
+      this.anlesPoints.group.children.forEach((obj) => {
+        obj.material.resolution = aspect
+      })
+    }
+    if (this.skeleton) {
+      this.skeleton.group.children.forEach((obj) => {
+        obj.material.resolution = aspect
+      })
+    }
   }
 
   setMouse (value) {
