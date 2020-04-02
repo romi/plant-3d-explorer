@@ -142,7 +142,7 @@ export default function Header (props) {
               boxShadow: '0 1px 3px 0 rgba(10,61,33,0.2)'
             }}>
               <HelpContent>
-                <FormattedMessage id='angles-tooltip' />
+                <FormattedMessage id={props.tooltipId} />
               </HelpContent>
             </TooltipContent>
           </Tooltip>

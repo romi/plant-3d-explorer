@@ -65,6 +65,7 @@ export default function Panels () {
 
     return {
       'panels-angles': {
+        tooltipId: 'angles-tooltip',
         automated: get(scan, 'data.angles.angles'),
         manual: get(scan, 'data.angles.measured_angles'),
         fruitPoints: get(scan, 'data.angles.fruit_points'),
@@ -74,6 +75,7 @@ export default function Panels () {
         goal: 137.5
       },
       'panels-distances': {
+        tooltipId: 'internodes-tooltip',
         automated: get(scan, 'data.angles.internodes'),
         manual: get(scan, 'data.angles.measured_internodes'),
         fruitPoints: get(scan, 'data.angles.fruit_points'),
@@ -96,6 +98,7 @@ export default function Panels () {
           return <GraphPanel
             key={d}
             id={d}
+            tooltipId={panelsData[d].tooltipId}
             data={panelsData[d]}
             onClose={() => {
               setPanels({

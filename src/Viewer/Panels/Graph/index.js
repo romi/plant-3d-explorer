@@ -72,6 +72,7 @@ export default function GraphPanel (props) {
   return <Container>
     <Header
       id={props.id}
+      tooltipId={props.tooltipId}
       onClose={props.onClose}
       ifManualData={ifManualData}
       ifHighligthed={ifHighligthed}

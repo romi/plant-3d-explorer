@@ -144,8 +144,6 @@ export default class World {
 
     const aspect = { x: window.innerWidth, y: window.innerHeight }
 
-    console.log(this.skeleton)
-
     if (this.anlesPoints) {
       this.anlesPoints.group.children.forEach((obj) => {
         obj.material.resolution = aspect
