@@ -176,14 +176,15 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world) {
-        world.setSelectedCamera(selectedCamera)
-        if (lastSelectedCamera.camera !== selectedCamera) resetViewport2d({ zoom: false, center: false })
+        world.setSelectedCamera(selectedCamera, lastSelectedCamera.camera)
+        if (lastSelectedCamera.camera !== selectedCamera) resetViewport2d({ zoom: false, center: true })
         lastSelectedCamera.camera = selectedCamera
-        if (!selectedCamera) world.setLayers(layers)
+        if (!selectedCamera) {
+          resetViewport2d()
+          world.setLayers(layers)
+        }
       }
-    },
-    [world, selectedCamera]
-  )
+    }, [world, selectedCamera])
 
   useEffect(
     () => {

@@ -57,7 +57,9 @@ export default function useViewport2d (width, height) {
       0,
       0,
       width,
-      height
+      height,
+      center.x,
+      center.y
     ])
   }
 
@@ -133,7 +135,9 @@ export default function useViewport2d (width, height) {
           margin.x,
           margin.y,
           newWidth,
-          newHeight
+          newHeight,
+          center.x,
+          center.y
         ])
       }
     },

@@ -111,6 +111,7 @@ const HorizontalTick = styled(H3)({
   lineHeight: 0,
   margin: 0,
   marginTop: 5,
+  textTransform: 'lowercase',
 
   '& span': {
     display: 'block',

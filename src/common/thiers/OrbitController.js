@@ -341,7 +341,7 @@ THREE.OrbitControls = function (object, domElement, changeFn) {
         offset.copy(position).sub(scope.target)
         var targetDistance = offset.length()
 
-        // half of the fov is center to top of screen
+        // half o f the fov is center to top of screen
         targetDistance *= Math.tan((scope.object.fov / 2) * Math.PI / 180.0)
 
         // we use only clientHeight here so aspect ratio does not distort speed
@@ -358,6 +358,8 @@ THREE.OrbitControls = function (object, domElement, changeFn) {
       }
     }
   }())
+
+  this.pan = pan
 
   function dollyIn (dollyScale) {
     if (scope.object.isPerspectiveCamera) {
@@ -465,6 +467,8 @@ THREE.OrbitControls = function (object, domElement, changeFn) {
 
   function handleMouseWheel (event) {
     // console.log( 'handleMouseWheel' );
+
+    console.log(getZoomScale())
 
     if (event.deltaY < 0) {
       dollyOut(getZoomScale())
