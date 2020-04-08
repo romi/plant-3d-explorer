@@ -99,6 +99,7 @@ const HorizontalAxis = styled.div({
   position: 'relative',
   width: '100%',
   // paddingLeft: 37,
+  marginBottom: 13,
   height: 37
 })
 const HorizontalTick = styled(H3)({
@@ -165,7 +166,7 @@ const GoalLine = styled((props) => <line {...props} strokeDasharray='3 3' />)({
 
 const InteractorContainer = styled.div({
   position: 'absolute',
-  top: 37,
+  top: 50,
   left: 2
 }, (props) => ({
   left: props.left,
@@ -282,7 +283,7 @@ const isNotNullAndUndefiend = (v) => (v != null && v !== undefined)
 const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, containerWidth, containerHeight }) => {
   const [hoveredAngle, setHoveredAngle] = useHoveredAngle()
   const [selectedAngle, setSelectedAngle] = useSelectedAngle()
-  const height = containerHeight - (37 * 2)
+  const height = containerHeight - (37 * 1.6)
 
   const goal = data.goal
 
@@ -297,7 +298,7 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
     .map((_, i) => (i * 5) - (i !== 0 ? 1 : 0))
     .filter((d) => (vertiaclTickNb - d) > 3)
     // .concat(data.fruitPoints.length - 1)
-    .concat(vertiaclTickNb)
+    .concat(vertiaclTickNb - 1)
   verticalScale
     .domain([first(verticalTicks), last(verticalTicks)])
     .rangeRound([height, 5])

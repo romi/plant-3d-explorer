@@ -64,7 +64,7 @@ export default class World {
     this.viewerObjects = new THREE.Object3D()
     this.scene.add(this.viewerObjects)
 
-    this.perspectiveCamera = new THREE.PerspectiveCamera(35, this.width / this.height, 1, 10000)
+    this.perspectiveCamera = new THREE.PerspectiveCamera(50, this.width / this.height, 1, 10000)
     this.perspectiveCamera.position.set(1000, 0, 0)
     this.camera = this.perspectiveCamera
 
@@ -310,7 +310,7 @@ export default class World {
             .multiply(this.viewerObjects.matrix)
         )
 
-        // this.camera.fov = lastCam.fov
+        this.camera.fov = lastCam.fov
 
         const center = new THREE.Vector3()
         const startPos = new THREE.Vector3().copy(lastCam.position)
@@ -319,32 +319,7 @@ export default class World {
         startPos.add(direction.multiplyScalar(400))
 
         this.controls.object = lastCam
-
         this.controls.target.copy(startPos)
-
-        // var offset = new THREE.Vector3()
-        // var position = this.camera.position
-        // offset.copy(position).sub(this.controls.target)
-        // var targetDistance = offset.length()
-        // targetDistance *= Math.tan((this.camera.fov / 2) * Math.PI / 180.0)
-
-        // const objectMatrix = this.camera.matrix
-        // const panOffset = new THREE.Vector3()
-
-        // const deltaX = 2 * this.viewport[1] * targetDistance / size.height
-        // const deltaY = 2 * this.viewport[2] * targetDistance / size.height
-
-        // var v1 = new THREE.Vector3()
-        // v1.setFromMatrixColumn(objectMatrix, 1) // get X column of objectMatrix
-        // v1.multiplyScalar(-deltaX)
-        // var v2 = new THREE.Vector3()
-        // v2.setFromMatrixColumn(objectMatrix, 1)
-        // v2.multiplyScalar(deltaY)
-
-        // panOffset.add(v1)
-        // // panOffset.add(v2)
-
-        // this.controls.target.add(panOffset)
 
         this.controls.enableDamping = false
         this.controls.pan(
