@@ -109,14 +109,14 @@ export default class World {
 
   setControls () {
     this.controls = new OrbitControls(this.perspectiveCamera, this.elem)
-    this.controls.enableDamping = true
     this.controls.dampingFactor = 0.30
-    this.controls.rotateSpeed = 0.2
+    this.controls.rotateSpeed = 0.5
     this.controls.zoomSpeed = 0.7
     this.controls.panSpeed = 0.4
     this.controls.screenSpacePanning = false
     this.controls.minDistance = 5
     this.controls.maxDistance = 8000
+    this.controls.enableDamping = false
     this.controls.screenSpacePanning = true
 
     this.controls.target = new THREE.Vector3(0, 0, 0)
@@ -321,7 +321,6 @@ export default class World {
         this.controls.object = lastCam
         this.controls.target.copy(startPos)
 
-        this.controls.enableDamping = false
         this.controls.pan(
           this.viewport[5] - size.width * 0.5,
           this.viewport[6] - size.height * 0.5
