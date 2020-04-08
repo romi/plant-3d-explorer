@@ -52,7 +52,9 @@ const Container = styled.div({
 
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'space-between'
+  justifyContent: 'space-between',
+
+  zIndex: 1
 })
 
 export default function GraphPanel (props) {

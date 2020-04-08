@@ -72,7 +72,8 @@ const CloseIcon = styled.img({
 })
 
 const Values = styled.div({
-  marginTop: 32,
+  marginTop: 22,
+  marginBottom: 10,
   display: 'flex',
   justifyContent: 'space-between'
 })

@@ -178,7 +178,6 @@ const Interactor = styled.div({
   left: 0,
   width: 'calc(100% + 15px)',
   marginLeft: 20,
-  background: 'transparent',
   cursor: 'pointer'
 }, (props) => {
   return {
@@ -332,7 +331,7 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
     .filter((d) => d < vertiaclTickNb)[0]
 
   return <Content>
-    <TopPart height={height}>
+    <TopPart height={containerHeight}>
       <HorizontalAxis>
         {
           horizontalTicks.map((index) => {
