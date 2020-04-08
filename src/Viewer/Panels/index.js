@@ -52,6 +52,15 @@ const Container = styled.div(`
 const radianToDegree = (v) => v * 57.2958
 const valueToValue = (v) => v
 
+function getDataAndCast (source, attr) {
+  const data = get(source, attr)
+  if (data) {
+    return data.map((d) => parseFloat(d))
+  } else {
+    return data
+  }
+}
+
 export default function Panels () {
   const [scan] = useScan()
   const [panels, setPanels] = usePanels()
@@ -66,8 +75,8 @@ export default function Panels () {
     return {
       'panels-angles': {
         tooltipId: 'angles-tooltip',
-        automated: get(scan, 'data.angles.angles'),
-        manual: get(scan, 'data.angles.measured_angles'),
+        automated: getDataAndCast(scan, 'data.angles.angles'),
+        manual: getDataAndCast(scan, 'data.angles.measured_angles'),
         fruitPoints: get(scan, 'data.angles.fruit_points'),
         unit: '°',
         bounds: [0, 360],
@@ -76,8 +85,8 @@ export default function Panels () {
       },
       'panels-distances': {
         tooltipId: 'internodes-tooltip',
-        automated: get(scan, 'data.angles.internodes'),
-        manual: get(scan, 'data.angles.measured_internodes'),
+        automated: getDataAndCast(scan, 'data.angles.internodes'),
+        manual: getDataAndCast(scan, 'data.angles.measured_internodes'),
         fruitPoints: get(scan, 'data.angles.fruit_points'),
         unit: 'mm',
         bounds: [
