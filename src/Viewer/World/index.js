@@ -205,7 +205,7 @@ export default function WorldComponent (props) {
         )
       }
     },
-    [world, hoveredAngle, selectedAngle, layers]
+    [world, hoveredAngle, selectedAngle, layers, viewport]
   )
 
   useEffect(
