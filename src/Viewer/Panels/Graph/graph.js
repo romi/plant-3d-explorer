@@ -178,7 +178,8 @@ const Interactor = styled.div({
   left: 0,
   width: 'calc(100% + 15px)',
   marginLeft: 20,
-  cursor: 'pointer'
+  cursor: 'pointer',
+  zIndex: 3
 }, (props) => {
   return {
     top: props.top,
