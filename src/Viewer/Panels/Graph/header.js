@@ -41,13 +41,15 @@ import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
 export const moduleWidth = 300
 
 const Top = styled.div({
-  width: '100%'
+  width: '100%',
+  marginBottom: 20
 })
 
 const Title = styled(H2)({
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'space-between'
+  justifyContent: 'space-between',
+  marginBottom: 40
 })
 
 const HelpIcon = styled.img({
@@ -75,7 +77,13 @@ const Values = styled.div({
   marginTop: 22,
   marginBottom: 10,
   display: 'flex',
-  justifyContent: 'space-between'
+  justifyContent: 'space-between',
+  background: '#ECF3F0',
+  borderRadius: 5,
+  alignItems: 'center',
+  padding: 7,
+  width: '105%',
+  marginLeft: -'2.5%'
 })
 
 const LegendItem = styled.div({

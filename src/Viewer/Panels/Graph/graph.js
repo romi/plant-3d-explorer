@@ -263,7 +263,8 @@ const HoveredPoint = styled.div({
   background: blue,
   pointerEvents: 'none',
   border: '1px solid white',
-  position: 'absolute'
+  position: 'absolute',
+  zIndex: 3
 }, (props) => ({
   background: props.red ? red : blue,
   top: props.top,
