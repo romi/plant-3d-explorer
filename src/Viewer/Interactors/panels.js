@@ -16,6 +16,7 @@ const Container = styled.div`
   top: 35px;
   right: 1px;
   display: flex;
+  letter-spacing: 0px;
 `
 
 const ExpandBtn = styled.div`
@@ -69,6 +70,7 @@ const OptionText = styled(H3)`
   margin: 0px;
   text-transform: none;
   color: ${green};
+  letter-spacing: 0px;
 `
 
 const ListHeader = styled(Option)`

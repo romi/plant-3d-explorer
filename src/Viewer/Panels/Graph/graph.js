@@ -90,7 +90,8 @@ const VerticalTick = styled(H3)({
   paddingRight: 5,
   lineHeight: 0,
   margin: 0,
-  marginRight: 5
+  marginRight: 5,
+  fontVariantNumeric: 'tabular-nums'
 }, (props) => ({
   top: props.top
 }))
@@ -227,7 +228,8 @@ const HighlightedIndex = styled(H3)({
   margin: 0,
   marginRight: 5,
   color: blue,
-  fontWeight: 700
+  fontWeight: 700,
+  fontVariantNumeric: 'tabular-nums'
 }, (props) => ({
   top: props.top,
   color: props.color
@@ -442,13 +444,16 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
         isNotNullAndUndefiend(highligthed) && <div
           style={{
             position: 'absolute',
-            width: 37,
-            top: -6,
-            left: 0
+            width: 72,
+            height: 70,
+            top: -6 + verticalScale(highligthed) - 30,
+            paddingTop: 10,
+            left: -40,
+            background: 'rgba(255, 255, 255, 0.8)'
           }}
         >
           <HighlightedIndex
-            top={verticalScale(highligthed) - 20 + 3}
+            top={3}
             color={
               (isNotNullAndUndefiend(selectedAngle) && isNotNullAndUndefiend(hoveredAngle))
                 ? Color('#009BB0').toString()
@@ -461,7 +466,7 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
           </HighlightedIndex>
 
           <HighlightedIndex
-            top={verticalScale(highligthed)}
+            top={20}
             color={
               (isNotNullAndUndefiend(selectedAngle) && isNotNullAndUndefiend(hoveredAngle))
                 ? Color('#84EEE6').toString()
@@ -474,7 +479,7 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
           </HighlightedIndex>
 
           <HighlightedIndex
-            top={verticalScale(highligthed) + 20 - 7}
+            top={20 + 20 - 7}
             color={
               (isNotNullAndUndefiend(selectedAngle) && isNotNullAndUndefiend(hoveredAngle))
                 ? Color('#84EEE6').toString()
