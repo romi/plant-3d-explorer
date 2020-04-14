@@ -41,7 +41,7 @@ const vertexShader = `
   void main() {
     vColor = color;
     vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-    gl_PointSize = ratio * zoom * clamp(1.0 * ( 500.0 / -mvPosition.z ), 0.8, 500.0);
+    gl_PointSize = ratio * zoom * clamp(1.0 * ( 200.0 / -mvPosition.z ), 0.8, 500.0);
     gl_Position = projectionMatrix * mvPosition;
   }
 `
@@ -65,7 +65,7 @@ export default class Mesh {
 
     this.material = new THREE.ShaderMaterial({
       uniforms: {
-        ratio: { type: 'f', value: pixelRatio * 2 },
+        ratio: { type: 'f', value: pixelRatio },
         color: { type: 'c', value: new THREE.Color(0x00A960) },
         zoom: { type: 'f', value: 1 }
       },

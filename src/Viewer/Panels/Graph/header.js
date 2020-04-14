@@ -82,8 +82,8 @@ const Values = styled.div({
   borderRadius: 5,
   alignItems: 'center',
   padding: 7,
-  width: '105%',
-  marginLeft: -'2.5%'
+  width: 'calc(100% + 40px)',
+  marginLeft: '-20px'
 })
 
 const LegendItem = styled.div({
@@ -93,7 +93,6 @@ const LegendItem = styled.div({
   fontWeight: 700,
   display: 'flex',
   alignItems: 'center',
-  marginBottom: 5,
 
   '& *': {
     display: 'inline-block'

@@ -228,8 +228,8 @@ const HighlightedIndex = styled(H3)({
   margin: 0,
   marginRight: 5,
   color: blue,
-  fontWeight: 700,
-  fontVariantNumeric: 'tabular-nums'
+  fontWeight: 700
+  // fontVariantNumeric: 'tabular-nums'
 }, (props) => ({
   top: props.top,
   color: props.color
@@ -246,6 +246,10 @@ const HighlightedIndexContent = styled.div`
   line-height: 12px;
   border-color: ${props => props.color};
 `
+
+const HighlightedIndexValue = styled.span({
+  fontVariantNumeric: 'tabular-nums'
+})
 
 const HighlightedIndexContentTop = styled(HighlightedIndexContent)`
   border-bottom: 2px solid;
@@ -287,6 +291,8 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
   const [hoveredAngle, setHoveredAngle] = useHoveredAngle()
   const [selectedAngle, setSelectedAngle] = useSelectedAngle()
   const height = containerHeight - (37 * 1.6)
+
+  console.log(containerHeight, height)
 
   const goal = data.goal
 
@@ -447,7 +453,7 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
             position: 'absolute',
             width: 72,
             height: 70,
-            top: -6 + verticalScale(highligthed) - 30,
+            top: -6 + verticalScale(highligthed) - 20,
             paddingTop: 10,
             left: -40,
             background: 'rgba(255, 255, 255, 0.8)'
@@ -462,7 +468,10 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
             }
           >
             <HighlightedIndexContentTop>
-              {`Org.${highligthed + 2}`}
+              Org.<HighlightedIndexValue>
+                {highligthed + 2}
+              </HighlightedIndexValue>
+              {/* {`Org.${highligthed + 2}`} */}
             </HighlightedIndexContentTop>
           </HighlightedIndex>
 
@@ -475,7 +484,10 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
             }
           >
             <HighlightedIndexContent>
-              {highligthed + 1}
+              <HighlightedIndexValue>
+                {highligthed + 1}
+              </HighlightedIndexValue>
+              {/* {highligthed + 1} */}
             </HighlightedIndexContent>
           </HighlightedIndex>
 
@@ -488,7 +500,10 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
             }
           >
             <HighlightedIndexContentBottom>
-              {`Org.${highligthed + 1}`}
+              Org.<HighlightedIndexValue>
+                {highligthed + 1}
+              </HighlightedIndexValue>
+              {/* {`Org.${highligthed + 1}`} */}
             </HighlightedIndexContentBottom>
           </HighlightedIndex>
         </div>
