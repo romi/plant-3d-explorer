@@ -283,6 +283,20 @@ export default function (THREE) {
 
       },
 
+      opacity: {
+
+        enumerable: true,
+
+        get: function () {
+          return this.uniforms.opacity.value
+        },
+
+        set: function (value) {
+          this.uniforms.opacity.value = value
+        }
+
+      },
+
       linewidth: {
 
         enumerable: true,

@@ -292,8 +292,6 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
   const [selectedAngle, setSelectedAngle] = useSelectedAngle()
   const height = containerHeight - (37 * 1.6)
 
-  console.log(containerHeight, height)
-
   const goal = data.goal
 
   const vertiaclTickNb = Math.max(

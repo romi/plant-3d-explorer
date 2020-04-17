@@ -36,7 +36,7 @@ const initialState = {
   },
   panels: {
     'panels-angles': true,
-    'panels-distances': false
+    'panels-distances': true
   }
 }
 

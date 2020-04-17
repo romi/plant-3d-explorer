@@ -57,6 +57,20 @@ export default function Panels () {
   const [panels, setPanels] = usePanels()
 
   const panelsData = useMemo(() => {
+    const tempFruitPoints = get(scan, 'data.angles.fruit_points')
+    const fruitPoints = tempFruitPoints
+      ? tempFruitPoints.slice(0, tempFruitPoints.length - 1)
+      : undefined
+
+    const tempAutomatedAngles = get(scan, 'data.angles.angles')
+    const automatedAngles = tempAutomatedAngles
+      ? tempAutomatedAngles.slice(0, tempAutomatedAngles.length - 1)
+      : undefined
+
+    const tempAutomatedInternodes = get(scan, 'data.angles.internodes')
+    const automatedInternodes = tempAutomatedInternodes
+      ? tempAutomatedInternodes.slice(0, tempAutomatedInternodes.length - 1)
+      : undefined
     const internodes = [
       ...(get(scan, 'data.angles.measured_internodes') || []),
       ...(get(scan, 'data.angles.internodes') || [])
@@ -66,9 +80,9 @@ export default function Panels () {
     return {
       'panels-angles': {
         tooltipId: 'angles-tooltip',
-        automated: get(scan, 'data.angles.angles'),
+        automated: automatedAngles,
         manual: get(scan, 'data.angles.measured_angles'),
-        fruitPoints: get(scan, 'data.angles.fruit_points'),
+        fruitPoints: fruitPoints,
         unit: '°',
         bounds: [0, 360],
         valueTransform: radianToDegree,
@@ -76,9 +90,9 @@ export default function Panels () {
       },
       'panels-distances': {
         tooltipId: 'internodes-tooltip',
-        automated: get(scan, 'data.angles.internodes'),
+        automated: automatedInternodes,
         manual: get(scan, 'data.angles.measured_internodes'),
-        fruitPoints: get(scan, 'data.angles.fruit_points'),
+        fruitPoints: fruitPoints,
         unit: 'mm',
         bounds: [
           Math.floor(interNodesBounds[0] / 5) * 5,

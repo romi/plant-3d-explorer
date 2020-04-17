@@ -106,7 +106,8 @@ const Value = styled.div({
   fontSize: 11,
   padding: '0px 7px',
   letterSpacing: '0',
-  transition: 'width 0.15s ease'
+  transition: 'width 0.15s ease',
+  fontVariantNumeric: 'tabular-nums'
 }, (props) => {
   return {
     backgroundColor: !props.secondary ? blue : red,

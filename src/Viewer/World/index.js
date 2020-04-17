@@ -177,7 +177,7 @@ export default function WorldComponent (props) {
     () => {
       if (world) {
         world.setSelectedCamera(selectedCamera, lastSelectedCamera.camera)
-        if (lastSelectedCamera.camera !== selectedCamera) resetViewport2d({ zoom: false, center: true })
+        if (lastSelectedCamera.camera !== selectedCamera) resetViewport2d({ zoom: false, center: false })
         lastSelectedCamera.camera = selectedCamera
         if (!selectedCamera) {
           resetViewport2d()

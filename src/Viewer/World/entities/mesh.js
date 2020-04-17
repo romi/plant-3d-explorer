@@ -35,7 +35,7 @@ export default class Mesh {
     const material = new THREE.MeshStandardMaterial({
       transparent: false,
       opacity: 0.5,
-      color: 0x00A960,
+      color: 0x5e7c41,
       flatShading: true
     })
     this.object = new THREE.Mesh(geometry, material)
