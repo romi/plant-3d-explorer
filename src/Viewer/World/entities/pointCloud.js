@@ -66,7 +66,7 @@ export default class Mesh {
     this.material = new THREE.ShaderMaterial({
       uniforms: {
         ratio: { type: 'f', value: pixelRatio },
-        color: { type: 'c', value: new THREE.Color(0x00A960) },
+        color: { type: 'c', value: new THREE.Color(0xf8de96) },
         zoom: { type: 'f', value: 1 }
       },
       vertexShader,
