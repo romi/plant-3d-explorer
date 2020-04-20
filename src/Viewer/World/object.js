@@ -56,7 +56,7 @@ export default class World {
     this.unmounted = false
     this.hoveringCameraEnable = false
 
-    var light = new THREE.HemisphereLight(0xBBBBBFF, 0xffffff, 0.5)
+    var light = new THREE.HemisphereLight(0xBBBBBFF, 0xffffff, 0.3)
     this.scene.add(light)
     light.position.set(0, 0, -500)
 
