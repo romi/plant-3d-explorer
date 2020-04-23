@@ -31,10 +31,14 @@ import styled from '@emotion/styled'
 
 import Header from './Header'
 import World from './World'
-import { LayersInteractors, CameraInteractors } from './Interactors'
 import Carousel from './Carousel'
-import Angles from './Angles'
+import Panels from './Panels'
 import Help from './Help'
+import {
+  LayersInteractors,
+  CameraInteractors,
+  PanelsInteractor
+} from './Interactors'
 
 const Container = styled.div({
   position: 'relative',
@@ -81,9 +85,10 @@ export default function Viewer (props) {
           <World />
           <LayersInteractors />
           <CameraInteractors />
+          <PanelsInteractor />
           <Help />
         </WorldContainer>
-        <Angles />
+        <Panels />
       </TopContainer>
       <BottomContainer>
         <Carousel />

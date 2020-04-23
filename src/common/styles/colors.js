@@ -28,6 +28,8 @@ License along with this program.  If not, see
 */
 export const green = '#00A960'
 export const darkGreen = '#3A4D45'
+export const blue = '#4200FF'
+export const red = '#FF555F'
 
 export const orange = '#FF8400'
 

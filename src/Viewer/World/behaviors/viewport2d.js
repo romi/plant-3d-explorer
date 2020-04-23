@@ -28,7 +28,7 @@ License along with this program.  If not, see
 */
 import { useState, useEffect } from 'react'
 
-export default function useViewport2d (getSize) {
+export default function useViewport2d (width, height) {
   const [dragging, setDragging] = useState(false)
   const [zoom, setZoom] = useState(1)
   const [center] = useState({ x: 0, y: 0 })
@@ -36,11 +36,17 @@ export default function useViewport2d (getSize) {
   const [event, setEvent] = useState(null)
   const [result, setResult] = useState(null)
 
-  function reset () {
-    const [width, height] = getSize()
+  function reset (
+    opts = {
+      center: true,
+      zoom: true
+    }
+  ) {
     setDragging(false)
-    setZoom(1)
-    initCenter()
+
+    if (opts.zoom) setZoom(1)
+    if (opts.center) initCenter()
+
     setEvent(null)
     setTargetZoom({
       mx: 0,
@@ -51,21 +57,27 @@ export default function useViewport2d (getSize) {
       0,
       0,
       width,
-      height
+      height,
+      center.x,
+      center.y
     ])
   }
 
   function initCenter () {
-    const [width, height] = getSize()
     if (width && height) {
       center.x = width / 2
       center.y = height / 2
     }
   }
 
+  useEffect(() => {
+    initCenter()
+    setZoom(1)
+  }, [width, height])
+
   useState(
     initCenter,
-    [1]
+    [width, height]
   )
 
   const eventFns = {
@@ -98,7 +110,6 @@ export default function useViewport2d (getSize) {
   useEffect(
     () => {
       if (!result) initCenter()
-      const [width, height] = getSize()
       if (width && height) {
         const newWidth = width * zoom
         const newHeight = height * zoom
@@ -124,11 +135,13 @@ export default function useViewport2d (getSize) {
           margin.x,
           margin.y,
           newWidth,
-          newHeight
+          newHeight,
+          center.x,
+          center.y
         ])
       }
     },
-    [zoom, targetZoom, event, dragging]
+    [zoom, targetZoom, event, dragging, width, height]
   )
 
   return [

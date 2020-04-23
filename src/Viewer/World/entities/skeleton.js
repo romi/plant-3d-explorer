@@ -63,9 +63,10 @@ export default class Skeleton {
       const obj = new EnhancedTHREE.Line2(
         geometry,
         new EnhancedTHREE.LineMaterial({
-          linewidth: 0.0025,
+          linewidth: 4,
           color: 0x5ca001,
-          dashed: true
+          dashed: true,
+          resolution: { x: window.innerWidth, y: window.innerHeight }
         })
       )
       this.group.add(obj)

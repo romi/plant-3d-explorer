@@ -56,7 +56,7 @@ export default class World {
     this.unmounted = false
     this.hoveringCameraEnable = false
 
-    var light = new THREE.HemisphereLight(0xBBBBBFF, 0xffffff, 0.5)
+    var light = new THREE.HemisphereLight(0xBBBBBFF, 0xffffff, 0.3)
     this.scene.add(light)
     light.position.set(0, 0, -500)
 
@@ -64,7 +64,7 @@ export default class World {
     this.viewerObjects = new THREE.Object3D()
     this.scene.add(this.viewerObjects)
 
-    this.perspectiveCamera = new THREE.PerspectiveCamera(35, this.width / this.height, 1, 5000)
+    this.perspectiveCamera = new THREE.PerspectiveCamera(50, this.width / this.height, 1, 10000)
     this.perspectiveCamera.position.set(1000, 0, 0)
     this.camera = this.perspectiveCamera
 
@@ -109,15 +109,17 @@ export default class World {
 
   setControls () {
     this.controls = new OrbitControls(this.perspectiveCamera, this.elem)
-    this.controls.enableDamping = true
     this.controls.dampingFactor = 0.30
-    this.controls.rotateSpeed = 0.2
+    this.controls.rotateSpeed = 0.5
     this.controls.zoomSpeed = 0.7
     this.controls.panSpeed = 0.4
     this.controls.screenSpacePanning = false
     this.controls.minDistance = 5
     this.controls.maxDistance = 8000
+    this.controls.enableDamping = false
     this.controls.screenSpacePanning = true
+
+    this.controls.target = new THREE.Vector3(0, 0, 0)
 
     // Y-upifying needs to be after the creation of the controller instance
     this.camera.up.set(0, 0, -1)
@@ -127,6 +129,7 @@ export default class World {
   }
 
   resetControls = () => {
+    this.camera.zoom = 1
     this.controls.reset()
   }
 
@@ -141,6 +144,19 @@ export default class World {
   setAspectRatio (width = this.width, height = this.height) {
     this.camera.aspect = width / height
     this.camera.updateProjectionMatrix()
+
+    const aspect = { x: window.innerWidth, y: window.innerHeight }
+
+    if (this.anlesPoints) {
+      this.anlesPoints.group.children.forEach((obj) => {
+        obj.material.resolution = aspect
+      })
+    }
+    if (this.skeleton) {
+      this.skeleton.group.children.forEach((obj) => {
+        obj.material.resolution = aspect
+      })
+    }
   }
 
   setMouse (value) {
@@ -151,9 +167,10 @@ export default class World {
     }
   }
 
-  setViewport (zoomLevel, x, y, width, height) {
-    this.viewport = [zoomLevel, x, y, width, height]
+  setViewport (zoomLevel, x, y, width, height, centerX, centerY) {
+    this.viewport = [zoomLevel, x, y, width, height, centerX, centerY]
     this.renderer.setViewport(x, y, width, height)
+
     if (this.pointCloud) {
       this.pointCloud.setZoomLevel(zoomLevel)
     }
@@ -219,7 +236,7 @@ export default class World {
     }
   }
 
-  setSelectedCamera (camera, percent) {
+  setSelectedCamera (camera, last) {
     if (this.imgMesh) this.scene.remove(this.imgMesh)
 
     if (camera) {
@@ -231,7 +248,7 @@ export default class World {
       this.controls.enabled = false
       const imgDistance = 2000
       const fov = this.computeDynamicFOV(this.cameraData.model.params, imgDistance)
-      const overlapCamera = new THREE.PerspectiveCamera(fov, this.width / this.height, 0.1, 5000)
+      const overlapCamera = new THREE.PerspectiveCamera(fov, this.width / this.height, 0.1, 10000)
       overlapCamera.add(this.camLight)
 
       overlapCamera.position
@@ -277,7 +294,42 @@ export default class World {
       this.scene.background = this.originalBackground
 
       this.scene.remove(this.camera)
+      const lastCam = this.camera
       this.camera = this.perspectiveCamera
+
+      if (last) {
+        const size = this.renderer.getSize()
+
+        this.camera.position
+          .copy(last.v3position)
+          .applyMatrix4(this.viewerObjects.matrix)
+
+        this.camera.rotation.setFromRotationMatrix(
+          new THREE.Matrix4()
+            .copy(last.vueM4rotation)
+            .multiply(this.viewerObjects.matrix)
+        )
+
+        this.camera.fov = lastCam.fov
+
+        const center = new THREE.Vector3()
+        const startPos = new THREE.Vector3().copy(lastCam.position)
+        const direction = lastCam.getWorldDirection(center)
+        lastCam.getWorldDirection(center)
+        startPos.add(direction.multiplyScalar(400))
+
+        this.controls.object = lastCam
+        this.controls.target.copy(startPos)
+
+        this.controls.pan(
+          this.viewport[5] - size.width * 0.5,
+          this.viewport[6] - size.height * 0.5
+        )
+        this.camera.zoom = this.viewport[0]
+        this.controls.object = this.camera
+        this.controls.update()
+      }
+
       this.camera.add(this.camLight)
       this.scene.add(this.camera)
       this.setAspectRatio()
@@ -372,7 +424,7 @@ export default class World {
   render () {
     if (this.hoveringCameraEnable) this.interaction()
     if (this.thiscamera) this.thiscamera.matrixAutoUpdate = false
-    if (this.controls.enabled) this.controls.update(clock.getDelta())
+    // if (this.controls.enabled) this.controls.update(clock.getDelta())
     this.renderer.render(this.scene, this.camera)
   }
 }

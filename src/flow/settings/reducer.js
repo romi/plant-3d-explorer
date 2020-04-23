@@ -28,11 +28,15 @@ License along with this program.  If not, see
 */
 const initialState = {
   layers: {
-    mesh: true,
-    pointCloud: true,
+    mesh: false,
+    pointCloud: false,
     skeleton: true,
-    angles: false,
+    angles: true,
     cameras: false
+  },
+  panels: {
+    'panels-angles': true,
+    'panels-distances': true
   }
 }
 
@@ -47,6 +51,11 @@ export default function settingsReducer (state = initialState, action) {
       return {
         ...state,
         layers: action.value
+      }
+    case 'SET_PANELS':
+      return {
+        ...state,
+        panels: action.value
       }
     default:
       return state

@@ -54,7 +54,7 @@ const Container = styled((props) => <div {...omit(props, 'onTop')} />)({
   }
 })
 const Background = styled.div({
-  borderRadius: 2,
+  borderRadius: 20,
   background: Color(darkGreen).alpha(0.4).toString(),
   padding: 8,
   paddingBottom: 1

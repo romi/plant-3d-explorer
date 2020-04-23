@@ -112,3 +112,21 @@ export const ResetIcon = IconHOC((props) => {
     raw={resertRaw}
   />
 })
+
+const expandRaw = raw('../../../common/assets/ico.expand-white.14x14.svg')
+export const ExpandIcon = IconHOC((props) => {
+  return <Icon
+    {...props}
+    rules={rules(props)}
+    raw={expandRaw}
+  />
+})
+
+const shrinkRaw = raw('../../../common/assets/ico.shrink-white.14x14.svg')
+export const ShrinkIcon = IconHOC((props) => {
+  return <Icon
+    {...props}
+    rules={rules(props)}
+    raw={shrinkRaw}
+  />
+})

@@ -51,3 +51,17 @@ export const useLayers = useAccessor(
     })
   ]
 )
+
+export const usePanels = useAccessor(
+  [
+    (state) => {
+      return state.settings.panels
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_PANELS',
+      value
+    })
+  ]
+)

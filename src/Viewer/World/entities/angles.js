@@ -48,21 +48,24 @@ export default class Angles {
   constructor (angles, parent) {
     this.group = new THREE.Object3D()
 
-    angles.forEach((points) => {
+    angles.forEach((points, index) => {
       const geometry = new EnhancedTHREE.LineGeometry()
       geometry.setPositions(flatten(points))
 
+      const color = new THREE.Color(index % 2 === 0 ? 0x3A4D45 : 0x00A960)
       const obj = new EnhancedTHREE.Line2(
         geometry,
         new EnhancedTHREE.LineMaterial({
-          linewidth: 0.0105,
-          color: 0x7ee7b0,
+          linewidth: 10,
+          color: index % 2 === 0 ? 0x3A4D45 : 0x00A960,
           dashed: false,
           depthTest: false,
           transparent: true,
-          opacity: 0.2
+          opacity: 0.2,
+          resolution: { x: window.innerWidth, y: window.innerHeight }
         })
       )
+      obj.defaultColor = color
       obj.computeLineDistances()
       obj.renderOrder = 1
 
@@ -90,12 +93,22 @@ export default class Angles {
     const nextIndexed = indexes.reduce((p, c) => {
       return [...p, c, { ...c, index: c.index + 1 }]
     }, [])
+
+    const colors = [
+      new THREE.Color(0x00A960),
+      new THREE.Color(0x3A4D45),
+      new THREE.Color(0x84EEE6),
+      new THREE.Color(0x009BB0)
+    ]
+
     this.group.children.forEach((child, i) => {
       const ref = nextIndexed.find((d) => d.index === i)
+      const refIndex = nextIndexed.indexOf(ref)
       child.visible = !!ref
-      child.material.color = ref && ref.type === 'selected'
-        ? new THREE.Color(0x84eee6)
-        : new THREE.Color(0x7ee7b0)
+
+      child.material.color = (ref && refIndex >= 0)
+        ? colors[refIndex]
+        : child.defaultColor
     })
   }
 }

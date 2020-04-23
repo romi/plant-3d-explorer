@@ -29,7 +29,7 @@ License along with this program.  If not, see
 
 export const serverURL = process.env.NODE_ENV === 'production'
   ? ''
-  : 'http://localhost:5000'
+  : (process.env.REACT_APP_API_URL || 'http://localhost:5000')
 
 export const scansURI = serverURL + '/scans'
 export const scansURIQuery = (search) => `${scansURI}${search ? `?filterQuery=${search}` : ''}`
