@@ -96,6 +96,8 @@ export default class Angles {
       const matColor = new THREE.Color(color)
       this.group.children[index].customColor = matColor
       this.group.children[nextIndex].customColor = matColor
+      this.group.children[index].material.color = matColor
+      this.group.children[nextIndex].material.color = matColor
     }
   }
 
