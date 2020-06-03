@@ -11,11 +11,13 @@ export default function (props) {
     .filter((d) => d.type === MenuBoxContent)
 
   return <div
-    onClick={() => setDisplayed(!displayed)}
+    onClick={() => {
+      if (!props.isDisabled) setDisplayed(!displayed)
+    }}
   >
     {childrenWithoutContent}
     {
-      displayed
+      displayed && !props.isDisabled
         ? childrenWithContent
         : null
     }
@@ -23,7 +25,7 @@ export default function (props) {
 }
 
 const ContentContainer = styled.div({
-  midWidth: '25px',
+  minWidth: '25px',
   height: 'auto',
   position: 'absolute',
   boxShadow: '0 1px 1px 0 rgba(10, 61, 33, 0.15)',
@@ -32,22 +34,22 @@ const ContentContainer = styled.div({
   background: 'white',
   marginTop: 10,
   zIndex: 1000
-})
+}/* , (props) => {
+  return {
+    marginLeft: props.contentWidth
+      ? props.contentWidth / 2
+      : 0
+  }
+} */)
 
 export function MenuBoxContent (props) {
-  const [displayed, setDisplayed] = useState(true)
-
   return <ContentContainer
     top={props.top}
     className={props.className}
     style={props.style}
-    onMouseLeave={() => setDisplayed(false)}
   >
-    {displayed
-      ? <div>
-        {props.children}
-      </div>
-      : null
-    }
+    <div>
+      {props.children}
+    </div>
   </ContentContainer>
 }

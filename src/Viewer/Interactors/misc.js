@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from '@emotion/styled'
 import { FormattedMessage } from 'react-intl'
+import { CirclePicker } from 'react-color'
 
 import { useSelectedAngle, useSelectedColor } from 'flow/interactions/accessors'
 
@@ -37,14 +38,13 @@ export default function MiscInteractors () {
   const [, setColor] = useSelectedColor()
 
   return <MiscContainer>
-    <MenuBox>
+    <MenuBox
+      isDisabled={(selectedAngle === undefined || selectedAngle === null)}>
       <Tooltip>
         <Interactor
           isDisabled={(selectedAngle === undefined || selectedAngle === null)}
           isButton
           activated={false} // TODO: Activate when the color palette is displayed
-          onClick={() => setColor(0xFF0000)} // Dispatch an action to change the
-          // selected color.
         >
           <IconStateCatcher style={{
             display: 'flex',
@@ -58,8 +58,18 @@ export default function MiscInteractors () {
           </H3>
         </TooltipContent>
       </Tooltip>
-      <MenuBoxContent>
-        <H3> Hello world !</H3>
+      <MenuBoxContent
+        style={{
+          padding: 10
+        }}>
+        <CirclePicker
+          onChange={
+            (color) => {
+              setColor(color.hex)
+              console.log(color)
+            }
+          }
+        />
       </MenuBoxContent>
     </MenuBox>
   </MiscContainer>
