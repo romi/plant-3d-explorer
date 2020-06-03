@@ -356,6 +356,12 @@ export default class World {
     }
   }
 
+  setColoredAngle (index, color) {
+    if (!this.anlesPoints) return
+    this.anlesPoints.setColored(index, color)
+    console.log(index)
+  }
+
   setHighlightedAngle (indexes) {
     if (!this.anlesPoints || !indexes.length) return
     this.anlesPoints.setHighlighted(indexes)

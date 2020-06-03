@@ -66,6 +66,8 @@ export default class Angles {
         })
       )
       obj.defaultColor = color
+      obj.customColor = color
+      obj.colorIsDefault = true
       obj.computeLineDistances()
       obj.renderOrder = 1
 
@@ -87,13 +89,14 @@ export default class Angles {
       child.visible = boolean
     })
   }
-  
+
   setColored (index, color) {
     const nextIndex = index + 1
-    const matColor = new THREE.Color(color)
-    
-    this.group.children[index].color = matColor
-    this.group.children[nextIndex].color = matColor
+    if (nextIndex < this.group.children.length && index >= 0) {
+      const matColor = new THREE.Color(color)
+      this.group.children[index].customColor = matColor
+      this.group.children[nextIndex].customColor = matColor
+    }
   }
 
   setHighlighted (indexes) {
@@ -114,8 +117,10 @@ export default class Angles {
       child.visible = !!ref
 
       child.material.color = (ref && refIndex >= 0)
-        ? colors[refIndex]
-        : child.defaultColor
+        ? child.material.colorIsDefault
+          ? colors[refIndex]
+          : child.customColor
+        : child.customColor
     })
   }
 }
