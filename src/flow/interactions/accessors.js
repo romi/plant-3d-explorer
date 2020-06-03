@@ -92,6 +92,20 @@ export const useSelectedAngle = useAccessor(
   ]
 )
 
+export const useSelectedColor = useAccessor(
+  [
+    (state) => {
+      return state.interactions.selectedColor
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SELECT_COLOR',
+      value
+    })
+  ]
+)
+
 export const useReset2dView = useAccessor(
   [
     (state) => {

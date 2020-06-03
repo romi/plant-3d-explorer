@@ -31,6 +31,8 @@
   "tooltip-cameras-hide": "Hide cameras",
   "tooltip-cameras-show": "Show cameras",
   "tooltip-reset": "Reset view",
+  
+  "tooltip-color-picker": "Color the selected organs",
 
   "tooltip-help-rotate": "Click left and hold to rotate",
   "tooltip-help-pan": "Click right and hold to pan",
