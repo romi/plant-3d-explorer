@@ -71,7 +71,6 @@ export default class Angles {
 
       this.group.add(obj)
     })
-
     if (parent) parent.add(this.group)
   }
 
@@ -87,6 +86,14 @@ export default class Angles {
     this.group.children.forEach((child) => {
       child.visible = boolean
     })
+  }
+  
+  setColored (index, color) {
+    const nextIndex = index + 1
+    const matColor = new THREE.Color(color)
+    
+    this.group.children[index].color = matColor
+    this.group.children[nextIndex].color = matColor
   }
 
   setHighlighted (indexes) {
