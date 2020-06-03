@@ -35,13 +35,19 @@ const ContentContainer = styled.div({
 })
 
 export function MenuBoxContent (props) {
+  const [displayed, setDisplayed] = useState(true)
+
   return <ContentContainer
     top={props.top}
     className={props.className}
     style={props.style}
+    onMouseLeave={() => setDisplayed(false)}
   >
-    <div>
-      {props.children}
-    </div>
+    {displayed
+      ? <div>
+        {props.children}
+      </div>
+      : null
+    }
   </ContentContainer>
 }
