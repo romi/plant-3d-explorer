@@ -35,7 +35,9 @@ const ColumnContainer = styled.div({
     display: props.displayed
       ? 'flex'
       : 'none',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    marginLeft: 2,
+    marginRight: 2
   }
 })
 
@@ -51,6 +53,26 @@ export default function MiscInteractors () {
   const [layers] = useLayers()
 
   return <MiscContainer>
+    <ColumnContainer displayed={layers.pointCloud}>
+      <Tooltip>
+        <Interactor />
+        <TooltipContent>
+          <H3> Do something with the point cloud </H3>
+        </TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <Interactor />
+        <TooltipContent>
+          <H3> Do something with the point cloud </H3>
+        </TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <Interactor />
+        <TooltipContent>
+          <H3> Do something with the point cloud </H3>
+        </TooltipContent>
+      </Tooltip>
+    </ColumnContainer>
     <ColumnContainer displayed={layers.angles}>
       <MenuBox
         activate={misc.colorPicker}
@@ -97,6 +119,18 @@ export default function MiscInteractors () {
           />
         </MenuBoxContent>
       </MenuBox>
+      <Tooltip>
+        <Interactor />
+        <TooltipContent>
+          <H3> Do something with the organs </H3>
+        </TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <Interactor />
+        <TooltipContent>
+          <H3> Do something with the organs </H3>
+        </TooltipContent>
+      </Tooltip>
     </ColumnContainer>
   </MiscContainer>
 }
