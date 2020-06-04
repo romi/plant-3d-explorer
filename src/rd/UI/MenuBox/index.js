@@ -1,23 +1,18 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import styled from '@emotion/styled'
 
 export default function (props) {
-  const [displayed, setDisplayed] = useState(false)
-
   const childrenWithoutContent = props.children
     .filter((d) => d.type !== MenuBoxContent)
   const childrenWithContent = props.children
     .filter((d) => d.type === MenuBoxContent)
 
   return <div
-    onClick={() => {
-      if (!props.isDisabled) setDisplayed(!displayed)
-    }}
   >
     {childrenWithoutContent}
     {
-      displayed && !props.isDisabled
+      props.activate
         ? childrenWithContent
         : null
     }

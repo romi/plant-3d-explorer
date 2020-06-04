@@ -37,6 +37,9 @@ const initialState = {
   panels: {
     'panels-angles': true,
     'panels-distances': true
+  },
+  misc: {
+    'colorPicker': false
   }
 }
 
@@ -56,6 +59,11 @@ export default function settingsReducer (state = initialState, action) {
       return {
         ...state,
         panels: action.value
+      }
+    case 'SET_MISC':
+      return {
+        ...state,
+        misc: action.value
       }
     default:
       return state
