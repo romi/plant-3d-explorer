@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import styled from '@emotion/styled'
 
@@ -7,6 +7,8 @@ export default function (props) {
     .filter((d) => d.type !== MenuBoxContent)
   const childrenWithContent = props.children
     .filter((d) => d.type === MenuBoxContent)
+
+  useEffect(props.callOnChange, props.watchChange)
 
   return <div
   >

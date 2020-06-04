@@ -33,7 +33,7 @@ const initialState = {
   hoveredAngle: null,
   selectedAngle: null,
 
-  selectedColor: null,
+  organColors: [],
 
   reset3dViewFn: null,
   reset2dViewFn: null
@@ -77,10 +77,10 @@ export default function settingsReducer (state = initialState, action) {
         ...state,
         reset3dViewFn: action.value
       }
-    case 'SELECT_COLOR':
+    case 'SET_ORGAN_COLORS':
       return {
         ...state,
-        selectedColor: action.value
+        organColors: action.value
       }
     default:
       return state

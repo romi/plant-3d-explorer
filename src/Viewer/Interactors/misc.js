@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 import { FormattedMessage } from 'react-intl'
 import { CirclePicker } from 'react-color'
 
-import { useSelectedAngle, useSelectedColor } from 'flow/interactions/accessors'
+import { useSelectedAngle, useOrganColors } from 'flow/interactions/accessors'
 import { useMisc } from 'flow/settings/accessors'
 
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
@@ -36,18 +36,23 @@ const MiscContainer = styled(Container)({
 
 export default function MiscInteractors () {
   const [selectedAngle] = useSelectedAngle()
-  const [, setColor] = useSelectedColor()
+  const [organColors, setOrganColors] = useOrganColors()
   const [misc, setMisc] = useMisc()
 
   return <MiscContainer>
     <MenuBox
       activate={misc.colorPicker}
+      callOnChange={
+        () => {
+          setMisc({ ...misc, colorPicker: false })
+        }}
+      watchChange={[selectedAngle]}
     >
       <Tooltip>
         <Interactor
           isDisabled={(selectedAngle === undefined || selectedAngle === null)}
           isButton
-          activated={misc.colorPicker} // TODO: Activate when the color palette is displayed
+          activated={misc.colorPicker}
           onClick={() => setMisc({ ...misc, colorPicker: !misc.colorPicker })}
         >
           <IconStateCatcher style={{
@@ -69,9 +74,15 @@ export default function MiscInteractors () {
         <CirclePicker
           onChange={
             (color) => {
-              setColor(color.hex)
+              let copy = organColors.slice()
+              const next =
+              Math.min(Math.max(selectedAngle + 1, 0), copy.length - 1)
+              copy[selectedAngle] = color.hex
+              copy[next] = color.hex
+              setOrganColors(copy)
             }
           }
+          color={organColors[selectedAngle]}
         />
       </MenuBoxContent>
     </MenuBox>

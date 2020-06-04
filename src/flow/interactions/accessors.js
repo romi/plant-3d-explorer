@@ -92,15 +92,15 @@ export const useSelectedAngle = useAccessor(
   ]
 )
 
-export const useSelectedColor = useAccessor(
+export const useOrganColors = useAccessor(
   [
     (state) => {
-      return state.interactions.selectedColor
+      return state.interactions.organColors
     }
   ],
   [
     (value) => ({
-      type: 'SELECT_COLOR',
+      type: 'SET_ORGAN_COLORS',
       value
     })
   ]

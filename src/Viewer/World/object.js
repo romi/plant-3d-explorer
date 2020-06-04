@@ -356,9 +356,9 @@ export default class World {
     }
   }
 
-  setColoredAngle (index, color) {
+  setOrganColors (organColors) {
     if (!this.anlesPoints) return
-    this.anlesPoints.setColored(index, color)
+    this.anlesPoints.setCustomColors(organColors)
   }
 
   setHighlightedAngle (indexes) {

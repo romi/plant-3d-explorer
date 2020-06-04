@@ -33,7 +33,7 @@ import styled from '@emotion/styled'
 import { useElementMouse } from 'rd/tools/hooks/mouse'
 
 import { useLayers } from 'flow/settings/accessors'
-import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useSelectedColor } from 'flow/interactions/accessors'
+import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useOrganColors } from 'flow/interactions/accessors'
 import { useScanFiles, useScan } from 'flow/scans/accessors'
 
 import WorldObject from './object'
@@ -68,7 +68,7 @@ export default function WorldComponent (props) {
   const [hoveredCamera, setHoveredCamera] = useHoveredCamera()
   const [hoveredAngle] = useHoveredAngle()
   const [selectedAngle] = useSelectedAngle()
-  const [selectedColor] = useSelectedColor()
+  const [organColors] = useOrganColors()
   const mouse = useElementMouse(canvasRef)
   const [lastSelectedCamera] = useState({ camera: null })
 
@@ -212,13 +212,10 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world) {
-        if (selectedAngle !== undefined && selectedAngle !== null &&
-            selectedColor !== undefined && selectedColor !== null) {
-          world.setColoredAngle(selectedAngle, selectedColor)
-        }
+        world.setOrganColors(organColors)
       }
     },
-    [selectedColor]
+    [organColors]
   )
 
   useEffect(

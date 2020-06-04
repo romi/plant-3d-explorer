@@ -67,7 +67,6 @@ export default class Angles {
       )
       obj.defaultColor = color
       obj.customColor = color
-      obj.colorIsDefault = true
       obj.computeLineDistances()
       obj.renderOrder = 1
 
@@ -90,15 +89,14 @@ export default class Angles {
     })
   }
 
-  setColored (index, color) {
-    const nextIndex = index + 1
-    if (nextIndex < this.group.children.length && index >= 0) {
-      const matColor = new THREE.Color(color)
-      this.group.children[index].customColor = matColor
-      this.group.children[nextIndex].customColor = matColor
-      this.group.children[index].material.color = matColor
-      this.group.children[nextIndex].material.color = matColor
-    }
+  setCustomColors (organColors) {
+    organColors.forEach((color, index) => {
+      if (color) {
+        const matColor = new THREE.Color(color)
+        this.group.children[index].customColor = matColor
+        this.group.children[index].material.color = matColor
+      }
+    })
   }
 
   setHighlighted (indexes) {
@@ -119,9 +117,9 @@ export default class Angles {
       child.visible = !!ref
 
       child.material.color = (ref && refIndex >= 0)
-        ? child.material.colorIsDefault
-          ? colors[refIndex]
-          : child.customColor
+        ? child.customColor
+          ? child.customColor
+          : colors[refIndex]
         : child.customColor
     })
   }
