@@ -17,7 +17,7 @@ import { Interactor } from './index'
 export const Container = styled.div({
   position: 'absolute',
   top: 20,
-  marginRight: 20,
+  marginRight: 50,
   display: 'flex',
 
   '& :first-of-type > div': {
