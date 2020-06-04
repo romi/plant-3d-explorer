@@ -75,8 +75,7 @@ export default function MiscInteractors () {
           onChange={
             (color) => {
               let copy = organColors.slice()
-              const next =
-              Math.min(Math.max(selectedAngle + 1, 0), copy.length - 1)
+              const next = selectedAngle + 1
               copy[selectedAngle] = color.hex
               copy[next] = color.hex
               setOrganColors(copy)

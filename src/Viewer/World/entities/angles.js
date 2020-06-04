@@ -91,6 +91,7 @@ export default class Angles {
 
   setCustomColors (organColors) {
     organColors.forEach((color, index) => {
+      console.log(index, color)
       if (color) {
         const matColor = new THREE.Color(color)
         this.group.children[index].customColor = matColor
