@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 import { FormattedMessage } from 'react-intl'
 import { CirclePicker } from 'react-color'
 
-import { useSelectedAngle, useOrganColors } from 'flow/interactions/accessors'
+import { useSelectedAngle, useOrganColors, usePointCloudColor } from 'flow/interactions/accessors'
 import { useMisc, useLayers } from 'flow/settings/accessors'
 
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
@@ -49,45 +49,25 @@ const MiscContainer = styled(Container)({
 export default function MiscInteractors () {
   const [selectedAngle] = useSelectedAngle()
   const [organColors, setOrganColors] = useOrganColors()
+  const [pointCloudColor, setPointCloudColor] = usePointCloudColor()
   const [misc, setMisc] = useMisc()
   const [layers] = useLayers()
 
   return <MiscContainer>
     <ColumnContainer displayed={layers.pointCloud}>
-      <Tooltip>
-        <Interactor />
-        <TooltipContent>
-          <H3> Do something with the point cloud </H3>
-        </TooltipContent>
-      </Tooltip>
-      <Tooltip>
-        <Interactor />
-        <TooltipContent>
-          <H3> Do something with the point cloud </H3>
-        </TooltipContent>
-      </Tooltip>
-      <Tooltip>
-        <Interactor />
-        <TooltipContent>
-          <H3> Do something with the point cloud </H3>
-        </TooltipContent>
-      </Tooltip>
-    </ColumnContainer>
-    <ColumnContainer displayed={layers.angles}>
       <MenuBox
-        activate={misc.colorPicker}
+        activate={misc.pointCloudColorPicker}
         callOnChange={
           () => {
-            setMisc({ ...misc, colorPicker: false })
+            setMisc({ ...misc, pointCloudColorPicker: false })
           }}
-        watchChange={[selectedAngle, layers.angles]}
+        watchChange={[layers.pointCloud]}
       >
         <Tooltip>
           <Interactor
-            isDisabled={(selectedAngle === undefined || selectedAngle === null)}
-            isButton
-            activated={misc.colorPicker}
-            onClick={() => setMisc({ ...misc, colorPicker: !misc.colorPicker })}
+            activated={misc.pointCloudColorPicker}
+            onClick={() => setMisc({ ...misc,
+              pointCloudColorPicker: !misc.pointCloudColorPicker })}
           >
             <IconStateCatcher style={{
               display: 'flex',
@@ -97,7 +77,50 @@ export default function MiscInteractors () {
           </Interactor>
           <TooltipContent>
             <H3>
-              <FormattedMessage id='tooltip-color-picker' />
+              <FormattedMessage id='tooltip-point-cloud-color-picker' />
+            </H3>
+          </TooltipContent>
+        </Tooltip>
+        <MenuBoxContent
+          style={{ padding: 10 }}
+        >
+          <CirclePicker
+            onChange={
+              (color) => {
+                setPointCloudColor(color.hex)
+              }
+            }
+            color={pointCloudColor}
+          />
+        </MenuBoxContent>
+      </MenuBox>
+    </ColumnContainer>
+    <ColumnContainer displayed={layers.angles}>
+      <MenuBox
+        activate={misc.organColorPicker}
+        callOnChange={
+          () => {
+            setMisc({ ...misc, organColorPicker: false })
+          }}
+        watchChange={[selectedAngle, layers.angles]}
+      >
+        <Tooltip>
+          <Interactor
+            isDisabled={(selectedAngle === undefined || selectedAngle === null)}
+            isButton
+            activated={misc.organColorPicker}
+            onClick={() => setMisc({ ...misc,
+              organColorPicker: !misc.organColorPicker })}
+          >
+            <IconStateCatcher style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }} />
+          </Interactor>
+          <TooltipContent>
+            <H3>
+              <FormattedMessage id='tooltip-organ-color-picker' />
             </H3>
           </TooltipContent>
         </Tooltip>
@@ -119,18 +142,6 @@ export default function MiscInteractors () {
           />
         </MenuBoxContent>
       </MenuBox>
-      <Tooltip>
-        <Interactor />
-        <TooltipContent>
-          <H3> Do something with the organs </H3>
-        </TooltipContent>
-      </Tooltip>
-      <Tooltip>
-        <Interactor />
-        <TooltipContent>
-          <H3> Do something with the organs </H3>
-        </TooltipContent>
-      </Tooltip>
     </ColumnContainer>
   </MiscContainer>
 }

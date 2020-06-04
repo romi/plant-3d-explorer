@@ -32,8 +32,9 @@ const initialState = {
 
   hoveredAngle: null,
   selectedAngle: null,
-
   organColors: [],
+
+  pointCloudColor: '#f8de96',
 
   reset3dViewFn: null,
   reset2dViewFn: null
@@ -81,6 +82,11 @@ export default function settingsReducer (state = initialState, action) {
       return {
         ...state,
         organColors: action.value
+      }
+    case 'SET_POINT_CLOUD_COLOR':
+      return {
+        ...state,
+        pointCloudColor: action.value
       }
     default:
       return state

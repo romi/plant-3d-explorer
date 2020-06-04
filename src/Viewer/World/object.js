@@ -375,6 +375,10 @@ export default class World {
     this.pointCloud = new PointCloud(geometry, this.viewerObjects)
   }
 
+  setPointCloudColor (color) {
+    this.pointCloud.setColor(color)
+  }
+
   setSkeletonPoints (skeleton) {
     this.skeleton = new Skeleton(skeleton, this.viewerObjects)
   }

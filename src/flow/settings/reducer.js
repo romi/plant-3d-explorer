@@ -39,7 +39,8 @@ const initialState = {
     'panels-distances': true
   },
   misc: {
-    'colorPicker': false
+    'organColorPicker': false,
+    'pointCloudColorPicker': false
   }
 }
 

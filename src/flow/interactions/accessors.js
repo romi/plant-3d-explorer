@@ -106,6 +106,20 @@ export const useOrganColors = useAccessor(
   ]
 )
 
+export const usePointCloudColor = useAccessor(
+  [
+    (state) => {
+      return state.interactions.pointCloudColor
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_POINT_CLOUD_COLOR',
+      value
+    })
+  ]
+)
+
 export const useReset2dView = useAccessor(
   [
     (state) => {
