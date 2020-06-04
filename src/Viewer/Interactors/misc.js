@@ -9,6 +9,7 @@ import { useMisc, useLayers } from 'flow/settings/accessors'
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
 import MenuBox, { MenuBoxContent } from 'rd/UI/MenuBox'
 import { IconStateCatcher } from 'rd/UI/Icon'
+import { PaintIcon } from 'Viewer/Interactors/icons'
 
 import { H3 } from 'common/styles/UI/Text/titles'
 
@@ -73,7 +74,9 @@ export default function MiscInteractors () {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center'
-            }} />
+            }} >
+              <PaintIcon isActivated={misc.pointCloudColorPicker} />
+            </IconStateCatcher>
           </Interactor>
           <TooltipContent>
             <H3>
@@ -116,7 +119,9 @@ export default function MiscInteractors () {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center'
-            }} />
+            }} >
+              <PaintIcon isActivated={misc.organColorPicker} />
+            </IconStateCatcher>
           </Interactor>
           <TooltipContent>
             <H3>
