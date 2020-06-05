@@ -92,48 +92,19 @@ export const useSelectedAngle = useAccessor(
   ]
 )
 
-export const useOrganColors = useAccessor(
+export const useColor = useAccessor(
   [
     (state) => {
-      return state.interactions.organColors
+      return state.interactions.colors
     }
   ],
   [
     (value) => ({
-      type: 'SET_ORGAN_COLORS',
+      type: 'SET_COLORS',
       value
     })
   ]
 )
-
-export const usePointCloudColor = useAccessor(
-  [
-    (state) => {
-      return state.interactions.pointCloudColor
-    }
-  ],
-  [
-    (value) => ({
-      type: 'SET_POINT_CLOUD_COLOR',
-      value
-    })
-  ]
-)
-
-export const useMeshColor = useAccessor(
-  [
-    (state) => {
-      return state.interactions.meshColor
-    }
-  ],
-  [
-    (value) => ({
-      type: 'SET_MESH_COLOR',
-      value
-    })
-  ]
-)
-
 export const useReset2dView = useAccessor(
   [
     (state) => {

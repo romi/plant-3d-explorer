@@ -33,8 +33,7 @@ import styled from '@emotion/styled'
 import { useElementMouse } from 'rd/tools/hooks/mouse'
 
 import { useLayers } from 'flow/settings/accessors'
-import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useOrganColors, usePointCloudColor,
-  useMeshColor } from 'flow/interactions/accessors'
+import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useColor } from 'flow/interactions/accessors'
 import { useScanFiles, useScan } from 'flow/scans/accessors'
 
 import WorldObject from './object'
@@ -69,9 +68,7 @@ export default function WorldComponent (props) {
   const [hoveredCamera, setHoveredCamera] = useHoveredCamera()
   const [hoveredAngle] = useHoveredAngle()
   const [selectedAngle] = useSelectedAngle()
-  const [organColors] = useOrganColors()
-  const [pointCloudColor] = usePointCloudColor()
-  const [meshColor] = useMeshColor()
+  const [colors] = useColor()
   const mouse = useElementMouse(canvasRef)
   const [lastSelectedCamera] = useState({ camera: null })
 
@@ -215,10 +212,10 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world) {
-        world.setOrganColors(organColors)
+        world.setOrganColors(colors.organs)
       }
     },
-    [organColors]
+    [colors.organs]
   )
 
   useEffect(
@@ -234,10 +231,10 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world) {
-        world.setMeshColor(meshColor)
+        world.setMeshColor(colors.mesh)
       }
     },
-    [meshColor]
+    [colors.mesh]
   )
 
   useEffect(
@@ -253,10 +250,10 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world && pointCloudGeometry) {
-        world.setPointCloudColor(pointCloudColor)
+        world.setPointCloudColor(colors.pointCloud)
       }
     },
-    [pointCloudColor]
+    [colors.pointCloud]
   )
 
   useEffect(

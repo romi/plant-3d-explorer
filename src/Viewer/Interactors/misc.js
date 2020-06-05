@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 import { FormattedMessage } from 'react-intl'
 import { CirclePicker } from 'react-color'
 
-import { useSelectedAngle, useOrganColors, usePointCloudColor, useMeshColor } from 'flow/interactions/accessors'
+import { useSelectedAngle, useColor } from 'flow/interactions/accessors'
 import { useMisc, useLayers } from 'flow/settings/accessors'
 
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
@@ -49,9 +49,7 @@ const MiscContainer = styled(Container)({
 
 export default function MiscInteractors () {
   const [selectedAngle] = useSelectedAngle()
-  const [organColors, setOrganColors] = useOrganColors()
-  const [pointCloudColor, setPointCloudColor] = usePointCloudColor()
-  const [meshColor, setMeshColor] = useMeshColor()
+  const [colors, setColors] = useColor()
   const [misc, setMisc] = useMisc()
   const [layers] = useLayers()
 
@@ -90,9 +88,12 @@ export default function MiscInteractors () {
           <CirclePicker
             onChange={
               (color) => {
-                setMeshColor(color.hex)
+                setColors({
+                  ...colors,
+                  mesh: color.hex
+                })
               }}
-            color={meshColor}
+            color={colors.mesh}
           />
         </MenuBoxContent>
       </MenuBox>
@@ -132,10 +133,13 @@ export default function MiscInteractors () {
           <CirclePicker
             onChange={
               (color) => {
-                setPointCloudColor(color.hex)
+                setColors({
+                  ...colors,
+                  pointCloud: color.hex
+                })
               }
             }
-            color={pointCloudColor}
+            color={colors.pointCloud}
           />
         </MenuBoxContent>
       </MenuBox>
@@ -178,14 +182,17 @@ export default function MiscInteractors () {
           <CirclePicker
             onChange={
               (color) => {
-                let copy = organColors.slice()
+                let copy = colors.organs.slice()
                 const next = selectedAngle + 1
                 copy[selectedAngle] = color.hex
                 copy[next] = color.hex
-                setOrganColors(copy)
+                setColors({
+                  ...colors,
+                  organs: copy
+                })
               }
             }
-            color={organColors[selectedAngle]}
+            color={colors.organs[selectedAngle]}
           />
         </MenuBoxContent>
       </MenuBox>
