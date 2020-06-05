@@ -26,6 +26,7 @@ License along with this program.  If not, see
 <https://www.gnu.org/licenses/>.
 
 */
+
 const initialState = {
   layers: {
     mesh: false,
@@ -39,9 +40,7 @@ const initialState = {
     'panels-distances': true
   },
   misc: {
-    'organColorPicker': false,
-    'pointCloudColorPicker': false,
-    'meshColorPicker': false
+    activeTool: null
   }
 }
 
