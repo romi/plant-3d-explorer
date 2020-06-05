@@ -22,7 +22,7 @@ REACT_APP_API_URL='{`API URL}'
 ```
 Whithout this, the app will use `http://localhost:5000`.
 
-To use a local database, you must run the data storage server [from this repository](https://github.com/romi/data-storage)
+To use a local database, you must run the data storage server [from this repository](https://github.com/romi/data-storage).
 
 ### `npm run build`
 
