@@ -47,6 +47,38 @@ const MiscContainer = styled(Container)({
   right: '0%'
 })
 
+function ToolButton (props) {
+  return <MenuBox
+    activate={props.activated}
+    {...props.menuBox}
+  >
+    <Tooltip>
+      <Interactor
+        activated={props.activated}
+        {...props.interactor}
+      >
+        <IconStateCatcher style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          {props.icon}
+        </IconStateCatcher>
+      </Interactor>
+      <TooltipContent>
+        <H3>
+          <FormattedMessage id={props.tooltipId} />
+        </H3>
+      </TooltipContent>
+    </Tooltip>
+    <MenuBoxContent style={{
+      padding: 10
+    }} >
+      {props.children}
+    </MenuBoxContent>
+  </MenuBox>
+}
+
 export default function MiscInteractors () {
   const [selectedAngle] = useSelectedAngle()
   const [colors, setColors] = useColor()
@@ -55,192 +87,130 @@ export default function MiscInteractors () {
 
   return <MiscContainer>
     <ColumnContainer displayed={layers.mesh}>
-      <MenuBox
-        activate={misc.meshColorPicker}
-        callOnChange={
-          () => {
+      <ToolButton
+        activated={misc.meshColorPicker}
+        menuBox={{
+          callOnChange: () => {
             setMisc({ ...misc, meshColorPicker: false })
-          }}
-        watchChange={[layers.mesh]}
+          },
+          watchChange: [layers.mesh]
+        }}
+        interactor={{
+          onClick: () => {
+            setMisc({ ...misc,
+              meshColorPicker: !misc.meshColorPicker })
+          }
+        }}
+        tooltipId='tooltip-mesh-color-picker'
+        icon={<PaintIcon isActivated={misc.meshColorPicker} />}
       >
-        <Tooltip>
-          <Interactor
-            activated={misc.meshColorPicker}
-            onClick={() => setMisc({ ...misc,
-              meshColorPicker: !misc.meshColorPicker })}
-          >
-            <IconStateCatcher style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }} >
-              <PaintIcon isActivated={misc.meshColorPicker} />
-            </IconStateCatcher>
-          </Interactor>
-          <TooltipContent>
-            <H3>
-              <FormattedMessage id='tooltip-mesh-color-picker' />
-            </H3>
-          </TooltipContent>
-        </Tooltip>
-        <MenuBoxContent
-          style={{ padding: 10 }} >
-          <CirclePicker
-            onChange={
-              (color) => {
-                setColors({
-                  ...colors,
-                  mesh: color.hex
-                })
-              }}
-            color={colors.mesh}
-          />
-        </MenuBoxContent>
-      </MenuBox>
+        <CirclePicker
+          onChange={
+            (color) => {
+              setColors({
+                ...colors,
+                mesh: color.hex
+              })
+            }
+          }
+          color={colors.mesh}
+        />
+      </ToolButton>
     </ColumnContainer>
     <ColumnContainer displayed={layers.pointCloud}>
-      <MenuBox
-        activate={misc.pointCloudColorPicker}
-        callOnChange={
-          () => {
+      <ToolButton
+        activated={misc.pointCloudColorPicker}
+        menuBox={{
+          callOnChange: () => {
             setMisc({ ...misc, pointCloudColorPicker: false })
-          }}
-        watchChange={[layers.pointCloud]}
+          },
+          watchChange: [layers.pointCloud]
+        }}
+        interactor={{
+          onClick: () => setMisc({ ...misc,
+            pointCloudColorPicker: !misc.pointCloudColorPicker })
+        }}
+        tooltipId={'tooltip-point-cloud-color-picker'}
+        icon={<PaintIcon isActivated={misc.pointCloudColorPicker} />}
       >
-        <Tooltip>
-          <Interactor
-            activated={misc.pointCloudColorPicker}
-            onClick={() => setMisc({ ...misc,
-              pointCloudColorPicker: !misc.pointCloudColorPicker })}
-          >
-            <IconStateCatcher style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }} >
-              <PaintIcon isActivated={misc.pointCloudColorPicker} />
-            </IconStateCatcher>
-          </Interactor>
-          <TooltipContent>
-            <H3>
-              <FormattedMessage id='tooltip-point-cloud-color-picker' />
-            </H3>
-          </TooltipContent>
-        </Tooltip>
-        <MenuBoxContent
-          style={{ padding: 10 }}
-        >
-          <CirclePicker
-            onChange={
-              (color) => {
-                setColors({
-                  ...colors,
-                  pointCloud: color.hex
-                })
-              }
+        <CirclePicker
+          onChange={
+            (color) => {
+              setColors({
+                ...colors,
+                pointCloud: color.hex
+              })
             }
-            color={colors.pointCloud}
-          />
-        </MenuBoxContent>
-      </MenuBox>
+          }
+          color={colors.pointCloud}
+        />
+      </ToolButton>
     </ColumnContainer>
     <ColumnContainer displayed={layers.skeleton}>
-      <MenuBox
-        activate={misc.skeletonColorPicker}
-        callOnChange={
-          () => {
+      <ToolButton
+        activated={misc.skeletonColorPicker}
+        menuBox={{
+          callOnChange: () => {
             setMisc({ ...misc, skeletonColorPicker: false })
-          }}
-        watchChange={[layers.skeleton]}
+          },
+          watchChange: [layers.skeleton]
+        }}
+        interactor={{
+          onClick: () => setMisc({ ...misc,
+            skeletonColorPicker: !misc.skeletonColorPicker })
+        }}
+        tooltipId={'tooltip-skeleton-color-picker'}
+        icon={<PaintIcon isActivated={misc.skeletonColorPicker} />}
       >
-        <Tooltip>
-          <Interactor
-            activated={misc.skeletonColorPicker}
-            onClick={() => setMisc({ ...misc,
-              skeletonColorPicker: !misc.skeletonColorPicker })}
-          >
-            <IconStateCatcher style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }} >
-              <PaintIcon isActivated={misc.skeletonColorPicker} />
-            </IconStateCatcher>
-          </Interactor>
-          <TooltipContent>
-            <H3>
-              <FormattedMessage id='tooltip-skeleton-color-picker' />
-            </H3>
-          </TooltipContent>
-        </Tooltip>
-        <MenuBoxContent
-          style={{ padding: 10 }}>
-          <CirclePicker
-            onChange={
-              (color) => {
-                setColors({
-                  ...colors,
-                  skeleton: color.hex
-                })
-              }
+        <CirclePicker
+          onChange={
+            (color) => {
+              setColors({
+                ...colors,
+                skeleton: color.hex
+              })
             }
-            color={colors.skeleton}
-          />
-        </MenuBoxContent>
-      </MenuBox>
+          }
+          color={colors.skeleton}
+        />
+      </ToolButton>
     </ColumnContainer>
     <ColumnContainer displayed={layers.angles}>
-      <MenuBox
-        activate={misc.organColorPicker}
-        callOnChange={
-          () => {
+      <ToolButton
+        activated={misc.organColorPicker}
+        menuBox={{
+          callOnChange: () => {
             setMisc({ ...misc, organColorPicker: false })
-          }}
-        watchChange={[selectedAngle, layers.angles]}
+          },
+          watchChange: [layers.angles, selectedAngle]
+        }}
+        interactor={{
+          onClick: () => {
+            setMisc({ ...misc, organColorPicker: !misc.organColorPicker })
+          },
+          isButton: true,
+          isDisabled: selectedAngle === undefined ||
+            selectedAngle === null
+        }}
+        tooltipId='tooltip-organ-color-picker'
+        icon={<PaintIcon isActivated={misc.organColorPicker} />}
       >
-        <Tooltip>
-          <Interactor
-            isDisabled={(selectedAngle === undefined || selectedAngle === null)}
-            isButton
-            activated={misc.organColorPicker}
-            onClick={() => setMisc({ ...misc,
-              organColorPicker: !misc.organColorPicker })}
-          >
-            <IconStateCatcher style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }} >
-              <PaintIcon isActivated={misc.organColorPicker} />
-            </IconStateCatcher>
-          </Interactor>
-          <TooltipContent>
-            <H3>
-              <FormattedMessage id='tooltip-organ-color-picker' />
-            </H3>
-          </TooltipContent>
-        </Tooltip>
-        <MenuBoxContent
-          style={{
-            padding: 10
-          }}>
-          <CirclePicker
-            onChange={
-              (color) => {
-                let copy = colors.organs.slice()
-                const next = selectedAngle + 1
-                copy[selectedAngle] = color.hex
-                copy[next] = color.hex
-                setColors({
-                  ...colors,
-                  organs: copy
-                })
-              }
+        <CirclePicker
+          onChange={
+            (color) => {
+              let copy = colors.organs.slice()
+              const next = selectedAngle + 1
+              copy[selectedAngle] = color.hex
+              copy[next] = color.hex
+              setColors({
+                ...colors,
+                organs: copy
+              })
             }
-            color={colors.organs[selectedAngle]}
-          />
-        </MenuBoxContent>
-      </MenuBox>
+          }
+          color={colors.organs[selectedAngle]}
+        />
+      </ToolButton>
     </ColumnContainer>
   </MiscContainer>
 }
