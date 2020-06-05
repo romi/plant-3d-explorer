@@ -34,9 +34,10 @@ const initialState = {
   selectedAngle: null,
 
   colors: {
-    organs: [],
+    mesh: '#96c0a7',
     pointCloud: '#f8de96',
-    mesh: '#96c0a7'
+    skeleton: '#5ca001',
+    organs: []
   },
 
   reset3dViewFn: null,

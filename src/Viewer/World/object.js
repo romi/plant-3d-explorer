@@ -389,6 +389,10 @@ export default class World {
     this.skeleton = new Skeleton(skeleton, this.viewerObjects)
   }
 
+  setSkeletonColor (color) {
+    this.skeleton.setColor(color)
+  }
+
   setAnglesPoints (angles) {
     this.anlesPoints = new Angles(angles.fruit_points, this.viewerObjects)
   }

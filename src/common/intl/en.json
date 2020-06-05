@@ -34,6 +34,7 @@
   
   "tooltip-mesh-color-picker": "Change the color of the mesh",
   "tooltip-point-cloud-color-picker": "Change the color of the point cloud",
+  "tooltip-skeleton-color-picker": "Change the color of the skeleton",
   "tooltip-organ-color-picker": "Color the selected organs",
 
   "tooltip-help-rotate": "Click left and hold to rotate",

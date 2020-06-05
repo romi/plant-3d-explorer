@@ -268,6 +268,15 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
+      if (world && scan && scan.data.skeleton) {
+        world.setSkeletonColor(colors.skeleton)
+      }
+    },
+    [colors.skeleton]
+  )
+
+  useEffect(
+    () => {
       if (world && scan && scan.data.angles) {
         world.setAnglesPoints(scan.data.angles)
         world.setLayers(layers)

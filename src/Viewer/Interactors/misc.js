@@ -144,6 +144,51 @@ export default function MiscInteractors () {
         </MenuBoxContent>
       </MenuBox>
     </ColumnContainer>
+    <ColumnContainer displayed={layers.skeleton}>
+      <MenuBox
+        activate={misc.skeletonColorPicker}
+        callOnChange={
+          () => {
+            setMisc({ ...misc, skeletonColorPicker: false })
+          }}
+        watchChange={[layers.skeleton]}
+      >
+        <Tooltip>
+          <Interactor
+            activated={misc.skeletonColorPicker}
+            onClick={() => setMisc({ ...misc,
+              skeletonColorPicker: !misc.skeletonColorPicker })}
+          >
+            <IconStateCatcher style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }} >
+              <PaintIcon isActivated={misc.skeletonColorPicker} />
+            </IconStateCatcher>
+          </Interactor>
+          <TooltipContent>
+            <H3>
+              <FormattedMessage id='tooltip-skeleton-color-picker' />
+            </H3>
+          </TooltipContent>
+        </Tooltip>
+        <MenuBoxContent
+          style={{ padding: 10 }}>
+          <CirclePicker
+            onChange={
+              (color) => {
+                setColors({
+                  ...colors,
+                  skeleton: color.hex
+                })
+              }
+            }
+            color={colors.skeleton}
+          />
+        </MenuBoxContent>
+      </MenuBox>
+    </ColumnContainer>
     <ColumnContainer displayed={layers.angles}>
       <MenuBox
         activate={misc.organColorPicker}
