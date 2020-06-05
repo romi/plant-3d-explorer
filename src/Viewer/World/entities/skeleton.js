@@ -93,6 +93,5 @@ export default class Skeleton {
     this.group.children.forEach((child) => {
       child.material.color = new THREE.Color(color)
     })
-    console.log(this.group)
   }
 }
