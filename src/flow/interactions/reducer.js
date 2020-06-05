@@ -36,6 +36,8 @@ const initialState = {
 
   pointCloudColor: '#f8de96',
 
+  meshColor: '#96c0a7',
+
   reset3dViewFn: null,
   reset2dViewFn: null
 }
@@ -87,6 +89,11 @@ export default function settingsReducer (state = initialState, action) {
       return {
         ...state,
         pointCloudColor: action.value
+      }
+    case 'SET_MESH_COLOR':
+      return {
+        ...state,
+        meshColor: action.value
       }
     default:
       return state

@@ -57,4 +57,10 @@ export default class Mesh {
   setVisible (boolean) {
     this.object.visible = boolean
   }
+
+  setColor (color) {
+    if (color) {
+      this.object.material.color = new THREE.Color(color)
+    }
+  }
 }

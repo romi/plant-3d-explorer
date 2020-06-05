@@ -32,6 +32,7 @@
   "tooltip-cameras-show": "Show cameras",
   "tooltip-reset": "Reset view",
   
+  "tooltip-mesh-color-picker": "Change the color of the mesh",
   "tooltip-point-cloud-color-picker": "Change the color of the point cloud",
   "tooltip-organ-color-picker": "Color the selected organs",
 

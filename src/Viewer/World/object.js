@@ -370,6 +370,12 @@ export default class World {
     this.mesh = new Mesh(geometry, this.viewerObjects)
   }
 
+  setMeshColor (color) {
+    if (this.mesh) {
+      this.mesh.setColor(color)
+    }
+  }
+
   setPointcloudGeometry (geometry) {
     geometry.computeBoundingBox()
     this.pointCloud = new PointCloud(geometry, this.viewerObjects)

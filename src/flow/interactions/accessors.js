@@ -120,6 +120,20 @@ export const usePointCloudColor = useAccessor(
   ]
 )
 
+export const useMeshColor = useAccessor(
+  [
+    (state) => {
+      return state.interactions.meshColor
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_MESH_COLOR',
+      value
+    })
+  ]
+)
+
 export const useReset2dView = useAccessor(
   [
     (state) => {

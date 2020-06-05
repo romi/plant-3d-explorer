@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 import { FormattedMessage } from 'react-intl'
 import { CirclePicker } from 'react-color'
 
-import { useSelectedAngle, useOrganColors, usePointCloudColor } from 'flow/interactions/accessors'
+import { useSelectedAngle, useOrganColors, usePointCloudColor, useMeshColor } from 'flow/interactions/accessors'
 import { useMisc, useLayers } from 'flow/settings/accessors'
 
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
@@ -51,10 +51,52 @@ export default function MiscInteractors () {
   const [selectedAngle] = useSelectedAngle()
   const [organColors, setOrganColors] = useOrganColors()
   const [pointCloudColor, setPointCloudColor] = usePointCloudColor()
+  const [meshColor, setMeshColor] = useMeshColor()
   const [misc, setMisc] = useMisc()
   const [layers] = useLayers()
 
   return <MiscContainer>
+    <ColumnContainer displayed={layers.mesh}>
+      <MenuBox
+        activate={misc.meshColorPicker}
+        callOnChange={
+          () => {
+            setMisc({ ...misc, meshColorPicker: false })
+          }}
+        watchChange={[layers.mesh]}
+      >
+        <Tooltip>
+          <Interactor
+            activated={misc.meshColorPicker}
+            onClick={() => setMisc({ ...misc,
+              meshColorPicker: !misc.meshColorPicker })}
+          >
+            <IconStateCatcher style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }} >
+              <PaintIcon isActivated={misc.meshColorPicker} />
+            </IconStateCatcher>
+          </Interactor>
+          <TooltipContent>
+            <H3>
+              <FormattedMessage id='tooltip-mesh-color-picker' />
+            </H3>
+          </TooltipContent>
+        </Tooltip>
+        <MenuBoxContent
+          style={{ padding: 10 }} >
+          <CirclePicker
+            onChange={
+              (color) => {
+                setMeshColor(color.hex)
+              }}
+            color={meshColor}
+          />
+        </MenuBoxContent>
+      </MenuBox>
+    </ColumnContainer>
     <ColumnContainer displayed={layers.pointCloud}>
       <MenuBox
         activate={misc.pointCloudColorPicker}
