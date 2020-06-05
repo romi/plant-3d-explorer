@@ -40,7 +40,8 @@ const initialState = {
   },
   misc: {
     'organColorPicker': false,
-    'pointCloudColorPicker': false
+    'pointCloudColorPicker': false,
+    'meshColorPicker': false
   }
 }
 

@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 import { FormattedMessage } from 'react-intl'
 import { CirclePicker } from 'react-color'
 
-import { useSelectedAngle, useOrganColors, usePointCloudColor } from 'flow/interactions/accessors'
+import { useSelectedAngle, useColor } from 'flow/interactions/accessors'
 import { useMisc, useLayers } from 'flow/settings/accessors'
 
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
@@ -49,12 +49,55 @@ const MiscContainer = styled(Container)({
 
 export default function MiscInteractors () {
   const [selectedAngle] = useSelectedAngle()
-  const [organColors, setOrganColors] = useOrganColors()
-  const [pointCloudColor, setPointCloudColor] = usePointCloudColor()
+  const [colors, setColors] = useColor()
   const [misc, setMisc] = useMisc()
   const [layers] = useLayers()
 
   return <MiscContainer>
+    <ColumnContainer displayed={layers.mesh}>
+      <MenuBox
+        activate={misc.meshColorPicker}
+        callOnChange={
+          () => {
+            setMisc({ ...misc, meshColorPicker: false })
+          }}
+        watchChange={[layers.mesh]}
+      >
+        <Tooltip>
+          <Interactor
+            activated={misc.meshColorPicker}
+            onClick={() => setMisc({ ...misc,
+              meshColorPicker: !misc.meshColorPicker })}
+          >
+            <IconStateCatcher style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }} >
+              <PaintIcon isActivated={misc.meshColorPicker} />
+            </IconStateCatcher>
+          </Interactor>
+          <TooltipContent>
+            <H3>
+              <FormattedMessage id='tooltip-mesh-color-picker' />
+            </H3>
+          </TooltipContent>
+        </Tooltip>
+        <MenuBoxContent
+          style={{ padding: 10 }} >
+          <CirclePicker
+            onChange={
+              (color) => {
+                setColors({
+                  ...colors,
+                  mesh: color.hex
+                })
+              }}
+            color={colors.mesh}
+          />
+        </MenuBoxContent>
+      </MenuBox>
+    </ColumnContainer>
     <ColumnContainer displayed={layers.pointCloud}>
       <MenuBox
         activate={misc.pointCloudColorPicker}
@@ -90,10 +133,58 @@ export default function MiscInteractors () {
           <CirclePicker
             onChange={
               (color) => {
-                setPointCloudColor(color.hex)
+                setColors({
+                  ...colors,
+                  pointCloud: color.hex
+                })
               }
             }
-            color={pointCloudColor}
+            color={colors.pointCloud}
+          />
+        </MenuBoxContent>
+      </MenuBox>
+    </ColumnContainer>
+    <ColumnContainer displayed={layers.skeleton}>
+      <MenuBox
+        activate={misc.skeletonColorPicker}
+        callOnChange={
+          () => {
+            setMisc({ ...misc, skeletonColorPicker: false })
+          }}
+        watchChange={[layers.skeleton]}
+      >
+        <Tooltip>
+          <Interactor
+            activated={misc.skeletonColorPicker}
+            onClick={() => setMisc({ ...misc,
+              skeletonColorPicker: !misc.skeletonColorPicker })}
+          >
+            <IconStateCatcher style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }} >
+              <PaintIcon isActivated={misc.skeletonColorPicker} />
+            </IconStateCatcher>
+          </Interactor>
+          <TooltipContent>
+            <H3>
+              <FormattedMessage id='tooltip-skeleton-color-picker' />
+            </H3>
+          </TooltipContent>
+        </Tooltip>
+        <MenuBoxContent
+          style={{ padding: 10 }}>
+          <CirclePicker
+            onChange={
+              (color) => {
+                setColors({
+                  ...colors,
+                  skeleton: color.hex
+                })
+              }
+            }
+            color={colors.skeleton}
           />
         </MenuBoxContent>
       </MenuBox>
@@ -136,14 +227,17 @@ export default function MiscInteractors () {
           <CirclePicker
             onChange={
               (color) => {
-                let copy = organColors.slice()
+                let copy = colors.organs.slice()
                 const next = selectedAngle + 1
                 copy[selectedAngle] = color.hex
                 copy[next] = color.hex
-                setOrganColors(copy)
+                setColors({
+                  ...colors,
+                  organs: copy
+                })
               }
             }
-            color={organColors[selectedAngle]}
+            color={colors.organs[selectedAngle]}
           />
         </MenuBoxContent>
       </MenuBox>

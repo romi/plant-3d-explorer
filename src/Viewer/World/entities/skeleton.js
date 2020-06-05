@@ -88,4 +88,8 @@ export default class Skeleton {
       child.visible = boolean
     })
   }
+
+  setColor (color) {
+    if (color) this.material.color = new THREE.Color(color)
+  }
 }
