@@ -25,6 +25,9 @@ const Close = styled.div({
   cursor: 'pointer'
 })
 
+/* This is a general component for display menus that appear when
+  a button is clicked. This component is heavily inspired by the Tooltip
+  component */
 export default function (props) {
   const contentRef = useRef()
   const [ref, BB] = useBB(false)
@@ -83,6 +86,8 @@ const ContentContainer = styled.div({
       ? -props.contentBb.height - 20
       : 'normal',
     marginLeft: props.contentBb
+      // This is used to prevent the element from going out of the
+      // screen on the left side
       ? (props.contentBb.x > props.contentBb.width / 2)
         ? (
           -(props.contentBb.width || 0) / 2

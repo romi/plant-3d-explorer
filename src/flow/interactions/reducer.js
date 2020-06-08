@@ -89,12 +89,11 @@ export default function settingsReducer (state = initialState, action) {
         colors: action.value
       }
     case 'RESTORE_DEFAULT_COLOR':
-      console.log(action.value)
       return {
         ...state,
         colors: {
           ...state.colors,
-          [action.value]: initialState[action.value]
+          [action.value]: initialState.colors[action.value]
         }
       }
     default:

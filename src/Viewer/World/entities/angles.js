@@ -93,12 +93,17 @@ export default class Angles {
   }
 
   setCustomColors (organColors) {
-    organColors.forEach((color, index) => {
-      if (color && this.group.children[index] !== undefined &&
-          this.group.children[index] !== null) {
-        const matColor = new THREE.Color(color)
-        this.group.children[index].customColor = matColor
-        this.group.children[index].material.color = matColor
+    this.group.children.forEach((child, index) => {
+      if (child !== undefined && child !== null) {
+        if (organColors[index]) {
+          const matColor = new THREE.Color(organColors[index])
+          child.customColor = matColor
+          child.material.color = matColor
+        } else {
+          child.customColor = null
+          child.material.color =
+           new THREE.Color(this.globalColors[index % 2 ? 1 : 0])
+        }
       }
     })
   }

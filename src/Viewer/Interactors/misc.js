@@ -10,7 +10,7 @@ import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
 import MenuBox, { MenuBoxContent } from 'rd/UI/MenuBox'
 import { IconStateCatcher } from 'rd/UI/Icon'
 import { PaintIcon } from 'Viewer/Interactors/icons'
-import resetArrow from 'common/assets/ico.reset.20x20.svg'
+import { ResetButton } from 'rd/UI/Buttons'
 
 import { H3 } from 'common/styles/UI/Text/titles'
 
@@ -54,27 +54,41 @@ const ColumnContainer = styled.div({
   }
 })
 
-const ResetButton = styled.div({
-  backgroundImage: `url(${resetArrow})`,
-  width: 20,
-  height: 20,
-  marginLeft: 'auto',
-  marginRight: 'auto',
-  marginTop: 10,
-  cursor: 'pointer'
-})
-
 const MiscContainer = styled(Container)({
 })
 
+/* A general component for displaying tools that can
+  be popped up when clicked.
+  The tool prop has to be a member of the tools "enum".
+*/
 function ToolButton (props) {
+  const [misc, setMisc] = useMisc()
+
+  const closeTool = () => {
+    if (misc.activeTool === props.tool) {
+      setMisc({ ...misc, activeTool: null })
+    }
+  }
+
   return <MenuBox
-    activate={props.activated}
+    activate={misc.activeTool === props.tool}
+    callOnChange={closeTool}
+    watchChange={[props.layer]}
+    onClose={closeTool}
     {...props.menuBox}
   >
     <Tooltip>
       <Interactor
-        activated={props.activated}
+        activated={misc.activeTool === props.tool}
+        onClick={
+          () => {
+            setMisc({ ...misc,
+              activeTool: misc.activeTool === props.tool
+                ? null
+                : props.tool
+            })
+          }
+        }
         {...props.interactor}
       >
         <IconStateCatcher style={{
@@ -103,33 +117,15 @@ export default function MiscInteractors () {
   const [selectedAngle] = useSelectedAngle()
   const [colors, setColors] = useColor()
   const [resetDefaultColor] = useDefaultColors()
-  const [misc, setMisc] = useMisc()
+  const [misc] = useMisc()
   const [layers] = useLayers()
 
   return <MiscContainer>
     <ColumnContainer displayed={layers.mesh}>
       <ToolButton
-        activated={misc.activeTool === tools.colorPickers.mesh}
-        menuBox={{
-          callOnChange: () => {
-            if (misc.activeTool === tools.colorPickers.mesh) {
-              setMisc({ ...misc, activeTool: null })
-            }
-          },
-          watchChange: [layers.mesh],
-          onClose: () => {
-            if (misc.activeTool === tools.colorPickers.mesh) {
-              setMisc({ ...misc, activeTool: null })
-            }
-          }
-        }}
+        tool={tools.colorPickers.mesh}
+        layer={layers.mesh}
         interactor={{
-          onClick: () => {
-            setMisc({ ...misc,
-              activeTool: misc.activeTool === tools.colorPickers.mesh
-                ? null
-                : tools.colorPickers.mesh })
-          },
           isButton: true
         }}
         tooltipId='tooltip-mesh-color-picker'
@@ -147,32 +143,20 @@ export default function MiscInteractors () {
           }
           color={colors.mesh}
         />
+        <ResetButton
+          onClick={
+            () => {
+              resetDefaultColor('mesh')
+            }
+          }
+        />
       </ToolButton>
     </ColumnContainer>
     <ColumnContainer displayed={layers.pointCloud}>
       <ToolButton
-        activated={misc.activeTool === tools.colorPickers.pointCloud}
-        menuBox={{
-          callOnChange: () => {
-            if (misc.activeTool === tools.colorPickers.pointCloud) {
-              setMisc({ ...misc, activeTool: null })
-            }
-          },
-          watchChange: [layers.pointCloud],
-          onClose: () => {
-            if (misc.activeTool === tools.colorPickers.pointCloud) {
-              setMisc({ ...misc, activeTool: null })
-            }
-          }
-        }}
+        tool={tools.colorPickers.pointCloud}
+        layer={layers.pointCloud}
         interactor={{
-          onClick: () => {
-            setMisc({ ...misc,
-              activeTool: misc.activeTool === tools.colorPickers.pointCloud
-                ? null
-                : tools.colorPickers.pointCloud
-            })
-          },
           isButton: true
         }}
         tooltipId={'tooltip-point-cloud-color-picker'}
@@ -190,32 +174,20 @@ export default function MiscInteractors () {
           }
           color={colors.pointCloud}
         />
+        <ResetButton
+          onClick={
+            () => {
+              resetDefaultColor('pointCloud')
+            }
+          }
+        />
       </ToolButton>
     </ColumnContainer>
     <ColumnContainer displayed={layers.skeleton}>
       <ToolButton
-        activated={misc.activeTool === tools.colorPickers.skeleton}
-        menuBox={{
-          callOnChange: () => {
-            if (misc.activeTool === tools.colorPickers.skeleton) {
-              setMisc({ ...misc, activeTool: null })
-            }
-          },
-          watchChange: [layers.skeleton],
-          onClose: () => {
-            if (misc.activeTool === tools.colorPickers.skeleton) {
-              setMisc({ ...misc, activeTool: null })
-            }
-          }
-        }}
+        tool={tools.colorPickers.skeleton}
+        layer={layers.skeleton}
         interactor={{
-          onClick: () => {
-            setMisc({ ...misc,
-              activeTool: misc.activeTool === tools.colorPickers.skeleton
-                ? null
-                : tools.colorPickers.skeleton
-            })
-          },
           isButton: true
         }}
         tooltipId={'tooltip-skeleton-color-picker'}
@@ -233,31 +205,20 @@ export default function MiscInteractors () {
           }
           color={colors.skeleton}
         />
+        <ResetButton
+          onClick={
+            () => {
+              resetDefaultColor('skeleton')
+            }
+          }
+        />
       </ToolButton>
     </ColumnContainer>
     <ColumnContainer displayed={layers.angles}>
       <ToolButton
-        activated={misc.activeTool === tools.colorPickers.organs}
-        menuBox={{
-          callOnChange: () => {
-            if (misc.activeTool === tools.colorPickers.organs) {
-              setMisc({ ...misc, activeTool: null })
-            }
-          },
-          watchChange: [layers.angles, selectedAngle],
-          onClose: () => {
-            if (misc.activeTool === tools.colorPickers.organs) {
-              setMisc({ ...misc, activeTool: null })
-            }
-          }
-        }}
+        tool={tools.colorPickers.organs}
+        layer={layers.angles}
         interactor={{
-          onClick: () => {
-            setMisc({ ...misc,
-              activeTool: misc.activeTool === tools.colorPickers.organs
-                ? null
-                : tools.colorPickers.organs })
-          },
           isButton: true
         }}
         tooltipId={(selectedAngle === undefined || selectedAngle === null)
@@ -273,10 +234,13 @@ export default function MiscInteractors () {
               let color2 = color.hsl
               // Use a lighter color for the second organ of the pair
               color2.l += 0.3
+              /* This is a bit ugly but very useful to change the brightness of
+               the color */
               const color2String = 'hsl(' + Math.round(color2.h) + ', ' +
                 color2.s.toFixed(2) * 100 + '%, ' + color2.l.toFixed(2) * 100 +
                 '%)'
               if (selectedAngle !== undefined && selectedAngle !== null) {
+                // We slice the array because it has to be an immutable change
                 let copy = colors.organs.slice()
                 const next = selectedAngle + 1
                 copy[selectedAngle] = color.hex
@@ -300,8 +264,8 @@ export default function MiscInteractors () {
         <ResetButton
           onClick={
             () => {
-              resetDefaultColor('organs')
               resetDefaultColor('globalOrganColors')
+              resetDefaultColor('organs')
             }
           }
         />
