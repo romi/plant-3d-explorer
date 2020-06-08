@@ -3,13 +3,14 @@ import styled from '@emotion/styled'
 import { FormattedMessage } from 'react-intl'
 import { CirclePicker } from 'react-color'
 
-import { useSelectedAngle, useColor } from 'flow/interactions/accessors'
+import { useSelectedAngle, useColor, useDefaultColors } from 'flow/interactions/accessors'
 import { useMisc, useLayers } from 'flow/settings/accessors'
 
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
 import MenuBox, { MenuBoxContent } from 'rd/UI/MenuBox'
 import { IconStateCatcher } from 'rd/UI/Icon'
 import { PaintIcon } from 'Viewer/Interactors/icons'
+import resetArrow from 'common/assets/ico.reset.20x20.svg'
 
 import { H3 } from 'common/styles/UI/Text/titles'
 
@@ -27,8 +28,8 @@ const tools = {
 
 export const Container = styled.div({
   position: 'absolute',
-  top: 20,
-  marginRight: 50,
+  top: 60,
+  left: 20,
   display: 'flex',
 
   '& :first-of-type > div': {
@@ -47,18 +48,23 @@ const ColumnContainer = styled.div({
     visibility: props.displayed
       ? 'visible'
       : 'hidden',
-    position: props.displayed
-      ? 'initial'
-      : 'absolute',
     flexDirection: 'column',
-    marginLeft: 2,
-    marginRight: 2
+    marginLeft: 0,
+    marginRight: 0
   }
 })
 
+const ResetButton = styled.div({
+  backgroundImage: `url(${resetArrow})`,
+  width: 20,
+  height: 20,
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  marginTop: 10,
+  cursor: 'pointer'
+})
+
 const MiscContainer = styled(Container)({
-  left: 'auto',
-  right: '0%'
 })
 
 function ToolButton (props) {
@@ -96,6 +102,7 @@ function ToolButton (props) {
 export default function MiscInteractors () {
   const [selectedAngle] = useSelectedAngle()
   const [colors, setColors] = useColor()
+  const [resetDefaultColor] = useDefaultColors()
   const [misc, setMisc] = useMisc()
   const [layers] = useLayers()
 
@@ -289,6 +296,14 @@ export default function MiscInteractors () {
           color={(selectedAngle !== undefined && selectedAngle !== null)
             ? colors.organs[selectedAngle]
             : colors.globalOrganColors[0]}
+        />
+        <ResetButton
+          onClick={
+            () => {
+              resetDefaultColor('organs')
+              resetDefaultColor('globalOrganColors')
+            }
+          }
         />
       </ToolButton>
     </ColumnContainer>

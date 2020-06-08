@@ -115,7 +115,7 @@ export const Interactor = styled(
 
 export {
   LayersInteractors,
-  CameraInteractors,
   MiscInteractors,
+  CameraInteractors,
   PanelsInteractor
 }
