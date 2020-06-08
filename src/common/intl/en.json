@@ -36,6 +36,7 @@
   "tooltip-point-cloud-color-picker": "Change the color of the point cloud",
   "tooltip-skeleton-color-picker": "Change the color of the skeleton",
   "tooltip-organ-color-picker": "Color the selected organs",
+  "tooltip-organ-global-color-picker": "Color every organ",
 
   "tooltip-help-rotate": "Click left and hold to rotate",
   "tooltip-help-pan": "Click right and hold to pan",

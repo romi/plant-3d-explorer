@@ -109,7 +109,12 @@ export default function MiscInteractors () {
               setMisc({ ...misc, activeTool: null })
             }
           },
-          watchChange: [layers.mesh]
+          watchChange: [layers.mesh],
+          onClose: () => {
+            if (misc.activeTool === tools.colorPickers.mesh) {
+              setMisc({ ...misc, activeTool: null })
+            }
+          }
         }}
         interactor={{
           onClick: () => {
@@ -146,7 +151,12 @@ export default function MiscInteractors () {
               setMisc({ ...misc, activeTool: null })
             }
           },
-          watchChange: [layers.pointCloud]
+          watchChange: [layers.pointCloud],
+          onClose: () => {
+            if (misc.activeTool === tools.colorPickers.pointCloud) {
+              setMisc({ ...misc, activeTool: null })
+            }
+          }
         }}
         interactor={{
           onClick: () => {
@@ -184,7 +194,12 @@ export default function MiscInteractors () {
               setMisc({ ...misc, activeTool: null })
             }
           },
-          watchChange: [layers.skeleton]
+          watchChange: [layers.skeleton],
+          onClose: () => {
+            if (misc.activeTool === tools.colorPickers.skeleton) {
+              setMisc({ ...misc, activeTool: null })
+            }
+          }
         }}
         interactor={{
           onClick: () => {
@@ -222,7 +237,12 @@ export default function MiscInteractors () {
               setMisc({ ...misc, activeTool: null })
             }
           },
-          watchChange: [layers.angles, selectedAngle]
+          watchChange: [layers.angles, selectedAngle],
+          onClose: () => {
+            if (misc.activeTool === tools.colorPickers.organs) {
+              setMisc({ ...misc, activeTool: null })
+            }
+          }
         }}
         interactor={{
           onClick: () => {
@@ -231,33 +251,44 @@ export default function MiscInteractors () {
                 ? null
                 : tools.colorPickers.organs })
           },
-          isButton: true,
-          isDisabled: selectedAngle === undefined ||
-            selectedAngle === null
+          isButton: true
         }}
-        tooltipId='tooltip-organ-color-picker'
+        tooltipId={(selectedAngle === undefined || selectedAngle === null)
+          ? 'tooltip-organ-global-color-picker'
+          : 'tooltip-organ-color-picker'
+        }
         icon={<PaintIcon isActivated={misc.activeTool ===
           tools.colorPickers.organs} />}
       >
         <CirclePicker
           onChange={
             (color) => {
-              let copy = colors.organs.slice()
-              const next = selectedAngle + 1
-              copy[selectedAngle] = color.hex
               let color2 = color.hsl
               // Use a lighter color for the second organ of the pair
               color2.l += 0.3
-              copy[next] = 'hsl(' + Math.round(color2.h) + ', ' +
+              const color2String = 'hsl(' + Math.round(color2.h) + ', ' +
                 color2.s.toFixed(2) * 100 + '%, ' + color2.l.toFixed(2) * 100 +
                 '%)'
-              setColors({
-                ...colors,
-                organs: copy
-              })
+              if (selectedAngle !== undefined && selectedAngle !== null) {
+                let copy = colors.organs.slice()
+                const next = selectedAngle + 1
+                copy[selectedAngle] = color.hex
+                copy[next] = color2String
+                setColors({
+                  ...colors,
+                  organs: copy
+                })
+              } else {
+                setColors({
+                  ...colors,
+                  globalOrganColors: [color.hex, color2String]
+                })
+              }
             }
           }
-          color={colors.organs[selectedAngle]}
+          color={(selectedAngle !== undefined && selectedAngle !== null)
+            ? colors.organs[selectedAngle]
+            : colors.globalOrganColors[0]}
         />
       </ToolButton>
     </ColumnContainer>

@@ -3,6 +3,8 @@ import React, { useEffect, useRef, Children, cloneElement, useState } from 'reac
 import useBB from 'rd/tools/hooks/bb'
 import styled from '@emotion/styled'
 
+import closePicto from 'common/assets/ico.deselect.20x20.svg'
+
 const InvisibleContent = styled.div({
   pointerEvents: 'none',
   display: 'block',
@@ -10,6 +12,17 @@ const InvisibleContent = styled.div({
   height: 'auto',
   position: 'static',
   visibility: 'hidden'
+})
+
+const Close = styled.div({
+  position: 'absolute',
+  backgroundImage: `url(${closePicto})`,
+  top: 0,
+  right: -25,
+  width: 20,
+  height: 20,
+  zIndex: 1000,
+  cursor: 'pointer'
 })
 
 export default function (props) {
@@ -40,7 +53,9 @@ export default function (props) {
     {
       props.activate
         ? Children.map(childrenWithContent, (child) => {
-          return cloneElement(child, { parentBb: BB, contentBb: contentBb })
+          return cloneElement(child, { parentBb: BB,
+            contentBb: contentBb,
+            onClose: props.onClose })
         })
         : null
     }
@@ -83,6 +98,9 @@ export function MenuBoxContent (props) {
     contentBb={props.contentBb}
     style={props.style}
   >
+    <Close
+      onClick={props.onClose}
+    />
     <div>
       {props.children}
     </div>

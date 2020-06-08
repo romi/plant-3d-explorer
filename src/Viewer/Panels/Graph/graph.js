@@ -441,8 +441,20 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
               height={barHeight}
               selectedAngle={isNotNullAndUndefiend(selectedAngle)}
               selected={selectedAngle === i}
-              hoveredColor={colors.organs[hoveredAngle]}
-              selectedColor={colors.organs[selectedAngle]}
+              hoveredColor={
+                colors.organs[hoveredAngle]
+                  ? colors.organs[hoveredAngle]
+                  : hoveredAngle % 2
+                    ? colors.globalOrganColors[1]
+                    : colors.globalOrganColors[0]
+              }
+              selectedColor={
+                colors.organs[selectedAngle]
+                  ? colors.organs[selectedAngle]
+                  : selectedAngle % 2
+                    ? colors.globalOrganColors[1]
+                    : colors.globalOrganColors[0]
+              }
               hovered={hoveredAngle === i}
               onMouseEnter={() => setHoveredAngle(i)}
               onClick={() => {

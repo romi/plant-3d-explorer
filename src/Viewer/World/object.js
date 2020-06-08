@@ -361,6 +361,11 @@ export default class World {
     this.anlesPoints.setCustomColors(organColors)
   }
 
+  setGlobalOrganColors (globalOrganColors) {
+    if (!this.anlesPoints) return
+    this.anlesPoints.setGlobalColors(globalOrganColors)
+  }
+
   setHighlightedAngle (indexes) {
     if (!this.anlesPoints || !indexes.length) return
     this.anlesPoints.setHighlighted(indexes)

@@ -37,7 +37,8 @@ const initialState = {
     mesh: '#96c0a7',
     pointCloud: '#f8de96',
     skeleton: '#5ca001',
-    organs: []
+    organs: [],
+    globalOrganColors: ['#3a4d45', '#00a960']
   },
 
   reset3dViewFn: null,

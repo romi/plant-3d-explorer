@@ -220,6 +220,15 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
+      if (world) {
+        world.setGlobalOrganColors(colors.globalOrganColors)
+      }
+    },
+    [colors.globalOrganColors]
+  )
+
+  useEffect(
+    () => {
       if (world && meshGeometry) {
         world.setMeshGeometry(meshGeometry)
         world.setLayers(layers)
