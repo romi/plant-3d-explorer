@@ -245,7 +245,12 @@ export default function MiscInteractors () {
               let copy = colors.organs.slice()
               const next = selectedAngle + 1
               copy[selectedAngle] = color.hex
-              copy[next] = color.hex
+              let color2 = color.hsl
+              // Use a lighter color for the second organ of the pair
+              color2.l += 0.3
+              copy[next] = 'hsl(' + Math.round(color2.h) + ', ' +
+                color2.s.toFixed(2) * 100 + '%, ' + color2.l.toFixed(2) * 100 +
+                '%)'
               setColors({
                 ...colors,
                 organs: copy
