@@ -38,6 +38,7 @@ import LayersInteractors from './layers'
 import CameraInteractors from './camera'
 import PanelsInteractor from './panels'
 import ToolInteractors from './tools'
+import MiscInteractors from './misc'
 
 export const Interactor = styled(
   (props) => <div
@@ -117,5 +118,6 @@ export {
   LayersInteractors,
   ToolInteractors,
   CameraInteractors,
-  PanelsInteractor
+  PanelsInteractor,
+  MiscInteractors
 }
