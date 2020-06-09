@@ -79,3 +79,17 @@ export const useLayerTools = useAccessor(
     })
   ]
 )
+
+export const useMisc = useAccessor(
+  [
+    (state) => {
+      return state.settings.misc
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_MISC',
+      value
+    })
+  ]
+)

@@ -13,12 +13,17 @@ export const tools = {
     pointCloud: 1,
     skeleton: 2,
     organs: 3
+  },
+  misc: {
+    snapshot: 4
   }
 }
 
 /* A general component for displaying tools that can
   be popped up when clicked.
   The tool prop has to be a member of the tools "enum".
+
+  At least the toolsList and tooltipId properties must be provided
 */
 export default function ToolButton (props) {
   const [toolsList, setToolsList] = props.toolsList

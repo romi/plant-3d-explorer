@@ -41,6 +41,9 @@ const initialState = {
   },
   layerTools: {
     activeTool: null
+  },
+  misc: {
+    activeTool: null
   }
 }
 
@@ -65,6 +68,11 @@ export default function settingsReducer (state = initialState, action) {
       return {
         ...state,
         layerTools: action.value
+      }
+    case 'SET_MISC':
+      return {
+        ...state,
+        misc: action.value
       }
     default:
       return state
