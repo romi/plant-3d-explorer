@@ -39,7 +39,7 @@ const initialState = {
     'panels-angles': true,
     'panels-distances': true
   },
-  misc: {
+  layerTools: {
     activeTool: null
   }
 }
@@ -61,10 +61,10 @@ export default function settingsReducer (state = initialState, action) {
         ...state,
         panels: action.value
       }
-    case 'SET_MISC':
+    case 'SET_LAYER_TOOLS':
       return {
         ...state,
-        misc: action.value
+        layerTools: action.value
       }
     default:
       return state

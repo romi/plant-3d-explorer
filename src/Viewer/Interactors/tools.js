@@ -1,30 +1,13 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { FormattedMessage } from 'react-intl'
 import { CirclePicker } from 'react-color'
 
 import { useSelectedAngle, useColor, useDefaultColors } from 'flow/interactions/accessors'
-import { useMisc, useLayers } from 'flow/settings/accessors'
+import { useLayerTools, useLayers } from 'flow/settings/accessors'
 
-import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
-import MenuBox, { MenuBoxContent } from 'rd/UI/MenuBox'
-import { IconStateCatcher } from 'rd/UI/Icon'
 import { PaintIcon } from 'Viewer/Interactors/icons'
 import { ResetButton } from 'rd/UI/Buttons'
-
-import { H3 } from 'common/styles/UI/Text/titles'
-
-import { Interactor } from './index'
-
-// This enum can be exported later if need be
-const tools = {
-  colorPickers: {
-    mesh: 0,
-    pointCloud: 1,
-    skeleton: 2,
-    organs: 3
-  }
-}
+import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 
 export const Container = styled.div({
   position: 'absolute',
@@ -54,82 +37,27 @@ const ColumnContainer = styled.div({
   }
 })
 
-const MiscContainer = styled(Container)({
+const ToolContainer = styled(Container)({
 })
-
-/* A general component for displaying tools that can
-  be popped up when clicked.
-  The tool prop has to be a member of the tools "enum".
-*/
-function ToolButton (props) {
-  const [misc, setMisc] = useMisc()
-
-  const closeTool = () => {
-    if (misc.activeTool === props.tool) {
-      setMisc({ ...misc, activeTool: null })
-    }
-  }
-
-  return <MenuBox
-    activate={misc.activeTool === props.tool}
-    callOnChange={closeTool}
-    watchChange={[props.layer]}
-    onClose={closeTool}
-    {...props.menuBox}
-  >
-    <Tooltip>
-      <Interactor
-        activated={misc.activeTool === props.tool}
-        onClick={
-          () => {
-            setMisc({ ...misc,
-              activeTool: misc.activeTool === props.tool
-                ? null
-                : props.tool
-            })
-          }
-        }
-        {...props.interactor}
-      >
-        <IconStateCatcher style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-          {props.icon}
-        </IconStateCatcher>
-      </Interactor>
-      <TooltipContent>
-        <H3>
-          <FormattedMessage id={props.tooltipId} />
-        </H3>
-      </TooltipContent>
-    </Tooltip>
-    <MenuBoxContent style={{
-      padding: 10
-    }} >
-      {props.children}
-    </MenuBoxContent>
-  </MenuBox>
-}
 
 export default function MiscInteractors () {
   const [selectedAngle] = useSelectedAngle()
   const [colors, setColors] = useColor()
   const [resetDefaultColor] = useDefaultColors()
-  const [misc] = useMisc()
+  const [layerTools] = useLayerTools()
   const [layers] = useLayers()
 
-  return <MiscContainer>
+  return <ToolContainer>
     <ColumnContainer displayed={layers.mesh}>
       <ToolButton
+        toolsList={useLayerTools()}
         tool={tools.colorPickers.mesh}
         layer={layers.mesh}
         interactor={{
           isButton: true
         }}
         tooltipId='tooltip-mesh-color-picker'
-        icon={<PaintIcon isActivated={misc.activeTool ===
+        icon={<PaintIcon isActivated={layerTools.activeTool ===
           tools.colorPickers.mesh} />}
       >
         <CirclePicker
@@ -154,13 +82,14 @@ export default function MiscInteractors () {
     </ColumnContainer>
     <ColumnContainer displayed={layers.pointCloud}>
       <ToolButton
+        toolsList={useLayerTools()}
         tool={tools.colorPickers.pointCloud}
         layer={layers.pointCloud}
         interactor={{
           isButton: true
         }}
         tooltipId={'tooltip-point-cloud-color-picker'}
-        icon={<PaintIcon isActivated={misc.activeTool ===
+        icon={<PaintIcon isActivated={layerTools.activeTool ===
         tools.colorPickers.pointCloud} />}
       >
         <CirclePicker
@@ -185,13 +114,14 @@ export default function MiscInteractors () {
     </ColumnContainer>
     <ColumnContainer displayed={layers.skeleton}>
       <ToolButton
+        toolsList={useLayerTools()}
         tool={tools.colorPickers.skeleton}
         layer={layers.skeleton}
         interactor={{
           isButton: true
         }}
         tooltipId={'tooltip-skeleton-color-picker'}
-        icon={<PaintIcon isActivated={misc.activeTool ===
+        icon={<PaintIcon isActivated={layerTools.activeTool ===
           tools.colorPickers.skeleton} />}
       >
         <CirclePicker
@@ -216,6 +146,7 @@ export default function MiscInteractors () {
     </ColumnContainer>
     <ColumnContainer displayed={layers.angles}>
       <ToolButton
+        toolsList={useLayerTools()}
         tool={tools.colorPickers.organs}
         layer={layers.angles}
         interactor={{
@@ -225,7 +156,7 @@ export default function MiscInteractors () {
           ? 'tooltip-organ-global-color-picker'
           : 'tooltip-organ-color-picker'
         }
-        icon={<PaintIcon isActivated={misc.activeTool ===
+        icon={<PaintIcon isActivated={layerTools.activeTool ===
           tools.colorPickers.organs} />}
       >
         <CirclePicker
@@ -271,5 +202,5 @@ export default function MiscInteractors () {
         />
       </ToolButton>
     </ColumnContainer>
-  </MiscContainer>
+  </ToolContainer>
 }

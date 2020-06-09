@@ -66,15 +66,15 @@ export const usePanels = useAccessor(
   ]
 )
 
-export const useMisc = useAccessor(
+export const useLayerTools = useAccessor(
   [
     (state) => {
-      return state.settings.misc
+      return state.settings.layerTools
     }
   ],
   [
     (value) => ({
-      type: 'SET_MISC',
+      type: 'SET_LAYER_TOOLS',
       value
     })
   ]

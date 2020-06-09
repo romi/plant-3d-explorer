@@ -38,7 +38,7 @@ import {
   LayersInteractors,
   CameraInteractors,
   PanelsInteractor,
-  MiscInteractors
+  ToolInteractors
 } from './Interactors'
 
 const Container = styled.div({
@@ -86,7 +86,7 @@ export default function Viewer (props) {
           <World />
           <LayersInteractors />
           <CameraInteractors />
-          <MiscInteractors />
+          <ToolInteractors />
           <PanelsInteractor />
           <Help />
         </WorldContainer>
