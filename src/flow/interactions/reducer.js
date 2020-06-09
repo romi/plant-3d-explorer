@@ -41,6 +41,11 @@ const initialState = {
     globalOrganColors: ['#3a4d45', '#00a960']
   },
 
+  snapshot: {
+    snapResolution: null,
+    trueResolution: null
+  },
+
   reset3dViewFn: null,
   reset2dViewFn: null
 }
@@ -95,6 +100,11 @@ export default function settingsReducer (state = initialState, action) {
           ...state.colors,
           [action.value]: initialState.colors[action.value]
         }
+      }
+    case 'SET_SNAPSHOT':
+      return {
+        ...state,
+        snapshot: action.value
       }
     default:
       return state

@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from '@emotion/styled'
-import useMeasure from 'react-use-measure'
 
 import { useMisc } from 'flow/settings/accessors'
+import { useSnapshot } from 'flow/interactions/accessors'
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 import { H3 } from 'common/styles/UI/Text/titles'
 
@@ -50,8 +50,20 @@ const InputResolution = styled.input({
 })
 
 export default function () {
-  const [, bounds] = useMeasure()
-  console.log(bounds)
+  const [snapshot, setSnapshot] = useSnapshot()
+  const [snapWidth, setSnapWidth] = useState(0)
+  const [snapHeight, setSnapHeight] = useState(0)
+  const [misc] = useMisc()
+
+  useEffect(() => {
+    if (misc.activeTool === null) {
+      setSnapshot({
+        ...snapshot,
+        snapResolution: null
+      })
+    }
+  }, [misc.activeTool])
+
   return <MiscContainer>
     <ToolButton
       toolsList={useMisc()}
@@ -79,7 +91,12 @@ export default function () {
             max='4096'
             step='10'
             placeholder='X'
-            defaultValue={bounds.width}
+            defaultValue={
+              snapWidth || (snapshot.trueResolution
+                ? snapshot.trueResolution.width
+                : 0)
+            }
+            onChange={(e) => { setSnapWidth(parseInt(e.target.value)) }}
           /> <H3> X </H3>
           <InputResolution
             type='number'
@@ -87,10 +104,23 @@ export default function () {
             max='2160'
             step='10'
             placeholder='Y'
-            defaultValue={bounds.height}
+            defaultValue={
+              snapHeight || (snapshot.trueResolution
+                ? snapshot.trueResolution.height
+                : 0)
+            }
+            onChange={(e) => { setSnapHeight(parseInt(e.target.value)) }}
           />
         </div>
-        <DownloadButton> <H3> Photo Icon </H3> </DownloadButton>
+        <DownloadButton
+          onClick={
+            () => {
+              setSnapshot({
+                ...snapshot,
+                snapResolution: { width: snapWidth, height: snapHeight }
+              })
+            }
+          }> <H3> Photo Icon </H3> </DownloadButton>
       </div>
     </ToolButton>
   </MiscContainer>
