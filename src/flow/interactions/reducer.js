@@ -43,7 +43,8 @@ const initialState = {
 
   snapshot: {
     snapResolution: null,
-    trueResolution: null
+    trueResolution: null,
+    image: null
   },
 
   reset3dViewFn: null,

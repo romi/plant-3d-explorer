@@ -410,6 +410,19 @@ export default class World {
     if (this.CameraPointsGroup) this.CameraPointsGroup.visible = layers.cameras
   }
 
+  takeSnapshot (size) {
+    const ogSize = { width: this.renderer.domElement.width,
+      height: this.renderer.domElement.height }
+    /* We need to change the renderer's resolution in order to
+      make a screenshot with a custom resolution */
+    this.renderer.setSize(size.width, size.height)
+    this.renderer.render(this.scene, this.camera)
+    const snapshot = this.renderer.domElement.toDataURL()
+    this.renderer.setSize(ogSize.width, ogSize.height)
+    this.renderer.render(this.scene, this.camera)
+    return snapshot
+  }
+
   interaction () {
     if (
       (this.mouse.x !== this.oldMouse.x) || (this.mouse.y !== this.oldMouse.y)

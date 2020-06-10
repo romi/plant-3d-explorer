@@ -138,6 +138,21 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
+      if (world && snapshot.trueResolution && snapshot.snapResolution) {
+        setSnapshot({
+          ...snapshot,
+          image: world.takeSnapshot({
+            width: snapshot.snapResolution.width || snapshot.trueResolution.width,
+            height: snapshot.snapResolution.height ||
+              snapshot.trueResolution.height
+          })
+        })
+      }
+    }, [snapshot.snapResolution]
+  )
+
+  useEffect(
+    () => {
       if (world) {
         world.setViewport(...viewport)
       }

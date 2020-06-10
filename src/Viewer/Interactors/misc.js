@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react'
+import { FormattedMessage } from 'react-intl'
 import styled from '@emotion/styled'
 
 import { useMisc } from 'flow/settings/accessors'
 import { useSnapshot } from 'flow/interactions/accessors'
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 import { H3 } from 'common/styles/UI/Text/titles'
+
+import { ResetButton } from 'rd/UI/Buttons'
+import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
 
 export const Container = styled.div({
   position: 'absolute',
@@ -22,11 +26,6 @@ export const Container = styled.div({
 })
 
 const MiscContainer = styled(Container)({})
-
-const DownloadButton = styled.a({
-  cursor: 'pointer',
-  margin: 'auto'
-})
 
 const InputResolution = styled.input({
   width: 70,
@@ -49,11 +48,65 @@ const InputResolution = styled.input({
   }
 })
 
+const HoverContainer = styled.div({
+  transition: 'all 1s ease',
+  opacity: '1',
+  cursor: 'pointer',
+  '&:hover': {
+    transition: 'all 1s ease',
+    opacity: '0.3'
+  }
+})
+
+function GenerateDownloadButton (props) {
+  return <a
+    style={{ margin: 'auto', cursor: 'pointer' }}
+    href={props.image}
+    download='snapshot.png'
+    onClick={
+      !props.image ? props.onGenerateClick : null
+    }
+  >
+    {/* TODO: This is not final, there will be an image */}
+    <H3> {props.image
+      ? 'Download' : 'Take a snapshot'} </H3>
+  </a>
+}
+
+function ImagePreview (props) {
+  return <Tooltip>
+    <HoverContainer
+      onClick={props.onClick}>
+      <img
+        src={props.image}
+        width='100%'
+        height='100%'
+        style={{
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          marginTop: 0,
+          marginBottom: 10,
+          maxWidth: '100%',
+          height: 'auto'
+        }}
+        // TODO: Update the react-intl version to translate the alt
+        alt='Preview of the snapshot'
+      />
+    </HoverContainer>
+    <TooltipContent
+      style={{ top: '50%' }}>
+      <H3> <FormattedMessage id='tooltip-delete-snapshot' /> </H3>
+    </TooltipContent>
+  </Tooltip>
+}
+
 export default function () {
   const [snapshot, setSnapshot] = useSnapshot()
   const [snapWidth, setSnapWidth] = useState(0)
   const [snapHeight, setSnapHeight] = useState(0)
   const [misc] = useMisc()
+
+  console.log(snapWidth, snapHeight, snapshot)
 
   useEffect(() => {
     if (misc.activeTool === null) {
@@ -80,6 +133,24 @@ export default function () {
         justifyContent: 'center',
         alignContent: 'center'
       }}>
+        <Tooltip
+          style={{
+            padding: 0,
+            margin: 'auto',
+            width: 40
+          }}>
+          <ResetButton
+            onClick={
+              () => {
+                setSnapWidth(snapshot.trueResolution.width)
+                setSnapHeight(snapshot.trueResolution.height)
+              }
+            }
+          />
+          <TooltipContent>
+            <H3> <FormattedMessage id='tooltip-reset-resolution' /> </H3>
+          </TooltipContent>
+        </Tooltip>
         <div style={{
           display: 'flex',
           flexDirection: 'row',
@@ -91,12 +162,17 @@ export default function () {
             max='4096'
             step='10'
             placeholder='X'
-            defaultValue={
-              snapWidth || (snapshot.trueResolution
-                ? snapshot.trueResolution.width
-                : 0)
+            onChange={
+              (e) => {
+                setSnapWidth(parseInt(
+                  Math.min(Math.max(e.target.value, 0), 4096)))
+              }
             }
-            onChange={(e) => { setSnapWidth(parseInt(e.target.value)) }}
+            value={
+              snapWidth ||
+                (snapshot.trueResolution
+                  ? snapshot.trueResolution.width
+                  : 0)}
           /> <H3> X </H3>
           <InputResolution
             type='number'
@@ -104,23 +180,49 @@ export default function () {
             max='2160'
             step='10'
             placeholder='Y'
-            defaultValue={
-              snapHeight || (snapshot.trueResolution
-                ? snapshot.trueResolution.height
-                : 0)
+            onChange={
+              (e) => {
+                setSnapHeight(parseInt(Math.min(Math.max(
+                  e.target.value, 0), 2160)))
+              }
             }
-            onChange={(e) => { setSnapHeight(parseInt(e.target.value)) }}
+            value={
+              snapHeight ||
+                (snapshot.trueResolution
+                  ? snapshot.trueResolution.height
+                  : 0)}
           />
         </div>
-        <DownloadButton
-          onClick={
+        { snapshot.image
+          ? <div>
+            <H3
+              style={{ textAlign: 'center' }}>
+              <FormattedMessage id='snapshot-preview' />
+            </H3>
+            <ImagePreview
+              image={snapshot.image}
+              onClick={
+                () => {
+                  setSnapshot({
+                    ...snapshot,
+                    image: null
+                  })
+                }
+              }
+            />
+          </div>
+          : null
+        }
+        <GenerateDownloadButton
+          image={snapshot.image}
+          onGenerateClick={
             () => {
               setSnapshot({
                 ...snapshot,
                 snapResolution: { width: snapWidth, height: snapHeight }
               })
             }
-          }> <H3> Photo Icon </H3> </DownloadButton>
+          } />
       </div>
     </ToolButton>
   </MiscContainer>
