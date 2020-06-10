@@ -317,6 +317,14 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
+      if (world) {
+        world.setBackgroundColor(colors.background)
+      }
+    }, [colors.background]
+  )
+
+  useEffect(
+    () => {
       if (world) world.setMouse(mouse)
     },
     [world, mouse]

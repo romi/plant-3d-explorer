@@ -402,6 +402,10 @@ export default class World {
     this.anlesPoints = new Angles(angles.fruit_points, this.viewerObjects)
   }
 
+  setBackgroundColor (color) {
+    if (color) this.scene.background = new THREE.Color(color)
+  }
+
   setLayers (layers) {
     if (this.mesh) this.mesh.setVisible(layers.mesh)
     if (this.pointCloud) this.pointCloud.setVisible(layers.pointCloud)

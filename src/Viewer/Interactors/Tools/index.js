@@ -12,10 +12,11 @@ export const tools = {
     mesh: 0,
     pointCloud: 1,
     skeleton: 2,
-    organs: 3
+    organs: 3,
+    background: 4
   },
   misc: {
-    snapshot: 4
+    snapshot: 5
   }
 }
 

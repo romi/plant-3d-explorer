@@ -3,9 +3,13 @@ import { FormattedMessage } from 'react-intl'
 import styled from '@emotion/styled'
 
 import { useMisc } from 'flow/settings/accessors'
-import { useSnapshot } from 'flow/interactions/accessors'
+import { useColor, useDefaultColors, useSnapshot }
+  from 'flow/interactions/accessors'
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 import { H3 } from 'common/styles/UI/Text/titles'
+import { PaintIcon } from 'Viewer/Interactors/icons'
+
+import { CirclePicker } from 'react-color'
 
 import { ResetButton } from 'rd/UI/Buttons'
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
@@ -104,6 +108,8 @@ export default function () {
   const [snapshot, setSnapshot] = useSnapshot()
   const [snapWidth, setSnapWidth] = useState(0)
   const [snapHeight, setSnapHeight] = useState(0)
+  const [colors, setColors] = useColor()
+  const [resetDefaultColor] = useDefaultColors()
   const [misc] = useMisc()
 
   console.log(snapWidth, snapHeight, snapshot)
@@ -118,6 +124,35 @@ export default function () {
   }, [misc.activeTool])
 
   return <MiscContainer>
+    <ToolButton
+      toolsList={useMisc()}
+      tool={tools.colorPickers.background}
+      interactor={{
+        isButton: true
+      }}
+      tooltipId='tooltip-background-color-picker'
+      icon={<PaintIcon
+        isActivated={misc.activeTool === tools.colorPickers.background} />}
+    >
+      <CirclePicker
+        onChange={
+          (color) => {
+            setColors({
+              ...colors,
+              background: color.hex
+            })
+          }
+        }
+        color={colors.background}
+      />
+      <ResetButton
+        onClick={
+          () => {
+            resetDefaultColor('background')
+          }
+        }
+      />
+    </ToolButton>
     <ToolButton
       toolsList={useMisc()}
       tool={tools.misc.snapshot}

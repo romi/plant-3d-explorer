@@ -37,6 +37,7 @@
   "tooltip-skeleton-color-picker": "Change the color of the skeleton",
   "tooltip-organ-color-picker": "Color the selected organs",
   "tooltip-organ-global-color-picker": "Color every organ",
+  "tooltip-background-color-picker": "Color the background",
   
   "tooltip-snapshot": "Capture an image of the current view",
   "tooltip-reset-resolution": "Reset to current resolution",
