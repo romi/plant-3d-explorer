@@ -65,7 +65,8 @@ export default function (props) {
     onMouseEnter={() => setHovered(true)}
     onMouseLeave={() => setHovered(false)}
     style={{
-      cursor: 'help'
+      cursor: 'help',
+      ...props.style
     }}
   >
     {childrenWithoutContent}

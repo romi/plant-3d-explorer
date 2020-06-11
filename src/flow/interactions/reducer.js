@@ -38,7 +38,14 @@ const initialState = {
     pointCloud: '#f8de96',
     skeleton: '#5ca001',
     organs: [],
-    globalOrganColors: ['#3a4d45', '#00a960']
+    globalOrganColors: ['#3a4d45', '#00a960'],
+    background: '#ecf3f0'
+  },
+
+  snapshot: {
+    snapResolution: null,
+    trueResolution: null,
+    image: null
   },
 
   reset3dViewFn: null,
@@ -95,6 +102,11 @@ export default function settingsReducer (state = initialState, action) {
           ...state.colors,
           [action.value]: initialState.colors[action.value]
         }
+      }
+    case 'SET_SNAPSHOT':
+      return {
+        ...state,
+        snapshot: action.value
       }
     default:
       return state
