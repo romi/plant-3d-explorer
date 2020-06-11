@@ -381,6 +381,12 @@ export default class World {
     }
   }
 
+  setMeshOpacity (opacity) {
+    if (this.mesh) {
+      this.mesh.setOpacity(opacity)
+    }
+  }
+
   setPointcloudGeometry (geometry) {
     geometry.computeBoundingBox()
     this.pointCloud = new PointCloud(geometry, this.viewerObjects)

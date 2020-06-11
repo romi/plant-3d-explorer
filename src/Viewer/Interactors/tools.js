@@ -63,13 +63,17 @@ export default function MiscInteractors () {
         <SketchPicker
           onChange={
             (color) => {
+              const alpha = color.rgb.a
               setColors({
                 ...colors,
-                mesh: color.hex
+                mesh: color.hex,
+                meshOpacity: alpha
               })
             }
           }
-          color={colors.mesh}
+          color={colors.mesh +
+          Math.round((colors.meshOpacity * 0xff)).toString(16)}
+
         />
         <ResetButton
           onClick={
@@ -92,7 +96,7 @@ export default function MiscInteractors () {
         icon={<PaintIcon isActivated={layerTools.activeTool ===
         tools.colorPickers.pointCloud} />}
       >
-        <SketchPicker
+        <SketchPicker disableAlpha
           onChange={
             (color) => {
               console.log(color)
@@ -125,7 +129,7 @@ export default function MiscInteractors () {
         icon={<PaintIcon isActivated={layerTools.activeTool ===
           tools.colorPickers.skeleton} />}
       >
-        <SketchPicker
+        <SketchPicker disableAlpha
           onChange={
             (color) => {
               setColors({
@@ -160,7 +164,7 @@ export default function MiscInteractors () {
         icon={<PaintIcon isActivated={layerTools.activeTool ===
           tools.colorPickers.organs} />}
       >
-        <SketchPicker
+        <SketchPicker disableAlpha
           onChange={
             (color) => {
               let color2 = color.hsl

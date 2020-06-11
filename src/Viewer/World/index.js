@@ -262,9 +262,10 @@ export default function WorldComponent (props) {
     () => {
       if (world) {
         world.setMeshColor(colors.mesh)
+        world.setMeshOpacity(colors.meshOpacity)
       }
     },
-    [colors.mesh]
+    [colors.mesh, colors.meshOpacity]
   )
 
   useEffect(

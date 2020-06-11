@@ -35,6 +35,7 @@ const initialState = {
 
   colors: {
     mesh: '#96c0a7',
+    meshOpacity: 1,
     pointCloud: '#f8de96',
     skeleton: '#5ca001',
     organs: [],

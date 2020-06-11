@@ -134,7 +134,7 @@ export default function () {
       icon={<PaintIcon
         isActivated={misc.activeTool === tools.colorPickers.background} />}
     >
-      <SketchPicker
+      <SketchPicker disableAlpha
         onChange={
           (color) => {
             setColors({
