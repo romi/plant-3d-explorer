@@ -9,7 +9,7 @@ import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 import { H3 } from 'common/styles/UI/Text/titles'
 import { PaintIcon } from 'Viewer/Interactors/icons'
 
-import { CirclePicker } from 'react-color'
+import { SketchPicker } from 'react-color'
 
 import { ResetButton } from 'rd/UI/Buttons'
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
@@ -134,7 +134,7 @@ export default function () {
       icon={<PaintIcon
         isActivated={misc.activeTool === tools.colorPickers.background} />}
     >
-      <CirclePicker
+      <SketchPicker
         onChange={
           (color) => {
             setColors({
