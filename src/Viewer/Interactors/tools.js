@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { CirclePicker } from 'react-color'
+import { SketchPicker } from 'react-color'
 
 import { useSelectedAngle, useColor, useDefaultColors } from 'flow/interactions/accessors'
 import { useLayerTools, useLayers } from 'flow/settings/accessors'
@@ -60,16 +60,20 @@ export default function MiscInteractors () {
         icon={<PaintIcon isActivated={layerTools.activeTool ===
           tools.colorPickers.mesh} />}
       >
-        <CirclePicker
+        <SketchPicker
           onChange={
             (color) => {
+              const alpha = color.rgb.a
               setColors({
                 ...colors,
-                mesh: color.hex
+                mesh: color.hex,
+                meshOpacity: alpha
               })
             }
           }
-          color={colors.mesh}
+          color={colors.mesh +
+          Math.round((colors.meshOpacity * 0xff)).toString(16)}
+
         />
         <ResetButton
           onClick={
@@ -92,12 +96,13 @@ export default function MiscInteractors () {
         icon={<PaintIcon isActivated={layerTools.activeTool ===
         tools.colorPickers.pointCloud} />}
       >
-        <CirclePicker
+        <SketchPicker disableAlpha
           onChange={
             (color) => {
+              console.log(color)
               setColors({
                 ...colors,
-                pointCloud: color.hex
+                pointCloud: color.rgb
               })
             }
           }
@@ -124,7 +129,7 @@ export default function MiscInteractors () {
         icon={<PaintIcon isActivated={layerTools.activeTool ===
           tools.colorPickers.skeleton} />}
       >
-        <CirclePicker
+        <SketchPicker disableAlpha
           onChange={
             (color) => {
               setColors({
@@ -159,7 +164,7 @@ export default function MiscInteractors () {
         icon={<PaintIcon isActivated={layerTools.activeTool ===
           tools.colorPickers.organs} />}
       >
-        <CirclePicker
+        <SketchPicker disableAlpha
           onChange={
             (color) => {
               let color2 = color.hsl
@@ -168,8 +173,8 @@ export default function MiscInteractors () {
               /* This is a bit ugly but very useful to change the brightness of
                the color */
               const color2String = 'hsl(' + Math.round(color2.h) + ', ' +
-                color2.s.toFixed(2) * 100 + '%, ' + color2.l.toFixed(2) * 100 +
-                '%)'
+                Math.round(color2.s * 100) + '%, ' +
+                Math.round(color2.l * 100) + '%)'
               if (selectedAngle !== undefined && selectedAngle !== null) {
                 // We slice the array because it has to be an immutable change
                 let copy = colors.organs.slice()

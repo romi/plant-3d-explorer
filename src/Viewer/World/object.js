@@ -381,6 +381,12 @@ export default class World {
     }
   }
 
+  setMeshOpacity (opacity) {
+    if (this.mesh) {
+      this.mesh.setOpacity(opacity)
+    }
+  }
+
   setPointcloudGeometry (geometry) {
     geometry.computeBoundingBox()
     this.pointCloud = new PointCloud(geometry, this.viewerObjects)
@@ -400,6 +406,10 @@ export default class World {
 
   setAnglesPoints (angles) {
     this.anlesPoints = new Angles(angles.fruit_points, this.viewerObjects)
+  }
+
+  setBackgroundColor (color) {
+    if (color) this.scene.background = new THREE.Color(color)
   }
 
   setLayers (layers) {

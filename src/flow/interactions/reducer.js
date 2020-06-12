@@ -35,10 +35,12 @@ const initialState = {
 
   colors: {
     mesh: '#96c0a7',
+    meshOpacity: 1,
     pointCloud: '#f8de96',
     skeleton: '#5ca001',
     organs: [],
-    globalOrganColors: ['#3a4d45', '#00a960']
+    globalOrganColors: ['#3a4d45', '#00a960'],
+    background: '#ecf3f0'
   },
 
   snapshot: {
