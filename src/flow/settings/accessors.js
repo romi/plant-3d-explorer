@@ -66,6 +66,20 @@ export const usePanels = useAccessor(
   ]
 )
 
+export const useLayerTools = useAccessor(
+  [
+    (state) => {
+      return state.settings.layerTools
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_LAYER_TOOLS',
+      value
+    })
+  ]
+)
+
 export const useMisc = useAccessor(
   [
     (state) => {

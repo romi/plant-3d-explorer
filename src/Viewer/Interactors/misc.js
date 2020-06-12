@@ -1,24 +1,23 @@
-import React from 'react'
-import styled from '@emotion/styled'
+import React, { useState, useEffect } from 'react'
 import { FormattedMessage } from 'react-intl'
-import { CirclePicker } from 'react-color'
+import styled from '@emotion/styled'
 
-import { useSelectedAngle, useColor } from 'flow/interactions/accessors'
-import { useMisc, useLayers } from 'flow/settings/accessors'
-
-import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
-import MenuBox, { MenuBoxContent } from 'rd/UI/MenuBox'
-import { IconStateCatcher } from 'rd/UI/Icon'
+import { useMisc } from 'flow/settings/accessors'
+import { useColor, useDefaultColors, useSnapshot }
+  from 'flow/interactions/accessors'
+import ToolButton, { tools } from 'Viewer/Interactors/Tools'
+import { H3 } from 'common/styles/UI/Text/titles'
 import { PaintIcon } from 'Viewer/Interactors/icons'
 
-import { H3 } from 'common/styles/UI/Text/titles'
+import { SketchPicker } from 'react-color'
 
-import { Interactor } from './index'
+import { ResetButton } from 'rd/UI/Buttons'
+import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
 
 export const Container = styled.div({
   position: 'absolute',
   top: 20,
-  marginRight: 50,
+  right: 50,
   display: 'flex',
 
   '& :first-of-type > div': {
@@ -30,217 +29,236 @@ export const Container = styled.div({
   }
 })
 
-const ColumnContainer = styled.div({
-}, (props) => {
-  return {
-    display: props.displayed
-      ? 'flex'
-      : 'none',
-    flexDirection: 'column',
-    marginLeft: 2,
-    marginRight: 2
+const MiscContainer = styled(Container)({})
+
+const InputResolution = styled.input({
+  width: 70,
+  border: 0,
+  fontSize: '2em',
+  textAlign: 'center',
+  borderBottom: '2px solid black',
+  MozAppearance: 'textfield',
+  '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
+    WebkitAppearance: 'none',
+    margin: 0
+  },
+  '&:focus': {
+    transition: 'border-bottom 0.5s ease',
+    border: 0,
+    borderBottom: '3px solid #00a960',
+    outline: 0,
+    outlineOffset: 0,
+    padding: 0
   }
 })
 
-const MiscContainer = styled(Container)({
-  left: 'auto',
-  right: '0%'
+const HoverContainer = styled.div({
+  transition: 'all 1s ease',
+  opacity: '1',
+  cursor: 'pointer',
+  '&:hover': {
+    transition: 'all 1s ease',
+    opacity: '0.3'
+  }
 })
 
-export default function MiscInteractors () {
-  const [selectedAngle] = useSelectedAngle()
+function GenerateDownloadButton (props) {
+  return <a
+    style={{ margin: 'auto', cursor: 'pointer' }}
+    href={props.image}
+    download='snapshot.png'
+    onClick={
+      !props.image ? props.onGenerateClick : null
+    }
+  >
+    {/* TODO: This is not final, there will be an image */}
+    <H3> {props.image
+      ? 'Download' : 'Take a snapshot'} </H3>
+  </a>
+}
+
+function ImagePreview (props) {
+  return <Tooltip>
+    <HoverContainer
+      onClick={props.onClick}>
+      <img
+        src={props.image}
+        width='100%'
+        height='100%'
+        style={{
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          marginTop: 0,
+          marginBottom: 10,
+          maxWidth: '100%',
+          height: 'auto'
+        }}
+        // TODO: Update the react-intl version to translate the alt
+        alt='Preview of the snapshot'
+      />
+    </HoverContainer>
+    <TooltipContent
+      style={{ top: '50%' }}>
+      <H3> <FormattedMessage id='tooltip-delete-snapshot' /> </H3>
+    </TooltipContent>
+  </Tooltip>
+}
+
+export default function () {
+  const [snapshot, setSnapshot] = useSnapshot()
+  const [snapWidth, setSnapWidth] = useState(0)
+  const [snapHeight, setSnapHeight] = useState(0)
   const [colors, setColors] = useColor()
-  const [misc, setMisc] = useMisc()
-  const [layers] = useLayers()
+  const [resetDefaultColor] = useDefaultColors()
+  const [misc] = useMisc()
+
+  console.log(snapWidth, snapHeight, snapshot)
+
+  useEffect(() => {
+    if (misc.activeTool === null) {
+      setSnapshot({
+        ...snapshot,
+        snapResolution: null
+      })
+    }
+  }, [misc.activeTool])
 
   return <MiscContainer>
-    <ColumnContainer displayed={layers.mesh}>
-      <MenuBox
-        activate={misc.meshColorPicker}
-        callOnChange={
+    <ToolButton
+      toolsList={useMisc()}
+      tool={tools.colorPickers.background}
+      interactor={{
+        isButton: true
+      }}
+      tooltipId='tooltip-background-color-picker'
+      icon={<PaintIcon
+        isActivated={misc.activeTool === tools.colorPickers.background} />}
+    >
+      <SketchPicker disableAlpha
+        onChange={
+          (color) => {
+            setColors({
+              ...colors,
+              background: color.hex
+            })
+          }
+        }
+        color={colors.background}
+      />
+      <ResetButton
+        onClick={
           () => {
-            setMisc({ ...misc, meshColorPicker: false })
-          }}
-        watchChange={[layers.mesh]}
-      >
-        <Tooltip>
-          <Interactor
-            activated={misc.meshColorPicker}
-            onClick={() => setMisc({ ...misc,
-              meshColorPicker: !misc.meshColorPicker })}
-          >
-            <IconStateCatcher style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }} >
-              <PaintIcon isActivated={misc.meshColorPicker} />
-            </IconStateCatcher>
-          </Interactor>
-          <TooltipContent>
-            <H3>
-              <FormattedMessage id='tooltip-mesh-color-picker' />
-            </H3>
-          </TooltipContent>
-        </Tooltip>
-        <MenuBoxContent
-          style={{ padding: 10 }} >
-          <CirclePicker
-            onChange={
-              (color) => {
-                setColors({
-                  ...colors,
-                  mesh: color.hex
-                })
-              }}
-            color={colors.mesh}
-          />
-        </MenuBoxContent>
-      </MenuBox>
-    </ColumnContainer>
-    <ColumnContainer displayed={layers.pointCloud}>
-      <MenuBox
-        activate={misc.pointCloudColorPicker}
-        callOnChange={
-          () => {
-            setMisc({ ...misc, pointCloudColorPicker: false })
-          }}
-        watchChange={[layers.pointCloud]}
-      >
-        <Tooltip>
-          <Interactor
-            activated={misc.pointCloudColorPicker}
-            onClick={() => setMisc({ ...misc,
-              pointCloudColorPicker: !misc.pointCloudColorPicker })}
-          >
-            <IconStateCatcher style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }} >
-              <PaintIcon isActivated={misc.pointCloudColorPicker} />
-            </IconStateCatcher>
-          </Interactor>
-          <TooltipContent>
-            <H3>
-              <FormattedMessage id='tooltip-point-cloud-color-picker' />
-            </H3>
-          </TooltipContent>
-        </Tooltip>
-        <MenuBoxContent
-          style={{ padding: 10 }}
-        >
-          <CirclePicker
-            onChange={
-              (color) => {
-                setColors({
-                  ...colors,
-                  pointCloud: color.hex
-                })
-              }
-            }
-            color={colors.pointCloud}
-          />
-        </MenuBoxContent>
-      </MenuBox>
-    </ColumnContainer>
-    <ColumnContainer displayed={layers.skeleton}>
-      <MenuBox
-        activate={misc.skeletonColorPicker}
-        callOnChange={
-          () => {
-            setMisc({ ...misc, skeletonColorPicker: false })
-          }}
-        watchChange={[layers.skeleton]}
-      >
-        <Tooltip>
-          <Interactor
-            activated={misc.skeletonColorPicker}
-            onClick={() => setMisc({ ...misc,
-              skeletonColorPicker: !misc.skeletonColorPicker })}
-          >
-            <IconStateCatcher style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }} >
-              <PaintIcon isActivated={misc.skeletonColorPicker} />
-            </IconStateCatcher>
-          </Interactor>
-          <TooltipContent>
-            <H3>
-              <FormattedMessage id='tooltip-skeleton-color-picker' />
-            </H3>
-          </TooltipContent>
-        </Tooltip>
-        <MenuBoxContent
-          style={{ padding: 10 }}>
-          <CirclePicker
-            onChange={
-              (color) => {
-                setColors({
-                  ...colors,
-                  skeleton: color.hex
-                })
-              }
-            }
-            color={colors.skeleton}
-          />
-        </MenuBoxContent>
-      </MenuBox>
-    </ColumnContainer>
-    <ColumnContainer displayed={layers.angles}>
-      <MenuBox
-        activate={misc.organColorPicker}
-        callOnChange={
-          () => {
-            setMisc({ ...misc, organColorPicker: false })
-          }}
-        watchChange={[selectedAngle, layers.angles]}
-      >
-        <Tooltip>
-          <Interactor
-            isDisabled={(selectedAngle === undefined || selectedAngle === null)}
-            isButton
-            activated={misc.organColorPicker}
-            onClick={() => setMisc({ ...misc,
-              organColorPicker: !misc.organColorPicker })}
-          >
-            <IconStateCatcher style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }} >
-              <PaintIcon isActivated={misc.organColorPicker} />
-            </IconStateCatcher>
-          </Interactor>
-          <TooltipContent>
-            <H3>
-              <FormattedMessage id='tooltip-organ-color-picker' />
-            </H3>
-          </TooltipContent>
-        </Tooltip>
-        <MenuBoxContent
+            resetDefaultColor('background')
+          }
+        }
+      />
+    </ToolButton>
+    <ToolButton
+      toolsList={useMisc()}
+      tool={tools.misc.snapshot}
+      interactor={{
+        isButton: true
+      }}
+      tooltipId='tooltip-snapshot'
+    >
+      <div style={{
+        minWidth: 200,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignContent: 'center'
+      }}>
+        <Tooltip
           style={{
-            padding: 10
+            padding: 0,
+            margin: 'auto',
+            width: 40
           }}>
-          <CirclePicker
-            onChange={
-              (color) => {
-                let copy = colors.organs.slice()
-                const next = selectedAngle + 1
-                copy[selectedAngle] = color.hex
-                copy[next] = color.hex
-                setColors({
-                  ...colors,
-                  organs: copy
-                })
+          <ResetButton
+            onClick={
+              () => {
+                setSnapWidth(snapshot.trueResolution.width)
+                setSnapHeight(snapshot.trueResolution.height)
               }
             }
-            color={colors.organs[selectedAngle]}
           />
-        </MenuBoxContent>
-      </MenuBox>
-    </ColumnContainer>
+          <TooltipContent>
+            <H3> <FormattedMessage id='tooltip-reset-resolution' /> </H3>
+          </TooltipContent>
+        </Tooltip>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'row',
+          margin: 'auto'
+        }} >
+          <InputResolution
+            type='number'
+            min='0'
+            max='4096'
+            step='10'
+            placeholder='X'
+            onChange={
+              (e) => {
+                setSnapWidth(parseInt(
+                  Math.min(Math.max(e.target.value, 0), 4096)))
+              }
+            }
+            value={
+              snapWidth ||
+                (snapshot.trueResolution
+                  ? snapshot.trueResolution.width
+                  : 0)}
+          /> <H3> X </H3>
+          <InputResolution
+            type='number'
+            min='0'
+            max='2160'
+            step='10'
+            placeholder='Y'
+            onChange={
+              (e) => {
+                setSnapHeight(parseInt(Math.min(Math.max(
+                  e.target.value, 0), 2160)))
+              }
+            }
+            value={
+              snapHeight ||
+                (snapshot.trueResolution
+                  ? snapshot.trueResolution.height
+                  : 0)}
+          />
+        </div>
+        { snapshot.image
+          ? <div>
+            <H3
+              style={{ textAlign: 'center' }}>
+              <FormattedMessage id='snapshot-preview' />
+            </H3>
+            <ImagePreview
+              image={snapshot.image}
+              onClick={
+                () => {
+                  setSnapshot({
+                    ...snapshot,
+                    image: null
+                  })
+                }
+              }
+            />
+          </div>
+          : null
+        }
+        <GenerateDownloadButton
+          image={snapshot.image}
+          onGenerateClick={
+            () => {
+              setSnapshot({
+                ...snapshot,
+                snapResolution: { width: snapWidth, height: snapHeight }
+              })
+            }
+          } />
+      </div>
+    </ToolButton>
   </MiscContainer>
 }

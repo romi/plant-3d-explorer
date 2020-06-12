@@ -37,6 +37,7 @@ import { darkGreen } from 'common/styles/colors'
 import LayersInteractors from './layers'
 import CameraInteractors from './camera'
 import PanelsInteractor from './panels'
+import ToolInteractors from './tools'
 import MiscInteractors from './misc'
 
 export const Interactor = styled(
@@ -115,7 +116,8 @@ export const Interactor = styled(
 
 export {
   LayersInteractors,
+  ToolInteractors,
   CameraInteractors,
-  MiscInteractors,
-  PanelsInteractor
+  PanelsInteractor,
+  MiscInteractors
 }

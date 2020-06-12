@@ -26,21 +26,22 @@ License along with this program.  If not, see
 <https://www.gnu.org/licenses/>.
 
 */
-import React from 'react'
-import { css } from 'emotion'
+import styled from '@emotion/styled'
 
-const button = css`
-  background: red;
-`
+import resetArrow from 'common/assets/ico.reset.25x25.svg'
 
-export default function (props) {
-  console.log(
-    props
-  )
-  return <button
-    className={button}
-    onClick={props.onClick}
-  >
-    {props.children}
-  </button>
-}
+export const ResetButton = styled.div({
+  backgroundImage: `url(${resetArrow})`,
+  width: 25,
+  height: 25,
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  marginTop: 10,
+  cursor: 'pointer',
+  transition: 'transform 0.5s ease',
+  transform: 'rotate(0deg)',
+  '&:hover': {
+    transition: 'transform 0.5s ease',
+    transform: 'rotate(-360deg)'
+  }
+})

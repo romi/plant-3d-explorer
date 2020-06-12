@@ -35,9 +35,18 @@ const initialState = {
 
   colors: {
     mesh: '#96c0a7',
+    meshOpacity: 1,
     pointCloud: '#f8de96',
     skeleton: '#5ca001',
-    organs: []
+    organs: [],
+    globalOrganColors: ['#3a4d45', '#00a960'],
+    background: '#ecf3f0'
+  },
+
+  snapshot: {
+    snapResolution: null,
+    trueResolution: null,
+    image: null
   },
 
   reset3dViewFn: null,
@@ -86,6 +95,19 @@ export default function settingsReducer (state = initialState, action) {
       return {
         ...state,
         colors: action.value
+      }
+    case 'RESTORE_DEFAULT_COLOR':
+      return {
+        ...state,
+        colors: {
+          ...state.colors,
+          [action.value]: initialState.colors[action.value]
+        }
+      }
+    case 'SET_SNAPSHOT':
+      return {
+        ...state,
+        snapshot: action.value
       }
     default:
       return state

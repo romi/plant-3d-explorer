@@ -33,7 +33,8 @@ import styled from '@emotion/styled'
 import { useElementMouse } from 'rd/tools/hooks/mouse'
 
 import { useLayers } from 'flow/settings/accessors'
-import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useColor } from 'flow/interactions/accessors'
+import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useColor,
+  useSnapshot } from 'flow/interactions/accessors'
 import { useScanFiles, useScan } from 'flow/scans/accessors'
 
 import WorldObject from './object'
@@ -69,6 +70,7 @@ export default function WorldComponent (props) {
   const [hoveredAngle] = useHoveredAngle()
   const [selectedAngle] = useSelectedAngle()
   const [colors] = useColor()
+  const [snapshot, setSnapshot] = useSnapshot()
   const mouse = useElementMouse(canvasRef)
   const [lastSelectedCamera] = useState({ camera: null })
 
@@ -125,9 +127,28 @@ export default function WorldComponent (props) {
           bounds.width,
           bounds.height
         )
+        setSnapshot({
+          ...snapshot,
+          trueResolution: { width: bounds.width, height: bounds.height }
+        })
       }
     },
     [world, scan, bounds]
+  )
+
+  useEffect(
+    () => {
+      if (world && snapshot.trueResolution && snapshot.snapResolution) {
+        setSnapshot({
+          ...snapshot,
+          image: world.takeSnapshot({
+            width: snapshot.snapResolution.width || snapshot.trueResolution.width,
+            height: snapshot.snapResolution.height ||
+              snapshot.trueResolution.height
+          })
+        })
+      }
+    }, [snapshot.snapResolution]
   )
 
   useEffect(
@@ -220,6 +241,15 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
+      if (world) {
+        world.setGlobalOrganColors(colors.globalOrganColors)
+      }
+    },
+    [colors.globalOrganColors]
+  )
+
+  useEffect(
+    () => {
       if (world && meshGeometry) {
         world.setMeshGeometry(meshGeometry)
         world.setLayers(layers)
@@ -232,9 +262,10 @@ export default function WorldComponent (props) {
     () => {
       if (world) {
         world.setMeshColor(colors.mesh)
+        world.setMeshOpacity(colors.meshOpacity)
       }
     },
-    [colors.mesh]
+    [colors.mesh, colors.meshOpacity]
   )
 
   useEffect(
@@ -283,6 +314,14 @@ export default function WorldComponent (props) {
       }
     },
     [world, scan]
+  )
+
+  useEffect(
+    () => {
+      if (world) {
+        world.setBackgroundColor(colors.background)
+      }
+    }, [colors.background]
   )
 
   useEffect(

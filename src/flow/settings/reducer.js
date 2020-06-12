@@ -26,6 +26,7 @@ License along with this program.  If not, see
 <https://www.gnu.org/licenses/>.
 
 */
+
 const initialState = {
   layers: {
     mesh: false,
@@ -38,10 +39,11 @@ const initialState = {
     'panels-angles': true,
     'panels-distances': true
   },
+  layerTools: {
+    activeTool: null
+  },
   misc: {
-    'organColorPicker': false,
-    'pointCloudColorPicker': false,
-    'meshColorPicker': false
+    activeTool: null
   }
 }
 
@@ -61,6 +63,11 @@ export default function settingsReducer (state = initialState, action) {
       return {
         ...state,
         panels: action.value
+      }
+    case 'SET_LAYER_TOOLS':
+      return {
+        ...state,
+        layerTools: action.value
       }
     case 'SET_MISC':
       return {

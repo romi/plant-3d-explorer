@@ -105,6 +105,31 @@ export const useColor = useAccessor(
     })
   ]
 )
+
+export const useDefaultColors = useAccessor(
+  [],
+  [
+    (value) => ({
+      type: 'RESTORE_DEFAULT_COLOR',
+      value
+    })
+  ]
+)
+
+export const useSnapshot = useAccessor(
+  [
+    (state) => {
+      return state.interactions.snapshot
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_SNAPSHOT',
+      value
+    })
+  ]
+)
+
 export const useReset2dView = useAccessor(
   [
     (state) => {

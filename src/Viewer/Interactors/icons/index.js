@@ -131,7 +131,7 @@ export const ShrinkIcon = IconHOC((props) => {
   />
 })
 
-const paintRaw = raw('../../../common/assets/ico.paint.21x21.svg')
+const paintRaw = raw('../../../common/assets/ico.paint.23x23.svg')
 export const PaintIcon = IconHOC((props) => {
   return <Icon
     {...props}

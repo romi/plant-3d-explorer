@@ -361,6 +361,11 @@ export default class World {
     this.anlesPoints.setCustomColors(organColors)
   }
 
+  setGlobalOrganColors (globalOrganColors) {
+    if (!this.anlesPoints) return
+    this.anlesPoints.setGlobalColors(globalOrganColors)
+  }
+
   setHighlightedAngle (indexes) {
     if (!this.anlesPoints || !indexes.length) return
     this.anlesPoints.setHighlighted(indexes)
@@ -373,6 +378,12 @@ export default class World {
   setMeshColor (color) {
     if (this.mesh) {
       this.mesh.setColor(color)
+    }
+  }
+
+  setMeshOpacity (opacity) {
+    if (this.mesh) {
+      this.mesh.setOpacity(opacity)
     }
   }
 
@@ -397,12 +408,29 @@ export default class World {
     this.anlesPoints = new Angles(angles.fruit_points, this.viewerObjects)
   }
 
+  setBackgroundColor (color) {
+    if (color) this.scene.background = new THREE.Color(color)
+  }
+
   setLayers (layers) {
     if (this.mesh) this.mesh.setVisible(layers.mesh)
     if (this.pointCloud) this.pointCloud.setVisible(layers.pointCloud)
     if (this.skeleton) this.skeleton.setVisible(layers.skeleton)
     if (this.anlesPoints) this.anlesPoints.setVisible(layers.angles)
     if (this.CameraPointsGroup) this.CameraPointsGroup.visible = layers.cameras
+  }
+
+  takeSnapshot (size) {
+    const ogSize = { width: this.renderer.domElement.width,
+      height: this.renderer.domElement.height }
+    /* We need to change the renderer's resolution in order to
+      make a screenshot with a custom resolution */
+    this.renderer.setSize(size.width, size.height)
+    this.renderer.render(this.scene, this.camera)
+    const snapshot = this.renderer.domElement.toDataURL()
+    this.renderer.setSize(ogSize.width, ogSize.height)
+    this.renderer.render(this.scene, this.camera)
+    return snapshot
   }
 
   interaction () {

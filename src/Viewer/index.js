@@ -38,6 +38,7 @@ import {
   LayersInteractors,
   CameraInteractors,
   PanelsInteractor,
+  ToolInteractors,
   MiscInteractors
 } from './Interactors'
 
@@ -86,6 +87,7 @@ export default function Viewer (props) {
           <World />
           <LayersInteractors />
           <CameraInteractors />
+          <ToolInteractors />
           <MiscInteractors />
           <PanelsInteractor />
           <Help />
