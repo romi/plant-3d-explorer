@@ -42,6 +42,8 @@
   "tooltip-snapshot": "Capture an image of the current view",
   "tooltip-reset-resolution": "Reset to current resolution",
   "tooltip-delete-snapshot": "Click to delete this snapshot",
+  "tooltip-take-snapshot": "Take a snapshot",
+  "tooltip-download-snapshot": "Download the snapshot",
 
   "tooltip-help-rotate": "Click left and hold to rotate",
   "tooltip-help-pan": "Click right and hold to pan",

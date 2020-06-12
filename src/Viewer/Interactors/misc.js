@@ -7,6 +7,11 @@ import { useColor, useDefaultColors, useSnapshot }
   from 'flow/interactions/accessors'
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 import { H3 } from 'common/styles/UI/Text/titles'
+
+import { SnapIcon } from 'Viewer/Interactors/icons'
+
+import snapButton from 'common/assets/ico.snap.24x24.svg'
+import downloadButton from 'common/assets/ico.download.24x24.svg'
 import { PaintIcon } from 'Viewer/Interactors/icons'
 
 import { SketchPicker } from 'react-color'
@@ -62,6 +67,46 @@ const HoverContainer = styled.div({
   }
 })
 
+const SnapButtonImage = styled.div({
+  backgroundImage: `url(${snapButton})`,
+  width: 30,
+  height: 30,
+  backgroundSize: 'cover',
+  cursor: 'pointer'
+})
+
+const DownloadButtonImage = styled.div({
+  '@keyframes fadein': {
+    from: { opacity: 0 },
+    to: { opacity: 1 }
+  },
+  animation: 'fadein 1s ease',
+  backgroundImage: `url(${downloadButton})`,
+  backgroundSize: 'cover',
+  width: 30,
+  height: 30,
+  cursor: 'pointer'
+})
+
+function DownloadButton (props) {
+  return <Tooltip>
+    <TooltipContent>
+      <H3> <FormattedMessage id='tooltip-download-snapshot' /> </H3>
+    </TooltipContent>
+    <DownloadButtonImage
+    />
+  </Tooltip>
+}
+
+function SnapButton (props) {
+  return <Tooltip>
+    <TooltipContent>
+      <H3> <FormattedMessage id='tooltip-take-snapshot' /> </H3>
+    </TooltipContent>
+    <SnapButtonImage />
+  </Tooltip>
+}
+
 function GenerateDownloadButton (props) {
   return <a
     style={{ margin: 'auto', cursor: 'pointer' }}
@@ -71,9 +116,8 @@ function GenerateDownloadButton (props) {
       !props.image ? props.onGenerateClick : null
     }
   >
-    {/* TODO: This is not final, there will be an image */}
     <H3> {props.image
-      ? 'Download' : 'Take a snapshot'} </H3>
+      ? <DownloadButton /> : <SnapButton />} </H3>
   </a>
 }
 
@@ -111,8 +155,6 @@ export default function () {
   const [colors, setColors] = useColor()
   const [resetDefaultColor] = useDefaultColors()
   const [misc] = useMisc()
-
-  console.log(snapWidth, snapHeight, snapshot)
 
   useEffect(() => {
     if (misc.activeTool === null) {
@@ -156,6 +198,7 @@ export default function () {
     <ToolButton
       toolsList={useMisc()}
       tool={tools.misc.snapshot}
+      icon={<SnapIcon isActivated={misc.activeTool === tools.misc.snapshot} />}
       interactor={{
         isButton: true
       }}
