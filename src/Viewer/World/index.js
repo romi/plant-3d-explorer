@@ -42,6 +42,7 @@ import useViewport2d from './behaviors/viewport2d'
 
 import { headerHeight } from 'Viewer/Header'
 import { moduleHeight as carouselHeight } from 'Viewer/Carousel'
+import useViewport3d from './behaviors/viewport3d'
 
 const Container = styled.div({
   position: 'relative',
@@ -81,11 +82,15 @@ export default function WorldComponent (props) {
     bounds.width || getSize().width,
     bounds.height || getSize().height
   )
+  const [viewport3d, event3dFns] = useViewport3d(
+    bounds.width || getSize().width,
+    bounds.height || getSize().height
+  )
   const [, setReset3dView] = useReset3dView()
   const [, setReset2dView] = useReset2dView()
   const eventFns = selectedCamera
     ? event2dFns
-    : {}
+    : event3dFns
 
   useEffect(
     () => {
@@ -237,6 +242,17 @@ export default function WorldComponent (props) {
       }
     },
     [colors.organs]
+  )
+
+  useEffect(
+    () => {
+      if (world) {
+        if (viewport3d.clicked) {
+          world.selectOrgan()
+        }
+      }
+    },
+    [world, viewport3d]
   )
 
   useEffect(
