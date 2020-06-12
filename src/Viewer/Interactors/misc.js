@@ -8,11 +8,10 @@ import { useColor, useDefaultColors, useSnapshot }
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 import { H3 } from 'common/styles/UI/Text/titles'
 
-import { SnapIcon } from 'Viewer/Interactors/icons'
+import { SnapIcon, PaintIcon } from 'Viewer/Interactors/icons'
 
 import snapButton from 'common/assets/ico.snap.24x24.svg'
 import downloadButton from 'common/assets/ico.download.24x24.svg'
-import { PaintIcon } from 'Viewer/Interactors/icons'
 
 import { SketchPicker } from 'react-color'
 
