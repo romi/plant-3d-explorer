@@ -36,6 +36,8 @@ import setWireframe2 from 'common/thiers/WireframeGeometry2'
 import setLineSegements2 from 'common/thiers/LineSegement2'
 import setLine2 from 'common/thiers/Line2'
 
+import { LineRaycast } from 'three-line-raycast'
+
 let EnhancedTHREE
 EnhancedTHREE = setLineSegmentsGeometry(THREE)
 EnhancedTHREE = setLineGeometry(EnhancedTHREE)
@@ -68,6 +70,7 @@ export default class Angles {
           resolution: { x: window.innerWidth, y: window.innerHeight }
         })
       )
+      obj.raycast = LineRaycast
       obj.defaultColor = color
       obj.customColor = null
       obj.computeLineDistances()
