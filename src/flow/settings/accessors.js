@@ -93,3 +93,18 @@ export const useMisc = useAccessor(
     })
   ]
 )
+
+export const useOverlay = useAccessor(
+  [
+    (state) => {
+      return state.settings.overlay
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_OVERLAY',
+      value
+    })
+  ]
+)
+

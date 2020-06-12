@@ -248,7 +248,7 @@ export default function WorldComponent (props) {
     () => {
       if (world) {
         if (viewport3d.clicked) {
-          console.log(world.selectOrgan())
+          world.selectOrgan()
         }
       }
     },

@@ -44,6 +44,9 @@ const initialState = {
   },
   misc: {
     activeTool: null
+  },
+  overlay: {
+    bubblePos: null
   }
 }
 
@@ -73,6 +76,11 @@ export default function settingsReducer (state = initialState, action) {
       return {
         ...state,
         misc: action.value
+      }
+    case 'SET_OVERLAY':
+      return {
+        ...state,
+        overlay: action.value
       }
     default:
       return state

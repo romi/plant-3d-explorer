@@ -32,6 +32,8 @@ export default function (props) {
   const contentRef = useRef()
   const [ref, BB] = useBB(false)
   const [contentBb, setContentBb] = useState()
+  
+  console.log(props.children)
 
   const childrenWithoutContent = props.children
     .filter((d) => d.type !== MenuBoxContent)
@@ -51,6 +53,7 @@ export default function (props) {
 
   return <div
     ref={ref}
+    style={props.style}
   >
     {childrenWithoutContent}
     {
