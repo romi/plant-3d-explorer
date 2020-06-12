@@ -65,7 +65,8 @@ export default function (props) {
     onMouseEnter={() => setHovered(true)}
     onMouseLeave={() => setHovered(false)}
     style={{
-      cursor: 'help'
+      cursor: 'help',
+      ...props.style
     }}
   >
     {childrenWithoutContent}
@@ -101,9 +102,11 @@ const ContentContainer = styled.div({
       ? -props.contentBb.height - 20
       : 'normal',
     marginLeft: props.contentBb
-      ? (
-        -(props.contentBb.width || 0) / 2
-      ) + (props.parentBb.width * 0.5)
+      ? (props.contentBb.x > props.contentBb.width / 2)
+        ? (
+          -(props.contentBb.width || 0) / 2
+        ) + (props.parentBb.width * 0.5)
+        : -props.contentBb.x
       : 0
   }
 })

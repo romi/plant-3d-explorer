@@ -92,6 +92,44 @@ export const useSelectedAngle = useAccessor(
   ]
 )
 
+export const useColor = useAccessor(
+  [
+    (state) => {
+      return state.interactions.colors
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_COLORS',
+      value
+    })
+  ]
+)
+
+export const useDefaultColors = useAccessor(
+  [],
+  [
+    (value) => ({
+      type: 'RESTORE_DEFAULT_COLOR',
+      value
+    })
+  ]
+)
+
+export const useSnapshot = useAccessor(
+  [
+    (state) => {
+      return state.interactions.snapshot
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_SNAPSHOT',
+      value
+    })
+  ]
+)
+
 export const useReset2dView = useAccessor(
   [
     (state) => {

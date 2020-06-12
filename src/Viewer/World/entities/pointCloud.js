@@ -95,4 +95,8 @@ export default class Mesh {
   setZoomLevel (zoomLevel) {
     this.material.uniforms.zoom.value = zoomLevel
   }
+
+  setColor (color) {
+    if (color) this.material.uniforms.color.value = new THREE.Color(color)
+  }
 }

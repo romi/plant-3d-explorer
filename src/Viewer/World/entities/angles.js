@@ -47,17 +47,20 @@ EnhancedTHREE = setLine2(EnhancedTHREE)
 export default class Angles {
   constructor (angles, parent) {
     this.group = new THREE.Object3D()
+    this.globalColors = ['#3a4d45', '#00a960']
 
     angles.forEach((points, index) => {
       const geometry = new EnhancedTHREE.LineGeometry()
       geometry.setPositions(flatten(points))
 
-      const color = new THREE.Color(index % 2 === 0 ? 0x3A4D45 : 0x00A960)
+      const color = new THREE.Color(index % 2 === 0
+        ? this.globalColors[0]
+        : this.globalColors[1])
       const obj = new EnhancedTHREE.Line2(
         geometry,
         new EnhancedTHREE.LineMaterial({
           linewidth: 10,
-          color: index % 2 === 0 ? 0x3A4D45 : 0x00A960,
+          color: index % 2 === 0 ? this.globalColors[0] : this.globalColors[1],
           dashed: false,
           depthTest: false,
           transparent: true,
@@ -66,12 +69,12 @@ export default class Angles {
         })
       )
       obj.defaultColor = color
+      obj.customColor = null
       obj.computeLineDistances()
       obj.renderOrder = 1
 
       this.group.add(obj)
     })
-
     if (parent) parent.add(this.group)
   }
 
@@ -89,26 +92,59 @@ export default class Angles {
     })
   }
 
+  setCustomColors (organColors) {
+    this.group.children.forEach((child, index) => {
+      if (child !== undefined && child !== null) {
+        if (organColors[index]) {
+          const matColor = new THREE.Color(organColors[index])
+          child.customColor = matColor
+          child.material.color = matColor
+        } else {
+          child.customColor = null
+          child.material.color =
+           new THREE.Color(this.globalColors[index % 2 ? 1 : 0])
+        }
+      }
+    })
+  }
+
+  setGlobalColors (globalColors) {
+    if (globalColors.length !== 2) return
+    this.globalColors = globalColors
+    this.group.children.forEach((child, index) => {
+      if (!child.customColor) {
+        if (index % 2) {
+          const color = new THREE.Color(globalColors[1])
+          child.material.color = color
+        } else {
+          const color = new THREE.Color(globalColors[0])
+          child.material.color = color
+        }
+      }
+    })
+  }
+
   setHighlighted (indexes) {
     const nextIndexed = indexes.reduce((p, c) => {
       return [...p, c, { ...c, index: c.index + 1 }]
     }, [])
-
-    const colors = [
-      new THREE.Color(0x00A960),
-      new THREE.Color(0x3A4D45),
-      new THREE.Color(0x84EEE6),
-      new THREE.Color(0x009BB0)
-    ]
 
     this.group.children.forEach((child, i) => {
       const ref = nextIndexed.find((d) => d.index === i)
       const refIndex = nextIndexed.indexOf(ref)
       child.visible = !!ref
 
+      const defaultColor = new THREE.Color((i % 2)
+        ? this.globalColors[1]
+        : this.globalColors[0])
+
       child.material.color = (ref && refIndex >= 0)
-        ? colors[refIndex]
-        : child.defaultColor
+        ? child.customColor
+          ? child.customColor
+          : defaultColor
+        : child.customColor
+          ? child.customColor
+          : defaultColor
     })
   }
 }

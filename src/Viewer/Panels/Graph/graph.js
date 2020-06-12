@@ -40,7 +40,7 @@ import { H3 } from 'common/styles/UI/Text/titles'
 import { grey, blue, red, darkGreen } from 'common/styles/colors'
 import closePicto from 'common/assets/ico.deselect.20x20.svg'
 
-import { useHoveredAngle, useSelectedAngle } from 'flow/interactions/accessors'
+import { useHoveredAngle, useSelectedAngle, useColor } from 'flow/interactions/accessors'
 
 const Container = styled.div({
   position: 'relative',
@@ -185,12 +185,15 @@ const Interactor = styled.div({
   return {
     top: props.top,
     height: props.height,
-    background: (props.selected || props.hovered)
-      ? props.hovered && props.selectedAngle
-        ? Color('#84EEE6').alpha(0.7).toString()
-        : Color('#78D89D').alpha(0.7).toString()
-      : 'transparent',
-
+    background: !props.hovered && props.selected
+      ? props.selectedColor
+        ? Color(props.selectedColor).alpha(0.7).toString()
+        : Color('#84EEE6').alpha(0.7).toString()
+      : props.hovered
+        ? props.hoveredColor
+          ? Color(props.hoveredColor).alpha(0.7).toString()
+          : Color('#78D89D').alpha(0.7).toString()
+        : 'transparent',
     ...(
       props.selected
         ? {
@@ -290,6 +293,7 @@ const isNotNullAndUndefiend = (v) => (v != null && v !== undefined)
 const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, containerWidth, containerHeight }) => {
   const [hoveredAngle, setHoveredAngle] = useHoveredAngle()
   const [selectedAngle, setSelectedAngle] = useSelectedAngle()
+  const [colors] = useColor()
   const height = containerHeight - (37 * 1.6)
 
   const goal = data.goal
@@ -437,6 +441,20 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
               height={barHeight}
               selectedAngle={isNotNullAndUndefiend(selectedAngle)}
               selected={selectedAngle === i}
+              hoveredColor={
+                colors.organs[hoveredAngle]
+                  ? colors.organs[hoveredAngle]
+                  : hoveredAngle % 2
+                    ? colors.globalOrganColors[1]
+                    : colors.globalOrganColors[0]
+              }
+              selectedColor={
+                colors.organs[selectedAngle]
+                  ? colors.organs[selectedAngle]
+                  : selectedAngle % 2
+                    ? colors.globalOrganColors[1]
+                    : colors.globalOrganColors[0]
+              }
               hovered={hoveredAngle === i}
               onMouseEnter={() => setHoveredAngle(i)}
               onClick={() => {
@@ -460,9 +478,18 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
           <HighlightedIndex
             top={3}
             color={
-              (isNotNullAndUndefiend(selectedAngle) && isNotNullAndUndefiend(hoveredAngle))
-                ? Color('#009BB0').toString()
-                : darkGreen
+              (isNotNullAndUndefiend(selectedAngle) &&
+              !isNotNullAndUndefiend(hoveredAngle))
+                ? colors.organs[selectedAngle + 1]
+                  ? Color(colors.organs[selectedAngle + 1]).toString()
+                  : Color(colors.globalOrganColors[selectedAngle % 2 ? 0 : 1])
+                    .toString()
+                : isNotNullAndUndefiend(hoveredAngle)
+                  ? colors.organs[hoveredAngle + 1]
+                    ? Color(colors.organs[hoveredAngle + 1]).toString()
+                    : Color(colors.globalOrganColors[hoveredAngle % 2 ? 0 : 1])
+                      .toString()
+                  : darkGreen
             }
           >
             <HighlightedIndexContentTop>
@@ -492,9 +519,18 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
           <HighlightedIndex
             top={20 + 20 - 7}
             color={
-              (isNotNullAndUndefiend(selectedAngle) && isNotNullAndUndefiend(hoveredAngle))
-                ? Color('#84EEE6').toString()
-                : Color('#78D89D').toString()
+              (isNotNullAndUndefiend(selectedAngle) &&
+              !isNotNullAndUndefiend(hoveredAngle))
+                ? colors.organs[selectedAngle]
+                  ? Color(colors.organs[selectedAngle]).toString()
+                  : Color(colors.globalOrganColors[selectedAngle % 2 ? 1 : 0])
+                    .toString()
+                : isNotNullAndUndefiend(hoveredAngle)
+                  ? colors.organs[hoveredAngle]
+                    ? Color(colors.organs[hoveredAngle]).toString()
+                    : Color(colors.globalOrganColors[hoveredAngle % 2 ? 1 : 0])
+                      .toString()
+                  : Color('#78D89D').toString()
             }
           >
             <HighlightedIndexContentBottom>

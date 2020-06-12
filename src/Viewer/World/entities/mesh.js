@@ -33,7 +33,7 @@ export default class Mesh {
     geometry.computeVertexNormals()
 
     const material = new THREE.MeshStandardMaterial({
-      transparent: false,
+      transparent: true,
       opacity: 1,
       color: 0x96c0a7,
       flatShading: true,
@@ -56,5 +56,17 @@ export default class Mesh {
 
   setVisible (boolean) {
     this.object.visible = boolean
+  }
+
+  setColor (color) {
+    if (color) {
+      this.object.material.color = new THREE.Color(color)
+    }
+  }
+
+  setOpacity (opacity) {
+    if (opacity) {
+      this.object.material.opacity = opacity
+    }
   }
 }

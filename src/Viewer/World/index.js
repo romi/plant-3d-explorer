@@ -33,7 +33,8 @@ import styled from '@emotion/styled'
 import { useElementMouse } from 'rd/tools/hooks/mouse'
 
 import { useLayers } from 'flow/settings/accessors'
-import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle } from 'flow/interactions/accessors'
+import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useColor,
+  useSnapshot } from 'flow/interactions/accessors'
 import { useScanFiles, useScan } from 'flow/scans/accessors'
 
 import WorldObject from './object'
@@ -68,6 +69,8 @@ export default function WorldComponent (props) {
   const [hoveredCamera, setHoveredCamera] = useHoveredCamera()
   const [hoveredAngle] = useHoveredAngle()
   const [selectedAngle] = useSelectedAngle()
+  const [colors] = useColor()
+  const [snapshot, setSnapshot] = useSnapshot()
   const mouse = useElementMouse(canvasRef)
   const [lastSelectedCamera] = useState({ camera: null })
 
@@ -124,9 +127,28 @@ export default function WorldComponent (props) {
           bounds.width,
           bounds.height
         )
+        setSnapshot({
+          ...snapshot,
+          trueResolution: { width: bounds.width, height: bounds.height }
+        })
       }
     },
     [world, scan, bounds]
+  )
+
+  useEffect(
+    () => {
+      if (world && snapshot.trueResolution && snapshot.snapResolution) {
+        setSnapshot({
+          ...snapshot,
+          image: world.takeSnapshot({
+            width: snapshot.snapResolution.width || snapshot.trueResolution.width,
+            height: snapshot.snapResolution.height ||
+              snapshot.trueResolution.height
+          })
+        })
+      }
+    }, [snapshot.snapResolution]
   )
 
   useEffect(
@@ -210,6 +232,24 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
+      if (world) {
+        world.setOrganColors(colors.organs)
+      }
+    },
+    [colors.organs]
+  )
+
+  useEffect(
+    () => {
+      if (world) {
+        world.setGlobalOrganColors(colors.globalOrganColors)
+      }
+    },
+    [colors.globalOrganColors]
+  )
+
+  useEffect(
+    () => {
       if (world && meshGeometry) {
         world.setMeshGeometry(meshGeometry)
         world.setLayers(layers)
@@ -217,6 +257,17 @@ export default function WorldComponent (props) {
     },
     [world, meshGeometry]
   )
+
+  useEffect(
+    () => {
+      if (world) {
+        world.setMeshColor(colors.mesh)
+        world.setMeshOpacity(colors.meshOpacity)
+      }
+    },
+    [colors.mesh, colors.meshOpacity]
+  )
+
   useEffect(
     () => {
       if (world && pointCloudGeometry) {
@@ -225,6 +276,15 @@ export default function WorldComponent (props) {
       }
     },
     [world, pointCloudGeometry]
+  )
+
+  useEffect(
+    () => {
+      if (world && pointCloudGeometry) {
+        world.setPointCloudColor(colors.pointCloud)
+      }
+    },
+    [colors.pointCloud]
   )
 
   useEffect(
@@ -239,12 +299,29 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
+      if (world && scan && scan.data.skeleton) {
+        world.setSkeletonColor(colors.skeleton)
+      }
+    },
+    [colors.skeleton]
+  )
+
+  useEffect(
+    () => {
       if (world && scan && scan.data.angles) {
         world.setAnglesPoints(scan.data.angles)
         world.setLayers(layers)
       }
     },
     [world, scan]
+  )
+
+  useEffect(
+    () => {
+      if (world) {
+        world.setBackgroundColor(colors.background)
+      }
+    }, [colors.background]
   )
 
   useEffect(

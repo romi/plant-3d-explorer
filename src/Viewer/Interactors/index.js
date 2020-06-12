@@ -37,6 +37,8 @@ import { darkGreen } from 'common/styles/colors'
 import LayersInteractors from './layers'
 import CameraInteractors from './camera'
 import PanelsInteractor from './panels'
+import ToolInteractors from './tools'
+import MiscInteractors from './misc'
 
 export const Interactor = styled(
   (props) => <div
@@ -46,7 +48,7 @@ export const Interactor = styled(
 )({
   width: 41,
   height: 30,
-  marginRight: 1,
+  margin: 1,
   boxShadow: '0 0px 0px 0 rgba(10,61,33,0.15)',
   transition: 'all 0.15s ease',
   cursor: 'pointer',
@@ -114,6 +116,8 @@ export const Interactor = styled(
 
 export {
   LayersInteractors,
+  ToolInteractors,
   CameraInteractors,
-  PanelsInteractor
+  PanelsInteractor,
+  MiscInteractors
 }

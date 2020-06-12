@@ -356,6 +356,16 @@ export default class World {
     }
   }
 
+  setOrganColors (organColors) {
+    if (!this.anlesPoints) return
+    this.anlesPoints.setCustomColors(organColors)
+  }
+
+  setGlobalOrganColors (globalOrganColors) {
+    if (!this.anlesPoints) return
+    this.anlesPoints.setGlobalColors(globalOrganColors)
+  }
+
   setHighlightedAngle (indexes) {
     if (!this.anlesPoints || !indexes.length) return
     this.anlesPoints.setHighlighted(indexes)
@@ -365,17 +375,41 @@ export default class World {
     this.mesh = new Mesh(geometry, this.viewerObjects)
   }
 
+  setMeshColor (color) {
+    if (this.mesh) {
+      this.mesh.setColor(color)
+    }
+  }
+
+  setMeshOpacity (opacity) {
+    if (this.mesh) {
+      this.mesh.setOpacity(opacity)
+    }
+  }
+
   setPointcloudGeometry (geometry) {
     geometry.computeBoundingBox()
     this.pointCloud = new PointCloud(geometry, this.viewerObjects)
+  }
+
+  setPointCloudColor (color) {
+    this.pointCloud.setColor(color)
   }
 
   setSkeletonPoints (skeleton) {
     this.skeleton = new Skeleton(skeleton, this.viewerObjects)
   }
 
+  setSkeletonColor (color) {
+    this.skeleton.setColor(color)
+  }
+
   setAnglesPoints (angles) {
     this.anlesPoints = new Angles(angles.fruit_points, this.viewerObjects)
+  }
+
+  setBackgroundColor (color) {
+    if (color) this.scene.background = new THREE.Color(color)
   }
 
   setLayers (layers) {
@@ -384,6 +418,19 @@ export default class World {
     if (this.skeleton) this.skeleton.setVisible(layers.skeleton)
     if (this.anlesPoints) this.anlesPoints.setVisible(layers.angles)
     if (this.CameraPointsGroup) this.CameraPointsGroup.visible = layers.cameras
+  }
+
+  takeSnapshot (size) {
+    const ogSize = { width: this.renderer.domElement.width,
+      height: this.renderer.domElement.height }
+    /* We need to change the renderer's resolution in order to
+      make a screenshot with a custom resolution */
+    this.renderer.setSize(size.width, size.height)
+    this.renderer.render(this.scene, this.camera)
+    const snapshot = this.renderer.domElement.toDataURL()
+    this.renderer.setSize(ogSize.width, ogSize.height)
+    this.renderer.render(this.scene, this.camera)
+    return snapshot
   }
 
   interaction () {

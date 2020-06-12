@@ -88,4 +88,10 @@ export default class Skeleton {
       child.visible = boolean
     })
   }
+
+  setColor (color) {
+    this.group.children.forEach((child) => {
+      child.material.color = new THREE.Color(color)
+    })
+  }
 }
