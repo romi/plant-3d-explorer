@@ -27,7 +27,7 @@ License along with this program.  If not, see
 
 */
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from '@emotion/styled'
 import { FormattedMessage } from 'react-intl'
 
@@ -36,7 +36,9 @@ import { grey, blue, red } from 'common/styles/colors'
 
 import helpIcon from '../assets/ico.help.14x14.svg'
 import closeIcon from '../assets/ico.close.12.5x12.5.svg'
+import downloadIcon from 'common/assets/ico.download.24x24.svg'
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
+import MenuBox, { MenuBoxContent } from 'rd/UI/MenuBox'
 
 export const moduleWidth = 300
 
@@ -136,6 +138,82 @@ const HelpContent = styled(H3)({
   letterSpacing: 'normal'
 })
 
+const DownloadIcon = styled.div({
+  height: 22,
+  width: 22,
+  cursor: 'pointer',
+  marginLeft: 6,
+  marginBottom: -1,
+  backgroundSize: 'cover',
+  backgroundImage: `url(${downloadIcon})`,
+  transition: 'all 0.15s ease',
+
+  '&:hover': {
+    transform: 'scale(1.20)'
+  }
+}, (props) => ({
+  filter: props.automated
+    ? 'hue-rotate(102deg) brightness(60%) saturate(100%)'
+    : props.manual
+      ? 'hue-rotate(202deg) brightness(100%) saturate(60%)'
+      : null
+}))
+
+function createCSV (data) {
+  if (!Array.isArray(data)) return
+  let csv = ''
+  data.forEach((elem, i) => {
+    csv += i + ',' + elem + '\n'
+  })
+  return 'data:text/csv;charset=utf-8,' + encodeURI(csv)
+}
+
+function DownloadButton (props) {
+  const [link, setLink] = useState(null)
+
+  useEffect(
+    () => {
+      setLink(createCSV(props.data))
+    }, [props.data]
+  )
+
+  return <a
+    href={link}
+    style={{
+      margin: 20
+    }}>
+    <DownloadIcon
+      automated={props.automated}
+      manual={props.manual}
+    />
+  </a>
+}
+
+function DownloadMenu (props) {
+  const [activated, setActivated] = useState(false)
+  return <MenuBox
+    activate={activated}
+    onClose={() => setActivated(false)}
+  >
+    <DownloadIcon
+      onClick={() => setActivated(!activated)}
+    />
+    <MenuBoxContent>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'row'
+      }}>
+        <DownloadButton
+          data={props.data.automated}
+          automated />
+        <DownloadButton
+          data={props.data.manual}
+          manual />
+      </div>
+    </MenuBoxContent>
+  </MenuBox>
+}
+
 export default function Header (props) {
   return <>
     <Top>
@@ -156,6 +234,9 @@ export default function Header (props) {
             </TooltipContent>
           </Tooltip>
         </div>
+        <DownloadMenu
+          data={props.data}
+        />
         <CloseIcon
           src={closeIcon}
           onClick={props.onClose}
