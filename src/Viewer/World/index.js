@@ -34,7 +34,7 @@ import { useElementMouse } from 'rd/tools/hooks/mouse'
 
 import { useLayers } from 'flow/settings/accessors'
 import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useColor,
-  useSnapshot } from 'flow/interactions/accessors'
+  useSnapshot, useOrganInfo } from 'flow/interactions/accessors'
 import { useScanFiles, useScan } from 'flow/scans/accessors'
 
 import WorldObject from './object'
@@ -73,6 +73,7 @@ export default function WorldComponent (props) {
   const [colors] = useColor()
   const [snapshot, setSnapshot] = useSnapshot()
   const mouse = useElementMouse(canvasRef)
+  const [, setOrganInfo] = useOrganInfo()
   const [lastSelectedCamera] = useState({ camera: null })
 
   const [scan] = useScan()
@@ -248,7 +249,8 @@ export default function WorldComponent (props) {
     () => {
       if (world) {
         if (viewport3d.clicked) {
-          world.selectOrgan()
+          const organInfo = world.selectOrgan()
+          if (organInfo) setOrganInfo(organInfo)
         }
       }
     },
