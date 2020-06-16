@@ -156,7 +156,9 @@ const DownloadIcon = styled.div({
     ? 'hue-rotate(102deg) brightness(60%) saturate(100%)'
     : props.manual
       ? 'hue-rotate(202deg) brightness(100%) saturate(60%)'
-      : null
+      : null,
+  height: props.size || null,
+  width: props.size || null
 }))
 
 function createCSV (data) {
@@ -180,9 +182,10 @@ function DownloadButton (props) {
   return <a
     href={link}
     style={{
-      margin: 20
+      margin: 10
     }}>
     <DownloadIcon
+      size={props.size}
       automated={props.automated}
       manual={props.manual}
     />
@@ -195,20 +198,67 @@ function DownloadMenu (props) {
     activate={activated}
     onClose={() => setActivated(false)}
   >
-    <DownloadIcon
-      onClick={() => setActivated(!activated)}
-    />
+    <Tooltip>
+      <DownloadIcon
+        onClick={() => setActivated(!activated)}
+      />
+      <TooltipContent>
+        <H3>
+          <FormattedMessage id='tooltip-download-sequence' />
+        </H3>
+      </TooltipContent>
+    </Tooltip>
     <MenuBoxContent>
       <div style={{
         display: 'flex',
         flexDirection: 'row'
       }}>
-        <DownloadButton
-          data={props.data.automated}
-          automated />
-        <DownloadButton
-          data={props.data.manual}
-          manual />
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          margin: 10,
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center'
+        }} >
+          <H3>
+            <FormattedMessage id='angles-legend-automated' />
+          </H3>
+          <Tooltip>
+            <DownloadButton
+              size={40}
+              data={props.data.automated}
+              automated />
+            <TooltipContent>
+              <H3>
+                <FormattedMessage id='tooltip-download-man-sequence' />
+              </H3>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          margin: 10,
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center'
+        }} >
+          <H3>
+            <FormattedMessage id='angles-legend-manuel' />
+          </H3>
+          <Tooltip>
+            <DownloadButton
+              size={40}
+              data={props.data.manual}
+              manual />
+            <TooltipContent>
+              <H3>
+                <FormattedMessage id='tooltip-download-man-sequence' />
+              </H3>
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </div>
     </MenuBoxContent>
   </MenuBox>

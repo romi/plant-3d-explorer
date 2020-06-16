@@ -49,6 +49,10 @@
   "tooltip-help-pan": "Click right and hold to pan",
   "tooltip-help-zoom": "Scroll to zoom",
   
+  "tooltip-download-sequence": "Download the sequences in CSV/TSV format",
+  "tooltip-download-auto-sequence": "Download automated sequence",
+  "tooltip-download-man-sequence": "Download manual sequence",
+  
   "snapshot-preview-alt": "The image preview couldn't load",
   "snapshot-preview": "Preview",
 
