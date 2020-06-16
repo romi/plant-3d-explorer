@@ -47,20 +47,21 @@ EnhancedTHREE = setLine2(EnhancedTHREE)
 export default class Angles {
   constructor (angles, parent) {
     this.group = new THREE.Object3D()
-    this.globalColors = ['#3a4d45', '#00a960']
+    this.globalColors = [{ rgb: '#3a4d45', a: 0.2 }, { rgb: '#00a960', a: 0.2 }]
 
     angles.forEach((points, index) => {
       const geometry = new EnhancedTHREE.LineGeometry()
       geometry.setPositions(flatten(points))
 
       const color = new THREE.Color(index % 2 === 0
-        ? this.globalColors[0]
-        : this.globalColors[1])
+        ? this.globalColors[0].rgb
+        : this.globalColors[1].rgb)
       const obj = new EnhancedTHREE.Line2(
         geometry,
         new EnhancedTHREE.LineMaterial({
           linewidth: 10,
-          color: index % 2 === 0 ? this.globalColors[0] : this.globalColors[1],
+          color: index % 2 === 0 ? this.globalColors[0].rgb
+            : this.globalColors[1].rgb,
           dashed: false,
           depthTest: false,
           transparent: true,
@@ -96,13 +97,16 @@ export default class Angles {
     this.group.children.forEach((child, index) => {
       if (child !== undefined && child !== null) {
         if (organColors[index]) {
-          const matColor = new THREE.Color(organColors[index])
+          const matColor = new THREE.Color(organColors[index].rgb)
           child.customColor = matColor
           child.material.color = matColor
+          child.material.opacity = organColors[index].a
         } else {
           child.customColor = null
+          child.material.opacity =
+            this.globalColors[index % 2 ? 1 : 0].a
           child.material.color =
-           new THREE.Color(this.globalColors[index % 2 ? 1 : 0])
+            new THREE.Color(this.globalColors[index % 2 ? 1 : 0].rgb)
         }
       }
     })
@@ -114,11 +118,13 @@ export default class Angles {
     this.group.children.forEach((child, index) => {
       if (!child.customColor) {
         if (index % 2) {
-          const color = new THREE.Color(globalColors[1])
+          const color = new THREE.Color(globalColors[1].rgb)
           child.material.color = color
+          child.material.opacity = globalColors[1].a
         } else {
-          const color = new THREE.Color(globalColors[0])
+          const color = new THREE.Color(globalColors[0].rgb)
           child.material.color = color
+          child.material.opacity = globalColors[0].a
         }
       }
     })
@@ -135,8 +141,8 @@ export default class Angles {
       child.visible = !!ref
 
       const defaultColor = new THREE.Color((i % 2)
-        ? this.globalColors[1]
-        : this.globalColors[0])
+        ? this.globalColors[1].rgb
+        : this.globalColors[0].rgb)
 
       child.material.color = (ref && refIndex >= 0)
         ? child.customColor

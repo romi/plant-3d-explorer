@@ -75,7 +75,7 @@ export default class World {
 
     this.setControls()
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true })
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     this.renderer.setPixelRatio(
       window.devicePixelRatio
         ? window.devicePixelRatio
@@ -378,12 +378,6 @@ export default class World {
   setMeshColor (color) {
     if (this.mesh) {
       this.mesh.setColor(color)
-    }
-  }
-
-  setMeshOpacity (opacity) {
-    if (this.mesh) {
-      this.mesh.setOpacity(opacity)
     }
   }
 

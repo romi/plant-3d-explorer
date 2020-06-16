@@ -443,17 +443,17 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
               selected={selectedAngle === i}
               hoveredColor={
                 colors.organs[hoveredAngle]
-                  ? colors.organs[hoveredAngle]
+                  ? colors.organs[hoveredAngle].rgb
                   : hoveredAngle % 2
-                    ? colors.globalOrganColors[1]
-                    : colors.globalOrganColors[0]
+                    ? colors.globalOrganColors[1].rgb
+                    : colors.globalOrganColors[0].rgb
               }
               selectedColor={
                 colors.organs[selectedAngle]
-                  ? colors.organs[selectedAngle]
+                  ? colors.organs[selectedAngle].rgb
                   : selectedAngle % 2
-                    ? colors.globalOrganColors[1]
-                    : colors.globalOrganColors[0]
+                    ? colors.globalOrganColors[1].rgb
+                    : colors.globalOrganColors[0].rgb
               }
               hovered={hoveredAngle === i}
               onMouseEnter={() => setHoveredAngle(i)}
@@ -481,13 +481,14 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
               (isNotNullAndUndefiend(selectedAngle) &&
               !isNotNullAndUndefiend(hoveredAngle))
                 ? colors.organs[selectedAngle + 1]
-                  ? Color(colors.organs[selectedAngle + 1]).toString()
-                  : Color(colors.globalOrganColors[selectedAngle % 2 ? 0 : 1])
+                  ? Color(colors.organs[selectedAngle + 1].rgb).toString()
+                  : Color(colors.globalOrganColors[selectedAngle % 2 ? 0 : 1].rgb)
                     .toString()
                 : isNotNullAndUndefiend(hoveredAngle)
                   ? colors.organs[hoveredAngle + 1]
-                    ? Color(colors.organs[hoveredAngle + 1]).toString()
-                    : Color(colors.globalOrganColors[hoveredAngle % 2 ? 0 : 1])
+                    ? Color(colors.organs[hoveredAngle + 1].rgb).toString()
+                    : Color(colors.globalOrganColors[hoveredAngle % 2 ? 0 : 1]
+                      .rgb)
                       .toString()
                   : darkGreen
             }
@@ -522,13 +523,15 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
               (isNotNullAndUndefiend(selectedAngle) &&
               !isNotNullAndUndefiend(hoveredAngle))
                 ? colors.organs[selectedAngle]
-                  ? Color(colors.organs[selectedAngle]).toString()
-                  : Color(colors.globalOrganColors[selectedAngle % 2 ? 1 : 0])
+                  ? Color(colors.organs[selectedAngle].rgb).toString()
+                  : Color(colors.globalOrganColors[selectedAngle % 2 ? 1 : 0]
+                    .rgb)
                     .toString()
                 : isNotNullAndUndefiend(hoveredAngle)
                   ? colors.organs[hoveredAngle]
-                    ? Color(colors.organs[hoveredAngle]).toString()
-                    : Color(colors.globalOrganColors[hoveredAngle % 2 ? 1 : 0])
+                    ? Color(colors.organs[hoveredAngle].rgb).toString()
+                    : Color(colors.globalOrganColors[hoveredAngle % 2 ? 1 : 0]
+                      .rgb)
                       .toString()
                   : Color('#78D89D').toString()
             }

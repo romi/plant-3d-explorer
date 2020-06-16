@@ -47,10 +47,11 @@ const vertexShader = `
 `
 const fragmentShader = `
   varying vec3 vColor;
+  uniform float opacity;
 
   void main() {
     if ( length( gl_PointCoord - vec2( 0.5, 0.5 ) ) > 0.475 ) discard;
-    gl_FragColor = vec4( vColor, 0.5 );
+    gl_FragColor = vec4( vColor, opacity );
   }
 `
 
@@ -65,6 +66,7 @@ export default class Mesh {
 
     this.material = new THREE.ShaderMaterial({
       uniforms: {
+        opacity: { value: 1 },
         ratio: { type: 'f', value: pixelRatio },
         color: { type: 'c', value: new THREE.Color(0xf8de96) },
         zoom: { type: 'f', value: 1 }
@@ -97,6 +99,10 @@ export default class Mesh {
   }
 
   setColor (color) {
-    if (color) this.material.uniforms.color.value = new THREE.Color(color)
+    if (color && color.rgb && color.a) {
+      this.material.uniforms.color.value = new THREE.Color(color.rgb)
+      this.material.uniforms.opacity.value = color.a
+      console.log(this.material.uniforms.opacity.value)
+    }
   }
 }

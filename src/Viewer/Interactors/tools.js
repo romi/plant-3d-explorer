@@ -63,16 +63,15 @@ export default function MiscInteractors () {
         <SketchPicker
           onChange={
             (color) => {
-              const alpha = color.rgb.a
+              if (color.hex === 'transparent') return
               setColors({
                 ...colors,
-                mesh: color.hex,
-                meshOpacity: alpha
+                mesh: { rgb: color.hex, a: color.rgb.a }
               })
             }
           }
-          color={colors.mesh +
-          Math.round((colors.meshOpacity * 0xff)).toString(16)}
+          color={colors.mesh.rgb +
+          Math.round((colors.mesh.a * 0xff)).toString(16)}
 
         />
         <ResetButton
@@ -96,17 +95,18 @@ export default function MiscInteractors () {
         icon={<PaintIcon isActivated={layerTools.activeTool ===
         tools.colorPickers.pointCloud} />}
       >
-        <SketchPicker disableAlpha
+        <SketchPicker
           onChange={
             (color) => {
-              console.log(color)
+              if (color.hex === 'transparent') return
               setColors({
                 ...colors,
-                pointCloud: color.rgb
+                pointCloud: { rgb: color.hex, a: color.rgb.a }
               })
             }
           }
-          color={colors.pointCloud}
+          color={colors.pointCloud.rgb +
+            Math.round(colors.pointCloud.a * 0xff).toString(16)}
         />
         <ResetButton
           onClick={
@@ -129,16 +129,18 @@ export default function MiscInteractors () {
         icon={<PaintIcon isActivated={layerTools.activeTool ===
           tools.colorPickers.skeleton} />}
       >
-        <SketchPicker disableAlpha
+        <SketchPicker
           onChange={
             (color) => {
+              if (color.hex === 'transparent') return
               setColors({
                 ...colors,
-                skeleton: color.hex
+                skeleton: { rgb: color.hex, a: color.rgb.a }
               })
             }
           }
-          color={colors.skeleton}
+          color={colors.skeleton.rgb +
+            Math.round(colors.skeleton.a * 0xff).toString(16)}
         />
         <ResetButton
           onClick={
@@ -164,9 +166,10 @@ export default function MiscInteractors () {
         icon={<PaintIcon isActivated={layerTools.activeTool ===
           tools.colorPickers.organs} />}
       >
-        <SketchPicker disableAlpha
+        <SketchPicker
           onChange={
             (color) => {
+              if (color.hex === 'transparent') return
               let color2 = color.hsl
               // Use a lighter color for the second organ of the pair
               color2.l += 0.3
@@ -179,8 +182,8 @@ export default function MiscInteractors () {
                 // We slice the array because it has to be an immutable change
                 let copy = colors.organs.slice()
                 const next = selectedAngle + 1
-                copy[selectedAngle] = color.hex
-                copy[next] = color2String
+                copy[selectedAngle] = { rgb: color.hex, a: color.rgb.a }
+                copy[next] = { rgb: color2String, a: color.rgb.a }
                 setColors({
                   ...colors,
                   organs: copy
@@ -188,14 +191,20 @@ export default function MiscInteractors () {
               } else {
                 setColors({
                   ...colors,
-                  globalOrganColors: [color.hex, color2String]
+                  globalOrganColors: [
+                    { rgb: color.hex, a: color.rgb.a },
+                    { rgb: color2String, a: color.rgb.a }
+                  ]
                 })
               }
             }
           }
-          color={(selectedAngle !== undefined && selectedAngle !== null)
-            ? colors.organs[selectedAngle]
-            : colors.globalOrganColors[0]}
+          color={(selectedAngle !== undefined && selectedAngle !== null &&
+            colors.organs[selectedAngle])
+            ? colors.organs[selectedAngle].rgb +
+              Math.round(colors.organs[selectedAngle].a * 0xff).toString(16)
+            : colors.globalOrganColors[0].rgb +
+              Math.round(colors.globalOrganColors[0].a * 0xff).toString(16)}
         />
         <ResetButton
           onClick={
