@@ -35,7 +35,7 @@ function Bubble (props) {
 
 export default function OverlayInteractors () {
   const [currentBubblePos, setCurrentBubblePos] = useState(null)
-  const [organInfo] = useOrganInfo()
+  const [organInfo, setOrganInfo] = useOrganInfo()
   const mouse = useMouse()
 
   useEffect(
@@ -52,7 +52,10 @@ export default function OverlayInteractors () {
         initialPos={currentBubblePos}
         organInfo={organInfo}
         menuBox={{
-          onClose: () => setCurrentBubblePos(null)
+          onClose: () => {
+            setCurrentBubblePos(null)
+            setOrganInfo(null)
+          }
         }}
       />
       : null

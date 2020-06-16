@@ -250,7 +250,7 @@ export default function WorldComponent (props) {
       if (world) {
         if (viewport3d.clicked) {
           const organInfo = world.selectOrgan()
-          if (organInfo) setOrganInfo(organInfo)
+          if (organInfo) setOrganInfo(organInfo + 1)
         }
       }
     },
