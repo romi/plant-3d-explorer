@@ -181,6 +181,7 @@ function DownloadButton (props) {
 
   return <a
     href={link}
+    download={props.download}
     style={{
       margin: 10
     }}>
@@ -228,7 +229,9 @@ function DownloadMenu (props) {
             <DownloadButton
               size={40}
               data={props.data.automated}
-              automated />
+              automated
+              download='automated.csv'
+            />
             <TooltipContent>
               <H3>
                 <FormattedMessage id='tooltip-download-man-sequence' />
@@ -251,7 +254,9 @@ function DownloadMenu (props) {
             <DownloadButton
               size={40}
               data={props.data.manual}
-              manual />
+              manual
+              download='manual.csv'
+            />
             <TooltipContent>
               <H3>
                 <FormattedMessage id='tooltip-download-man-sequence' />
