@@ -50,7 +50,9 @@ const Container = styled.div({
   width: '100%',
   height: moduleHeight,
   background: '#1f2426',
-  position: 'relative'
+  position: 'relative',
+  zIndex: 1000 // This is to prevent the close and open buttons to conflict
+  // with the graph on the right
 })
 
 const Svg = styled.svg({
