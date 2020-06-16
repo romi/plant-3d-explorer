@@ -433,6 +433,26 @@ export default class World {
     return snapshot
   }
 
+  /* Casts a ray and checks if it intersects any organ. If it
+    does, returns the index of the organ, returns null otherwise */
+  selectOrgan () {
+    if (!this.anlesPoints) return null
+    const { width, height } = this.renderer.getSize()
+    const virtualMouse = new THREE.Vector2(
+      (this.mouse.x / width) * 2 - 1,
+      -(this.mouse.y / height) * 2 + 1
+    )
+    this.raycaster.setFromCamera(virtualMouse, this.controls.object)
+    const intersects = this.raycaster
+      .intersectObjects(this.anlesPoints.group.children, true)
+
+    return intersects.length
+      ? this.anlesPoints.group.children.indexOf(intersects[0].object) !== -1
+        ? this.anlesPoints.group.children.indexOf(intersects[0].object)
+        : null
+      : null
+  }
+
   interaction () {
     if (
       (this.mouse.x !== this.oldMouse.x) || (this.mouse.y !== this.oldMouse.y)

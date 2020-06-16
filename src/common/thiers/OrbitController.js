@@ -595,7 +595,7 @@ THREE.OrbitControls = function (object, domElement, changeFn) {
     if (scope.enabled === false) return
 
     event.preventDefault()
-    event.stopPropagation()
+    //event.stopPropagation()
 
     switch (event.button) {
       case scope.mouseButtons.LEFT:

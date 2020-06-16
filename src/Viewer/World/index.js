@@ -34,7 +34,7 @@ import { useElementMouse } from 'rd/tools/hooks/mouse'
 
 import { useLayers } from 'flow/settings/accessors'
 import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useColor,
-  useSnapshot } from 'flow/interactions/accessors'
+  useSnapshot, useOrganInfo } from 'flow/interactions/accessors'
 import { useScanFiles, useScan } from 'flow/scans/accessors'
 
 import WorldObject from './object'
@@ -42,6 +42,7 @@ import useViewport2d from './behaviors/viewport2d'
 
 import { headerHeight } from 'Viewer/Header'
 import { moduleHeight as carouselHeight } from 'Viewer/Carousel'
+import useViewport3d from './behaviors/viewport3d'
 
 const Container = styled.div({
   position: 'relative',
@@ -72,6 +73,7 @@ export default function WorldComponent (props) {
   const [colors] = useColor()
   const [snapshot, setSnapshot] = useSnapshot()
   const mouse = useElementMouse(canvasRef)
+  const [, setOrganInfo] = useOrganInfo()
   const [lastSelectedCamera] = useState({ camera: null })
 
   const [scan] = useScan()
@@ -81,11 +83,15 @@ export default function WorldComponent (props) {
     bounds.width || getSize().width,
     bounds.height || getSize().height
   )
+  const [viewport3d, event3dFns] = useViewport3d(
+    bounds.width || getSize().width,
+    bounds.height || getSize().height
+  )
   const [, setReset3dView] = useReset3dView()
   const [, setReset2dView] = useReset2dView()
   const eventFns = selectedCamera
     ? event2dFns
-    : {}
+    : event3dFns
 
   useEffect(
     () => {
@@ -237,6 +243,18 @@ export default function WorldComponent (props) {
       }
     },
     [colors.organs]
+  )
+
+  useEffect(
+    () => {
+      if (world) {
+        if (viewport3d.clicked) {
+          const organInfo = world.selectOrgan()
+          if (organInfo) setOrganInfo(organInfo + 1)
+        }
+      }
+    },
+    [world, viewport3d]
   )
 
   useEffect(
