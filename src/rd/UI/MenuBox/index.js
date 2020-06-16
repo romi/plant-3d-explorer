@@ -102,9 +102,13 @@ const ContentContainer = styled.div({
       // This is used to prevent the element from going out of the
       // screen on the left side
       ? (props.contentBb.x > props.contentBb.width / 2)
-        ? (
-          -(props.contentBb.width || 0) / 2
-        ) + (props.parentBb.width * 0.5)
+        ? ((props.contentBb.x + props.contentBb.width) > window.innerWidth)
+          ? (
+            -(props.contentBb.width || 0) / 2
+          ) + (props.parentBb.width * 0.5) - 50
+          : (
+            -(props.contentBb.width || 0) / 2
+          ) + (props.parentBb.width * 0.5)
         : -props.contentBb.x
       : 0
   }
