@@ -244,8 +244,12 @@ const Item = memo(({ item }) => {
 })
 
 export default memo(function (props) {
-  const [items] = useState(props.items)
+  const [items, setItems] = useState(props.items)
   const [sorting] = useSorting()
+
+  if (props.items.length !== items.length) {
+    setItems(props.items)
+  }
 
   const sortingFn = sorting.type === 'natural'
     ? (items) => orderBy(

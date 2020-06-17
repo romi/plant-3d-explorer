@@ -139,3 +139,17 @@ export const useSortingMethod = useAccessor(
     })
   ]
 )
+
+export const useFiltering = useAccessor(
+  [
+    (state) => {
+      return state.scans.filtering
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_FILTERING',
+      value
+    })
+  ]
+)

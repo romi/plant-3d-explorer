@@ -34,6 +34,7 @@ import { omit } from 'lodash'
 import { useSorting } from 'flow/scans/accessors'
 import { H3 } from 'common/styles/UI/Text/titles'
 import { darkGreen } from 'common/styles/colors'
+import Filtering from 'ScanList/filtering'
 
 import sortingIconNeutral from './assets/ico.table_sort_neutral.7x12.svg'
 import sortingIconAsc from './assets/ico.table_sort_asc.7x12.svg'
@@ -51,7 +52,7 @@ const Container = styled.div({
     calc(10.3% - 10px) 
     11%
   `,
-  gridColumnGap: 21
+  gridColumnGap: 29
 })
 
 const H3Button = H3.withComponent('button')
@@ -98,7 +99,8 @@ const SortingOption = memo(styled((props) => {
 
 const ColumTitle = styled(H3)({
   display: 'flex',
-  alignItems: 'center'
+  alignItems: 'center',
+  flexDirection: 'column'
 })
 
 export default function () {
@@ -128,6 +130,7 @@ export default function () {
     }
     <ColumTitle key={'data'}>
       <FormattedMessage id={'scanlist-data-availability'} />
+      <Filtering />
     </ColumTitle>
   </Container>
 }
