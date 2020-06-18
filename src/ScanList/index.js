@@ -36,7 +36,7 @@ import styled from '@emotion/styled'
 import { H1, H2 } from 'common/styles/UI/Text/titles'
 import { green, grey } from 'common/styles/colors'
 
-import { useSearchQuery, useScans } from 'flow/scans/accessors'
+import { useSearchQuery, useScans, useFiltering } from 'flow/scans/accessors'
 
 import Logo from './assets/ico.logo.160x30.svg'
 import closePicto from 'common/assets/ico.deselect.20x20.svg'
@@ -136,15 +136,28 @@ function ResultsTitle ({ scans = [], search, clear }) {
 
 function Results (props) {
   const [search] = useState(props.search)
+  const [filtering] = useFiltering()
+
+  const filteringFn = (elem) => {
+    let test = true
+    for (let key in filtering) {
+      if (filtering[key]) {
+        test = test && elem[key]
+      }
+    }
+    return test
+  }
+
+  const scans = props.scans.filter(filteringFn)
 
   return <div>
     <ResultsTitle
-      scans={props.scans}
+      scans={scans}
       search={search}
       clear={props.clear}
     />
     <Sorting />
-    <List items={props.scans} />
+    <List items={scans} />
   </div>
 }
 

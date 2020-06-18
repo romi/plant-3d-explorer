@@ -55,7 +55,8 @@ export const sortingMethods = [
 
 const initialState = {
   searchQuery: null,
-  sorting: sortingMethods.find((d) => d.label === 'date')
+  sorting: sortingMethods.find((d) => d.label === 'date'),
+  filtering: {}
 }
 
 export default function settingsReducer (state = initialState, action) {
@@ -69,6 +70,11 @@ export default function settingsReducer (state = initialState, action) {
       return {
         ...state,
         sorting: action.value
+      }
+    case 'SET_FILTERING':
+      return {
+        ...state,
+        filtering: action.value
       }
     default:
       return state
