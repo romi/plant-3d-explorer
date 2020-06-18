@@ -65,6 +65,8 @@ export default class Skeleton {
         new EnhancedTHREE.LineMaterial({
           linewidth: 4,
           color: 0x5ca001,
+          transparent: true,
+          opacity: 1,
           dashed: true,
           resolution: { x: window.innerWidth, y: window.innerHeight }
         })
@@ -91,7 +93,8 @@ export default class Skeleton {
 
   setColor (color) {
     this.group.children.forEach((child) => {
-      child.material.color = new THREE.Color(color)
+      child.material.color = new THREE.Color(color.rgb)
+      child.material.opacity = color.a
     })
   }
 }

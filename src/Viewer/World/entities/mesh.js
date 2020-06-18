@@ -60,13 +60,8 @@ export default class Mesh {
 
   setColor (color) {
     if (color) {
-      this.object.material.color = new THREE.Color(color)
-    }
-  }
-
-  setOpacity (opacity) {
-    if (opacity) {
-      this.object.material.opacity = opacity
+      this.object.material.color = new THREE.Color(color.rgb)
+      this.object.material.opacity = color.a
     }
   }
 }
