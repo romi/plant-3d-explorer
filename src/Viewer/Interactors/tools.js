@@ -209,8 +209,19 @@ export default function MiscInteractors () {
         <ResetButton
           onClick={
             () => {
-              resetDefaultColor('globalOrganColors')
-              resetDefaultColor('organs')
+              if (selectedAngle !== undefined && selectedAngle !== null) {
+                if (colors.organs.length > selectedAngle + 1) {
+                  let copy = colors.organs.slice()
+                  copy[selectedAngle] = null
+                  copy[selectedAngle + 1] = null
+                  setColors({
+                    ...colors,
+                    organs: copy
+                  })
+                }
+              } else {
+                resetDefaultColor('globalOrganColors')
+              }
             }
           }
         />

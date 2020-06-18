@@ -27,18 +27,30 @@ const Close = styled.div({
 
 /* This is a general component for display menus that appear when
   a button is clicked. This component is heavily inspired by the Tooltip
-  component */
+  component. */
 export default function (props) {
   const contentRef = useRef()
   const [ref, BB] = useBB(false)
   const [contentBb, setContentBb] = useState()
 
-  const childrenWithoutContent = props.children
-    .filter((d) => d.type !== MenuBoxContent)
-  const childrenWithContent = props.children
-    .filter((d) => d.type === MenuBoxContent)
+  if (Array.isArray(props.children)) {
+    var childrenWithoutContent = props.children
+      .filter((d) => d.type !== MenuBoxContent)
+    var childrenWithContent = props.children
+      .filter((d) => d.type === MenuBoxContent)
+  } else {
+    if (props.children.type === MenuBoxContent) {
+      childrenWithContent = props.children
+      childrenWithoutContent = null
+    } else {
+      childrenWithContent = null
+      childrenWithoutContent = props.children
+    }
+  }
 
-  useEffect(props.callOnChange, props.watchChange)
+  if (props.callOnChange) {
+    useEffect(props.callOnChange, props.watchChange)
+  }
 
   useEffect(
     () => {
@@ -51,6 +63,7 @@ export default function (props) {
 
   return <div
     ref={ref}
+    style={props.style}
   >
     {childrenWithoutContent}
     {

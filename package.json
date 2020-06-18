@@ -30,6 +30,7 @@
     "redux": "^4.0.1",
     "redux-react-hook": "^3.1.0",
     "three": "^0.101.1",
+    "three-line-raycast": "^1.0.2",
     "three-orbitcontrols": "github:dataveyes/three-orbitcontrols",
     "use-react-router": "^1.0.3"
   },

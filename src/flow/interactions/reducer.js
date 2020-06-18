@@ -33,6 +33,8 @@ const initialState = {
   hoveredAngle: null,
   selectedAngle: null,
 
+  organInfo: null,
+
   colors: {
     mesh: { rgb: '#96c0a7', a: 1 },
     pointCloud: { rgb: '#f8de96', a: 1 },
@@ -107,6 +109,11 @@ export default function settingsReducer (state = initialState, action) {
       return {
         ...state,
         snapshot: action.value
+      }
+    case 'SET_ORGAN_INFO':
+      return {
+        ...state,
+        organInfo: action.value
       }
     default:
       return state

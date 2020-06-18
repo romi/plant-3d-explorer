@@ -157,3 +157,17 @@ export const useReset3dView = useAccessor(
     })
   ]
 )
+
+export const useOrganInfo = useAccessor(
+  [
+    (state) => {
+      return state.interactions.organInfo
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_ORGAN_INFO',
+      value
+    })
+  ]
+)
