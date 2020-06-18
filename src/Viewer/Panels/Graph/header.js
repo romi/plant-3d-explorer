@@ -27,7 +27,7 @@ License along with this program.  If not, see
 
 */
 
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import styled from '@emotion/styled'
 import { FormattedMessage } from 'react-intl'
 
@@ -36,10 +36,8 @@ import { grey, blue, red } from 'common/styles/colors'
 
 import helpIcon from '../assets/ico.help.14x14.svg'
 import closeIcon from '../assets/ico.close.12.5x12.5.svg'
-import downloadIcon from 'common/assets/ico.download.24x24.svg'
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
-import MenuBox, { MenuBoxContent } from 'rd/UI/MenuBox'
-import { Interactor } from 'Viewer/Interactors'
+import { Download } from './download'
 
 export const moduleWidth = 300
 
@@ -139,205 +137,6 @@ const HelpContent = styled(H3)({
   letterSpacing: 'normal'
 })
 
-const DownloadIcon = styled.div({
-  height: 22,
-  width: 22,
-  cursor: 'pointer',
-  marginLeft: 6,
-  marginBottom: -1,
-  backgroundSize: 'cover',
-  backgroundImage: `url(${downloadIcon})`,
-  transition: 'all 0.15s ease',
-
-  '&:hover': {
-    transform: 'scale(1.20)'
-  }
-}, (props) => ({
-  filter: props.automated
-    ? 'hue-rotate(102deg) brightness(65%) saturate(100%)'
-    : props.manual
-      ? 'hue-rotate(202deg) brightness(100%) saturate(70%)'
-      : null,
-  height: props.size || null,
-  width: props.size || null
-}))
-
-const ColumnContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  alignContent: 'center',
-  alignItems: 'center'
-})
-
-const RowContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'row'
-})
-
-const SwitchContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'row',
-  margin: 5,
-  alignContent: 'center',
-  alignItems: 'center',
-  transition: 'all 0.3s ease',
-  '&:hover': {
-    transition: 'all 0.3 ease',
-    boxShadow: '1px 1px 3px 3px limegreen'
-  }
-})
-
-function createDatafile (data, type = 'csv') {
-  if (!Array.isArray(data)) return
-  let csv = ''
-  const separator = type === 'tsv' ? '\t' : ','
-  data.forEach((elem, i) => {
-    csv += i + separator + elem + '\n'
-  })
-  return 'data:text/csv;charset=utf-8,' + encodeURI(csv)
-}
-
-function DownloadButton (props) {
-  const [link, setLink] = useState(null)
-
-  useEffect(
-    () => {
-      let data = props.data
-      if (props.unit === 'deg') {
-        let dataCopy = []
-        data.forEach((elem) => {
-          dataCopy.push(props.valueTransform(elem))
-        })
-        data = dataCopy
-      }
-      setLink(createDatafile(data, props.type))
-    }, [props.data, props.type, props.unit]
-  )
-
-  return <a
-    href={link}
-    download={props.download}
-    style={{
-      margin: 10
-    }}>
-    <DownloadIcon
-      size={props.size}
-      automated={props.automated}
-      manual={props.manual}
-    />
-  </a>
-}
-
-function SwitchButton (props) {
-  return <SwitchContainer>
-    <Interactor
-      onClick={props.onClickLeft}
-      activated={props.switch}
-    >
-      <H2 style={{
-        color: props.switch ? '#00a960' : null
-      }}>
-        {props.leftContent}
-      </H2>
-    </Interactor>
-    <Interactor
-      onClick={props.onClickRight}
-      activated={!props.switch}
-    >
-      <H2 style={{
-        color: props.switch ? null : '#00a960'
-      }}>
-        {props.rightContent}
-      </H2>
-    </Interactor>
-  </SwitchContainer>
-}
-
-function DownloadMenu (props) {
-  const [activated, setActivated] = useState(false)
-  const [type, setType] = useState('csv')
-  const [unit, setUnit] = useState('rad')
-
-  return <MenuBox
-    activate={activated}
-    onClose={() => setActivated(false)}
-  >
-    <Tooltip>
-      <DownloadIcon
-        onClick={() => setActivated(!activated)}
-      />
-      <TooltipContent>
-        <H3>
-          <FormattedMessage id='tooltip-download-sequence' />
-        </H3>
-      </TooltipContent>
-    </Tooltip>
-    <MenuBoxContent>
-      <ColumnContainer>
-        <SwitchButton
-          leftContent='CSV'
-          onClickLeft={() => setType('csv')}
-          rightContent='TSV'
-          onClickRight={() => setType('tsv')}
-          switch={type === 'csv'} />
-        { props.data.unit === '°' /* Don't display the unit switch if the panel
-        is the internodes panels */
-          ? <SwitchButton
-            leftContent='RAD'
-            onClickLeft={() => setUnit('rad')}
-            rightContent='DEG'
-            onClickRight={() => setUnit('deg')}
-            switch={unit === 'rad'} />
-          : null }
-        <RowContainer>
-          <ColumnContainer style={{ marginRight: 20 }}>
-            <H3>
-              <FormattedMessage id='angles-legend-automated' />
-            </H3>
-            <Tooltip>
-              <DownloadButton
-                size={40}
-                data={props.data.automated}
-                automated
-                download='automated.csv'
-                type={type}
-                unit={unit}
-                valueTransform={props.data.valueTransform}
-              />
-              <TooltipContent>
-                <H3>
-                  <FormattedMessage id='tooltip-download-auto-sequence' />
-                </H3>
-              </TooltipContent>
-            </Tooltip>
-          </ColumnContainer>
-          <ColumnContainer>
-            <H3>
-              <FormattedMessage id='angles-legend-manuel' />
-            </H3>
-            <Tooltip>
-              <DownloadButton
-                size={40}
-                data={props.data.manual}
-                manual
-                download='manual.csv'
-                type={type}
-                unit={unit}
-                valueTransform={props.data.valueTransform}
-              />
-              <TooltipContent>
-                <H3>
-                  <FormattedMessage id='tooltip-download-man-sequence' />
-                </H3>
-              </TooltipContent>
-            </Tooltip>
-          </ColumnContainer>
-        </RowContainer>
-      </ColumnContainer>
-    </MenuBoxContent>
-  </MenuBox>
-}
-
 export default function Header (props) {
   return <>
     <Top>
@@ -358,7 +157,7 @@ export default function Header (props) {
             </TooltipContent>
           </Tooltip>
         </div>
-        <DownloadMenu
+        <Download
           data={props.data}
         />
         <CloseIcon
