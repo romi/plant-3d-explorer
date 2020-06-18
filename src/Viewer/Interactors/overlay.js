@@ -12,28 +12,73 @@ function Bubble (props) {
     colors.organs[props.organInfo - 1]
     ? colors.organs[props.organInfo - 1]
     : colors.globalOrganColors[props.organInfo % 2 ? 0 : 1]
+
+  const handleMouseDown = (e) => {
+    if (e.button !== 0) return
+    props.setDragging(true)
+    props.setRel({
+      x: e.pageX - props.pos.x,
+      y: e.pageY - props.pos.y
+    })
+  }
+
+  const handleMouseUp = (e) => {
+    if (!props.dragging) return
+    props.setDragging(false)
+  }
+
+  const handleMouseMove = (e) => {
+    if (!props.dragging) return
+    props.setPos({
+      x: e.pageX - props.rel.x,
+      y: e.pageY - props.rel.y
+    })
+  }
+
+  /* The event listener needs to be removed and set back to have a fresh
+    'dragging' state */
+  useEffect(
+    () => {
+      if (props.dragging) {
+        document.addEventListener('mousemove', handleMouseMove)
+      }
+      return () => {
+        if (props.dragging) {
+          document.removeEventListener('mousemove', handleMouseMove)
+        }
+      }
+    }, [props.dragging, props.rel])
+
   return <div
     style={{
       position: 'fixed',
-      top: props.initialPos.y,
-      left: props.initialPos.x,
+      top: props.pos.y,
+      left: props.pos.x,
+      cursor: props.dragging ? 'grabbing' : 'grab',
       zIndex: 2000
     }}>
     <MenuBox
       activate
       {...props.menuBox}
     >
-      <MenuBoxContent style={{
-        backgroundColor: bubbleColor + '30' // Added for opacity on background
-        // only
-      }}
+      <MenuBoxContent
+        style={{
+          backgroundColor: bubbleColor // Added for opacity on background
+          // only
+        }}
+
       >
         <div
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
         >
           {/* } Organ info can then be fetched from anywhere,
         for the moment it only prints the organ number for testing purposes
       { */}
-          <H2> Organ {props.organInfo} </H2>
+          <H2 style={{
+            color: 'white',
+            mixBlendMode: 'difference' // Makes sure the text is visible
+          }}> Organ {props.organInfo} </H2>
         </div>
       </MenuBoxContent>
     </MenuBox>
@@ -41,31 +86,78 @@ function Bubble (props) {
 }
 
 export default function OverlayInteractors () {
-  const [currentBubblePos, setCurrentBubblePos] = useState(null)
+  const [tempBubblePos, setTempBubblePos] = useState(null)
   const [organInfo, setOrganInfo] = useOrganInfo()
+  const [bubblePositions, setBubblePositions] = useState([])
+  const [draggingBubble, setDraggingBubble] = useState()
+  const [rel, setRel] = useState({ x: 0, y: 0 })
   const mouse = useMouse()
 
   useEffect(
     () => {
-      if (organInfo) setCurrentBubblePos(mouse)
-      else setCurrentBubblePos(null)
+      if (organInfo) {
+        setTempBubblePos(mouse)
+      } else {
+        setTempBubblePos(null)
+      }
     },
     [organInfo]
   )
 
   return <div>
-    { currentBubblePos
+    {(tempBubblePos && !bubblePositions[organInfo])
       ? <Bubble
-        initialPos={currentBubblePos}
+        pos={tempBubblePos}
         organInfo={organInfo}
+        dragging={draggingBubble === organInfo}
+        setDragging={(b) => {
+          setDraggingBubble(b ? organInfo : null)
+        }}
+        rel={rel}
+        setRel={setRel}
+        setPos={(pos) => {
+          setTempBubblePos(null)
+          let copy = bubblePositions.slice()
+          copy[organInfo] = pos
+          setBubblePositions(copy)
+          setOrganInfo(null)
+        }}
         menuBox={{
           onClose: () => {
-            setCurrentBubblePos(null)
+            setTempBubblePos(null)
             setOrganInfo(null)
           }
         }}
       />
       : null
     }
+    {bubblePositions.map((pos, id) => {
+      if (pos) {
+        return <Bubble
+          key={id}
+          pos={pos}
+          organInfo={id}
+          dragging={draggingBubble === id}
+          rel={rel}
+          setRel={setRel}
+          setDragging={(b) => {
+            setDraggingBubble(b ? id : null)
+          }}
+          setPos={(pos) => {
+            let copy = bubblePositions.slice()
+            copy[id] = pos
+            setBubblePositions(copy)
+          }}
+          menuBox={{
+            onClose: () => {
+              let copy = bubblePositions.slice()
+              copy[id] = null
+              setBubblePositions(copy)
+              if (organInfo === id) setOrganInfo(null)
+            }
+          }} />
+      }
+      return null
+    })}
   </div>
 }
