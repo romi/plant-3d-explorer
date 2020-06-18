@@ -35,6 +35,7 @@ import { useSorting } from 'flow/scans/accessors'
 import { H3 } from 'common/styles/UI/Text/titles'
 import { darkGreen } from 'common/styles/colors'
 import Filtering from 'ScanList/filtering'
+import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
 
 import sortingIconNeutral from './assets/ico.table_sort_neutral.7x12.svg'
 import sortingIconAsc from './assets/ico.table_sort_asc.7x12.svg'
@@ -129,7 +130,14 @@ export default function () {
       })
     }
     <ColumTitle key={'data'}>
-      <FormattedMessage id={'scanlist-data-availability'} />
+      <Tooltip>
+        <FormattedMessage id={'scanlist-data-availability'} />
+        <TooltipContent style={{ marginTop: -60 }}>
+          <H3>
+            <FormattedMessage id={'scanlist-filter-data-availability'} />
+          </H3>
+        </TooltipContent>
+      </Tooltip>
       <Filtering />
     </ColumTitle>
   </Container>
