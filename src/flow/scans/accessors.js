@@ -43,7 +43,8 @@ import {
   relativeScansPhotoURIEnhancer,
   relativeScansFilesURIEnhancer,
   relativeScanPhotoURIEnhancer,
-  forgeCameraPointsEnhancer
+  forgeCameraPointsEnhancer,
+  relativeScanFilesURIEnhancer
 } from './enhancers'
 
 export function useScan () {
@@ -55,6 +56,7 @@ export function useScan () {
     () => {
       if (scanData) {
         return chain([
+          relativeScanFilesURIEnhancer,
           relativeScanPhotoURIEnhancer,
           forgeCameraPointsEnhancer
         ], scanData)

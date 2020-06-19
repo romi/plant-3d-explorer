@@ -74,6 +74,19 @@ export const relativeScansFilesURIEnhancer = (scans) => {
   })
 }
 
+export const relativeScanFilesURIEnhancer = (scan) => {
+  return {
+    ...scan,
+    metadata: {
+      ...scan.metadata,
+      files: {
+        archive: getScanPhotoURI(scan.metadata.files.archive),
+        metadatas: getScanPhotoURI(scan.metadata.files.metadatas)
+      }
+    }
+  }
+}
+
 export const forgeCameraPointsEnhancer = (scan) => {
   const poses = scan.camera.poses
   let index = 0
