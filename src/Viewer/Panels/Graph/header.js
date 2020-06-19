@@ -37,6 +37,7 @@ import { grey, blue, red } from 'common/styles/colors'
 import helpIcon from '../assets/ico.help.14x14.svg'
 import closeIcon from '../assets/ico.close.12.5x12.5.svg'
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
+import { Download } from './download'
 
 export const moduleWidth = 300
 
@@ -156,6 +157,9 @@ export default function Header (props) {
             </TooltipContent>
           </Tooltip>
         </div>
+        <Download
+          data={props.data}
+        />
         <CloseIcon
           src={closeIcon}
           onClick={props.onClose}
