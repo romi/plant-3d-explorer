@@ -169,7 +169,7 @@ export function Download (props) {
                 size={40}
                 data={props.data.automated}
                 automated
-                download='automated.csv'
+                download={'automated.' + type}
                 type={type}
                 unit={unit}
                 valueTransform={props.data.valueTransform} />
@@ -189,7 +189,7 @@ export function Download (props) {
                 size={40}
                 data={props.data.manual}
                 manual
-                download='manual.csv'
+                download={'manual.' + type}
                 type={type}
                 unit={unit}
                 valueTransform={props.data.valueTransform} />
