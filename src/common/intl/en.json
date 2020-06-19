@@ -17,8 +17,11 @@
   "scanlist-sort-environment": "Environment",
   "scanlist-sort-date": "Date",
   "scanlist-data-availability": "Available data",
-  "scanlist-filter-data-availability":
+  "tooltip-scanlist-filter-data-availability":
   "Filter results according to what data is available",
+  "scanlist-measures-availability": "Phyllotaxis",
+  "tooltip-filter-scanlist-measures-availability":
+  "For phyllotaxis, Filter results according to what measures are available",
   "scanlist-link-download": "Download files",
   "scanlist-link-metadata": "Show metadata",
   "scanlist-cta": "Open",
