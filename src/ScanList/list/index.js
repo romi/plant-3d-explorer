@@ -64,7 +64,7 @@ const Block = styled.div({
   alignItems: 'center',
 
   display: 'grid',
-  gridTemplateColumns: '105px 9.8% 15.7% 10% 10.3% 11% 300px',
+  gridTemplateColumns: '105px 9.8% 15.7% 10% 10.3% 11% 5% 300px',
   gridColumnGap: 16,
 
   '&:hover': {
@@ -108,14 +108,23 @@ const Options = styled.div({
 })
 
 const DataLayers = styled.div({
-  width: 120,
+  width: 100,
   display: 'flex',
   justifyContent: 'space-between',
   lineHeight: 0,
   marginTop: -5
 })
 
-const Icon = styled((props) => <div {...omit(props, ['isActive'])} />)({
+const MeasuresContainer = styled.div({
+  width: 120,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  lineHeight: 0,
+  marginTop: -5
+})
+
+export const Icon = styled((props) => <div {...omit(props, ['isActive'])} />)({
   display: 'inline-block',
   width: 21,
   height: 21,
@@ -126,6 +135,33 @@ const Icon = styled((props) => <div {...omit(props, ['isActive'])} />)({
     backgroundImage: `url(${props.src})`,
     opacity: props.isActive ? 1 : 0.3,
     filter: props.isActive ? 'none' : 'grayscale(100%)'
+  }
+})
+
+export const MeasuresText = styled.div({
+  fontSize: 11,
+  lineHeight: '28px',
+  textTransform: 'uppercase',
+  letterSpacing: 1,
+  color: '#DDDDDD',
+  fontWeight: 700,
+  display: 'flex',
+  alignItems: 'center',
+  textAlign: 'center',
+  justifyContent: 'center',
+  height: 18,
+  marginTop: 5,
+  padding: 5,
+  borderRadius: '3px',
+  width: 90,
+
+  '&:*': {
+    display: 'inline-block'
+  }
+}, (props) => {
+  return {
+    backgroundColor: props.automated ? '#4200FF' : '#FF555F',
+    filter: !props.isActive ? 'grayscale(100%)' : 'none'
   }
 })
 
@@ -226,6 +262,18 @@ const Item = memo(({ item }) => {
         </TooltipContent>
       </Tooltip>
     </DataLayers>
+    <MeasuresContainer>
+      <MeasuresText
+        automated
+        isActive={item.hasAutomatedMeasures}
+      >
+        <FormattedMessage id='angles-legend-automated' />
+      </MeasuresText>
+      <MeasuresText
+        isActive={item.hasManualMeasures} >
+        <FormattedMessage id='angles-legend-manuel' />
+      </MeasuresText>
+    </MeasuresContainer>
 
     <Actions>
       <Links>
