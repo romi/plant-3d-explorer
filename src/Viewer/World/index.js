@@ -135,7 +135,10 @@ export default function WorldComponent (props) {
         )
         setSnapshot({
           ...snapshot,
-          trueResolution: { width: bounds.width, height: bounds.height }
+          trueResolution: {
+            width: Math.round(bounds.width),
+            height: Math.round(bounds.height)
+          }
         })
       }
     },
