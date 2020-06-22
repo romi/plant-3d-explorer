@@ -40,7 +40,10 @@ const useMouse = () => {
     }
 
     window.addEventListener('mousemove', handler)
-    return () => window.removeEventListener('resize', handler)
+    return () => {
+      window.removeEventListener('resize', handler)
+      window.removeEventListener('mousemove', handler)
+    }
   }, [1])
 
   return state
