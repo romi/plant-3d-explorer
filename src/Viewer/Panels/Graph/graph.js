@@ -133,6 +133,8 @@ const GoalHorizontalTick = styled(HorizontalTick)({
 
 const pointsOffset = 3
 const SVG = styled.svg((props) => ({
+  position: 'absolute',
+  left: 38,
   width: props.width,
   height: props.height + pointsOffset,
   marginLeft: -pointsOffset
@@ -343,7 +345,7 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
     .filter((d) => d < vertiaclTickNb)[0]
 
   return <Content>
-    <TopPart height={containerHeight}>
+    <TopPart>
       <HorizontalAxis>
         {
           horizontalTicks.map((index) => {
