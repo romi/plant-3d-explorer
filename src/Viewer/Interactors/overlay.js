@@ -9,7 +9,7 @@ import useMouse from 'rd/tools/hooks/mouse'
 function Bubble (props) {
   const [colors] = useColor()
   const bubbleColor = colors.organs.length >= props.organInfo &&
-    colors.organs[props.organInfo - 1].rgb
+    colors.organs[props.organInfo - 1]
     ? colors.organs[props.organInfo - 1].rgb
     : colors.globalOrganColors[props.organInfo % 2 ? 0 : 1].rgb
 
