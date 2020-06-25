@@ -215,7 +215,7 @@ export const DocLink = styled.a({
 })
 
 export const Item = memo(({ item }) => {
-  return <Block>
+  return <Block data-testid='item'>
     <Thumbail uri={item.thumbnailUri} data-testid='thumbnail' />
     <Name data-testid='name'>{item.metadata.plant}</Name>
     <Options data-testid='species'>{item.metadata.species}</Options>

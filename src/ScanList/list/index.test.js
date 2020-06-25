@@ -1,9 +1,9 @@
 import React from 'react'
-import { render, cleanup, compareStyles } from 'rd/tools/test-utils'
+import { prettyDOM, render, compareStyles } from 'rd/tools/test-utils'
 import '@testing-library/jest-dom/extend-expect'
 import { format } from 'date-fns'
 
-import { Item } from './index'
+import List, { Item } from './index'
 
 const mockItem = {
   id: '123456789',
@@ -26,12 +26,17 @@ const mockItem = {
   hasAutomatedMeasures: true
 }
 
+const mockList = [
+  mockItem
+]
+
 describe('Item component', () => {
-  let rerender
   let elem = {}
-  beforeEach(() => {
-    const { queryByText, getAllByTestId, queryByTestId,
-      rerender: localRerender } = render(<Item item={mockItem} />)
+  // Use beforeAll because no modification on the elements is made.
+  // Also this prevents some style tests from being incoherent.
+  beforeAll(() => {
+    const { queryByText, getAllByTestId, queryByTestId } =
+      render(<Item item={mockItem} />)
     elem.thumbnail = queryByTestId('thumbnail')
     elem.name = queryByTestId('name')
     elem.species = queryByTestId('species')
@@ -44,25 +49,15 @@ describe('Item component', () => {
     elem.archive = queryByText(/scanlist-link-download/i).parentNode
     elem.metadatas = queryByText(/scanlist-link-metadata/i).parentNode
     elem.id = queryByText(/scanlist-cta/i).parentNode
-    rerender = localRerender
   })
 
-  it('renders without crashing', () => {
+  it('renders correctly', () => {
     for (let key in elem) {
       expect(elem[key]).toBeTruthy()
     }
   })
 
-  xit('measure indicators are displayed according to available measures',
-    () => {
-      /* Same as before, here we check if enabled measures have the same style
-        and if their style is different from disabled measures */
-      let [disabledStyle, enabledStyle] =
-        compareStyles(elem.auto, elem.man)
-      expect(disabledStyle).not.toEqual(enabledStyle)
-    })
-
-  xit('icons display according to available data', () => {
+  it('icons display according to available data', () => {
     /* Make sure every icon that is active has the same style,
       which should be different from every inactive icon */
     let comparedStyle, enabledStyle, disabledStyle;
@@ -82,6 +77,13 @@ describe('Item component', () => {
     expect(comparedStyle).toEqual(disabledStyle)
   })
 
+  xit('measure indicators are displayed according to available measures',
+    () => {
+      // TODO Make this test work.
+      /* This framework is... weird. If I ever find a way to make this work
+        i'll do it, but for now it's just terrible. */
+    })
+
   it('has correct information', () => {
     expect(elem.thumbnail).toHaveStyle('background-image: url(' +
       mockItem.thumbnailUri + ')')
@@ -93,5 +95,27 @@ describe('Item component', () => {
     expect(elem.archive.href).toMatch(mockItem.metadata.files.archive)
     expect(elem.metadatas.href).toMatch(mockItem.metadata.files.metadatas)
     expect(elem.id.href).toMatch(mockItem.id)
+    expect(elem.auto).toHaveTextContent('angles-legend-automated')
+    expect(elem.man).toHaveTextContent('angles-legend-manuel')
+  })
+})
+
+describe('List component', () => {
+  let mockSorting = { type: 'natural', label: 'name' }
+  let items
+  beforeEach(() => {
+    jest.mock('flow/scans/accessors', () => ({
+      useSorting: () => [
+        mockSorting,
+        jest.fn()
+      ]
+    }))
+    const { getAllByTestId } =
+      render(<List items={mockList} />)
+    items = getAllByTestId(/item/i)
+  })
+
+  it('renders correctly', () => {
+    console.log(items)
   })
 })
