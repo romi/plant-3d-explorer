@@ -7,6 +7,18 @@ import IntlProvider from 'rd/tools/intl'
 
 import { render } from '@testing-library/react'
 
+/* This function will return an array with 2 objects representing each element's
+  style, but ignoring every element in the `except` array */
+export const compareStyles = (e, f, except = []) => {
+  let eStyle = window.getComputedStyle(e)._values
+  let fStyle = window.getComputedStyle(f)._values
+  except.forEach((elem) => {
+    eStyle[elem] = null
+    fStyle[elem] = null
+  })
+  return [eStyle, fStyle]
+}
+
 const AllProviders = ({ children }) => {
   return (
     <div>

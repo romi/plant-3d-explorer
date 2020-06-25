@@ -216,11 +216,11 @@ export const DocLink = styled.a({
 
 export const Item = memo(({ item }) => {
   return <Block>
-    <Thumbail uri={item.thumbnailUri} />
-    <Name>{item.metadata.plant}</Name>
-    <Options>{item.metadata.species}</Options>
-    <Options>{item.metadata.environment}</Options>
-    <Options>
+    <Thumbail uri={item.thumbnailUri} data-testid='thumbnail' />
+    <Name data-testid='name'>{item.metadata.plant}</Name>
+    <Options data-testid='species'>{item.metadata.species}</Options>
+    <Options data-testid='env'>{item.metadata.environment}</Options>
+    <Options data-testid='date'>
       {
         format(
           new Date(item.metadata.date),
@@ -230,7 +230,7 @@ export const Item = memo(({ item }) => {
     </Options>
     <DataLayers>
       <Tooltip>
-        <Icon src={MeshIcon} isActive={item.hasMesh} />
+        <Icon src={MeshIcon} isActive={item.hasMesh} data-testid='mesh-icon' />
         <TooltipContent>
           <H3>
             <FormattedMessage id='tooltip-mesh' />
@@ -238,7 +238,8 @@ export const Item = memo(({ item }) => {
         </TooltipContent>
       </Tooltip>
       <Tooltip>
-        <Icon src={PointCloudIcon} isActive={item.hasPointCloud} />
+        <Icon src={PointCloudIcon} isActive={item.hasPointCloud}
+          data-testid='pc-icon' />
         <TooltipContent>
           <H3>
             <FormattedMessage id='tooltip-pointcloud' />
@@ -246,7 +247,8 @@ export const Item = memo(({ item }) => {
         </TooltipContent>
       </Tooltip>
       <Tooltip>
-        <Icon src={SekeletonIcon} isActive={item.hasSkeleton} />
+        <Icon src={SekeletonIcon} isActive={item.hasSkeleton}
+          data-testid='skeleton-icon' />
         <TooltipContent>
           <H3>
             <FormattedMessage id='tooltip-skeleton' />
@@ -254,7 +256,8 @@ export const Item = memo(({ item }) => {
         </TooltipContent>
       </Tooltip>
       <Tooltip>
-        <Icon src={NodeIcon} isActive={item.hasAngleData} />
+        <Icon src={NodeIcon} isActive={item.hasAngleData}
+          data-testid='angles-icon' />
         <TooltipContent>
           <H3>
             <FormattedMessage id='tooltip-organs' />
@@ -265,11 +268,13 @@ export const Item = memo(({ item }) => {
     <MeasuresContainer>
       <MeasuresText
         automated
+        data-testid='auto'
         isActive={item.hasAutomatedMeasures}
       >
         <FormattedMessage id='angles-legend-automated' />
       </MeasuresText>
       <MeasuresText
+        data-testid='man'
         isActive={item.hasManualMeasures} >
         <FormattedMessage id='angles-legend-manuel' />
       </MeasuresText>
