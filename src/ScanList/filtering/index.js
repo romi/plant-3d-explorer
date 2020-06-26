@@ -58,7 +58,7 @@ export default function (props) {
     })
   }, [])
 
-  return <RowContainer>
+  return <RowContainer data-testid='filtering'>
     <ColumTitle key={'data'}>
       <Tooltip>
         <FormattedMessage id='scanlist-data-availability' />
