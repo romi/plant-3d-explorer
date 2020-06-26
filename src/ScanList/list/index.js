@@ -48,7 +48,7 @@ import SekeletonIcon from 'common/assets/ico.skeleton.21x21.svg'
 import NodeIcon from 'common/assets/ico.internodes.21x21.svg'
 
 const Blocks = styled.div({
-  '& > :nth-child(even)': {
+  '& > :nth-of-type(even)': {
     background: 'rgba(151, 172, 163, 0.1)'
   }
 })
