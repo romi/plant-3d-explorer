@@ -103,7 +103,7 @@ const ResultsTitleContainer = styled.div({
 })
 
 function ResultsTitle ({ scans = [], search, clear }) {
-  return <ResultsTitleContainer>
+  return <ResultsTitleContainer data-testid='results-title'>
     <H1>
       { scans
         ? <div>
@@ -164,7 +164,7 @@ function Results (props) {
 export default function () {
   const [search, setSearch] = useSearchQuery()
   const [scans] = useScans(search)
-
+  console.log(scans)
   const elements = [
     scans
       ? scans.length
