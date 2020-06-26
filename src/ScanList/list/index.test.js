@@ -1,18 +1,27 @@
 import React from 'react'
-import { prettyDOM, render, compareStyles } from 'rd/tools/test-utils'
+import { render, compareStyles } from 'rd/tools/test-utils'
 import '@testing-library/jest-dom/extend-expect'
 import { format } from 'date-fns'
-
+import { useSorting } from 'flow/scans/accessors'
 import List, { Item } from './index'
 
+jest.mock('flow/scans/accessors', () => ({
+  useSorting: jest.fn().mockReturnValue([{
+    label: 'date',
+    method: 'desc',
+    defaultMethod: 'desc',
+    type: 'date'
+  }, jest.fn()])
+}))
+
 const mockItem = {
-  id: '123456789',
+  id: '1',
   thumbnailUri: 'testuri',
   metadata: {
     plant: 'Plant name',
     species: 'Test species',
     environment: 'Test environment',
-    date: new Date('2020-01-01T00:00:00').toString(),
+    date: new Date('2020-01-01T00:00:02').toString(),
     files: {
       archive: 'archive-link',
       metadatas: 'metadatas-link'
@@ -26,9 +35,29 @@ const mockItem = {
   hasAutomatedMeasures: true
 }
 
-const mockList = [
-  mockItem
-]
+const mockItem2 = {
+  ...mockItem,
+  id: '2',
+  metadata: {
+    ...mockItem.metadata,
+    plant: 'b',
+    species: 'a',
+    environment: 'z',
+    date: new Date('2020-01-01T00:00:01').toString()
+  }
+}
+const mockItem3 = {
+  ...mockItem,
+  id: '3',
+  metadata: {
+    ...mockItem.metadata,
+    plant: 'a',
+    species: 'b',
+    environment: 'a',
+    date: new Date('2020-01-01T00:00:00').toString()
+  }
+}
+const mockList = [mockItem, mockItem2, mockItem3]
 
 describe('Item component', () => {
   let elem = {}
@@ -101,21 +130,96 @@ describe('Item component', () => {
 })
 
 describe('List component', () => {
-  let mockSorting = { type: 'natural', label: 'name' }
-  let items
+  let openButtons
   beforeEach(() => {
-    jest.mock('flow/scans/accessors', () => ({
-      useSorting: () => [
-        mockSorting,
-        jest.fn()
-      ]
-    }))
-    const { getAllByTestId } =
-      render(<List items={mockList} />)
-    items = getAllByTestId(/item/i)
+    const { getAllByText } = render(<List items={mockList} />)
+    openButtons = getAllByText(/scanlist-cta/i)
   })
 
   it('renders correctly', () => {
-    console.log(items)
+    openButtons.forEach((elem, index) => {
+      // Just check if each open button of each item has the item id inside.
+      expect(elem.parentNode.href).toMatch(mockList[index].id)
+    })
+  })
+  describe('sorts correctly', () => {
+    beforeAll(() => {
+      useSorting.mockReturnValueOnce([
+        { label: 'name', type: 'natural', method: 'asc' },
+        jest.fn()
+      ]).mockReturnValueOnce([
+        { label: 'name', type: 'natural', method: 'desc' },
+        jest.fn()
+      ]).mockReturnValueOnce([
+        { label: 'species', type: 'natural', method: 'asc' },
+        jest.fn()
+      ]).mockReturnValueOnce([
+        { label: 'species', type: 'natural', method: 'desc' },
+        jest.fn()
+      ]).mockReturnValueOnce([
+        { label: 'environment', type: 'natural', method: 'asc' },
+        jest.fn()
+      ]).mockReturnValueOnce([
+        { label: 'environment', type: 'natural', method: 'desc' },
+        jest.fn()
+      ]).mockReturnValueOnce([
+        { type: 'date', label: 'date', method: 'desc' },
+        jest.fn()
+      ]).mockReturnValueOnce([
+        { type: 'date', label: 'date', method: 'asc' },
+        jest.fn()
+      ])
+    })
+
+    it('sorts by name asc', () => {
+      openButtons.forEach((elem, index) => {
+        /* Requires the mockItems to be sorted in the opposite way
+        alphabetically */
+        expect(elem.parentNode.href).toMatch(
+          ((openButtons.length + 1) - mockList[index].id).toString())
+      })
+    })
+
+    it('sorts by name desc', () => {
+      openButtons.forEach((elem, index) => {
+        expect(elem.parentNode.href).toMatch(mockList[index].id)
+      })
+    })
+
+    it('sorts by species asc', () => {
+      openButtons.forEach((elem, index) => {
+        expect(elem.parentNode.href).toMatch((((index + 1) % 3) + 1).toString())
+      })
+    })
+
+    it('sorts by species desc', () => {
+      openButtons.forEach((elem, index) => {
+        expect(elem.parentNode.href).toMatch((((3 - index) % 3) + 1).toString())
+      })
+    })
+
+    it('sorts by environment asc', () => {
+      openButtons.forEach((elem, index) => {
+        expect(elem.parentNode.href).toMatch((((index + 2) % 3) + 1).toString())
+      })
+    })
+
+    it('sorts by environment desc', () => {
+      openButtons.forEach((elem, index) => {
+        expect(elem.parentNode.href).toMatch((((4 - index) % 3) + 1).toString())
+      })
+    })
+
+    it('sorts by date desc', () => {
+      openButtons.forEach((elem, index) => {
+        expect(elem.parentNode.href).toMatch((index + 1).toString())
+      })
+    })
+
+    it('sorts by date asc', () => {
+      openButtons.forEach((elem, index) => {
+        expect(elem.parentNode.href).toMatch((3 - index).toString())
+      })
+    })
   })
 })
