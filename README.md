@@ -1,5 +1,7 @@
 # 3d Plantviewer
 
+![badge](https://action-badges.now.sh/romi/3d-plantviewer)
+
 ## Available Scripts
 In the project directory, you can run:
 
