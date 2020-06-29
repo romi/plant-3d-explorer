@@ -1,6 +1,6 @@
 # 3d Plantviewer
 
-![badge](https://action-badges.now.sh/romi/3d-plantviewer)
+![badge](https://github.com/romi/3d-plantviewer/workflows/Tests/badge.svg)
 
 ## Available Scripts
 In the project directory, you can run:
