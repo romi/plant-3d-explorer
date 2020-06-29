@@ -60,6 +60,8 @@
   
   "snapshot-preview-alt": "The image preview couldn't load",
   "snapshot-preview": "Preview",
+  
+  "organ-bubble": "Organ {ORGAN_NUMBER}",
 
   "carrousel-open": "Open",
   "carrousel-close": "Close",
