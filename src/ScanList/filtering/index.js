@@ -44,6 +44,23 @@ const ColumTitle = styled(H3)({
   marginRight: 98
 })
 
+function Filter (props) {
+  const [filtering, setFiltering] = useFiltering()
+
+  return <>
+    <ClickableIcon
+      src={props.icon}
+      isActive={filtering[props.field]}
+      onClick={() => {
+        setFiltering({
+          ...filtering,
+          [props.field]: !filtering[props.field]
+        })
+      }}
+    />
+  </>
+}
+
 export default function (props) {
   const [filtering, setFiltering] = useFiltering()
 
@@ -69,29 +86,17 @@ export default function (props) {
         </TooltipContent>
       </Tooltip>
       <RowContainer>
-        <ClickableIcon src={meshIcon}
-          onClick={() => setFiltering({
-            ...filtering,
-            hasMesh: !filtering.hasMesh })}
-          isActive={filtering.hasMesh}
+        <Filter icon={meshIcon}
+          field={'hasMesh'}
         />
-        <ClickableIcon src={pointCloudIcon}
-          onClick={() => setFiltering({
-            ...filtering,
-            hasPointCloud: !filtering.hasPointCloud })}
-          isActive={filtering.hasPointCloud}
+        <Filter icon={pointCloudIcon}
+          field={'hasPointCloud'}
         />
-        <ClickableIcon src={skeletonIcon}
-          onClick={() => setFiltering({
-            ...filtering,
-            hasSkeleton: !filtering.hasSkeleton })}
-          isActive={filtering.hasSkeleton}
+        <Filter icon={skeletonIcon}
+          field={'hasSkeleton'}
         />
-        <ClickableIcon src={nodeIcon}
-          onClick={() => setFiltering({
-            ...filtering,
-            hasAngleData: !filtering.hasAngleData })}
-          isActive={filtering.hasAngleData}
+        <Filter icon={nodeIcon}
+          field={'hasAngleData'}
         />
       </RowContainer>
     </ColumTitle>
