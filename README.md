@@ -10,6 +10,14 @@ This is needed to install the dependencies of the project.
 To make sure everything works fine, your version of nodejs must be >= 10 and 
 your version of npm must be >= 6.
 
+### ```npm test```
+
+This will run the tests for the project. It will permanently run and run again 
+on files when they are changed. Multiple commands are available, see
+[this](https://create-react-app.dev/docs/running-tests/) for more info.
+
+Each test file is located with the component it is testing. So the tests for the file `src/ScanList/index.js` are located in `src/Scanlist/index.test.js`.
+
 ### ```npm start```
 
 Runs the app in the development mode.<br>

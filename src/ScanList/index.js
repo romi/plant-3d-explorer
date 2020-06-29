@@ -103,7 +103,7 @@ const ResultsTitleContainer = styled.div({
 })
 
 function ResultsTitle ({ scans = [], search, clear }) {
-  return <ResultsTitleContainer>
+  return <ResultsTitleContainer data-testid='results-title'>
     <H1>
       { scans
         ? <div>
@@ -124,7 +124,7 @@ function ResultsTitle ({ scans = [], search, clear }) {
                     SEARCH: search
                   }}
                 />
-                <ClearButton onClick={clear} />
+                <ClearButton onClick={clear} data-testid='clear-button' />
               </div>
           }
         </div>
@@ -150,7 +150,7 @@ function Results (props) {
 
   const scans = props.scans.filter(filteringFn)
 
-  return <div>
+  return <div data-testid='results'>
     <ResultsTitle
       scans={scans}
       search={search}
