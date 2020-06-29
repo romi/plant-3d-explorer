@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import MenuBox, { MenuBoxContent } from 'rd/UI/MenuBox'
 import { useOrganInfo, useColor } from 'flow/interactions/accessors'
+import { FormattedMessage } from 'react-intl'
 
 import { H2 } from 'common/styles/UI/Text/titles'
 import useMouse from 'rd/tools/hooks/mouse'
@@ -77,7 +78,12 @@ function Bubble (props) {
           <H2 style={{
             color: 'white',
             mixBlendMode: 'difference' // Makes sure the text is visible
-          }}> Organ {props.organInfo} </H2>
+          }}>
+            <FormattedMessage
+              id='organ-bubble'
+              values={{ ORGAN_NUMBER: props.organInfo }}
+            />
+          </H2>
         </div>
       </MenuBoxContent>
     </MenuBox>
