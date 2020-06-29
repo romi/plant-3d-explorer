@@ -327,7 +327,7 @@ export default memo(function (props) {
         : new Date(b.metadata.date) - new Date(a.metadata.date)
     })
 
-  return <Blocks>
+  return <Blocks data-testid='list'>
     {
       sortingFn(items).map((item) => {
         return <Item key={item.id} item={item}>

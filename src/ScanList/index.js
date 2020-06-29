@@ -124,7 +124,7 @@ function ResultsTitle ({ scans = [], search, clear }) {
                     SEARCH: search
                   }}
                 />
-                <ClearButton onClick={clear} />
+                <ClearButton onClick={clear} data-testid='clear-button' />
               </div>
           }
         </div>
@@ -150,7 +150,7 @@ function Results (props) {
 
   const scans = props.scans.filter(filteringFn)
 
-  return <div>
+  return <div data-testid='results'>
     <ResultsTitle
       scans={scans}
       search={search}
@@ -164,7 +164,7 @@ function Results (props) {
 export default function () {
   const [search, setSearch] = useSearchQuery()
   const [scans] = useScans(search)
-  console.log(scans)
+
   const elements = [
     scans
       ? scans.length

@@ -99,7 +99,7 @@ const SortingOption = memo(styled((props) => {
 
 export default function () {
   const [sorting, sortings, setSorting] = useSorting()
-  return <Container>
+  return <Container data-testid='sorting'>
     {
       sortings.map((d) => {
         const isSelected = sorting.label === d.label
