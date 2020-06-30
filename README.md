@@ -9,8 +9,7 @@ In the project directory, you can run:
 
 This is needed to install the dependencies of the project.
 
-To make sure everything works fine, your version of nodejs must be >= 10 and 
-your version of npm must be >= 6.
+To make sure everything works fine, your version of nodejs must be >= 10 and your version of npm must be >= 6.
 
 ### ```npm test```
 
@@ -43,3 +42,69 @@ The build is minified and the filenames include the hashes.<br>
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+## Docker container
+
+### Build docker image
+To build the image, at the root directory of the repo:
+```bash
+docker build -t roboticsmicrofarms/plantviewer:2.1 .
+```
+To run it:
+```bash
+docker run -it -p 3000:3000 roboticsmicrofarms/plantviewer:2.1
+```
+Once it's up, you should be able to access the viewer here: http://localhost:3000/
+
+!!! important
+    Use `chrome` as `firefox` has some issues with the used JavaScript libraries!
+
+Push it on `roboticsmicrofarms` docker hub:
+```bash
+docker push roboticsmicrofarms/plantviewer:2.1
+```
+This require a valid account, token and existing repository (`romi_plantviewer`) on docker hub!
+
+### Use pre-built docker image
+First you need to pull the docker image:
+```bash
+docker pull roboticsmicrofarms/romi_plantviewer
+```
+Then you can run it with:
+```bash
+docker run -p 3000:3000 roboticsmicrofarms/romi_plantviewer
+```
+
+
+## Docker compose
+To use a local database, for testing or development, we provide a docker compose recipe that:
+
+1. start a database container using `roboticsmicrofarms/romidb`
+2. start a plantviewer container using `roboticsmicrofarms/plantviewer`
+
+!!!note
+    You need `docker-compose` installed, see [here](https://docs.docker.com/compose/install/).
+
+### Use pre-built docker image
+From the directory containing the `docker-compose.yml` in a terminal:
+```bash
+export ROMI_DB=<path/to/db>
+docker-compose up -d 
+```
+!!! important
+    Do not forget to set the path to the database.
+!!! warning
+    If you have other containers running it might not work since it assumes the romidb container will have the `172.21.0.3` IP address!
+
+To stop the containers: 
+```bash
+docker-compose stop
+```
+
+### Use local builds
+To use local builds for development or debugging purposes:
+
+1. build your image following the instructions above and use a specific tag like `debug`
+2. edit the `docker-compose.yml` file to add the previously defined tag to the name of the image to start
+
+

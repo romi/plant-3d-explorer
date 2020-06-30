@@ -1,0 +1,18 @@
+version: '3'
+services:
+  db:
+    image: "roboticsmicrofarms/romidb"
+    volumes:
+      - ${ROMI_DB}:/home/scanner/db
+    expose:
+      - "5000"
+    healthcheck:
+      test: "exit 0"
+  viewer:
+    image: "roboticsmicrofarms/plantviewer"
+    depends_on:
+      - db
+    environment:
+        REACT_APP_API_URL: http://172.21.0.2:5000
+    ports:
+      - "3000:3000"
