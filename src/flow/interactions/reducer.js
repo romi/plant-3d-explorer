@@ -26,7 +26,7 @@ License along with this program.  If not, see
 <https://www.gnu.org/licenses/>.
 
 */
-const initialState = {
+export const initialState = {
   hoveredCamera: null,
   selectedCamera: null,
 
