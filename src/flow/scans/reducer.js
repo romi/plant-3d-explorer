@@ -53,7 +53,7 @@ export const sortingMethods = [
   }
 ]
 
-const initialState = {
+export const initialState = {
   searchQuery: null,
   sorting: sortingMethods.find((d) => d.label === 'date'),
   filtering: {}
