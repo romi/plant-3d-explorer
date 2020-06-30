@@ -94,7 +94,7 @@ docker-compose up -d
 !!! important
     Do not forget to set the path to the database.
 !!! warning
-    If you have other containers running it might not work since it assumes the romidb container will have the `172.21.0.3` IP address!
+    If you have other containers running it might not work since it assumes the romidb container will have the `172.21.0.2` IP address!
 
 To stop the containers: 
 ```bash
