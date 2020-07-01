@@ -1,0 +1,35 @@
+---
+name: UI Components
+route: /Components/UI
+---
+
+import MenuBox, { MenuBoxContent } from './MenuBox'
+import { Playground } from 'docz'
+import { useState } from 'react'
+
+# UI Components
+
+The goal of this page is to present and reference different reusable UI 
+components in the project, and detail their usage.
+
+## MenuBox
+
+This component is a basic UI component for displaying a floating box, and 
+displaying it only when a condition is met.
+
+<Playground>
+  { () => {
+  const [activated, setActivated] = useState(false)
+  return (
+  <MenuBox activate={activated}>
+    <button
+      onClick={() => { setActivated(!activated) }}
+    >
+      Click me to open a box
+    </button>
+    <MenuBoxContent>
+      <p> I'm the content of the box ! </p>
+    </MenuBoxContent>
+  </MenuBox>
+  )}}
+</Playground>
