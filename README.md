@@ -56,8 +56,8 @@ docker run -it -p 3000:3000 roboticsmicrofarms/plantviewer:2.1
 ```
 Once it's up, you should be able to access the viewer here: http://localhost:3000/
 
-!!! important
-    Use `chrome` as `firefox` has some issues with the used JavaScript libraries!
+**important**:
+> Use `chrome` as `firefox` has some issues with the used JavaScript libraries!
 
 Push it on `roboticsmicrofarms` docker hub:
 ```bash
@@ -82,8 +82,9 @@ To use a local database, for testing or development, we provide a docker compose
 1. start a database container using `roboticsmicrofarms/romidb`
 2. start a plantviewer container using `roboticsmicrofarms/plantviewer`
 
-!!!note
-    You need `docker-compose` installed, see [here](https://docs.docker.com/compose/install/).
+**note**:
+> You need `docker-compose` installed, see 
+[here](https://docs.docker.com/compose/install/).
 
 ### Use pre-built docker image
 From the directory containing the `docker-compose.yml` in a terminal:
@@ -91,10 +92,11 @@ From the directory containing the `docker-compose.yml` in a terminal:
 export ROMI_DB=<path/to/db>
 docker-compose up -d 
 ```
-!!! important
-    Do not forget to set the path to the database.
-!!! warning
-    If you have other containers running it might not work since it assumes the romidb container will have the `172.21.0.2` IP address!
+**important**:
+> Do not forget to set the path to the database.
+**warning**:
+> If you have other containers running it might not work since it assumes the 
+romidb container will have the `172.21.0.2` IP address!
 
 To stop the containers: 
 ```bash
