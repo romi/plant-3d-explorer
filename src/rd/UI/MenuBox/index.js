@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, Children, cloneElement, useState } from 'react'
-
+import t from 'prop-types'
 import useBB from 'rd/tools/hooks/bb'
 import styled from '@emotion/styled'
 
@@ -28,7 +28,7 @@ const Close = styled.div({
 /* This is a general component for display menus that appear when
   a button is clicked. This component is heavily inspired by the Tooltip
   component. */
-export default function (props) {
+export default function MenuBox (props) {
   const contentRef = useRef()
   const [ref, BB] = useBB(false)
   const [contentBb, setContentBb] = useState()
@@ -48,9 +48,9 @@ export default function (props) {
     }
   }
 
-  if (props.callOnChange) {
-    useEffect(props.callOnChange, props.watchChange)
-  }
+  useEffect(() => {
+    if (props.callOnChange) props.callOnChange()
+  }, props.watchChange)
 
   useEffect(
     () => {
@@ -81,6 +81,27 @@ export default function (props) {
       </InvisibleContent>
     }
   </div>
+}
+
+// Description of the props for the docs
+MenuBox.propTypes = {
+  /**
+   * When this prop is true, the box is displayed.
+   */
+  activate: t.bool,
+  /**
+   * Function to call when pressing the close button.
+   */
+  onClose: t.func,
+  /**
+   * Function to call when one of the variables in `watchChange` is different.
+   */
+  callOnChange: t.func,
+  /**
+   * A list of variables to watch. When one of them is different
+   * `callOnChange` is called.
+   */
+  watchChange: t.array
 }
 
 const ContentContainer = styled.div({

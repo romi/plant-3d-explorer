@@ -4,7 +4,7 @@ module.exports = {
       resolve: 'gatsby-plugin-react-svg',
       options: {
         rule: {
-          include: /ico/
+          include: '/src/common/assets'
         }
       }
     }

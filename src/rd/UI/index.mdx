@@ -4,8 +4,24 @@ route: /Components/UI
 ---
 
 import MenuBox, { MenuBoxContent } from './MenuBox'
-import { Playground } from 'docz'
+import { Playground, Props } from 'docz'
 import { useState } from 'react'
+
+export const buttonStyle = {
+        margin: 'auto',
+        mixBlendMode: 'difference',
+        color: 'white',
+        border: 0,
+        boxShadow: 'none',
+        backgroundColor: '#404040',
+        padding: 10,
+        borderRadius: 10
+}
+        
+export const paragraphStyle = {
+  mixBlendMode: 'difference',
+  color: 'white'
+}
 
 # UI Components
 
@@ -14,22 +30,41 @@ components in the project, and detail their usage.
 
 ## MenuBox
 
+### Description
+
 This component is a basic UI component for displaying a floating box, and 
 displaying it only when a condition is met.
 
+### Props
+<Props of={MenuBox} />
+
+### Exemple
+
+The following exemple shows how you can use a `MenuBox` to display something 
+when clicking on a button. Every element that is a child of `MenuBoxContent`
+is displaying in the pop up box, the rest is displayed as normal.
+
 <Playground>
-  { () => {
+  { () => { // MenuBoxExemple
   const [activated, setActivated] = useState(false)
   return (
-  <MenuBox activate={activated}>
+  <MenuBox 
+    activate={activated}
+    style={{ textAlign: 'center' }}
+    onClose={() => setActivated(false)}
+    >
     <button
       onClick={() => { setActivated(!activated) }}
+      style={buttonStyle}
     >
       Click me to open a box
     </button>
     <MenuBoxContent>
-      <p> I'm the content of the box ! </p>
+      <p style={paragraphStyle} > I'm the content of the box ! </p>
     </MenuBoxContent>
   </MenuBox>
   )}}
 </Playground>
+
+This exemple uses a React *state* to keep track of the state of the MenuBox 
+(opened or closed).
