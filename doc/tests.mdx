@@ -1,0 +1,43 @@
+---
+name: Writing tests
+route: /tests
+---
+
+# Writing tests
+
+## Technologies used
+
+Since this app is React based, the most appropriate testing framework (at least 
+when the tests were first written) is [Jest](https://jestjs.io/), associated
+with the 
+[React Testing Library](https://testing-library.com/docs/react-testing-library/intro).
+
+Of course, make sure you understand those frameworks before trying to write 
+tests, they're pretty annoying sometimes, but there isn't many alternatives.
+
+## Test structure
+
+Each test file must be placed alongside the code file it's supposed to test, 
+and have the same name with a `.test` before the `.js`.
+
+For exemple, if I want to create a test file to test `exampleComponent.js` in 
+the `components/` directory, i'll create the test file 
+`exampleComponent.test.js` in the same directory.
+
+## Running tests
+
+To run tests, simply run the following command:
+
+```
+npm run test
+```
+
+Feel free to read [this](https://create-react-app.dev/docs/running-tests/) for
+more information.
+
+## Continous integration
+
+At the time of writing this documentation, continous integration is
+setup to trigger on push and pull request on the master branch.
+Try to write tests for every component you write to make the app more
+robust.
