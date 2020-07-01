@@ -4,6 +4,7 @@ route: /Components/UI
 ---
 
 import MenuBox, { MenuBoxContent } from './MenuBox'
+import Tooltip, { TooltipContent } from './Tooltip'
 import { Playground, Props } from 'docz'
 import { useState } from 'react'
 
@@ -13,12 +14,25 @@ export const buttonStyle = {
         color: 'white',
         border: 0,
         boxShadow: 'none',
-        backgroundColor: '#404040',
+        backgroundColor: '#00a960',
         padding: 10,
-        borderRadius: 10
+        borderRadius: 10,
+        cursor: 'pointer',
+        fontSize: '100%'
 }
         
 export const paragraphStyle = {
+  mixBlendMode: 'difference',
+  color: 'white'
+}
+
+export const divStyle = {
+  width: '20%',
+  margin: 'auto',
+  backgroundColor: '#00a960',
+  padding: 10,
+  borderRadius: 10,
+  textAlign: 'center',
   mixBlendMode: 'difference',
   color: 'white'
 }
@@ -38,9 +52,9 @@ displaying it only when a condition is met.
 ### Props
 <Props of={MenuBox} />
 
-### Exemple
+### Example
 
-The following exemple shows how you can use a `MenuBox` to display something 
+The following example shows how you can use a `MenuBox` to display something 
 when clicking on a button. Every element that is a child of `MenuBoxContent`
 is displaying in the pop up box, the rest is displayed as normal.
 
@@ -68,3 +82,35 @@ is displaying in the pop up box, the rest is displayed as normal.
 
 This exemple uses a React *state* to keep track of the state of the MenuBox 
 (opened or closed).
+
+## Tooltip
+
+### Description
+
+This component is similar to the MenuBox component in that it displays a 
+floating box on top of elements.
+
+### Props
+
+This component has no useful prop.
+
+### Example
+
+The following example shows how you would use the `Tooltip` component, as 
+mentioned earlier it's similar to the `MenuBox` component. When hovering the 
+`Tooltip` component, the children of the `TooltipContent` component will be 
+displayed in a box.
+
+<Playground>
+  { () => { // TooltipExemple
+  return (
+  <Tooltip>
+    <div
+      style={divStyle}
+    > Hover me for a tooltip </div>
+    <TooltipContent>
+      <p style={paragraphStyle} > Here's a tooltip </p>
+    </TooltipContent>
+  </Tooltip>
+  )}}
+</Playground>
