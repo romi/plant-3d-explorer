@@ -109,4 +109,13 @@ To use local builds for development or debugging purposes:
 1. build your image following the instructions above and use a specific tag like `debug`
 2. edit the `docker-compose.yml` file to add the previously defined tag to the name of the image to start
 
+## Documentation
+
+For general documentation on the whole ROMI project, head over
+[here](https://docs.romi-project.eu).
+
+For developer-level documentation for the visualizer, head over
+to the [GitHub pages](https://romi.github.io/3d-plantviewer/)
+for this repository.
+
 
