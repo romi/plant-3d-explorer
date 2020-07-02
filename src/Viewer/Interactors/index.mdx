@@ -1,0 +1,56 @@
+---
+name: 3D view interactors
+route: /Components/Interactors
+---
+
+import { Props } from 'docz'
+import { Interactor } from './index'
+
+# 3D view interactors
+
+## Types of interactors
+
+If you're launched the app and opened a plant reconstruction, you noticed there 
+are some interactors in the 3d view. Some enable or disable layers, other make
+color pickers or other tools appear (with the help of a
+[MenuBox](/Components/UI#menubox) for example).
+
+Here's a quick summary of each type of interactors:
+
+### Camera
+
+These 2 interactors are in the center and control the display of 
+cameras in 3D space. The second one resets the 3D view.
+
+### Layers
+
+Those are what controls the display of the different layers of the 3D view.
+
+### Tools
+
+Those are displayed below the layers, and contain some tools related to each
+corresponding layer, for example color pickers for each layer.
+
+### Misc
+
+Those are on the right and contain miscellaneous tools like background color
+or the snapshot tool.
+
+### Overlay
+
+This is a special set of interactors. Designed to display stuff on top of the 
+3D view, at the time of writing this, it only manages the bubbles that appear 
+when clicking on an organ.
+
+## Interactor
+
+### Description
+
+The `Interactor` component is the basic interactive building block of those 
+buttons.
+
+### Props
+
+TODO Bug with paths
+
+### Example

@@ -28,9 +28,19 @@ License along with this program.  If not, see
 */
 import React from 'react'
 import Icon, { IconHOC } from 'rd/UI/Icon'
-import raw from 'raw.macro'
 
 import { green } from 'common/styles/colors'
+
+import meshRaw from 'common/assets/ico.mesh.21x21.svg'
+import pointCloudRaw from 'common/assets/ico.point_cloud.21x21.svg'
+import skeletonRaw from 'common/assets/ico.skeleton.21x21.svg'
+import internodesRaw from 'common/assets/ico.internodes.21x21.svg'
+import camerasRaw from 'Viewer/Interactors/assets/ico.cameras.15x9.svg'
+import resertRaw from 'Viewer/Interactors/assets/ico.reset_view.14x14.svg'
+import expandRaw from 'common/assets/ico.expand-white.14x14.svg'
+import shrinkRaw from 'common/assets/ico.shrink-white.14x14.svg'
+import paintRaw from 'common/assets/ico.paint.23x23.svg'
+import snapRaw from 'common/assets/ico.snap.24x24.svg'
 
 const rules = (props) => ({
   default: {
@@ -48,103 +58,92 @@ const rules = (props) => ({
   }
 })
 
-const meshRaw = raw('../../../common/assets/ico.mesh.21x21.svg')
 export const MeshIcon = IconHOC((props) => {
   return <Icon
     {...props}
     rules={rules(props)}
     raw={meshRaw}
+    alt='mesh icon'
   />
 })
 
-const pointCloudRaw = raw('../../../common/assets/ico.point_cloud.21x21.svg')
 export const PointCloudIcon = IconHOC((props) => {
   return <Icon
     {...props}
     rules={rules(props)}
     raw={pointCloudRaw}
+    alt='point cloud icon'
   />
 })
 
-const skeletonRaw = raw('../../../common/assets/ico.skeleton.21x21.svg')
 export const SkeletonIcon = IconHOC((props) => {
   return <Icon
     {...props}
     rules={rules(props)}
     raw={skeletonRaw}
+    alt='skeleton icon'
   />
 })
 
-const internodesRaw = raw('../../../common/assets/ico.internodes.21x21.svg')
 export const InternodesIcon = IconHOC((props) => {
   return <Icon
     {...props}
     rules={rules(props)}
     raw={internodesRaw}
+    alt='angles icon'
   />
 })
 
-const camerasRaw = raw('../assets/ico.cameras.15x9.svg')
 export const CamerasIcon = IconHOC((props) => {
   return <Icon
     {...props}
     rules={rules(props)}
     raw={camerasRaw}
+    alt='cameras icon'
   />
 })
 
-const resertRaw = raw('../assets/ico.reset_view.14x14.svg')
 export const ResetIcon = IconHOC((props) => {
   return <Icon
     {...props}
-    rules={{
-      default: {
-        '& path': {
-          fill: 'white'
-        }
-      },
-      active: {
-        '& path': {
-          fill: green
-        }
-      }
-    }}
+    rules={rules(props)}
     raw={resertRaw}
+    alt='reset icon'
   />
 })
 
-const expandRaw = raw('../../../common/assets/ico.expand-white.14x14.svg')
 export const ExpandIcon = IconHOC((props) => {
   return <Icon
     {...props}
     rules={rules(props)}
     raw={expandRaw}
+    alt='expand icon'
   />
 })
 
-const shrinkRaw = raw('../../../common/assets/ico.shrink-white.14x14.svg')
 export const ShrinkIcon = IconHOC((props) => {
   return <Icon
     {...props}
     rules={rules(props)}
     raw={shrinkRaw}
+    alt='shrink icon'
   />
 })
 
-const paintRaw = raw('../../../common/assets/ico.paint.23x23.svg')
 export const PaintIcon = IconHOC((props) => {
   return <Icon
     {...props}
     rules={rules(props)}
     raw={paintRaw}
+    alt='paint icon'
   />
 })
 
-const snapRaw = raw('../../../common/assets/ico.snap.24x24.svg')
 export const SnapIcon = IconHOC((props) => {
   return <Icon
     {...props}
     rules={rules(props)}
     raw={snapRaw}
+    alt='snap icon'
   />
 })

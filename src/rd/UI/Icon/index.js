@@ -29,12 +29,6 @@ License along with this program.  If not, see
 import React, { useState, Children, cloneElement, memo } from 'react'
 import styled from '@emotion/styled'
 
-function createMarkup (content) {
-  return {
-    __html: content
-  }
-}
-
 const defaultRules = {
   default: {},
   hover: {},
@@ -78,8 +72,9 @@ export default function Icon (props) {
       ...defaultRules,
       ...(props.rules || {})
     }}
-    dangerouslySetInnerHTML={createMarkup(props.raw)}
-  />
+  >
+    <img src={props.raw} alt={props.alt} />
+  </Container>
 }
 
 export function IconHOC (comp) {
