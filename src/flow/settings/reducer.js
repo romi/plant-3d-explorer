@@ -27,7 +27,7 @@ License along with this program.  If not, see
 
 */
 
-const initialState = {
+export const initialState = {
   layers: {
     mesh: false,
     pointCloud: false,
