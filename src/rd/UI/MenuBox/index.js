@@ -61,7 +61,7 @@ export default function MenuBox (props) {
     [contentRef.current]
   )
 
-  return <div
+  return <div data-testid='menubox'
     ref={ref}
     style={props.style}
   >
