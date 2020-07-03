@@ -93,3 +93,17 @@ export const useMisc = useAccessor(
     })
   ]
 )
+
+export const useCarousel = useAccessor(
+  [
+    (state) => {
+      return state.settings.carousel
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_CAROUSEL',
+      value
+    })
+  ]
+)

@@ -27,17 +27,20 @@ License along with this program.  If not, see
 
 */
 import React, { useState, useRef, useEffect, memo } from 'react'
+import useReactRouter from 'use-react-router'
 import { useWindowSize } from 'react-use'
 import styled from '@emotion/styled'
 
 import { scaleCanvas } from 'rd/tools/canvas'
 
-import { useScan } from 'flow/scans/accessors'
+import { useScan, useScanFilesList } from 'flow/scans/accessors'
+import { getScanFile } from 'common/api'
 
 import { green } from 'common/styles/colors'
 import closeIco from 'common/assets/ico.deselect-white.20x20.svg'
 
 import { useHoveredCamera, useSelectedcamera } from 'flow/interactions/accessors'
+import { useCarousel } from 'flow/settings/accessors'
 import { useFormatMessage } from 'rd/tools/intl'
 
 import useImgLoader from './loader'
@@ -113,17 +116,30 @@ export default function Carousel () {
   const [selected, setSelected] = useSelectedcamera()
   const large = moduleHeight * (6000 / 4000)
   let sizes
+  const [carousel] = useCarousel()
 
   const hoveredLayout = useRef(null)
   const selectedLayout = useRef(null)
 
+  const scanFiles = useScanFilesList()
+
+  const { match } = useReactRouter()
+  const selectedId = match.params.scanId
+
   useEffect(
     () => {
-      setUrlList(
-        cameraPoses.map((d) => d.photoUri)
-      )
+      if (scanFiles) {
+        // TODO change once the ids are unique
+        const fileset =
+          scanFiles.filesets.find(d =>
+            d.id.toLowerCase().match(carousel.photoSet))
+        setUrlList(
+          fileset.files.map((d) => getScanFile(selectedId,
+            fileset.id + '/' + d.file))
+        )
+      }
     },
-    [cameraPoses]
+    [cameraPoses, carousel.photoSet, scanFiles]
   )
 
   useEffect(
@@ -145,7 +161,7 @@ export default function Carousel () {
         sizes = {
           width,
           large,
-          normal: (width / cameraPoses.length),
+          normal: (width / urlList.length),
           block: (
             (
               width - (
@@ -156,8 +172,8 @@ export default function Carousel () {
             ) /
             (
               (hovered || selected)
-                ? cameraPoses.length - 1
-                : cameraPoses.length
+                ? urlList.length - 1
+                : urlList.length
             )
           )
         }
@@ -168,9 +184,9 @@ export default function Carousel () {
         selectedLayout.current = null
 
         setPicturesLayout(
-          cameraPoses.map((d, i) => {
-            const isSelected = selected && d.id === selected.id
-            const isHovered = hovered && d.id === hovered.id
+          urlList.map((d, i) => {
+            const isSelected = selected && d === selected
+            const isHovered = hovered && d === hovered
             const x = last.x + last.width
             const width = selected
               ? isSelected
@@ -202,23 +218,23 @@ export default function Carousel () {
         )
       }
     },
-    [windowSider, context, cameraPoses, hovered, selected]
+    [windowSider, context, urlList, hovered, selected]
   )
 
   if (context) {
     const { width, height } = getSize(containerRef.current)
     context.clearRect(0, 0, width, height)
     picturesLayout.forEach((d, i) => {
-      if (imgs[d.item.photoUri]) {
-        const imgWidth = imgs[d.item.photoUri].width
-        const imgHeight = imgs[d.item.photoUri].height
+      if (imgs[d.item]) {
+        const imgWidth = imgs[d.item].width
+        const imgHeight = imgs[d.item].height
         const ratio = imgWidth / large
         const sx = (imgWidth / 2) - (d.width * ratio * 0.5)
         const sy = 0
 
         context.globalAlpha = (d.hovered || d.selected) ? 1 : 0.5
         context.drawImage(
-          imgs[d.item.photoUri],
+          imgs[d.item],
           sx,
           sy,
           d.width * ratio,
