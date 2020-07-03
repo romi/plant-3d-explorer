@@ -44,7 +44,8 @@ import {
   relativeScansFilesURIEnhancer,
   relativeScanPhotoURIEnhancer,
   forgeCameraPointsEnhancer,
-  relativeScanFilesURIEnhancer
+  relativeScanFilesURIEnhancer,
+  forgeImageSetEnhancer
 } from './enhancers'
 
 export function useScan () {
@@ -74,6 +75,22 @@ export function useScanFilesList () {
   const [files] = useFetch(getScanFile(selectedId, 'files.json'), true)
 
   return files
+}
+
+export function useImageSet (id) {
+  const { match } = useReactRouter()
+  const selectedId = match.params.scanId
+  const fileset = useScanFilesList()
+  if (fileset) {
+    const imageSet = fileset.filesets.find((d) => d.id.toLowerCase().match(id))
+    const enhancedSet = useMemo(() => {
+      return forgeImageSetEnhancer(imageSet.files
+        .map((d) => getScanFile(selectedId, imageSet.id + '/' + d.file)))
+    }, [id])
+    return enhancedSet
+  } else {
+    return null
+  }
 }
 
 export function useScanFiles (scan) {

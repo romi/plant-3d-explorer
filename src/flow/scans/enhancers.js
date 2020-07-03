@@ -142,10 +142,14 @@ export const forgeCameraPointsEnhancer = (scan) => {
           ...point,
           v3position,
           objM4rotation,
-          vueM4rotation,
-          texture: imgLoader.load(point.photoUri)
+          vueM4rotation
         }
       })
     }
   }
+}
+
+export const forgeImageSetEnhancer = (imageSet) => {
+  console.log(imageSet)
+  return imageSet.map((d) => ({ path: d, texture: imgLoader.load(d) }))
 }

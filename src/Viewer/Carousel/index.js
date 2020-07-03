@@ -27,14 +27,12 @@ License along with this program.  If not, see
 
 */
 import React, { useState, useRef, useEffect, memo } from 'react'
-import useReactRouter from 'use-react-router'
 import { useWindowSize } from 'react-use'
 import styled from '@emotion/styled'
 
 import { scaleCanvas } from 'rd/tools/canvas'
 
-import { useScan, useScanFilesList } from 'flow/scans/accessors'
-import { getScanFile } from 'common/api'
+import { useScan, useImageSet } from 'flow/scans/accessors'
 
 import { green } from 'common/styles/colors'
 import closeIco from 'common/assets/ico.deselect-white.20x20.svg'
@@ -121,25 +119,15 @@ export default function Carousel () {
   const hoveredLayout = useRef(null)
   const selectedLayout = useRef(null)
 
-  const scanFiles = useScanFilesList()
-
-  const { match } = useReactRouter()
-  const selectedId = match.params.scanId
-
+  const imageSet = useImageSet(carousel.photoSet)
   useEffect(
     () => {
-      if (scanFiles) {
+      if (imageSet) {
         // TODO change once the ids are unique
-        const fileset =
-          scanFiles.filesets.find(d =>
-            d.id.toLowerCase().match(carousel.photoSet))
-        setUrlList(
-          fileset.files.map((d) => getScanFile(selectedId,
-            fileset.id + '/' + d.file))
-        )
+        setUrlList(imageSet.map((d) => d.path))
       }
     },
-    [cameraPoses, carousel.photoSet, scanFiles]
+    [carousel.photoSet]
   )
 
   useEffect(
@@ -182,11 +170,10 @@ export default function Carousel () {
 
         hoveredLayout.current = null
         selectedLayout.current = null
-
         setPicturesLayout(
-          urlList.map((d, i) => {
-            const isSelected = selected && d === selected
-            const isHovered = hovered && d === hovered
+          cameraPoses.map((d, i) => {
+            const isSelected = selected && d.id === selected.id
+            const isHovered = hovered && d.id === hovered.id
             const x = last.x + last.width
             const width = selected
               ? isSelected
@@ -198,7 +185,11 @@ export default function Carousel () {
             const normalX = last.normalX + last.normalWidth
 
             const obj = {
-              item: d,
+              item: {
+                ...d,
+                photoUri: imageSet[i].path,
+                texture: imageSet[i].texture
+              },
               x,
               normalX,
               width,
@@ -218,23 +209,23 @@ export default function Carousel () {
         )
       }
     },
-    [windowSider, context, urlList, hovered, selected]
+    [windowSider, context, hovered, selected]
   )
 
   if (context) {
     const { width, height } = getSize(containerRef.current)
     context.clearRect(0, 0, width, height)
     picturesLayout.forEach((d, i) => {
-      if (imgs[d.item]) {
-        const imgWidth = imgs[d.item].width
-        const imgHeight = imgs[d.item].height
+      if (imgs[d.item.photoUri]) {
+        const imgWidth = imgs[d.item.photoUri].width
+        const imgHeight = imgs[d.item.photoUri].height
         const ratio = imgWidth / large
         const sx = (imgWidth / 2) - (d.width * ratio * 0.5)
         const sy = 0
 
         context.globalAlpha = (d.hovered || d.selected) ? 1 : 0.5
         context.drawImage(
-          imgs[d.item],
+          imgs[d.item.photoUri],
           sx,
           sy,
           d.width * ratio,
