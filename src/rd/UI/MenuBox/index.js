@@ -144,6 +144,7 @@ export function MenuBoxContent (props) {
     style={props.style}
   >
     <Close
+      data-testid='close-button'
       onClick={props.onClose}
     />
     <div>
