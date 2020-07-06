@@ -18,8 +18,8 @@ function Bubble (props) {
     if (e.button !== 0) return
     props.setDragging(true)
     props.setRel({
-      x: e.pageX - props.pos.x,
-      y: e.pageY - props.pos.y
+      x: (e.pageX || e.clientX) - props.pos.x,
+      y: (e.pageY || e.clientY) - props.pos.y
     })
   }
 
@@ -31,8 +31,8 @@ function Bubble (props) {
   const handleMouseMove = (e) => {
     if (!props.dragging) return
     props.setPos({
-      x: e.pageX - props.rel.x,
-      y: e.pageY - props.rel.y
+      x: (e.pageX || e.clientX) - props.rel.x,
+      y: (e.pageY || e.clientY) - props.rel.y
     })
   }
 
@@ -50,7 +50,7 @@ function Bubble (props) {
       }
     }, [props.dragging, props.rel])
 
-  return <div
+  return <div data-testid={props['data-testid']}
     style={{
       position: 'fixed',
       top: props.pos.y,
@@ -68,7 +68,7 @@ function Bubble (props) {
         }}
 
       >
-        <div
+        <div data-testid={props['data-testid'] + '-content'}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
         >
@@ -109,9 +109,9 @@ export default function OverlayInteractors () {
     [organInfo]
   )
 
-  return <div>
+  return <div data-testid='overlay-interactors'>
     {(tempBubblePos && !bubblePositions[organInfo])
-      ? <Bubble
+      ? <Bubble data-testid={'temp-bubble-' + organInfo}
         pos={tempBubblePos}
         organInfo={organInfo}
         dragging={draggingBubble === organInfo}
@@ -138,7 +138,7 @@ export default function OverlayInteractors () {
     }
     {bubblePositions.map((pos, id) => {
       if (pos) {
-        return <Bubble
+        return <Bubble data-testid={'permanent-bubble-' + id}
           key={id}
           pos={pos}
           organInfo={id}
