@@ -81,16 +81,13 @@ export function useImageSet (id) {
   const { match } = useReactRouter()
   const selectedId = match.params.scanId
   const fileset = useScanFilesList()
-  if (fileset) {
+  const enhancedSet = useMemo(() => {
+    if (!fileset) return null
     const imageSet = fileset.filesets.find((d) => d.id.toLowerCase().match(id))
-    const enhancedSet = useMemo(() => {
-      return forgeImageSetEnhancer(imageSet.files
-        .map((d) => getScanFile(selectedId, imageSet.id + '/' + d.file)))
-    }, [id])
-    return enhancedSet
-  } else {
-    return null
-  }
+    return forgeImageSetEnhancer(imageSet.files
+      .map((d) => getScanFile(selectedId, imageSet.id + '/' + d.file)))
+  }, [selectedId, id, fileset])
+  return enhancedSet
 }
 
 export function useScanFiles (scan) {
