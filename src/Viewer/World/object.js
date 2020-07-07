@@ -34,6 +34,7 @@ import { green } from 'common/styles/colors'
 
 import Mesh from './entities/mesh'
 import PointCloud from './entities/pointCloud'
+import SegmentedPointCloud from './entities/segmentedPointCloud'
 import Skeleton from './entities/skeleton'
 import Angles from './entities/angles'
 import Workspace from './entities/workspace'
@@ -384,6 +385,12 @@ export default class World {
   setPointcloudGeometry (geometry) {
     geometry.computeBoundingBox()
     this.pointCloud = new PointCloud(geometry, this.viewerObjects)
+  }
+
+  setSegmentedPointCloudGeometry (geometry, segmentation) {
+    geometry.computeBoundingBox()
+    this.segmentedPointCloud = new SegmentedPointCloud(geometry,
+      segmentation, this.viewerObjects)
   }
 
   setPointCloudColor (color) {

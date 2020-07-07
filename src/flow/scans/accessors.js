@@ -76,7 +76,7 @@ export function useFile (id, file = null, options = {}) {
   const path = useMemo(() => {
     if (!files) return
     const set = files.filesets.find((d) => d.id.match(id))
-    if (file) {
+    if (file && set) {
       return getScanFile(selectedId,
         (options.metadata ? 'metadata/' : '') +
           set.id + '/' +

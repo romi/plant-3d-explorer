@@ -35,7 +35,7 @@ import { useElementMouse } from 'rd/tools/hooks/mouse'
 import { useLayers } from 'flow/settings/accessors'
 import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useColor,
   useSnapshot, useOrganInfo } from 'flow/interactions/accessors'
-import { useScanFiles, useScan } from 'flow/scans/accessors'
+import { useScanFiles, useScan, use3dFile, useFile } from 'flow/scans/accessors'
 
 import WorldObject from './object'
 import useViewport2d from './behaviors/viewport2d'
@@ -79,6 +79,10 @@ export default function WorldComponent (props) {
   const [scan] = useScan()
 
   const [[meshGeometry], [pointCloudGeometry]] = useScanFiles(scan)
+  const [[segmentedPointCloud]] = use3dFile('SegmentedPointCloud',
+    'SegmentedPointCloud')
+  const [[segmentation]] = useFile('SegmentedPointCloud',
+    'SegmentedPointCloud.json', { metadata: true, rawFileName: true })
   const [viewport, event2dFns, resetViewport2d] = useViewport2d(
     bounds.width || getSize().width,
     bounds.height || getSize().height
@@ -296,6 +300,16 @@ export default function WorldComponent (props) {
       }
     },
     [world, pointCloudGeometry]
+  )
+
+  useEffect(
+    () => {
+      if (world && segmentedPointCloud && segmentation) {
+        world.setSegmentedPointCloudGeometry(segmentedPointCloud,
+          segmentation)
+      }
+    },
+    [world, segmentedPointCloud, segmentation]
   )
 
   useEffect(
