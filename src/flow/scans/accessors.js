@@ -78,7 +78,9 @@ export function useFile (id, file = null, options = {}) {
     const set = files.filesets.find((d) => d.id.match(id))
     if (file) {
       return getScanFile(selectedId,
-        set.id + '/' + set.files.find((d) => d.file.match(file)).file)
+        (options.metadata ? 'metadata/' : '') +
+          set.id + '/' +
+          (options.rawFileName ? file : set.files.find((d) => d.file.match(file)).file))
     }
     return set
   })
