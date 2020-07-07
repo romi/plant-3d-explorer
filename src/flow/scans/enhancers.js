@@ -150,6 +150,5 @@ export const forgeCameraPointsEnhancer = (scan) => {
 }
 
 export const forgeImageSetEnhancer = (imageSet) => {
-  console.log(imageSet)
   return imageSet.map((d) => ({ path: d, texture: imgLoader.load(d) }))
 }

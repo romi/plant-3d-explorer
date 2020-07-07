@@ -127,7 +127,7 @@ export default function Carousel () {
         setUrlList(imageSet.map((d) => d.path))
       }
     },
-    [carousel.photoSet]
+    [imageSet]
   )
 
   useEffect(
@@ -209,7 +209,7 @@ export default function Carousel () {
         )
       }
     },
-    [windowSider, context, hovered, selected]
+    [windowSider, context, hovered, selected, urlList, cameraPoses]
   )
 
   if (context) {
