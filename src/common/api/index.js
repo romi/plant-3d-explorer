@@ -33,6 +33,7 @@ export const serverURL = process.env.NODE_ENV === 'production'
 
 export const scansURI = serverURL + '/scans'
 export const scansURIQuery = (search) => `${scansURI}${search ? `?filterQuery=${search}` : ''}`
-export const getScanFile = (path) => serverURL + path
+export const getScanFile = (id, path) => serverURL + '/files/' + id + '/' + path
+export const getFile = (path) => serverURL + path
 export const getScanURI = (id) => serverURL + '/scans/' + id
 export const getScanPhotoURI = (path) => serverURL + path
