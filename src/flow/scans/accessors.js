@@ -72,7 +72,7 @@ export function useScan () {
 export function useImageSet (id) {
   const { match } = useReactRouter()
   const selectedId = match.params.scanId
-  const fileset = useScanFilesList()
+  const [fileset] = useFetch(getScanFile(selectedId, 'files.json'))
   const enhancedSet = useMemo(() => {
     if (!fileset) return null
     const imageSet = fileset.filesets.find((d) => d.id.toLowerCase().match(id))
