@@ -60,7 +60,7 @@ export default function (props) {
     [contentRef.current]
   )
 
-  return <div
+  return <div data-testid='tooltip'
     ref={ref}
     onMouseEnter={() => setHovered(true)}
     onMouseLeave={() => setHovered(false)}

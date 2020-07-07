@@ -42,7 +42,7 @@ import MiscInteractors from './misc'
 import OverlayInteractors from './overlay'
 
 export const Interactor = styled(
-  (props) => <div
+  (props) => <div data-testid='interactor'
     {...omit(props, ['activated', 'isDisabled', 'onClick', 'isButton'])}
     onClick={!props.isDisabled ? props.onClick : () => {}}
   />
