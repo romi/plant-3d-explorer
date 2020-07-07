@@ -61,7 +61,7 @@ export default function MenuBox (props) {
     [contentRef.current]
   )
 
-  return <div
+  return <div data-testid='menubox'
     ref={ref}
     style={props.style}
   >
@@ -144,6 +144,7 @@ export function MenuBoxContent (props) {
     style={props.style}
   >
     <Close
+      data-testid='close-button'
       onClick={props.onClose}
     />
     <div>

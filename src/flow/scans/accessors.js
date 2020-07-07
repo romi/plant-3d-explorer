@@ -35,7 +35,7 @@ import useAccessor from 'rd/tools/hooks/accessor'
 import useFetch3dObject from 'rd/tools/hooks/fetch3dObject'
 import { chain } from 'rd/tools/enhancers'
 
-import { scansURIQuery, getScanFile, getScanURI, getFile } from 'common/api'
+import { scansURIQuery, getScanFile, getFile, getScanURI } from 'common/api'
 
 import { sortingMethods } from './reducer'
 
@@ -69,14 +69,6 @@ export function useScan () {
   return [enhancedScan]
 }
 
-export function useScanFilesList () {
-  const { match } = useReactRouter()
-  const selectedId = match.params.scanId
-  const [files] = useFetch(getScanFile(selectedId, 'files.json'), true)
-
-  return files
-}
-
 export function useImageSet (id) {
   const { match } = useReactRouter()
   const selectedId = match.params.scanId
@@ -88,6 +80,30 @@ export function useImageSet (id) {
       .map((d) => getScanFile(selectedId, imageSet.id + '/' + d.file)))
   }, [selectedId, id, fileset])
   return enhancedSet
+}
+
+export function useFile (id, file = null, options = {}) {
+  const { match } = useReactRouter()
+  const selectedId = match.params.scanId
+  const [files] = useFetch(getScanFile(selectedId, 'files.json'))
+
+  const path = useMemo(() => {
+    if (!files) return
+    const set = files.filesets.find((d) => d.id.match(id))
+    if (file) {
+      return getScanFile(selectedId,
+        (options.metadata ? 'metadata/' : '') +
+          set.id + '/' +
+          (options.rawFileName ? file : set.files.find((d) => d.file.match(file)).file))
+    }
+    return set
+  }, [id, file, files, selectedId, options])
+  return [useFetch(path), path]
+}
+
+export function use3dFile (id, file = null, options = {}) {
+  const [, path] = useFile(id, file, options)
+  return [useFetch3dObject(path), path]
 }
 
 export function useScanFiles (scan) {
