@@ -35,7 +35,7 @@ import useAccessor from 'rd/tools/hooks/accessor'
 import useFetch3dObject from 'rd/tools/hooks/fetch3dObject'
 import { chain } from 'rd/tools/enhancers'
 
-import { scansURIQuery, getScanFile, getScanURI } from 'common/api'
+import { scansURIQuery, getScanFile, getFile, getScanURI } from 'common/api'
 
 import { sortingMethods } from './reducer'
 
@@ -68,10 +68,33 @@ export function useScan () {
   return [enhancedScan]
 }
 
+export function useFile (id, file = null, options = {}) {
+  const { match } = useReactRouter()
+  const selectedId = match.params.scanId
+  const [files] = useFetch(getScanFile(selectedId, 'files.json'))
+
+  const path = useMemo(() => {
+    if (!files) return
+    const set = files.filesets.find((d) => d.id.match(id))
+    if (file) {
+      return getScanFile(selectedId,
+        set.id + '/' + set.files.find((d) => d.file.match(file)).file)
+    }
+    return set
+  })
+  if (path) {
+    if (!path.id) {
+      if (options.load) return useFetch(path)
+      if (options.load3d) return useFetch3dObject(path)
+    }
+    return path
+  }
+}
+
 export function useScanFiles (scan) {
   return [
-    useFetch3dObject(scan && (getScanFile(scan.filesUri.mesh))),
-    useFetch3dObject(scan && (getScanFile(scan.filesUri.pointCloud)))
+    useFetch3dObject(scan && (getFile(scan.filesUri.mesh))),
+    useFetch3dObject(scan && (getFile(scan.filesUri.pointCloud)))
   ]
 }
 
