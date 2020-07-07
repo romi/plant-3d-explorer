@@ -83,14 +83,13 @@ export function useFile (id, file = null, options = {}) {
           (options.rawFileName ? file : set.files.find((d) => d.file.match(file)).file))
     }
     return set
-  })
-  if (path) {
-    if (!path.id) {
-      if (options.load) return useFetch(path)
-      if (options.load3d) return useFetch3dObject(path)
-    }
-    return path
-  }
+  }, [id, file, files, selectedId, options])
+  return [useFetch(path), path]
+}
+
+export function use3dFile (id, file = null, options = {}) {
+  const [, path] = useFile(id, file, options)
+  return [useFetch3dObject(path), path]
 }
 
 export function useScanFiles (scan) {
