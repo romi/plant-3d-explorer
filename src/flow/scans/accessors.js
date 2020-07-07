@@ -87,6 +87,13 @@ export function useFile (id, file = null, options = {}) {
   return [useFetch(path), path]
 }
 
+export function useSegmentedPointCloud () {
+  const [[pointCloud]] = use3dFile('SegmentedPointCloud', 'SegmentedPointCloud')
+  const [[segmentation]] = useFile('SegmentedPointCloud',
+    'SegmentedPointCloud.json', { metadata: true, rawFileName: true })
+  return [pointCloud, segmentation]
+}
+
 export function use3dFile (id, file = null, options = {}) {
   const [, path] = useFile(id, file, options)
   return [useFetch3dObject(path), path]

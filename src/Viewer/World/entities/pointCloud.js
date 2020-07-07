@@ -102,7 +102,6 @@ export default class Mesh {
     if (color && color.rgb && color.a) {
       this.material.uniforms.color.value = new THREE.Color(color.rgb)
       this.material.uniforms.opacity.value = color.a
-      console.log(this.material.uniforms.opacity.value)
     }
   }
 }

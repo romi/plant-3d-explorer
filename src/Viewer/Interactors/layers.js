@@ -31,7 +31,8 @@ import React from 'react'
 import styled from '@emotion/styled'
 import { FormattedMessage } from 'react-intl'
 import { useLayers } from 'flow/settings/accessors'
-import { useScan, useScanFiles } from 'flow/scans/accessors'
+import { useScan, useScanFiles,
+  useSegmentedPointCloud } from 'flow/scans/accessors'
 
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
 import { IconStateCatcher } from 'rd/UI/Icon'
@@ -60,6 +61,7 @@ export default function LayersInteractors () {
   const [layers, setLayers] = useLayers()
   const [scan] = useScan()
   const [[meshGeometry], [pointCloudGeometry]] = useScanFiles(scan)
+  const [segmentedPointCloud] = useSegmentedPointCloud()
 
   return <Container>
     <Tooltip>
@@ -100,6 +102,29 @@ export default function LayersInteractors () {
       <TooltipContent>
         <H3>
           <FormattedMessage id='tooltip-pointcloud' />
+        </H3>
+      </TooltipContent>
+    </Tooltip>
+
+    <Tooltip>
+      <Interactor
+        isDisabled={!segmentedPointCloud}
+        activated={layers.segmentedPointCloud}
+        onClick={() => setLayers({
+          ...layers,
+          segmentedPointCloud: !layers.segmentedPointCloud
+        })} >
+        <IconStateCatcher style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }} >
+          <PointCloudIcon isActivated={layers.segmentedPointCloud} />
+        </IconStateCatcher>
+      </Interactor>
+      <TooltipContent>
+        <H3>
+          <FormattedMessage id='tooltip-segmentedpointcloud' />
         </H3>
       </TooltipContent>
     </Tooltip>

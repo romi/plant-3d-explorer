@@ -13,10 +13,11 @@ export const tools = {
     pointCloud: 1,
     skeleton: 2,
     organs: 3,
-    background: 4
+    background: 4,
+    segmentedPointCloud: 5
   },
   misc: {
-    snapshot: 5
+    snapshot: 6
   }
 }
 

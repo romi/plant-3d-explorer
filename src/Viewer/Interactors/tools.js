@@ -1,12 +1,14 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from '@emotion/styled'
 import { SketchPicker } from 'react-color'
 
 import { useSelectedAngle, useColor, useDefaultColors } from 'flow/interactions/accessors'
 import { useLayerTools, useLayers } from 'flow/settings/accessors'
+import { useSegmentedPointCloud } from 'flow/scans/accessors'
 
 import { PaintIcon } from 'Viewer/Interactors/icons'
 import { ResetButton } from 'rd/UI/Buttons'
+import { H3 } from 'common/styles/UI/Text/titles'
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 
 export const Container = styled.div({
@@ -46,6 +48,18 @@ export default function MiscInteractors () {
   const [resetDefaultColor] = useDefaultColors()
   const [layerTools] = useLayerTools()
   const [layers] = useLayers()
+  const [labels, setLabels] = useState()
+  const [, segmentation] = useSegmentedPointCloud()
+
+  useEffect(
+    () => {
+      if (segmentation && segmentation.labels) {
+        setLabels(segmentation.labels.filter(
+          (value, index, self) => self.indexOf(value) === index
+        ))
+      }
+    }, [segmentation]
+  )
 
   return <ToolContainer>
     <ColumnContainer displayed={layers.mesh}>
@@ -115,6 +129,26 @@ export default function MiscInteractors () {
             }
           }
         />
+      </ToolButton>
+    </ColumnContainer>
+    <ColumnContainer displayed={layers.segmentedPointCloud}>
+      <ToolButton
+        toolsList={useLayerTools()}
+        tool={tools.colorPickers.segmentedPointCloud}
+        layer={layers.segmentedPointCloud}
+        Interactor={{
+          isButton: true
+        }}
+        tooltipId={'tooltip-segmentedpointcloud-color-picker'}
+        icon={<PaintIcon isActivated={layerTools.activeTool ===
+          tools.colorPickers.segmentedPointCloud} />}
+      >
+        { labels
+          ? labels.map((d) => {
+            return (<H3 style={{ fontSize: 13 }}> {d} </H3>)
+          })
+          : null
+        }
       </ToolButton>
     </ColumnContainer>
     <ColumnContainer displayed={layers.skeleton}>

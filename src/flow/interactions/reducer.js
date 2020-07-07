@@ -38,6 +38,7 @@ export const initialState = {
   colors: {
     mesh: { rgb: '#96c0a7', a: 1 },
     pointCloud: { rgb: '#f8de96', a: 1 },
+    segmentedPointCloud: [],
     skeleton: { rgb: '#5ca001', a: 1 },
     organs: [],
     globalOrganColors: [{ rgb: '#3a4d45', a: 0.2 }, { rgb: '#00a960', a: 0.2 }],

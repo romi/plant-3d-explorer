@@ -416,6 +416,7 @@ export default class World {
   setLayers (layers) {
     if (this.mesh) this.mesh.setVisible(layers.mesh)
     if (this.pointCloud) this.pointCloud.setVisible(layers.pointCloud)
+    if (this.segmentedPointCloud) this.segmentedPointCloud.setVisible(layers.segmentedPointCloud)
     if (this.skeleton) this.skeleton.setVisible(layers.skeleton)
     if (this.anlesPoints) this.anlesPoints.setVisible(layers.angles)
     if (this.CameraPointsGroup) this.CameraPointsGroup.visible = layers.cameras
