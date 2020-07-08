@@ -46,6 +46,7 @@ import MeshIcon from 'common/assets/ico.mesh.21x21.svg'
 import PointCloudIcon from 'common/assets/ico.point_cloud.21x21.svg'
 import SekeletonIcon from 'common/assets/ico.skeleton.21x21.svg'
 import NodeIcon from 'common/assets/ico.internodes.21x21.svg'
+import SegmentedPointCloudIcon from 'common/assets/ico.segmented_point_cloud.21x21.svg'
 
 const Blocks = styled.div({
   '& > :nth-of-type(even)': {
@@ -247,7 +248,8 @@ export const Item = memo(({ item }) => {
         </TooltipContent>
       </Tooltip>
       <Tooltip>
-        <Icon src={PointCloudIcon} isActive={item.hasSegmentedPointCloud}
+        <Icon src={SegmentedPointCloudIcon}
+          isActive={item.hasSegmentedPointCloud}
           data-testid='spc-icon' />
         <TooltipContent>
           <H3>

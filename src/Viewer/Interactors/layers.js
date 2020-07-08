@@ -40,7 +40,8 @@ import { IconStateCatcher } from 'rd/UI/Icon'
 import { H3 } from 'common/styles/UI/Text/titles'
 
 import { Interactor } from './index'
-import { MeshIcon, PointCloudIcon, SkeletonIcon, InternodesIcon } from './icons'
+import { MeshIcon, PointCloudIcon, SegmentedPointCloudIcon,
+  SkeletonIcon, InternodesIcon } from './icons'
 
 export const Container = styled.div({
   position: 'absolute',
@@ -119,7 +120,7 @@ export default function LayersInteractors () {
           justifyContent: 'center',
           alignItems: 'center'
         }} >
-          <PointCloudIcon isActivated={layers.segmentedPointCloud} />
+          <SegmentedPointCloudIcon isActivated={layers.segmentedPointCloud} />
         </IconStateCatcher>
       </Interactor>
       <TooltipContent>

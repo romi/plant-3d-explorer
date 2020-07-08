@@ -9,6 +9,7 @@ import { Icon, MeasuresText } from 'ScanList/list'
 
 import meshIcon from 'common/assets/ico.mesh.21x21.svg'
 import pointCloudIcon from 'common/assets/ico.point_cloud.21x21.svg'
+import segmentedPointCloudIcon from 'common/assets/ico.segmented_point_cloud.21x21.svg'
 import skeletonIcon from 'common/assets/ico.skeleton.21x21.svg'
 import nodeIcon from 'common/assets/ico.internodes.21x21.svg'
 
@@ -94,7 +95,7 @@ export default function (props) {
         <Filter icon={pointCloudIcon}
           field={'hasPointCloud'}
         />
-        <Filter icon={pointCloudIcon}
+        <Filter icon={segmentedPointCloudIcon}
           field={'hasSegmentedPointCloud'}
         />
         <Filter icon={skeletonIcon}

@@ -29,6 +29,7 @@ const mockItem = {
   },
   hasMesh: true,
   hasPointCloud: false,
+  hasSegmentedPointCloud: false,
   hasSkeleton: true,
   hasAngleData: false,
   hasManualMeasures: false,
@@ -72,7 +73,8 @@ describe('Item component', () => {
     elem.env = queryByTestId('env')
     elem.date = queryByTestId('date'); /* Semi-colon needed because otherwise
     the program thinks I want to access fields of the queryByTestId result... */
-    [elem.mesh, elem.pc, elem.skeleton, elem.angles] = getAllByTestId(/icon/i)
+    [elem.mesh, elem.pc, elem.spc, elem.skeleton, elem.angles] =
+      getAllByTestId(/icon/i)
     elem.auto = queryByTestId('auto')
     elem.man = queryByTestId('man')
     elem.archive = queryByText(/scanlist-link-download/i).parentNode
