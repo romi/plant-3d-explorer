@@ -10,6 +10,7 @@ import { PaintIcon } from 'Viewer/Interactors/icons'
 import { ResetButton } from 'rd/UI/Buttons'
 import { H3 } from 'common/styles/UI/Text/titles'
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
+import MenuBox, { MenuBoxContent } from 'rd/UI/MenuBox'
 
 export const Container = styled.div({
   position: 'absolute',
@@ -24,6 +25,13 @@ export const Container = styled.div({
   '& :last-of-type > div': {
     borderRadius: '0 2px 2px 0'
   }
+})
+
+const LegendContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center'
 })
 
 const ColumnContainer = styled.div({
@@ -50,6 +58,7 @@ export default function MiscInteractors () {
   const [layers] = useLayers()
   const [labels, setLabels] = useState()
   const [, segmentation] = useSegmentedPointCloud()
+  const [legendPicker, setLegendPicker] = useState()
 
   useEffect(
     () => {
@@ -143,9 +152,36 @@ export default function MiscInteractors () {
         icon={<PaintIcon isActivated={layerTools.activeTool ===
           tools.colorPickers.segmentedPointCloud} />}
       >
-        { labels
-          ? labels.map((d) => {
-            return (<H3 style={{ fontSize: 13 }}> {d} </H3>)
+        { labels && colors.segmentedPointCloud.length
+          ? labels.map((d, i) => {
+            return <LegendContainer key={d}>
+              <H3 style={{ fontSize: 13 }}> {d} </H3>
+              <MenuBox
+                activate={legendPicker === i}
+                onClose={() => { setLegendPicker(null) }}
+              >
+                <div
+                  style={{
+                    width: 20,
+                    height: 20,
+                    marginLeft: 10,
+                    backgroundColor: colors.segmentedPointCloud[i],
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => { setLegendPicker(i) }}
+                />
+                <MenuBoxContent>
+                  <SketchPicker disableAlpha
+                    onChange={(val) => {
+                      let copy = colors.segmentedPointCloud.slice()
+                      copy[i] = val.hex
+                      setColors({ ...colors, segmentedPointCloud: copy })
+                    }}
+                    color={colors.segmentedPointCloud[i]}
+                  />
+                </MenuBoxContent>
+              </MenuBox>
+            </LegendContainer>
           })
           : null
         }

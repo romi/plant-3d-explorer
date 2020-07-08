@@ -393,6 +393,14 @@ export default class World {
       segmentation, this.viewerObjects)
   }
 
+  getSegementedPointCloudColors () {
+    return this.segmentedPointCloud.getColors()
+  }
+
+  setSegmentedPointCloudColor (color) {
+    this.segmentedPointCloud.setColor(color)
+  }
+
   setPointCloudColor (color) {
     this.pointCloud.setColor(color)
   }

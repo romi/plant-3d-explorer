@@ -71,7 +71,7 @@ export default function WorldComponent (props) {
   const [hoveredCamera, setHoveredCamera] = useHoveredCamera()
   const [hoveredAngle] = useHoveredAngle()
   const [selectedAngle] = useSelectedAngle()
-  const [colors] = useColor()
+  const [colors, setColors] = useColor()
   const [snapshot, setSnapshot] = useSnapshot()
   const mouse = useElementMouse(canvasRef)
   const [, setOrganInfo] = useOrganInfo()
@@ -306,9 +306,22 @@ export default function WorldComponent (props) {
         world.setSegmentedPointCloudGeometry(segmentedPointCloud,
           segmentation)
         world.setLayers(layers)
+        setColors({
+          ...colors,
+          segmentedPointCloud: world.getSegementedPointCloudColors()
+        })
       }
     },
     [world, segmentedPointCloud, segmentation]
+  )
+
+  useEffect(
+    () => {
+      if (world && segmentedPointCloud && segmentation) {
+        world.setSegmentedPointCloudColor(colors.segmentedPointCloud)
+      }
+    },
+    [colors.segmentedPointCloud]
   )
 
   useEffect(

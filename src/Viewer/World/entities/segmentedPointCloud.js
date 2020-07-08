@@ -30,6 +30,7 @@ export default class SegmentedPointCloud extends PointCloud {
     const labelNumbers = segmentation.labels.map((d) => {
       return uniqueLabels.indexOf(d)
     })
+    this.labelNumbers = labelNumbers
 
     // Set default colors
     const defaultColors = uniqueLabels.map((_, i) => {
@@ -50,4 +51,28 @@ export default class SegmentedPointCloud extends PointCloud {
     this.geometry.addAttribute('customColor',
       new THREE.BufferAttribute(this.colorsArray, 3))
   }
+
+  getColors () {
+    return this.colors
+  }
+
+  setColor (colors) {
+    window.clearTimeout(this.timeoutFunction)
+    if (colors && colors.length === this.colors.length) {
+      this.colors = colors
+      this.timeoutFunction = setTimeout(() => { this.refreshColors() }, 500)
+    }
+  }
+
+  refreshColors () {
+    let color = new THREE.Color(0xffffff)
+    this.colorsArray = new Float32Array(this.labelNumbers.length * 3)
+    this.labelNumbers.forEach((elem, i) => {
+      color.set(this.colors[elem])
+      color.toArray(this.colorsArray, i * 3)
+    })
+    this.geometry.removeAttribute('customColor')
+    this.geometry.addAttribute('customColor',
+      new THREE.BufferAttribute(this.colorsArray, 3))
+  }1
 }

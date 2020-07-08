@@ -108,7 +108,7 @@ const Options = styled.div({
 })
 
 const DataLayers = styled.div({
-  width: 100,
+  width: 120,
   display: 'flex',
   justifyContent: 'space-between',
   lineHeight: 0,
@@ -243,6 +243,15 @@ export const Item = memo(({ item }) => {
         <TooltipContent>
           <H3>
             <FormattedMessage id='tooltip-pointcloud' />
+          </H3>
+        </TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <Icon src={PointCloudIcon} isActive={item.hasSegmentedPointCloud}
+          data-testid='spc-icon' />
+        <TooltipContent>
+          <H3>
+            <FormattedMessage id='tooltip-segmentedpointcloud' />
           </H3>
         </TooltipContent>
       </Tooltip>

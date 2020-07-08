@@ -27,7 +27,8 @@ const RowContainer = styled.div({
   display: 'flex',
   flexDirection: 'row',
   justifyContent: 'space-between',
-  width: 100
+  width: 120,
+  marginTop: 3
 })
 
 const ColumnContainer = styled.div({
@@ -41,7 +42,7 @@ const ColumTitle = styled(H3)({
   flexDirection: 'column',
   textAlign: 'center',
   marginLeft: -38,
-  marginRight: 98
+  marginRight: 78
 })
 
 function Filter (props) {
@@ -68,6 +69,7 @@ export default function (props) {
     setFiltering({
       hasMesh: false,
       hasPointCloud: false,
+      hasSegmentedPointCloud: false,
       hasSkeleton: false,
       hasAngleData: false,
       hasManualMeasures: false,
@@ -91,6 +93,9 @@ export default function (props) {
         />
         <Filter icon={pointCloudIcon}
           field={'hasPointCloud'}
+        />
+        <Filter icon={pointCloudIcon}
+          field={'hasSegmentedPointCloud'}
         />
         <Filter icon={skeletonIcon}
           field={'hasSkeleton'}
