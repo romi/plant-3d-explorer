@@ -27,6 +27,7 @@ License along with this program.  If not, see
 
 */
 import React from 'react'
+import t from 'prop-types'
 import styled from '@emotion/styled'
 
 import { omit } from 'lodash'
@@ -114,6 +115,20 @@ export const Interactor = styled(
     }
   }
 })
+
+/* This is very dumb, but it's used as a workaround for a bug in the Docz
+  package. Displaying props of a styled component doesn't work as expected,
+  but issues on the package's repository are just closed and not given
+  attention. Docz doesn't want to fix their bugs, if you think this is
+  ugly I agree, but complain to Docz... */
+export const DocInteractor = (props) => <Interactor {...props} />
+DocInteractor.propTypes = {
+  /**
+   * Indicater whether the interactor should be displayed as 'active' (with
+   * a white background), or as 'inactive' (with a dark gray background).
+   */
+  activated: t.bool
+}
 
 export {
   LayersInteractors,

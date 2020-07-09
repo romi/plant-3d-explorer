@@ -3,8 +3,9 @@ name: 3D view interactors
 route: /Components/Interactors
 ---
 
-import { Props } from 'docz'
-import { Interactor } from './index'
+import { Props, Playground } from 'docz'
+import { Interactor, DocInteractor } from './index'
+import { useState } from 'react'
 
 # 3D view interactors
 
@@ -51,6 +52,20 @@ buttons.
 
 ### Props
 
-TODO Bug with paths
+<Props of={DocInteractor} />
 
 ### Example
+
+<Playground>
+  { () => {
+    const [active, setActive] = useState(false)
+    return <Interactor
+      activated={active}
+      onClick={() => { setActive(!active) }}
+    />
+  }}
+</Playground>
+
+This example is simply an interactor that toggles from active to inactive
+when clicking on it. Interactors are basically a button, of course, it needs
+to be associated with things like [MenuBox](/Components/UI#menubox)
