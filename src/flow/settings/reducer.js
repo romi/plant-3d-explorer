@@ -33,7 +33,8 @@ export const initialState = {
     pointCloud: false,
     skeleton: true,
     angles: true,
-    cameras: false
+    cameras: false,
+    segmentedPointCloud: false
   },
   panels: {
     'panels-angles': true,

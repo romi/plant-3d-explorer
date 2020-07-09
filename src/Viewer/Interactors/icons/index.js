@@ -66,6 +66,16 @@ export const PointCloudIcon = IconHOC((props) => {
   />
 })
 
+const segmentedPointCloudRaw =
+  raw('../../../common/assets/ico.segmented_point_cloud.21x21.svg')
+export const SegmentedPointCloudIcon = IconHOC((props) => {
+  return <Icon
+    {...props}
+    rules={rules(props)}
+    raw={segmentedPointCloudRaw}
+  />
+})
+
 const skeletonRaw = raw('../../../common/assets/ico.skeleton.21x21.svg')
 export const SkeletonIcon = IconHOC((props) => {
   return <Icon

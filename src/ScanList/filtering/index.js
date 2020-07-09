@@ -9,6 +9,7 @@ import { Icon, MeasuresText } from 'ScanList/list'
 
 import meshIcon from 'common/assets/ico.mesh.21x21.svg'
 import pointCloudIcon from 'common/assets/ico.point_cloud.21x21.svg'
+import segmentedPointCloudIcon from 'common/assets/ico.segmented_point_cloud.21x21.svg'
 import skeletonIcon from 'common/assets/ico.skeleton.21x21.svg'
 import nodeIcon from 'common/assets/ico.internodes.21x21.svg'
 
@@ -27,7 +28,8 @@ const RowContainer = styled.div({
   display: 'flex',
   flexDirection: 'row',
   justifyContent: 'space-between',
-  width: 100
+  width: 120,
+  marginTop: 3
 })
 
 const ColumnContainer = styled.div({
@@ -41,7 +43,7 @@ const ColumTitle = styled(H3)({
   flexDirection: 'column',
   textAlign: 'center',
   marginLeft: -38,
-  marginRight: 98
+  marginRight: 78
 })
 
 function Filter (props) {
@@ -68,6 +70,7 @@ export default function (props) {
     setFiltering({
       hasMesh: false,
       hasPointCloud: false,
+      hasSegmentedPointCloud: false,
       hasSkeleton: false,
       hasAngleData: false,
       hasManualMeasures: false,
@@ -91,6 +94,9 @@ export default function (props) {
         />
         <Filter icon={pointCloudIcon}
           field={'hasPointCloud'}
+        />
+        <Filter icon={segmentedPointCloudIcon}
+          field={'hasSegmentedPointCloud'}
         />
         <Filter icon={skeletonIcon}
           field={'hasSkeleton'}

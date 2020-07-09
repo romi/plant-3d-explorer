@@ -1,13 +1,16 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from '@emotion/styled'
 import { SketchPicker } from 'react-color'
 
 import { useSelectedAngle, useColor, useDefaultColors } from 'flow/interactions/accessors'
 import { useLayerTools, useLayers } from 'flow/settings/accessors'
+import { useSegmentedPointCloud } from 'flow/scans/accessors'
 
 import { PaintIcon } from 'Viewer/Interactors/icons'
 import { ResetButton } from 'rd/UI/Buttons'
+import { H3 } from 'common/styles/UI/Text/titles'
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
+import MenuBox, { MenuBoxContent } from 'rd/UI/MenuBox'
 
 export const Container = styled.div({
   position: 'absolute',
@@ -22,6 +25,13 @@ export const Container = styled.div({
   '& :last-of-type > div': {
     borderRadius: '0 2px 2px 0'
   }
+})
+
+const LegendContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center'
 })
 
 const ColumnContainer = styled.div({
@@ -46,6 +56,19 @@ export default function MiscInteractors () {
   const [resetDefaultColor] = useDefaultColors()
   const [layerTools] = useLayerTools()
   const [layers] = useLayers()
+  const [labels, setLabels] = useState()
+  const [, segmentation] = useSegmentedPointCloud()
+  const [legendPicker, setLegendPicker] = useState()
+
+  useEffect(
+    () => {
+      if (segmentation && segmentation.labels) {
+        setLabels(segmentation.labels.filter(
+          (value, index, self) => self.indexOf(value) === index
+        ))
+      }
+    }, [segmentation]
+  )
 
   return <ToolContainer>
     <ColumnContainer displayed={layers.mesh}>
@@ -115,6 +138,53 @@ export default function MiscInteractors () {
             }
           }
         />
+      </ToolButton>
+    </ColumnContainer>
+    <ColumnContainer displayed={layers.segmentedPointCloud}>
+      <ToolButton
+        toolsList={useLayerTools()}
+        tool={tools.colorPickers.segmentedPointCloud}
+        layer={layers.segmentedPointCloud}
+        Interactor={{
+          isButton: true
+        }}
+        tooltipId={'tooltip-segmentedpointcloud-color-picker'}
+        icon={<PaintIcon isActivated={layerTools.activeTool ===
+          tools.colorPickers.segmentedPointCloud} />}
+      >
+        { labels && colors.segmentedPointCloud.length
+          ? labels.map((d, i) => {
+            return <LegendContainer key={d}>
+              <H3 style={{ fontSize: 13 }}> {d} </H3>
+              <MenuBox
+                activate={legendPicker === i}
+                onClose={() => { setLegendPicker(null) }}
+              >
+                <div
+                  style={{
+                    width: 20,
+                    height: 20,
+                    marginLeft: 10,
+                    backgroundColor: colors.segmentedPointCloud[i],
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => { setLegendPicker(i) }}
+                />
+                <MenuBoxContent>
+                  <SketchPicker disableAlpha
+                    onChange={(val) => {
+                      let copy = colors.segmentedPointCloud.slice()
+                      copy[i] = val.hex
+                      setColors({ ...colors, segmentedPointCloud: copy })
+                    }}
+                    color={colors.segmentedPointCloud[i]}
+                  />
+                </MenuBoxContent>
+              </MenuBox>
+            </LegendContainer>
+          })
+          : null
+        }
       </ToolButton>
     </ColumnContainer>
     <ColumnContainer displayed={layers.skeleton}>

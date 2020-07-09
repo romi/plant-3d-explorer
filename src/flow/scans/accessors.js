@@ -90,7 +90,7 @@ export function useFile (id, file = null, options = {}) {
   const path = useMemo(() => {
     if (!files) return
     const set = files.filesets.find((d) => d.id.match(id))
-    if (file) {
+    if (file && set) {
       return getScanFile(selectedId,
         (options.metadata ? 'metadata/' : '') +
           set.id + '/' +
@@ -99,6 +99,13 @@ export function useFile (id, file = null, options = {}) {
     return set
   }, [id, file, files, selectedId, options])
   return [useFetch(path), path]
+}
+
+export function useSegmentedPointCloud () {
+  const [[pointCloud]] = use3dFile('SegmentedPointCloud', 'SegmentedPointCloud')
+  const [[segmentation]] = useFile('SegmentedPointCloud',
+    'SegmentedPointCloud.json', { metadata: true, rawFileName: true })
+  return [pointCloud, segmentation]
 }
 
 export function use3dFile (id, file = null, options = {}) {

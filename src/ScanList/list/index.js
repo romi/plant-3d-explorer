@@ -46,6 +46,7 @@ import MeshIcon from 'common/assets/ico.mesh.21x21.svg'
 import PointCloudIcon from 'common/assets/ico.point_cloud.21x21.svg'
 import SekeletonIcon from 'common/assets/ico.skeleton.21x21.svg'
 import NodeIcon from 'common/assets/ico.internodes.21x21.svg'
+import SegmentedPointCloudIcon from 'common/assets/ico.segmented_point_cloud.21x21.svg'
 
 const Blocks = styled.div({
   '& > :nth-of-type(even)': {
@@ -108,7 +109,7 @@ const Options = styled.div({
 })
 
 const DataLayers = styled.div({
-  width: 100,
+  width: 120,
   display: 'flex',
   justifyContent: 'space-between',
   lineHeight: 0,
@@ -243,6 +244,16 @@ export const Item = memo(({ item }) => {
         <TooltipContent>
           <H3>
             <FormattedMessage id='tooltip-pointcloud' />
+          </H3>
+        </TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <Icon src={SegmentedPointCloudIcon}
+          isActive={item.hasSegmentedPointCloud}
+          data-testid='spc-icon' />
+        <TooltipContent>
+          <H3>
+            <FormattedMessage id='tooltip-segmentedpointcloud' />
           </H3>
         </TooltipContent>
       </Tooltip>

@@ -34,6 +34,7 @@ import { green } from 'common/styles/colors'
 
 import Mesh from './entities/mesh'
 import PointCloud from './entities/pointCloud'
+import SegmentedPointCloud from './entities/segmentedPointCloud'
 import Skeleton from './entities/skeleton'
 import Angles from './entities/angles'
 import Workspace from './entities/workspace'
@@ -386,6 +387,20 @@ export default class World {
     this.pointCloud = new PointCloud(geometry, this.viewerObjects)
   }
 
+  setSegmentedPointCloudGeometry (geometry, segmentation) {
+    geometry.computeBoundingBox()
+    this.segmentedPointCloud = new SegmentedPointCloud(geometry,
+      segmentation, this.viewerObjects)
+  }
+
+  getSegementedPointCloudColors () {
+    return this.segmentedPointCloud.getColors()
+  }
+
+  setSegmentedPointCloudColor (color) {
+    this.segmentedPointCloud.setColor(color)
+  }
+
   setPointCloudColor (color) {
     this.pointCloud.setColor(color)
   }
@@ -409,6 +424,7 @@ export default class World {
   setLayers (layers) {
     if (this.mesh) this.mesh.setVisible(layers.mesh)
     if (this.pointCloud) this.pointCloud.setVisible(layers.pointCloud)
+    if (this.segmentedPointCloud) this.segmentedPointCloud.setVisible(layers.segmentedPointCloud)
     if (this.skeleton) this.skeleton.setVisible(layers.skeleton)
     if (this.anlesPoints) this.anlesPoints.setVisible(layers.angles)
     if (this.CameraPointsGroup) this.CameraPointsGroup.visible = layers.cameras

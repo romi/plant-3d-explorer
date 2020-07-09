@@ -35,7 +35,8 @@ import { useElementMouse } from 'rd/tools/hooks/mouse'
 import { useLayers } from 'flow/settings/accessors'
 import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useColor,
   useSnapshot, useOrganInfo } from 'flow/interactions/accessors'
-import { useScanFiles, useScan } from 'flow/scans/accessors'
+import { useScanFiles, useScan,
+  useSegmentedPointCloud } from 'flow/scans/accessors'
 
 import WorldObject from './object'
 import useViewport2d from './behaviors/viewport2d'
@@ -70,7 +71,7 @@ export default function WorldComponent (props) {
   const [hoveredCamera, setHoveredCamera] = useHoveredCamera()
   const [hoveredAngle] = useHoveredAngle()
   const [selectedAngle] = useSelectedAngle()
-  const [colors] = useColor()
+  const [colors, setColors] = useColor()
   const [snapshot, setSnapshot] = useSnapshot()
   const mouse = useElementMouse(canvasRef)
   const [, setOrganInfo] = useOrganInfo()
@@ -79,6 +80,7 @@ export default function WorldComponent (props) {
   const [scan] = useScan()
 
   const [[meshGeometry], [pointCloudGeometry]] = useScanFiles(scan)
+  const [segmentedPointCloud, segmentation] = useSegmentedPointCloud()
   const [viewport, event2dFns, resetViewport2d] = useViewport2d(
     bounds.width || getSize().width,
     bounds.height || getSize().height
@@ -296,6 +298,30 @@ export default function WorldComponent (props) {
       }
     },
     [world, pointCloudGeometry]
+  )
+
+  useEffect(
+    () => {
+      if (world && segmentedPointCloud && segmentation) {
+        world.setSegmentedPointCloudGeometry(segmentedPointCloud,
+          segmentation)
+        world.setLayers(layers)
+        setColors({
+          ...colors,
+          segmentedPointCloud: world.getSegementedPointCloudColors()
+        })
+      }
+    },
+    [world, segmentedPointCloud, segmentation]
+  )
+
+  useEffect(
+    () => {
+      if (world && segmentedPointCloud && segmentation) {
+        world.setSegmentedPointCloudColor(colors.segmentedPointCloud)
+      }
+    },
+    [colors.segmentedPointCloud]
   )
 
   useEffect(
