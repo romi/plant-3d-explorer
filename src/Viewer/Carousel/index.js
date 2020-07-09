@@ -32,12 +32,13 @@ import styled from '@emotion/styled'
 
 import { scaleCanvas } from 'rd/tools/canvas'
 
-import { useScan } from 'flow/scans/accessors'
+import { useScan, useImageSet } from 'flow/scans/accessors'
 
 import { green } from 'common/styles/colors'
 import closeIco from 'common/assets/ico.deselect-white.20x20.svg'
 
 import { useHoveredCamera, useSelectedcamera } from 'flow/interactions/accessors'
+import { useCarousel } from 'flow/settings/accessors'
 import { useFormatMessage } from 'rd/tools/intl'
 
 import useImgLoader from './loader'
@@ -113,17 +114,20 @@ export default function Carousel () {
   const [selected, setSelected] = useSelectedcamera()
   const large = moduleHeight * (6000 / 4000)
   let sizes
+  const [carousel] = useCarousel()
 
   const hoveredLayout = useRef(null)
   const selectedLayout = useRef(null)
 
+  const imageSet = useImageSet(carousel.photoSet)
   useEffect(
     () => {
-      setUrlList(
-        cameraPoses.map((d) => d.photoUri)
-      )
+      if (imageSet) {
+        // TODO change once the ids are unique
+        setUrlList(imageSet.map((d) => d.path))
+      }
     },
-    [cameraPoses]
+    [imageSet]
   )
 
   useEffect(
@@ -145,7 +149,7 @@ export default function Carousel () {
         sizes = {
           width,
           large,
-          normal: (width / cameraPoses.length),
+          normal: (width / urlList.length),
           block: (
             (
               width - (
@@ -156,8 +160,8 @@ export default function Carousel () {
             ) /
             (
               (hovered || selected)
-                ? cameraPoses.length - 1
-                : cameraPoses.length
+                ? urlList.length - 1
+                : urlList.length
             )
           )
         }
@@ -166,7 +170,6 @@ export default function Carousel () {
 
         hoveredLayout.current = null
         selectedLayout.current = null
-
         setPicturesLayout(
           cameraPoses.map((d, i) => {
             const isSelected = selected && d.id === selected.id
@@ -182,7 +185,11 @@ export default function Carousel () {
             const normalX = last.normalX + last.normalWidth
 
             const obj = {
-              item: d,
+              item: {
+                ...d,
+                photoUri: imageSet[i].path,
+                texture: imageSet[i].texture
+              },
               x,
               normalX,
               width,
@@ -202,7 +209,7 @@ export default function Carousel () {
         )
       }
     },
-    [windowSider, context, cameraPoses, hovered, selected]
+    [windowSider, context, hovered, selected, urlList, cameraPoses]
   )
 
   if (context) {

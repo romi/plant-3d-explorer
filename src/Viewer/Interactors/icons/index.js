@@ -34,13 +34,13 @@ import { green } from 'common/styles/colors'
 
 const rules = (props) => ({
   default: {
-    '& path, & polygon': {
+    '& path, & polygon, & rect': {
       fill: 'white'
     },
     display: 'flex'
   },
   active: {
-    '& path, & polygon': {
+    '& path, & polygon, & rect': {
       fill: (props.isActivated && props.activated)
         ? 'white'
         : green
@@ -156,5 +156,14 @@ export const SnapIcon = IconHOC((props) => {
     {...props}
     rules={rules(props)}
     raw={snapRaw}
+  />
+})
+
+const photoSetRaw = raw('../../../common/assets/ico.photoset.24x24.svg')
+export const PhotoSetIcon = IconHOC((props) => {
+  return <Icon
+    {...props}
+    rules={rules(props)}
+    raw={photoSetRaw}
   />
 })

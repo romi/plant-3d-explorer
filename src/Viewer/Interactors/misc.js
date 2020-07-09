@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { FormattedMessage } from 'react-intl'
 import styled from '@emotion/styled'
 
-import { useMisc } from 'flow/settings/accessors'
+import { useMisc, useCarousel } from 'flow/settings/accessors'
 import { useColor, useDefaultColors, useSnapshot }
   from 'flow/interactions/accessors'
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 import { H3 } from 'common/styles/UI/Text/titles'
 
-import { SnapIcon, PaintIcon } from 'Viewer/Interactors/icons'
+import { SnapIcon, PaintIcon, PhotoSetIcon } from 'Viewer/Interactors/icons'
 
 import snapButton from 'common/assets/ico.snap.24x24.svg'
 import downloadButton from 'common/assets/ico.download.24x24.svg'
@@ -32,6 +32,30 @@ export const Container = styled.div({
     borderRadius: '0 2px 2px 0'
   }
 })
+
+const ChooserContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'column'
+})
+
+const PhotoSetButtonContainer = styled.div({
+  cursor: 'pointer',
+  borderRadius: 5,
+  textAlign: 'center',
+  marginBottom: 5,
+  fontSize: 18,
+  lineHeight: 2,
+  padding: 2,
+  textTransform: 'uppercase',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    boxShadow: '1px 1px 3px 3px limegreen'
+  }
+}, (props) => ({
+  transition: 'all 0.3s ease',
+  opacity: props.active ? 1 : 0.4,
+  boxShadow: props.active ? '1px 1px 3px 3px limegreen' : 'none'
+}))
 
 const MiscContainer = styled(Container)({})
 
@@ -86,6 +110,16 @@ const DownloadButtonImage = styled.div({
   height: 30,
   cursor: 'pointer'
 })
+
+function PhotoSetButton ({ set }) {
+  const [carousel, setCarousel] = useCarousel()
+  return <PhotoSetButtonContainer
+    active={carousel.photoSet === set}
+    onClick={() => setCarousel({ ...carousel, photoSet: set })}
+  >
+    <FormattedMessage id={'photoset-' + set.toLowerCase()} />
+  </PhotoSetButtonContainer>
+}
 
 function DownloadButton (props) {
   return <Tooltip>
@@ -301,6 +335,22 @@ export default function () {
             }
           } />
       </div>
+    </ToolButton>
+    <ToolButton
+      toolsList={useMisc()}
+      tool={tools.misc.photoSets}
+      icon={<PhotoSetIcon
+        isActivated={misc.activeTool === tools.misc.photoSets} />}
+      interactor={{
+        isButton: true
+      }}
+      tooltipId='tooltip-photoset'
+    >
+      <ChooserContainer>
+        <PhotoSetButton set='images' />
+        <PhotoSetButton set='undistorted' />
+        <PhotoSetButton set='masks' />
+      </ChooserContainer>
     </ToolButton>
   </MiscContainer>
 }

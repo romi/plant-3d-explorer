@@ -52,6 +52,7 @@
   "tooltip-delete-snapshot": "Click to delete this snapshot",
   "tooltip-take-snapshot": "Take a snapshot",
   "tooltip-download-snapshot": "Download the snapshot",
+  "tooltip-photoset": "Change the set of displayed images in the carousel",
 
   "tooltip-help-rotate": "Click left and hold to rotate",
   "tooltip-help-pan": "Click right and hold to pan",
@@ -63,6 +64,10 @@
   
   "snapshot-preview-alt": "The image preview couldn't load",
   "snapshot-preview": "Preview",
+  
+  "photoset-images": "Raw",
+  "photoset-undistorted": "Undistorted",
+  "photoset-masks": "Masks",
   
   "organ-bubble": "Organ {ORGAN_NUMBER}",
 

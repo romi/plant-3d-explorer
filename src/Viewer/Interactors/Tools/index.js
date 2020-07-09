@@ -17,7 +17,9 @@ export const tools = {
     segmentedPointCloud: 5
   },
   misc: {
-    snapshot: 6
+
+    snapshot: 6,
+    photoSets: 7
   }
 }
 
