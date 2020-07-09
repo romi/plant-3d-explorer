@@ -44,6 +44,9 @@ export const initialState = {
   },
   misc: {
     activeTool: null
+  },
+  carousel: {
+    photoSet: 'images'
   }
 }
 
@@ -73,6 +76,11 @@ export default function settingsReducer (state = initialState, action) {
       return {
         ...state,
         misc: action.value
+      }
+    case 'SET_CAROUSEL':
+      return {
+        ...state,
+        carousel: action.value
       }
     default:
       return state

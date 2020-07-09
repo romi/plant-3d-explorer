@@ -16,7 +16,8 @@ export const tools = {
     background: 4
   },
   misc: {
-    snapshot: 5
+    snapshot: 5,
+    photoSets: 6
   }
 }
 
