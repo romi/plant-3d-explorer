@@ -124,7 +124,7 @@ export const Interactor = styled(
 export const DocInteractor = (props) => <Interactor {...props} />
 DocInteractor.propTypes = {
   /**
-   * Indicater whether the interactor should be displayed as 'active' (with
+   * Indicates whether the interactor should be displayed as 'active' (with
    * a white background), or as 'inactive' (with a dark gray background).
    */
   activated: t.bool

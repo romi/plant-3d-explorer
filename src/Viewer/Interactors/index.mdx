@@ -6,6 +6,7 @@ route: /Components/Interactors
 import { Props, Playground } from 'docz'
 import { Interactor, DocInteractor } from './index'
 import { useState } from 'react'
+import ToolButton from './Tools'
 
 # 3D view interactors
 
@@ -69,3 +70,14 @@ buttons.
 This example is simply an interactor that toggles from active to inactive
 when clicking on it. Interactors are basically a button, of course, it needs
 to be associated with things like [MenuBox](/Components/UI#menubox)
+
+## Toolbutton
+
+### Description
+
+The Toolbutton is not a functional component in itself but a group
+of components assembled together to make it easier to create tools.
+
+### Props
+
+<Props of={ToolButton} />
