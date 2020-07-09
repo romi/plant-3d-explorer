@@ -8,7 +8,7 @@ import { useColor, useDefaultColors, useSnapshot }
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 import { H3 } from 'common/styles/UI/Text/titles'
 
-import { SnapIcon, PaintIcon } from 'Viewer/Interactors/icons'
+import { SnapIcon, PaintIcon, PhotoSetIcon } from 'Viewer/Interactors/icons'
 
 import snapButton from 'common/assets/ico.snap.24x24.svg'
 import downloadButton from 'common/assets/ico.download.24x24.svg'
@@ -339,7 +339,8 @@ export default function () {
     <ToolButton
       toolsList={useMisc()}
       tool={tools.misc.photoSets}
-      icon={<SnapIcon isActivated={misc.activeTool === tools.misc.snapshot} />}
+      icon={<PhotoSetIcon
+        isActivated={misc.activeTool === tools.misc.photoSets} />}
       interactor={{
         isButton: true
       }}
