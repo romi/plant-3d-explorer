@@ -1,12 +1,15 @@
 ---
 name: 3D view interactors
 route: /Components/Interactors
+menu: Components
 ---
 
 import { Props, Playground } from 'docz'
 import { Interactor, DocInteractor } from './index'
 import { useState } from 'react'
-import ToolButton from './Tools'
+import ToolButton, { tools } from './Tools'
+import ObjectFormatter from '../../../doc/components/objectFormatter'
+import { SketchPicker } from 'react-color'
 
 # 3D view interactors
 
@@ -78,6 +81,55 @@ to be associated with things like [MenuBox](/Components/UI#menubox)
 The Toolbutton is not a functional component in itself but a group
 of components assembled together to make it easier to create tools.
 
+The `index.js` file contains, alongside the ToolButton component, an object
+called tools, that associates tool names with numbers to keep track
+of which tool is currently active easily.
+
+Here's the tool object :
+
+<ObjectFormatter object={tools} />
+
+
 ### Props
 
 <Props of={ToolButton} />
+
+### Example
+
+export const divStyle={
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'center'
+}
+
+<Playground>
+  { () => {
+    const toolsList = useState({
+      activeTool: null
+    }) 
+    return <div style={divStyle}>
+      <ToolButton
+        toolsList={toolsList}
+        tool={tools.colorPickers.mesh}
+        layer={true}
+        tooltipId='Tooltip 1'
+        >
+        <SketchPicker />
+      </ToolButton>
+      <ToolButton
+        toolsList={toolsList}
+        tool={tools.colorPickers.skeleton}
+        layer={true}
+        tooltipId='Tooltip 2'
+      >
+        <SketchPicker />
+      </ToolButton>
+    </div>
+  }}
+</Playground>
+
+In this example, you can see we use the ToolButton to display color pickers. 
+Since the object passed to the `toolsList` component is the same in both 
+ToolButtons, the tools are mutually exclusive. Try opening the second one while
+the first one is already open, and you'll see that the first tool will close 
+on its own.
