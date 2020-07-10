@@ -5,7 +5,7 @@ route: /Fetch
 
 import * as acc from 'flow/scans/accessors'
 import { Playground } from 'docz'
-import { getArgs } from './helpers/functionFormatters'
+import FunctionTables from './components/functionTables'
 
 # Fetching data
 
@@ -21,42 +21,4 @@ The next sections explains and describes what each hook does.
 
 ## Hooks
 
-<div>
-{
-  Object.keys(acc).map((d) => {
-    const res = getArgs(acc[d])
-    return <>
-    <h3> {d} </h3>
-    <h4> Parameters </h4>
-    {
-      (() => { 
-      return (res && res.length && res[1]
-        ? <table style={{
-      border: '1px solid black',
-      borderCollapse: 'collapse'
-    }}>
-      <thead>
-        <tr>
-          <th> name </th>
-          <th> default value </th>
-        </tr>
-      </thead>
-        <tbody>
-        {
-          (() => {
-          return (Array.isArray(res)
-            ? res.map((d) => {
-            return <tr>
-                <th style={{ border: '1px solid black' }}> {d[0]} </th>
-                <th> {d.length > 1 ? d[1] : 'None'} </th>
-              </tr>
-          }) : null)
-        })()
-      } 
-      </tbody>
-    </table> : <p> None </p>)
-  })()}
-  </>
-  })
-}
-</div>
+<FunctionTables functions={acc} />
