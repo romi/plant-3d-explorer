@@ -137,6 +137,14 @@ export function useScanFiles (scan) {
 }
 
 export function useScans (search) {
+  /**
+   Hook to load all scans the server has. For more detail on the
+    format of the returned object, check out the REST API at the
+    <a href='https://github.com/romi/romidata'> romidata repository </a>.
+
+   - search: A string used to filter the scans. The filtering is made
+    server-side.
+   */
   const [scans] = useFetch(scansURIQuery(search), false)
 
   const enhancedScans = useMemo(

@@ -8,6 +8,7 @@ export function getArgs (func) {
     fnstr.lastIndexOf('/**'),
     fnstr.lastIndexOf('*/')
   )
+  if (!comm) return
   const res = args.split(',').map((d) => {
     const str = d.replace(/\/\*.*\*\//, '').trim()
     return str.split('=').map((d) => d.trim())

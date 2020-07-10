@@ -16,7 +16,7 @@ export default function FunctionTables ({ functions }) {
     {
       Object.keys(functions).map((d, i) => {
         const res = getArgs(functions[d])
-        return <div key={i}>
+        return res ? <div key={i}>
           <h3> {d} </h3>
           <h4> Parameters </h4>
           {
@@ -61,7 +61,7 @@ export default function FunctionTables ({ functions }) {
                 }} />
                 </>)
             })()}
-        </div>
+        </div> : null
       })
     }
   </div>
