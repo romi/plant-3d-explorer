@@ -1,0 +1,135 @@
+---
+name: 3D view interactors
+route: /Components/Interactors
+menu: Components
+---
+
+import { Props, Playground } from 'docz'
+import { Interactor, DocInteractor } from './index'
+import { useState } from 'react'
+import ToolButton, { tools } from './Tools'
+import ObjectFormatter from '../../../doc/components/objectFormatter'
+import { SketchPicker } from 'react-color'
+
+# 3D view interactors
+
+## Types of interactors
+
+If you're launched the app and opened a plant reconstruction, you noticed there 
+are some interactors in the 3d view. Some enable or disable layers, other make
+color pickers or other tools appear (with the help of a
+[MenuBox](/Components/UI#menubox) for example).
+
+Here's a quick summary of each type of interactors:
+
+### Camera
+
+These 2 interactors are in the center and control the display of 
+cameras in 3D space. The second one resets the 3D view.
+
+### Layers
+
+Those are what controls the display of the different layers of the 3D view.
+
+### Tools
+
+Those are displayed below the layers, and contain some tools related to each
+corresponding layer, for example color pickers for each layer.
+
+### Misc
+
+Those are on the right and contain miscellaneous tools like background color
+or the snapshot tool.
+
+### Overlay
+
+This is a special set of interactors. Designed to display stuff on top of the 
+3D view, at the time of writing this, it only manages the bubbles that appear 
+when clicking on an organ.
+
+## Interactor
+
+### Description
+
+The `Interactor` component is the basic interactive building block of those 
+buttons.
+
+### Props
+
+<Props of={DocInteractor} />
+
+### Example
+
+<Playground>
+  { () => {
+    const [active, setActive] = useState(false)
+    return <Interactor
+      activated={active}
+      onClick={() => { setActive(!active) }}
+    />
+  }}
+</Playground>
+
+This example is simply an interactor that toggles from active to inactive
+when clicking on it. Interactors are basically a button, of course, it needs
+to be associated with things like [MenuBox](/Components/UI#menubox)
+
+## Toolbutton
+
+### Description
+
+The Toolbutton is not a functional component in itself but a group
+of components assembled together to make it easier to create tools.
+
+The `index.js` file contains, alongside the ToolButton component, an object
+called tools, that associates tool names with numbers to keep track
+of which tool is currently active easily.
+
+Here's the tool object :
+
+<ObjectFormatter object={tools} />
+
+
+### Props
+
+<Props of={ToolButton} />
+
+### Example
+
+export const divStyle={
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'center'
+}
+
+<Playground>
+  { () => {
+    const toolsList = useState({
+      activeTool: null
+    }) 
+    return <div style={divStyle}>
+      <ToolButton
+        toolsList={toolsList}
+        tool={tools.colorPickers.mesh}
+        layer={true}
+        tooltipId='Tooltip 1'
+        >
+        <SketchPicker />
+      </ToolButton>
+      <ToolButton
+        toolsList={toolsList}
+        tool={tools.colorPickers.skeleton}
+        layer={true}
+        tooltipId='Tooltip 2'
+      >
+        <SketchPicker />
+      </ToolButton>
+    </div>
+  }}
+</Playground>
+
+In this example, you can see we use the ToolButton to display color pickers. 
+Since the object passed to the `toolsList` component is the same in both 
+ToolButtons, the tools are mutually exclusive. Try opening the second one while
+the first one is already open, and you'll see that the first tool will close 
+on its own.
