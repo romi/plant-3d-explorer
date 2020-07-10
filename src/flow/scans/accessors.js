@@ -44,7 +44,8 @@ import {
   relativeScansFilesURIEnhancer,
   relativeScanPhotoURIEnhancer,
   forgeCameraPointsEnhancer,
-  relativeScanFilesURIEnhancer
+  relativeScanFilesURIEnhancer,
+  forgeImageSetEnhancer
 } from './enhancers'
 
 export function useScan () {
@@ -71,6 +72,19 @@ export function useScan () {
   )
 
   return [enhancedScan]
+}
+
+export function useImageSet (id) {
+  const { match } = useReactRouter()
+  const selectedId = match.params.scanId
+  const [fileset] = useFetch(getScanFile(selectedId, 'files.json'))
+  const enhancedSet = useMemo(() => {
+    if (!fileset) return null
+    const imageSet = fileset.filesets.find((d) => d.id.toLowerCase().match(id))
+    return forgeImageSetEnhancer(imageSet.files
+      .map((d) => getScanFile(selectedId, imageSet.id + '/' + d.file)))
+  }, [selectedId, id, fileset])
+  return enhancedSet
 }
 
 export function useFile (id, file = null, options = {}) {
@@ -104,7 +118,7 @@ export function useFile (id, file = null, options = {}) {
   const path = useMemo(() => {
     if (!files) return
     const set = files.filesets.find((d) => d.id.match(id))
-    if (file) {
+    if (file && set) {
       return getScanFile(selectedId,
         (options.metadata ? 'metadata/' : '') +
           set.id + '/' +
@@ -113,6 +127,13 @@ export function useFile (id, file = null, options = {}) {
     return set
   }, [id, file, files, selectedId, options])
   return [useFetch(path), path]
+}
+
+export function useSegmentedPointCloud () {
+  const [[pointCloud]] = use3dFile('SegmentedPointCloud', 'SegmentedPointCloud')
+  const [[segmentation]] = useFile('SegmentedPointCloud',
+    'SegmentedPointCloud.json', { metadata: true, rawFileName: true })
+  return [pointCloud, segmentation]
 }
 
 export function use3dFile (id, file = null, options = {}) {

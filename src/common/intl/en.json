@@ -30,6 +30,7 @@
 
   "tooltip-mesh": "Mesh",
   "tooltip-pointcloud": "Point cloud",
+  "tooltip-segmentedpointcloud": "Segmented point cloud",
   "tooltip-skeleton": "Skeleton",
   "tooltip-organs": "Organs",
 
@@ -39,6 +40,8 @@
   
   "tooltip-mesh-color-picker": "Change the color of the mesh",
   "tooltip-point-cloud-color-picker": "Change the color of the point cloud",
+  "tooltip-segmentedpointcloud-color-picker":
+    "Change the colors of the segmented point cloud",
   "tooltip-skeleton-color-picker": "Change the color of the skeleton",
   "tooltip-organ-color-picker": "Color the selected organs",
   "tooltip-organ-global-color-picker": "Color every organ",
@@ -49,6 +52,7 @@
   "tooltip-delete-snapshot": "Click to delete this snapshot",
   "tooltip-take-snapshot": "Take a snapshot",
   "tooltip-download-snapshot": "Download the snapshot",
+  "tooltip-photoset": "Change the set of displayed images in the carousel",
 
   "tooltip-help-rotate": "Click left and hold to rotate",
   "tooltip-help-pan": "Click right and hold to pan",
@@ -60,6 +64,10 @@
   
   "snapshot-preview-alt": "The image preview couldn't load",
   "snapshot-preview": "Preview",
+  
+  "photoset-images": "Raw",
+  "photoset-undistorted": "Undistorted",
+  "photoset-masks": "Masks",
   
   "organ-bubble": "Organ {ORGAN_NUMBER}",
 

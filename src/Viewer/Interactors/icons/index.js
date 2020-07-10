@@ -41,16 +41,18 @@ import expandRaw from 'common/assets/ico.expand-white.14x14.svg'
 import shrinkRaw from 'common/assets/ico.shrink-white.14x14.svg'
 import paintRaw from 'common/assets/ico.paint.23x23.svg'
 import snapRaw from 'common/assets/ico.snap.24x24.svg'
+import segmentedPointCloudRaw from 'common/assets/ico.segmented_point_cloud.21x21.svg'
+import photoSetRaw from 'common/assets/ico.photoset.24x24.svg'
 
 const rules = (props) => ({
   default: {
-    '& path, & polygon': {
+    '& path, & polygon, & rect': {
       fill: 'white'
     },
     display: 'flex'
   },
   active: {
-    '& path, & polygon': {
+    '& path, & polygon, & rect': {
       fill: (props.isActivated && props.activated)
         ? 'white'
         : green
@@ -73,6 +75,15 @@ export const PointCloudIcon = IconHOC((props) => {
     rules={rules(props)}
     raw={pointCloudRaw}
     alt='point cloud icon'
+  />
+})
+
+export const SegmentedPointCloudIcon = IconHOC((props) => {
+  return <Icon
+    {...props}
+    rules={rules(props)}
+    raw={segmentedPointCloudRaw}
+    alt='segmented point cloud icon'
   />
 })
 
@@ -145,5 +156,14 @@ export const SnapIcon = IconHOC((props) => {
     rules={rules(props)}
     raw={snapRaw}
     alt='snap icon'
+  />
+})
+
+export const PhotoSetIcon = IconHOC((props) => {
+  return <Icon
+    {...props}
+    rules={rules(props)}
+    raw={photoSetRaw}
+    alt='photoset icon'
   />
 })
