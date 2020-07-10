@@ -16,15 +16,19 @@ export function getArgs (func) {
   }).map((d) => {
     const identifier = '- ' + d[0] + ': '
     const start = comm.indexOf(identifier) + identifier.length
-    const end = comm.indexOf('.', start)
-    d[2] = comm.substring(
-      start,
-      end
-    )
+    const descEnd = comm.indexOf('- ', start + 1)
+    const end = comm.lastIndexOf('.', descEnd !== -1 ? descEnd : +Infinity) + 1
+    if (start !== identifier.length - 1) {
+      d[2] = comm.substring(
+        start,
+        end
+      )
+    }
     return d
   })
+  const descEnd = comm.indexOf('- ')
   const desc = comm.substring(
-    0, comm.indexOf('.')
+    3, comm.lastIndexOf('.', descEnd !== -1 ? descEnd : +Infinity) + 1
   )
   return { desc: desc, args: res }
 }
