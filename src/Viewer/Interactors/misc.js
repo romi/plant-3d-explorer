@@ -145,6 +145,7 @@ function GenerateDownloadButton (props) {
     style={{ margin: 'auto', cursor: 'pointer' }}
     href={props.image}
     download='snapshot.png'
+    data-testid='gendlbutton'
     onClick={
       !props.image ? props.onGenerateClick : null
     }
@@ -199,7 +200,7 @@ export default function () {
   }, [misc.activeTool])
 
   return <MiscContainer>
-    <ToolButton
+    <ToolButton data-testid='background'
       toolsList={useMisc()}
       tool={tools.colorPickers.background}
       interactor={{
@@ -209,17 +210,19 @@ export default function () {
       icon={<PaintIcon
         isActivated={misc.activeTool === tools.colorPickers.background} />}
     >
-      <SketchPicker disableAlpha
-        onChange={
-          (color) => {
-            setColors({
-              ...colors,
-              background: color.hex
-            })
+      <div data-testid='background-color'>
+        <SketchPicker disableAlpha
+          onChange={
+            (color) => {
+              setColors({
+                ...colors,
+                background: color.hex
+              })
+            }
           }
-        }
-        color={colors.background}
-      />
+          color={colors.background}
+        />
+      </div>
       <ResetButton
         onClick={
           () => {
@@ -243,7 +246,7 @@ export default function () {
         flexDirection: 'column',
         justifyContent: 'center',
         alignContent: 'center'
-      }}>
+      }} data-testid='snapshot-menu'>
         <Tooltip
           style={{
             padding: 0,

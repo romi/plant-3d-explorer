@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, compareStyles } from 'rd/tools/test-utils'
+import { mockItem, render, compareStyles } from 'rd/tools/test-utils'
 import '@testing-library/jest-dom/extend-expect'
 import { format } from 'date-fns'
 import { useSorting } from 'flow/scans/accessors'
@@ -13,28 +13,6 @@ jest.mock('flow/scans/accessors', () => ({
     type: 'date'
   }, jest.fn()])
 }))
-
-const mockItem = {
-  id: '1',
-  thumbnailUri: 'testuri',
-  metadata: {
-    plant: 'Plant name',
-    species: 'Test species',
-    environment: 'Test environment',
-    date: new Date('2020-01-01T00:00:02').toString(),
-    files: {
-      archive: 'archive-link',
-      metadatas: 'metadatas-link'
-    }
-  },
-  hasMesh: true,
-  hasPointCloud: false,
-  hasSegmentedPointCloud: false,
-  hasSkeleton: true,
-  hasAngleData: false,
-  hasManualMeasures: false,
-  hasAutomatedMeasures: true
-}
 
 const mockItem2 = {
   ...mockItem,
