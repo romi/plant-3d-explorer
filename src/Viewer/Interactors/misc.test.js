@@ -94,4 +94,31 @@ describe('snapshot', () => {
     fireEvent.click(screen.queryByTestId(/gendlbutton/i))
     expect(mockSetSnapshot).toHaveBeenCalledTimes(calls + 1)
   })
+
+  it('preview is generated when image is not null and disappears when clicked',
+    () => {
+      fireEvent.click(interactors[1])
+      rerender(<Misc />)
+      expect(screen.queryByAltText(/Preview/i)).toBeFalsy()
+      mockSnapshot = { ...mockSnapshot, image: 'something' }
+      rerender(<Misc />)
+      const image = screen.queryByAltText(/Preview/i)
+      expect(image).toBeTruthy()
+      fireEvent.click(image)
+      rerender(<Misc />)
+      expect(screen.queryByAltText(/Preview/i)).toBeFalsy()
+    })
+})
+
+describe('photoset', () => {
+  it('renders correctly', () => {
+    expect(interactors[2]).toBeTruthy()
+  })
+
+  it('photo set menu renders when clicked', () => {
+    expect(screen.queryByTestId(/photoset-menu/i)).toBeFalsy()
+    fireEvent.click(interactors[2])
+    rerender(<Misc />)
+    expect(screen.queryByTestId(/photoset-menu/i)).toBeTruthy()
+  })
 })

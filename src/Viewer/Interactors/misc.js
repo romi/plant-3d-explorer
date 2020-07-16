@@ -349,11 +349,13 @@ export default function () {
       }}
       tooltipId='tooltip-photoset'
     >
-      <ChooserContainer>
-        <PhotoSetButton set='images' />
-        <PhotoSetButton set='undistorted' />
-        <PhotoSetButton set='masks' />
-      </ChooserContainer>
+      <div data-testid='photoset-menu'>
+        <ChooserContainer>
+          <PhotoSetButton set='images' />
+          <PhotoSetButton set='undistorted' />
+          <PhotoSetButton set='masks' />
+        </ChooserContainer>
+      </div>
     </ToolButton>
   </MiscContainer>
 }
