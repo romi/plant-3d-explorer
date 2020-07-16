@@ -123,7 +123,6 @@ export default function Carousel () {
   useEffect(
     () => {
       if (imageSet) {
-        // TODO change once the ids are unique
         setUrlList(imageSet.map((d) => d.path))
       }
     },
