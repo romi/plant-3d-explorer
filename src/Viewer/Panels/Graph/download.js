@@ -85,6 +85,7 @@ export function DownloadButton (props) {
   )
 
   return <a
+    data-testid='download-button'
     href={link}
     download={props.download}
     style={{
@@ -133,8 +134,10 @@ export function Download (props) {
     onClose={() => setActivated(false)}
   >
     <Tooltip>
-      <DownloadIcon
-        onClick={() => setActivated(!activated)} />
+      <div data-testid='icon' >
+        <DownloadIcon
+          onClick={() => setActivated(!activated)} />
+      </div>
       <TooltipContent>
         <H3>
           <FormattedMessage id='tooltip-download-sequence' />
