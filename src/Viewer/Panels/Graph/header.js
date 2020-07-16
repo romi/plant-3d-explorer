@@ -138,7 +138,7 @@ const HelpContent = styled(H3)({
 })
 
 export default function Header (props) {
-  return <>
+  return <div data-testid='header'>
     <Top>
       <Title>
         <FormattedMessage id={props.id} />
@@ -160,10 +160,12 @@ export default function Header (props) {
         <Download
           data={props.data}
         />
-        <CloseIcon
-          src={closeIcon}
-          onClick={props.onClose}
-        />
+        <div data-testid='close-icon' >
+          <CloseIcon
+            src={closeIcon}
+            onClick={props.onClose}
+          />
+        </div>
       </Title>
       <Values>
         <LegendItem>
@@ -191,5 +193,5 @@ export default function Header (props) {
         }
       </Values>
     </Top>
-  </>
+  </div>
 }
