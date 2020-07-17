@@ -35,6 +35,23 @@ npm run test
 Feel free to read [this](https://create-react-app.dev/docs/running-tests/) for
 more information.
 
+## Writing tests
+
+### Imports
+
+To test things, don't use the imports from `react-testing-library`, but import
+those functions from `rd/tools/test-utils.js`. The reason is that this import
+has a wrapper instead, which ensures the components are renders correctly.
+
+### Good practices
+
+When writing tests, try to reuse code as much as possible by using the
+beforeEach, beforeAll, and other functions provided by Jest.
+
+Use describe blocks to organize tests in logical parts (of course, you don't 
+need to use describe blocks if it's very small tests, or if it doesn't make a 
+lot of sense to use them).
+
 ## Continous integration
 
 At the time of writing this documentation, continous integration is
