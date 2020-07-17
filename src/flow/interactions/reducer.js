@@ -35,6 +35,12 @@ export const initialState = {
 
   organInfo: null,
 
+  clickedPoint: null,
+  selectedPoints: [],
+  labels: [],
+  selectedLabel: null,
+  selectionMethod: null,
+
   colors: {
     mesh: { rgb: '#96c0a7', a: 1 },
     pointCloud: { rgb: '#f8de96', a: 1 },
@@ -115,6 +121,31 @@ export default function settingsReducer (state = initialState, action) {
       return {
         ...state,
         organInfo: action.value
+      }
+    case 'SET_SELECTED_POINTS':
+      return {
+        ...state,
+        selectedPoints: action.value
+      }
+    case 'SET_CLICKED_POINT':
+      return {
+        ...state,
+        clickedPoint: action.value
+      }
+    case 'SET_LABELS':
+      return {
+        ...state,
+        labels: action.value
+      }
+    case 'SET_SELECTED_LABEL':
+      return {
+        ...state,
+        selectedLabel: action.value
+      }
+    case 'SET_SELECTION_METHOD':
+      return {
+        ...state,
+        selectionMethod: action.value
       }
     default:
       return state

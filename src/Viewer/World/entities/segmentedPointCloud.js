@@ -20,17 +20,14 @@ const vertexShader = `
 `
 
 export default class SegmentedPointCloud extends PointCloud {
-  constructor (geometry, segmentation, parent) {
+  constructor (geometry, segmentation, uniqueLabels, parent) {
     super(geometry, parent)
-
-    const uniqueLabels = segmentation.labels.filter(
-      (value, index, self) => self.indexOf(value) === index
-    )
 
     const labelNumbers = segmentation.labels.map((d) => {
       return uniqueLabels.indexOf(d)
     })
     this.labelNumbers = labelNumbers
+    this.uniqueLabels = uniqueLabels
 
     // Set default colors
     const defaultColors = uniqueLabels.map((_, i) => {
@@ -62,6 +59,19 @@ export default class SegmentedPointCloud extends PointCloud {
       this.colors = colors
       this.timeoutFunction = setTimeout(() => { this.refreshColors() }, 500)
     }
+  }
+
+  setLabels (label, points) {
+    const number = this.uniqueLabels.indexOf(label)
+    points.forEach((d) => {
+      this.labelNumbers[d] = number
+    })
+
+    this.refreshColors()
+  }
+
+  selectByProximity (point) {
+    console.log('ok, got ', point)
   }
 
   refreshColors () {

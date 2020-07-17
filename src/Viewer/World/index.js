@@ -33,8 +33,8 @@ import styled from '@emotion/styled'
 import { useElementMouse } from 'rd/tools/hooks/mouse'
 
 import { useLayers } from 'flow/settings/accessors'
-import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useColor,
-  useSnapshot, useOrganInfo } from 'flow/interactions/accessors'
+import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useColor, useClickedPoint, useLabels,
+  useSnapshot, useOrganInfo, useSelectedPoints, useSelectedLabel, useSelectionMethod } from 'flow/interactions/accessors'
 import { useScanFiles, useScan,
   useSegmentedPointCloud } from 'flow/scans/accessors'
 
@@ -72,9 +72,14 @@ export default function WorldComponent (props) {
   const [hoveredAngle] = useHoveredAngle()
   const [selectedAngle] = useSelectedAngle()
   const [colors, setColors] = useColor()
+  const [, setLabels] = useLabels()
+  const [selectedLabel, setSelectedLabel] = useSelectedLabel()
+  const [selectedPoints, setSelectedPoints] = useSelectedPoints()
+  const [selectionMethod, setSelectionMethod] = useSelectionMethod()
   const [snapshot, setSnapshot] = useSnapshot()
   const mouse = useElementMouse(canvasRef)
   const [, setOrganInfo] = useOrganInfo()
+  const [clickedPoint, setClickedPoint] = useClickedPoint()
   const [lastSelectedCamera] = useState({ camera: null })
 
   const [scan] = useScan()
@@ -257,9 +262,37 @@ export default function WorldComponent (props) {
           const organInfo = world.selectOrgan()
           if (organInfo) setOrganInfo(organInfo + 1)
         }
+        if (viewport3d.rightClicked) {
+          const selectedPoint = world.selectSegPoint()
+          if (selectedPoint) {
+            setClickedPoint(selectedPoint)
+          }
+        }
       }
     },
     [world, viewport3d]
+  )
+
+  useEffect(
+    () => {
+      if (selectedLabel && selectedPoints && world) {
+        world.setSegmentedPointCloudLabels(selectedLabel, selectedPoints)
+        setSelectedPoints(null)
+        setSelectedLabel(null)
+      }
+    },
+    [selectedLabel, selectedPoints]
+  )
+
+  useEffect(
+    () => {
+      if (selectionMethod && world && clickedPoint) {
+        setSelectedPoints(world.selectSegPoints(selectionMethod, clickedPoint))
+        setSelectionMethod(null)
+        setClickedPoint(null)
+      }
+    },
+    [selectionMethod, clickedPoint]
   )
 
   useEffect(
@@ -303,13 +336,17 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world && segmentedPointCloud && segmentation) {
+        const uniqueLabels = segmentation.labels.filter(
+          (value, index, self) => self.indexOf(value) === index
+        )
         world.setSegmentedPointCloudGeometry(segmentedPointCloud,
-          segmentation)
+          segmentation, uniqueLabels)
         world.setLayers(layers)
         setColors({
           ...colors,
           segmentedPointCloud: world.getSegementedPointCloudColors()
         })
+        setLabels(uniqueLabels)
       }
     },
     [world, segmentedPointCloud, segmentation]

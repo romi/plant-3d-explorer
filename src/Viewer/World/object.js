@@ -387,10 +387,10 @@ export default class World {
     this.pointCloud = new PointCloud(geometry, this.viewerObjects)
   }
 
-  setSegmentedPointCloudGeometry (geometry, segmentation) {
+  setSegmentedPointCloudGeometry (geometry, segmentation, uniqueLabels) {
     geometry.computeBoundingBox()
     this.segmentedPointCloud = new SegmentedPointCloud(geometry,
-      segmentation, this.viewerObjects)
+      segmentation, uniqueLabels, this.viewerObjects)
   }
 
   getSegementedPointCloudColors () {
@@ -399,6 +399,10 @@ export default class World {
 
   setSegmentedPointCloudColor (color) {
     this.segmentedPointCloud.setColor(color)
+  }
+
+  setSegmentedPointCloudLabels (labels, points) {
+    this.segmentedPointCloud.setLabels(labels, points)
   }
 
   setPointCloudColor (color) {
@@ -461,6 +465,34 @@ export default class World {
         ? this.anlesPoints.group.children.indexOf(intersects[0].object)
         : null
       : null
+  }
+
+  selectSegPoint () {
+    if (!this.segmentedPointCloud) return null
+    const { width, height } = this.renderer.getSize()
+    const virtualMouse = new THREE.Vector2(
+      (this.mouse.x / width) * 2 - 1,
+      -(this.mouse.y / height) * 2 + 1
+    )
+    this.raycaster.setFromCamera(virtualMouse, this.controls.object)
+    const intersects = this.raycaster
+      .intersectObject(this.segmentedPointCloud.object)
+
+    return intersects.length
+      ? intersects[0].index
+      : null
+  }
+
+  selectSegPoints (method, point) {
+    switch (method) {
+      case 'proximity':
+        return this.segmentedPointCloud.selectByProximity(point)
+      case 'sphere':
+        console.log('ouki')
+        return [] // TODO
+      default:
+        return [] // TODO
+    }
   }
 
   interaction () {
