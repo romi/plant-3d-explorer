@@ -12,6 +12,12 @@ import { H3 } from 'common/styles/UI/Text/titles'
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 import MenuBox, { MenuBoxContent } from 'rd/UI/MenuBox'
 
+const hex2RGB = (hex) => {
+  return { r: parseInt(hex[1] + hex[2], 16),
+    g: parseInt(hex[3] + hex[4], 16),
+    b: parseInt(hex[5] + hex[6], 16) }
+}
+
 export const Container = styled.div({
   position: 'absolute',
   top: 60,
@@ -93,9 +99,7 @@ export default function MiscInteractors () {
               })
             }
           }
-          color={colors.mesh.rgb +
-          Math.round((colors.mesh.a * 0xff)).toString(16)}
-
+          color={{ ...hex2RGB(colors.mesh.rgb), a: colors.mesh.a }}
         />
         <ResetButton
           onClick={
@@ -128,8 +132,7 @@ export default function MiscInteractors () {
               })
             }
           }
-          color={colors.pointCloud.rgb +
-            Math.round(colors.pointCloud.a * 0xff).toString(16)}
+          color={{ ...hex2RGB(colors.pointCloud.rgb), a: colors.pointCloud.a }}
         />
         <ResetButton
           onClick={
@@ -209,8 +212,7 @@ export default function MiscInteractors () {
               })
             }
           }
-          color={colors.skeleton.rgb +
-            Math.round(colors.skeleton.a * 0xff).toString(16)}
+          color={{ ...hex2RGB(colors.skeleton.rgb), a: colors.skeleton.a }}
         />
         <ResetButton
           onClick={
@@ -271,10 +273,14 @@ export default function MiscInteractors () {
           }
           color={(selectedAngle !== undefined && selectedAngle !== null &&
             colors.organs[selectedAngle])
-            ? colors.organs[selectedAngle].rgb +
-              Math.round(colors.organs[selectedAngle].a * 0xff).toString(16)
-            : colors.globalOrganColors[0].rgb +
-              Math.round(colors.globalOrganColors[0].a * 0xff).toString(16)}
+            ? {
+              ...hex2RGB(colors.organs[selectedAngle].rgb),
+              a: colors.organs[selectedAngle].a
+            }
+            : {
+              ...hex2RGB(colors.globalOrganColors[0].rgb),
+              a: colors.globalOrganColors[0].a
+            }}
         />
         <ResetButton
           onClick={
