@@ -478,9 +478,11 @@ export default class World {
     const intersects = this.raycaster
       .intersectObject(this.segmentedPointCloud.object)
 
-    return intersects.length
+    const result = intersects.length
       ? intersects[0].index
       : null
+
+    return result
   }
 
   selectSegPoints (method, point) {
@@ -490,6 +492,8 @@ export default class World {
       case 'sphere':
         console.log('ouki')
         return [] // TODO
+      case 'same label':
+        return this.segmentedPointCloud.selectSameLabel(point)
       default:
         return [] // TODO
     }

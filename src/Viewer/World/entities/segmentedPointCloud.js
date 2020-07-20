@@ -47,6 +47,16 @@ export default class SegmentedPointCloud extends PointCloud {
     this.object.material.setValues({ vertexShader: vertexShader })
     this.geometry.addAttribute('customColor',
       new THREE.BufferAttribute(this.colorsArray, 3))
+
+    // Transform positions to vector 3 for practical reasons
+    this.positions = []
+    this.geometry.attributes.position.array.forEach(
+      (d, i, array) => {
+        if (i % 3 === 0) {
+          this.positions.push(new THREE.Vector3(d, array[i + 1], array[i + 2]))
+        }
+      }
+    )
   }
 
   getColors () {
@@ -70,8 +80,55 @@ export default class SegmentedPointCloud extends PointCloud {
     this.refreshColors()
   }
 
-  selectByProximity (point) {
-    console.log('ok, got ', point)
+  selectByProximity (clickedPoint) {
+    /* Recursive helper function that selects all points of the same label
+        from a point by creating a sphere around it with only points of the
+        same label inside of it. This process is repeated for the 6 points in
+        the sphere that are the farthest from the center, until no point is
+        added to the set. */
+    const maxSphere = (point, set) => {
+      let minDist = +Infinity
+      let max = { x: 0, y: 0, z: 0 }
+      let min = { x: +Infinity, y: +Infinity, z: +Infinity }
+      let nextPointsMax = { x: 0, y: 0, z: 0 }
+      let nextPointsMin = { x: 0, y: 0, z: 0 }
+      const num = this.labelNumbers[point]
+      this.positions.forEach((d, i, array) => {
+        if (i !== point && this.labelNumbers[i] !== num) {
+          const dist = array[point].distanceTo(d)
+          if (dist < minDist) {
+            minDist = dist
+          }
+        }
+      })
+      const oldLength = set.size
+      this.positions.forEach((d, i, array) => {
+        const dist = d.distanceTo(array[point])
+        if (this.labelNumbers[i] === num && (dist < minDist)) {
+          set.add(i)
+          for (let key in max) {
+            if (d[key] > max[key]) {
+              max[key] = d[key]
+              nextPointsMax[key] = i
+            }
+
+            if (d[key] < min[key]) {
+              min[key] = d[key]
+              nextPointsMin[key] = i
+            }
+          }
+        }
+      })
+      if (oldLength !== set.size) {
+        for (let key in nextPointsMax) {
+          maxSphere(nextPointsMax[key], set)
+          maxSphere(nextPointsMin[key], set)
+        }
+      }
+    }
+    let set = new Set()
+    maxSphere(clickedPoint, set)
+    return [...set]
   }
 
   refreshColors () {
