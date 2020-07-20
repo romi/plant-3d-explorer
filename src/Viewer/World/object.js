@@ -449,17 +449,21 @@ export default class World {
 
   /* Casts a ray and checks if it intersects any organ. If it
     does, returns the index of the organ, returns null otherwise */
-  selectOrgan () {
-    if (!this.anlesPoints) return null
+
+  castRayFromMouse (targetObjects) {
     const { width, height } = this.renderer.getSize()
     const virtualMouse = new THREE.Vector2(
       (this.mouse.x / width) * 2 - 1,
       -(this.mouse.y / height) * 2 + 1
     )
     this.raycaster.setFromCamera(virtualMouse, this.controls.object)
-    const intersects = this.raycaster
-      .intersectObjects(this.anlesPoints.group.children, true)
+    return this.raycaster
+      .intersectObjects(targetObjects, true)
+  }
 
+  selectOrgan () {
+    if (!this.anlesPoints) return null
+    const intersects = this.castRayFromMouse(this.anlesPoints.group.children)
     return intersects.length
       ? this.anlesPoints.group.children.indexOf(intersects[0].object) !== -1
         ? this.anlesPoints.group.children.indexOf(intersects[0].object)
@@ -469,19 +473,10 @@ export default class World {
 
   selectSegPoint () {
     if (!this.segmentedPointCloud) return null
-    const { width, height } = this.renderer.getSize()
-    const virtualMouse = new THREE.Vector2(
-      (this.mouse.x / width) * 2 - 1,
-      -(this.mouse.y / height) * 2 + 1
-    )
-    this.raycaster.setFromCamera(virtualMouse, this.controls.object)
-    const intersects = this.raycaster
-      .intersectObject(this.segmentedPointCloud.object)
-
+    const intersects = this.castRayFromMouse([this.segmentedPointCloud.object])
     const result = intersects.length
       ? intersects[0].index
       : null
-
     return result
   }
 
@@ -490,12 +485,11 @@ export default class World {
       case 'proximity':
         return this.segmentedPointCloud.selectByProximity(point)
       case 'sphere':
-        console.log('ouki')
         return [] // TODO
       case 'same label':
         return this.segmentedPointCloud.selectSameLabel(point)
       default:
-        return [] // TODO
+        return []
     }
   }
 
@@ -503,16 +497,7 @@ export default class World {
     if (
       (this.mouse.x !== this.oldMouse.x) || (this.mouse.y !== this.oldMouse.y)
     ) {
-      const { width, height } = this.renderer.getSize()
-
-      const virtualMouse = new THREE.Vector2(
-        (this.mouse.x / width) * 2 - 1,
-        -(this.mouse.y / height) * 2 + 1
-      )
-
-      this.raycaster.setFromCamera(virtualMouse, this.controls.object)
-      const intersects = this.raycaster
-        .intersectObjects(this.scene.children, true)
+      const intersects = this.castRayFromMouse(this.scene.children)
 
       if (intersects.length) {
         if (intersects[0].object.uuid !== this.hoveredUUID) {

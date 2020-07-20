@@ -80,6 +80,16 @@ export default class SegmentedPointCloud extends PointCloud {
     this.refreshColors()
   }
 
+  selectSphere (point) {
+  }
+
+  selectSameLabel (point) {
+    const num = this.labelNumbers[point]
+    return this.labelNumbers.map((d, i) => {
+      return d === num ? i : null
+    })
+  }
+
   selectByProximity (clickedPoint) {
     /* Recursive helper function that selects all points of the same label
         from a point by creating a sphere around it with only points of the

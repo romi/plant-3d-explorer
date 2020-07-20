@@ -161,6 +161,12 @@ function ContextMenu (props) {
           </Option>
           <Option
             onClick={() => {
+              setSelectionMethod('same label')
+            }}>
+            Select all points with the same label
+          </Option>
+          <Option
+            onClick={() => {
               setSelectionMethod('sphere')
             }}>
             Make a custom selection from this point
