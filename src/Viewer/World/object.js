@@ -480,17 +480,54 @@ export default class World {
     return result
   }
 
-  selectSegPoints (method, point) {
-    switch (method) {
-      case 'proximity':
-        return this.segmentedPointCloud.selectByProximity(point)
-      case 'sphere':
-        return [] // TODO
-      case 'same label':
-        return this.segmentedPointCloud.selectSameLabel(point)
-      default:
-        return []
+  removeSphere () {
+    if (this.sphere) {
+      this.scene.remove(this.sphere)
     }
+  }
+
+  displaySphere (pos, rad) {
+    this.removeSphere()
+    const geometry = new THREE.SphereGeometry(rad, 32, 32)
+    const material = new THREE.MeshBasicMaterial({
+      color: 0xaaaaaa,
+      opacity: 0.7,
+      transparent: true
+    })
+    this.sphere = new THREE.Mesh(geometry, material)
+    this.scene.add(this.sphere)
+    this.sphere.position.set(pos.x, pos.y, pos.z)
+  }
+
+  updateSphere (point) {
+    if (!this.segmentedPointCloud) return null
+    const intersects = this.castRayFromMouse([this.segmentedPointCloud.object])
+    const pos = this.segmentedPointCloud.getPointPos(point)
+    if (intersects.length) {
+      this.displaySphere(pos,
+        intersects[0].point
+          .distanceTo(pos))
+    }
+  }
+
+  selectSegBySphere (point) {
+    if (!this.segmentedPointCloud) return null
+    const intersects = this.castRayFromMouse([this.segmentedPointCloud.object])
+    if (intersects.length) {
+      this.removeSphere()
+      return this.segmentedPointCloud.selectBySphere(point, intersects[0].index)
+    }
+    this.removeSphere()
+  }
+
+  selectSegByProximity (point) {
+    if (!this.segmentedPointCloud) return null
+    return this.segmentedPointCloud.selectByProximity(point)
+  }
+
+  selectSegBySameLabel (point) {
+    if (!this.segmentedPointCloud) return null
+    return this.segmentedPointCloud.selectSameLabel(point)
   }
 
   interaction () {

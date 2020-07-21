@@ -210,6 +210,7 @@ export default function OverlayInteractors () {
   const [organInfo, setOrganInfo] = useOrganInfo()
   const [clickedPoint, setClickedPoint] = useClickedPoint()
   const [selectedPoints, setSelectedPoints] = useSelectedPoints()
+  const [selectionMethod] = useSelectionMethod()
   const [bubblePositions, setBubblePositions] = useState([])
   const [contextPosition, setContextPosition] = useState(null)
   const [draggingBubble, setDraggingBubble] = useState()
@@ -236,7 +237,7 @@ export default function OverlayInteractors () {
   )
 
   return <div data-testid='overlay-interactors'>
-    {clickedPoint && contextPosition
+    {clickedPoint && contextPosition && !selectionMethod
       ? <ContextMenu
         point={clickedPoint}
         pos={contextPosition}

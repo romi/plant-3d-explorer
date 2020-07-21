@@ -80,7 +80,20 @@ export default class SegmentedPointCloud extends PointCloud {
     this.refreshColors()
   }
 
-  selectSphere (point) {
+  getPointPos (point) {
+    return this.object.localToWorld(this.positions[point].clone())
+  }
+
+  selectBySphere (base, point) {
+    const origin = this.positions[base]
+    const dist = origin.distanceTo(this.positions[point])
+    let result = []
+    this.positions.forEach((d, i) => {
+      if (d.distanceTo(origin) <= dist) {
+        result.push(i)
+      }
+    })
+    return result
   }
 
   selectSameLabel (point) {

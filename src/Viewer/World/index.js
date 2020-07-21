@@ -286,13 +286,38 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
+      if (selectionMethod === 'sphere' && world && clickedPoint) {
+        if (viewport3d.clicked) {
+          setSelectionMethod('sphere end')
+        } else {
+          world.updateSphere(clickedPoint)
+        }
+      }
+    },
+    [selectionMethod, world, clickedPoint, mouse, viewport3d]
+  )
+
+  useEffect(
+    () => {
       if (selectionMethod && world && clickedPoint) {
-        setSelectedPoints(world.selectSegPoints(selectionMethod, clickedPoint))
+        switch (selectionMethod) {
+          case 'proximity':
+            setSelectedPoints(world.selectSegByProximity(clickedPoint))
+            break
+          case 'same label':
+            setSelectedPoints(world.selectSegBySameLabel(clickedPoint))
+            break
+          case 'sphere end':
+            setSelectedPoints(world.selectSegBySphere(clickedPoint))
+            break
+          default:
+            return
+        }
         setSelectionMethod(null)
         setClickedPoint(null)
       }
     },
-    [selectionMethod, clickedPoint]
+    [selectionMethod, clickedPoint, world]
   )
 
   useEffect(
