@@ -35,6 +35,11 @@ export default function useViewport2d (width, height) {
   const [targetZoom, setTargetZoom] = useState({ x: 0, y: 0 })
   const [event, setEvent] = useState(null)
   const [result, setResult] = useState(null)
+  const [clicked, setClicked] = useState(false)
+
+  if (clicked) {
+    setClicked(false)
+  }
 
   function reset (
     opts = {
@@ -92,6 +97,7 @@ export default function useViewport2d (width, height) {
         setEvent('pan')
       }
     },
+    onClick: () => { setClicked(true) },
     onWheel: (e) => {
       const newZoom = Math.round(
         Math.min(
@@ -147,6 +153,7 @@ export default function useViewport2d (width, height) {
   return [
     result,
     eventFns,
-    reset
+    reset,
+    clicked
   ]
 }

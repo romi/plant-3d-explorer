@@ -54,13 +54,13 @@ it('renders correctly', () => {
 describe('background color', () => {
   it('color picker for background displays', () => {
     expect(screen.queryByTestId(/background-color/i)).toBeFalsy()
-    fireEvent.click(interactors[0])
+    fireEvent.click(interactors[1])
     rerender(<Misc />)
     expect(screen.queryByTestId(/background-color/i)).toBeTruthy()
   })
 
   it('color picker calls the correct function', () => {
-    fireEvent.click(interactors[0])
+    fireEvent.click(interactors[1])
     rerender(<Misc />)
     const picker = screen.queryByTestId(/background-color/i)
       .querySelector('input')
@@ -73,14 +73,14 @@ describe('background color', () => {
 describe('snapshot', () => {
   it('snapshot menu displays', () => {
     expect(screen.queryByTestId(/snapshot-menu/i)).toBeFalsy()
-    fireEvent.click(interactors[1])
+    fireEvent.click(interactors[2])
     rerender(<Misc />)
     expect(screen.queryByTestId(/snapshot-menu/i)).toBeTruthy()
   })
 
   it('changing resolution calls correct functions', () => {
     const calls = mockSetSnapshot.mock.calls.length
-    fireEvent.click(interactors[1])
+    fireEvent.click(interactors[2])
     rerender(<Misc />)
     const inputX = queryByPlaceholderText(
       screen.queryByTestId(/snapshot-menu/i),
@@ -97,7 +97,7 @@ describe('snapshot', () => {
 
   it('preview is generated when image is not null and disappears when clicked',
     () => {
-      fireEvent.click(interactors[1])
+      fireEvent.click(interactors[2])
       rerender(<Misc />)
       expect(screen.queryByAltText(/Preview/i)).toBeFalsy()
       mockSnapshot = { ...mockSnapshot, image: 'something' }
@@ -112,12 +112,12 @@ describe('snapshot', () => {
 
 describe('photoset', () => {
   it('renders correctly', () => {
-    expect(interactors[2]).toBeTruthy()
+    expect(interactors[3]).toBeTruthy()
   })
 
   it('photo set menu renders when clicked', () => {
     expect(screen.queryByTestId(/photoset-menu/i)).toBeFalsy()
-    fireEvent.click(interactors[2])
+    fireEvent.click(interactors[3])
     rerender(<Misc />)
     expect(screen.queryByTestId(/photoset-menu/i)).toBeTruthy()
   })

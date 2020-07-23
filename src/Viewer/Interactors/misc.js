@@ -286,7 +286,7 @@ export default function () {
           <InputResolution
             style={{ margin: 'auto' }}
             value={ruler.measure ? (misc.scale * ruler.measure).toFixed(3) : 0}
-            readonly
+            readOnly
           />
           <H3> cm </H3>
         </div>

@@ -88,7 +88,7 @@ export default function WorldComponent (props) {
 
   const [[meshGeometry], [pointCloudGeometry]] = useScanFiles(scan)
   const [segmentedPointCloud, segmentation] = useSegmentedPointCloud()
-  const [viewport, event2dFns, resetViewport2d] = useViewport2d(
+  const [viewport, event2dFns, resetViewport2d, clicked2d] = useViewport2d(
     bounds.width || getSize().width,
     bounds.height || getSize().height
   )
@@ -278,7 +278,7 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world && (ruler.scaling || ruler.measuring)) {
-        if (viewport3d.clicked) {
+        if (viewport3d.clicked || clicked2d) {
           if (measureClick) {
             const measure = world.endMeasure(ruler.scaling)
             setMeasureClick(false)
@@ -296,7 +296,7 @@ export default function WorldComponent (props) {
         }
       }
     },
-    [viewport3d, world]
+    [viewport3d, world, clicked2d]
   )
 
   useEffect(
@@ -495,6 +495,7 @@ export default function WorldComponent (props) {
       onMouseUp={eventFns.onMouseUp}
       onMouseMove={eventFns.onMouseMove}
       onWheel={eventFns.onWheel}
+      onClick={eventFns.onClick}
     />
   </Container>
 }

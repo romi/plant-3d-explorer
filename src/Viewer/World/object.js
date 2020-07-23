@@ -566,7 +566,8 @@ export default class World {
     const geometry = new THREE.BufferGeometry().setFromPoints(points)
     const material = new THREE.LineBasicMaterial({
       color: 0xaaaaaa,
-      linewidth: 5
+      linewidth: 5,
+      depthTest: false
     })
     this.line = new THREE.Line(geometry, material)
     this.scene.add(this.line)
@@ -603,7 +604,8 @@ export default class World {
     const geometry = new THREE.BufferGeometry().setFromPoints(points)
     const material = new THREE.LineBasicMaterial({
       color: 0xaaaaaa,
-      linewidth: 5
+      linewidth: 5,
+      depthTest: false
     })
     this.line = new THREE.Line(geometry, material)
     this.scene.add(this.line)
