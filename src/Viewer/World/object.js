@@ -545,9 +545,9 @@ export default class World {
   }
 
   startMeasure () {
+    this.clearLine()
     const intersects = this.castRayFromMouse(this.scene.children)
     if (intersects && intersects.length) {
-      console.log(intersects)
       this.measureStartingPoint = intersects[0].point
     } else {
       this.measureStartingPoint = this.getVirtualMouse()
@@ -573,7 +573,7 @@ export default class World {
   }
 
   clearLine () {
-    this.scene.remove(this.line)
+    if (this.line) this.scene.remove(this.line)
   }
 
   updateLine () {

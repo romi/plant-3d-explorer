@@ -59,7 +59,9 @@ export const initialState = {
 
   ruler: {
     scaling: false,
-    measuring: false
+    measuring: false,
+    measure: 0,
+    scaleSet: false
   },
 
   reset3dViewFn: null,

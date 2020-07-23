@@ -57,6 +57,7 @@
   "tooltip-scale-button":
     "Setup measurements by specifying a distance equal to the scale above",
   "tooltip-measure-button": "Make a measure on the model",
+  "tooltip-scale-needed": "You must define a scale before measuring",
 
   "tooltip-help-rotate": "Click left and hold to rotate",
   "tooltip-help-pan": "Click right and hold to pan",
@@ -76,6 +77,7 @@
   "ruler-scale": "Make an interactive measure",
   "scale-button": "Scale",
   "measure-button": "Measure",
+  "current-measure": "Current measure",
   
   "organ-bubble": "Organ {ORGAN_NUMBER}",
 

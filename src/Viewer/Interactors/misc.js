@@ -254,6 +254,7 @@ export default function () {
         </Tooltip>
         <Tooltip>
           <Interactor
+            isDisabled={!ruler.scaleSet}
             style={{ margin: 'auto', width: '100%' }}
             activated={ruler.measuring}
             isButton
@@ -267,9 +268,28 @@ export default function () {
             <H2> <FormattedMessage id='measure-button' /> </H2>
           </Interactor>
           <TooltipContent>
-            <H3> <FormattedMessage id='tooltip-measure-button' /> </H3>
+            <H3>
+              <FormattedMessage
+                id={ruler.scaleSet ? 'tooltip-measure-button' : 'tooltip-scale-needed'} />
+            </H3>
           </TooltipContent>
         </Tooltip>
+        <H3 style={{ margin: 'auto', marginTop: 10 }}>
+          <FormattedMessage id='current-measure' />
+        </H3>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'row',
+          margin: 'auto',
+          marginBottom: 10
+        }} >
+          <InputResolution
+            style={{ margin: 'auto' }}
+            value={ruler.measure ? (misc.scale * ruler.measure).toFixed(3) : 0}
+            readonly
+          />
+          <H3> cm </H3>
+        </div>
       </div>
     </ToolButton>
     <ToolButton data-testid='background'

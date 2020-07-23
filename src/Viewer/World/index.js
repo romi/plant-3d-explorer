@@ -280,9 +280,15 @@ export default function WorldComponent (props) {
       if (world && (ruler.scaling || ruler.measuring)) {
         if (viewport3d.clicked) {
           if (measureClick) {
-            console.log(world.endMeasure(ruler.scaling))
+            const measure = world.endMeasure(ruler.scaling)
             setMeasureClick(false)
-            setRuler({ ...ruler, scaling: false, measuring: false })
+            setRuler({
+              ...ruler,
+              scaling: false,
+              measuring: false,
+              measure: measure,
+              scaleSet: ruler.scaling || ruler.scaleSet
+            })
           } else {
             world.startMeasure()
             setMeasureClick(true)
