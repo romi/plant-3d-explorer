@@ -387,10 +387,10 @@ export default class World {
     this.pointCloud = new PointCloud(geometry, this.viewerObjects)
   }
 
-  setSegmentedPointCloudGeometry (geometry, segmentation) {
+  setSegmentedPointCloudGeometry (geometry, segmentation, uniqueLabels) {
     geometry.computeBoundingBox()
     this.segmentedPointCloud = new SegmentedPointCloud(geometry,
-      segmentation, this.viewerObjects)
+      segmentation, uniqueLabels, this.viewerObjects)
   }
 
   getSegementedPointCloudColors () {
@@ -399,6 +399,10 @@ export default class World {
 
   setSegmentedPointCloudColor (color) {
     this.segmentedPointCloud.setColor(color)
+  }
+
+  setSegmentedPointCloudLabels (labels, points) {
+    this.segmentedPointCloud.setLabels(labels, points)
   }
 
   setPointCloudColor (color) {
@@ -445,17 +449,21 @@ export default class World {
 
   /* Casts a ray and checks if it intersects any organ. If it
     does, returns the index of the organ, returns null otherwise */
-  selectOrgan () {
-    if (!this.anlesPoints) return null
+
+  castRayFromMouse (targetObjects) {
     const { width, height } = this.renderer.getSize()
     const virtualMouse = new THREE.Vector2(
       (this.mouse.x / width) * 2 - 1,
       -(this.mouse.y / height) * 2 + 1
     )
     this.raycaster.setFromCamera(virtualMouse, this.controls.object)
-    const intersects = this.raycaster
-      .intersectObjects(this.anlesPoints.group.children, true)
+    return this.raycaster
+      .intersectObjects(targetObjects, true)
+  }
 
+  selectOrgan () {
+    if (!this.anlesPoints) return null
+    const intersects = this.castRayFromMouse(this.anlesPoints.group.children)
     return intersects.length
       ? this.anlesPoints.group.children.indexOf(intersects[0].object) !== -1
         ? this.anlesPoints.group.children.indexOf(intersects[0].object)
@@ -463,20 +471,80 @@ export default class World {
       : null
   }
 
+  selectSegPoint () {
+    if (!this.segmentedPointCloud) return null
+    const intersects = this.castRayFromMouse([this.segmentedPointCloud.object])
+    const result = intersects.length
+      ? intersects[0].index
+      : null
+    return result
+  }
+
+  removeSphere () {
+    if (this.sphere) {
+      this.scene.remove(this.sphere)
+    }
+  }
+
+  displaySphere (pos, rad) {
+    this.removeSphere()
+    const geometry = new THREE.SphereGeometry(rad, 32, 32)
+    const material = new THREE.MeshBasicMaterial({
+      color: 0xaaaaaa,
+      opacity: 0.7,
+      transparent: true
+    })
+    this.sphere = new THREE.Mesh(geometry, material)
+    this.scene.add(this.sphere)
+    this.sphere.position.set(pos.x, pos.y, pos.z)
+  }
+
+  updateSphere (point) {
+    if (!this.segmentedPointCloud) return null
+    const intersects = this.castRayFromMouse([this.segmentedPointCloud.object])
+    const pos = this.segmentedPointCloud.getPointPos(point)
+    if (intersects.length) {
+      this.displaySphere(pos,
+        intersects[0].point
+          .distanceTo(pos))
+    }
+  }
+
+  selectSegBySphere (point) {
+    if (!this.segmentedPointCloud) return null
+    const intersects = this.castRayFromMouse([this.segmentedPointCloud.object])
+    if (intersects.length) {
+      this.removeSphere()
+      return this.segmentedPointCloud.selectBySphere(point, intersects[0].index)
+    }
+    this.removeSphere()
+  }
+
+  selectSegByProximity (point) {
+    if (!this.segmentedPointCloud) return null
+    return this.segmentedPointCloud.selectByProximity(point)
+  }
+
+  selectSegBySameLabel (point) {
+    if (!this.segmentedPointCloud) return null
+    return this.segmentedPointCloud.selectSameLabel(point)
+  }
+
+  clearSelection () {
+    if (!this.segmentedPointCloud) return
+    this.segmentedPointCloud.refreshColors()
+  }
+
+  colorSelectedPoints (points) {
+    if (!this.segmentedPointCloud) return
+    this.segmentedPointCloud.colorSelectedPoints(points)
+  }
+
   interaction () {
     if (
       (this.mouse.x !== this.oldMouse.x) || (this.mouse.y !== this.oldMouse.y)
     ) {
-      const { width, height } = this.renderer.getSize()
-
-      const virtualMouse = new THREE.Vector2(
-        (this.mouse.x / width) * 2 - 1,
-        -(this.mouse.y / height) * 2 + 1
-      )
-
-      this.raycaster.setFromCamera(virtualMouse, this.controls.object)
-      const intersects = this.raycaster
-        .intersectObjects(this.scene.children, true)
+      const intersects = this.castRayFromMouse(this.scene.children)
 
       if (intersects.length) {
         if (intersects[0].object.uuid !== this.hoveredUUID) {

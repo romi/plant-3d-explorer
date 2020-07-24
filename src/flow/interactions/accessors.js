@@ -171,3 +171,73 @@ export const useOrganInfo = useAccessor(
     })
   ]
 )
+
+export const useSelectedPoints = useAccessor(
+  [
+    (state) => {
+      return state.interactions.selectedPoints
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_SELECTED_POINTS',
+      value
+    })
+  ]
+)
+
+export const useClickedPoint = useAccessor(
+  [
+    (state) => {
+      return state.interactions.clickedPoint
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_CLICKED_POINT',
+      value
+    })
+  ]
+)
+
+export const useLabels = useAccessor(
+  [
+    (state) => {
+      return state.interactions.labels
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_LABELS',
+      value
+    })
+  ]
+)
+
+export const useSelectedLabel = useAccessor(
+  [
+    (state) => {
+      return state.interactions.selectedLabel
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_SELECTED_LABEL',
+      value
+    })
+  ]
+)
+
+export const useSelectionMethod = useAccessor(
+  [
+    (state) => {
+      return state.interactions.selectionMethod
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_SELECTION_METHOD',
+      value
+    })
+  ]
+)
