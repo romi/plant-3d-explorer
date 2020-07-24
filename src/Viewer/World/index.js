@@ -275,6 +275,20 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
+      if (world) {
+        if (!selectedPoints) {
+          world.clearSelection()
+        }
+        if (selectedPoints) {
+          world.colorSelectedPoints(selectedPoints)
+        }
+      }
+    },
+    [world, selectedPoints]
+  )
+
+  useEffect(
+    () => {
       if (selectedLabel && selectedPoints && world) {
         world.setSegmentedPointCloudLabels(selectedLabel, selectedPoints)
         setSelectedPoints(null)

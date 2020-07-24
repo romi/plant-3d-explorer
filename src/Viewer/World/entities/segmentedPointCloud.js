@@ -34,6 +34,7 @@ export default class SegmentedPointCloud extends PointCloud {
       return 'hsl(' + Math.round((360 / uniqueLabels.length) *
         i) + ', 100%, 50%)'
     })
+    this.selectionColor = new THREE.Color(0.7, 0.7, 1)
     this.colors = defaultColors
 
     let color = new THREE.Color(0xffffff)
@@ -57,6 +58,15 @@ export default class SegmentedPointCloud extends PointCloud {
         }
       }
     )
+  }
+
+  colorSelectedPoints (selection) {
+    selection.forEach((d) => {
+      this.selectionColor.toArray(this.colorsArray, d * 3)
+    })
+    this.geometry.removeAttribute('customColor')
+    this.geometry.addAttribute('customColor',
+      new THREE.BufferAttribute(this.colorsArray, 3))
   }
 
   getColors () {
@@ -98,9 +108,10 @@ export default class SegmentedPointCloud extends PointCloud {
 
   selectSameLabel (point) {
     const num = this.labelNumbers[point]
-    return this.labelNumbers.map((d, i) => {
+    const res = this.labelNumbers.map((d, i) => {
       return d === num ? i : null
     })
+    return res
   }
 
   selectByProximity (clickedPoint) {
@@ -151,7 +162,8 @@ export default class SegmentedPointCloud extends PointCloud {
     }
     let set = new Set()
     maxSphere(clickedPoint, set)
-    return [...set]
+    const res = [...set]
+    return res
   }
 
   refreshColors () {

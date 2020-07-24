@@ -530,6 +530,16 @@ export default class World {
     return this.segmentedPointCloud.selectSameLabel(point)
   }
 
+  clearSelection () {
+    if (!this.segmentedPointCloud) return
+    this.segmentedPointCloud.refreshColors()
+  }
+
+  colorSelectedPoints (points) {
+    if (!this.segmentedPointCloud) return
+    this.segmentedPointCloud.colorSelectedPoints(points)
+  }
+
   interaction () {
     if (
       (this.mouse.x !== this.oldMouse.x) || (this.mouse.y !== this.oldMouse.y)
