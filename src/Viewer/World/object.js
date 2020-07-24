@@ -550,19 +550,17 @@ export default class World {
     if (intersects && intersects.length) {
       this.measureStartingPoint = intersects[0].point
     } else {
-      this.measureStartingPoint = this.getVirtualMouse()
+      const tmp = this.getVirtualMouse()
+      let planeNormal = new THREE.Vector3()
+      let plane = new THREE.Plane()
+      planeNormal.copy(this.camera.position).normalize()
+      plane.setFromNormalAndCoplanarPoint(planeNormal, this.scene.position)
+      let point = new THREE.Vector3()
+      this.raycaster.setFromCamera(tmp, this.camera)
+      this.raycaster.ray.intersectPlane(plane, point)
+      this.measureStartingPoint = point
     }
     let points = [this.measureStartingPoint]
-    let planeNormal = new THREE.Vector3()
-    let plane = new THREE.Plane()
-    planeNormal.copy(this.camera.position).normalize()
-    plane.setFromNormalAndCoplanarPoint(planeNormal, this.scene.position)
-    points = points.map((d) => {
-      this.raycaster.setFromCamera(d, this.camera)
-      let point = new THREE.Vector3()
-      this.raycaster.ray.intersectPlane(plane, point)
-      return point
-    })
     const geometry = new THREE.BufferGeometry().setFromPoints(points)
     const material = new THREE.LineBasicMaterial({
       color: 0xaaaaaa,
@@ -584,23 +582,21 @@ export default class World {
     if (intersects && intersects.length) {
       this.currentEndPoint = intersects[0].point
     } else {
-      this.currentEndPoint = this.getVirtualMouse()
+      const tmp = this.getVirtualMouse()
+      let planeNormal = new THREE.Vector3()
+      let plane = new THREE.Plane()
+      planeNormal.copy(this.camera.position).normalize()
+      plane.setFromNormalAndCoplanarPoint(planeNormal, this.scene.position)
+      this.raycaster.setFromCamera(tmp, this.camera)
+      let point = new THREE.Vector3()
+      this.raycaster.ray.intersectPlane(plane, point)
+      this.currentEndPoint = point
     }
     let points = [
       this.measureStartingPoint,
       this.currentEndPoint
     ]
-    let planeNormal = new THREE.Vector3()
-    let plane = new THREE.Plane()
-    planeNormal.copy(this.camera.position).normalize()
-    plane.setFromNormalAndCoplanarPoint(planeNormal, this.scene.position)
-    points = points.map((d) => {
-      if (d.z) return d
-      this.raycaster.setFromCamera(d, this.camera)
-      let point = new THREE.Vector3()
-      this.raycaster.ray.intersectPlane(plane, point)
-      return point
-    })
+
     const geometry = new THREE.BufferGeometry().setFromPoints(points)
     const material = new THREE.LineBasicMaterial({
       color: 0xaaaaaa,
@@ -621,6 +617,7 @@ export default class World {
     if (!this.measureStartingPoint || !this.line || !this.currentEndPoint) {
       return
     }
+    console.log(this.currentEndPoint)
     const dist = this.currentEndPoint.distanceTo(this.measureStartingPoint)
     if (scale) {
       this.scale = dist
