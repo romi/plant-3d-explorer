@@ -186,8 +186,8 @@ export default function Carousel () {
             const obj = {
               item: {
                 ...d,
-                photoUri: imageSet[i].path,
-                texture: imageSet[i].texture
+                photoUri: imageSet ? imageSet[i].path : null,
+                texture: imageSet ? imageSet[i].texture : null
               },
               x,
               normalX,
