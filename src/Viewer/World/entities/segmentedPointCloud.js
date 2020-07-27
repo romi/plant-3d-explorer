@@ -166,6 +166,14 @@ export default class SegmentedPointCloud extends PointCloud {
     return res
   }
 
+  getSegmentation () {
+    return {
+      labels: this.labelNumbers.map((d) => {
+        return this.uniqueLabels[d]
+      })
+    }
+  }
+
   refreshColors () {
     let color = new THREE.Color(0xffffff)
     this.colorsArray = new Float32Array(this.labelNumbers.length * 3)

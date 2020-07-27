@@ -34,7 +34,7 @@ import { useElementMouse } from 'rd/tools/hooks/mouse'
 
 import { useLayers } from 'flow/settings/accessors'
 import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useColor, useClickedPoint, useLabels,
-  useSnapshot, useOrganInfo, useSelectedPoints, useSelectedLabel, useSelectionMethod, useRuler } from 'flow/interactions/accessors'
+  useSnapshot, useOrganInfo, useSelectedPoints, useSelectedLabel, useSelectionMethod, useRuler, useSegmentation } from 'flow/interactions/accessors'
 import { useScanFiles, useScan,
   useSegmentedPointCloud } from 'flow/scans/accessors'
 
@@ -73,6 +73,7 @@ export default function WorldComponent (props) {
   const [selectedAngle] = useSelectedAngle()
   const [colors, setColors] = useColor()
   const [, setLabels] = useLabels()
+  const [, setSeg] = useSegmentation()
   const [selectedLabel, setSelectedLabel] = useSelectedLabel()
   const [selectedPoints, setSelectedPoints] = useSelectedPoints()
   const [selectionMethod, setSelectionMethod] = useSelectionMethod()
@@ -328,6 +329,7 @@ export default function WorldComponent (props) {
         world.setSegmentedPointCloudLabels(selectedLabel, selectedPoints)
         setSelectedPoints(null)
         setSelectedLabel(null)
+        setSeg(world.getSegmentation())
       }
     },
     [selectedLabel, selectedPoints]
@@ -421,6 +423,7 @@ export default function WorldComponent (props) {
           segmentedPointCloud: world.getSegementedPointCloudColors()
         })
         setLabels(uniqueLabels)
+        setSeg(segmentation)
       }
     },
     [world, segmentedPointCloud, segmentation]

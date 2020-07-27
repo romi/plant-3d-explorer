@@ -255,3 +255,17 @@ export const useRuler = useAccessor(
     })
   ]
 )
+
+export const useSegmentation = useAccessor(
+  [
+    (state) => {
+      return state.interactions.segmentation
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_SEGMENTATION',
+      value
+    })
+  ]
+)
