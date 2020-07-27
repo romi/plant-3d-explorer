@@ -3,12 +3,13 @@ import { FormattedMessage } from 'react-intl'
 import styled from '@emotion/styled'
 
 import { useMisc, useCarousel } from 'flow/settings/accessors'
-import { useColor, useDefaultColors, useSnapshot }
+import { useColor, useDefaultColors, useSnapshot, useRuler }
   from 'flow/interactions/accessors'
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
-import { H3 } from 'common/styles/UI/Text/titles'
+import { H3, H2 } from 'common/styles/UI/Text/titles'
 
 import { SnapIcon, PaintIcon, PhotoSetIcon } from 'Viewer/Interactors/icons'
+import { Interactor } from 'Viewer/Interactors'
 
 import snapButton from 'common/assets/ico.snap.24x24.svg'
 import downloadButton from 'common/assets/ico.download.24x24.svg'
@@ -188,7 +189,8 @@ export default function () {
   const [snapHeight, setSnapHeight] = useState(0)
   const [colors, setColors] = useColor()
   const [resetDefaultColor] = useDefaultColors()
-  const [misc] = useMisc()
+  const [misc, setMisc] = useMisc()
+  const [ruler, setRuler] = useRuler()
 
   useEffect(() => {
     if (misc.activeTool === null) {
@@ -200,6 +202,76 @@ export default function () {
   }, [misc.activeTool])
 
   return <MiscContainer>
+    <ToolButton data-testid='ruler'
+      toolsList={useMisc()}
+      tool={tools.misc.ruler}
+      tooltipId='tooltip-ruler'
+      icon={<PaintIcon
+        isActivated={misc.activeTool === tools.misc.ruler} />}
+    >
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'space-between',
+        justifyItems: 'center'
+      }} >
+        <H3>
+          <FormattedMessage id='ruler-scale' />
+        </H3>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'row',
+          margin: 'auto',
+          marginBottom: 10
+        }} >
+          <InputResolution
+            type='number'
+            min='0.0001'
+            step='1'
+            placeholder='scale'
+            onChange={(e) => {
+              const value = e.target.value > 0.0001 ? e.target.value : 0.0001
+              setMisc({ ...misc, scale: value })
+            }}
+            value={misc.scale} /> <H3> cm </H3>
+        </div>
+        <Tooltip>
+          <Interactor
+            style={{ margin: 'auto', width: '100%', marginBottom: 10 }}
+            activated={ruler.scaling}
+            isButton
+            onClick={() => {
+              if (!ruler.measuring) {
+                setRuler({ ...ruler, scaling: !ruler.scaling })
+              }
+            }}
+          >
+            <H2> <FormattedMessage id='scale-button' /> </H2>
+          </Interactor>
+          <TooltipContent>
+            <H3> <FormattedMessage id='tooltip-scale-button' /> </H3>
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <Interactor
+            style={{ margin: 'auto', width: '100%' }}
+            activated={ruler.measuring}
+            isButton
+            onClick={() => {
+              if (!ruler.scaling) {
+                setRuler({ ...ruler,
+                  measuring: !ruler.measuring })
+              }
+            }}
+          >
+            <H2> <FormattedMessage id='measure-button' /> </H2>
+          </Interactor>
+          <TooltipContent>
+            <H3> <FormattedMessage id='tooltip-measure-button' /> </H3>
+          </TooltipContent>
+        </Tooltip>
+      </div>
+    </ToolButton>
     <ToolButton data-testid='background'
       toolsList={useMisc()}
       tool={tools.colorPickers.background}

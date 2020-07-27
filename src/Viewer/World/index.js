@@ -34,7 +34,7 @@ import { useElementMouse } from 'rd/tools/hooks/mouse'
 
 import { useLayers } from 'flow/settings/accessors'
 import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useColor, useClickedPoint, useLabels,
-  useSnapshot, useOrganInfo, useSelectedPoints, useSelectedLabel, useSelectionMethod } from 'flow/interactions/accessors'
+  useSnapshot, useOrganInfo, useSelectedPoints, useSelectedLabel, useSelectionMethod, useRuler } from 'flow/interactions/accessors'
 import { useScanFiles, useScan,
   useSegmentedPointCloud } from 'flow/scans/accessors'
 
@@ -77,6 +77,8 @@ export default function WorldComponent (props) {
   const [selectedPoints, setSelectedPoints] = useSelectedPoints()
   const [selectionMethod, setSelectionMethod] = useSelectionMethod()
   const [snapshot, setSnapshot] = useSnapshot()
+  const [ruler, setRuler] = useRuler()
+  const [measureClick, setMeasureClick] = useState(false)
   const mouse = useElementMouse(canvasRef)
   const [, setOrganInfo] = useOrganInfo()
   const [clickedPoint, setClickedPoint] = useClickedPoint()
@@ -271,6 +273,33 @@ export default function WorldComponent (props) {
       }
     },
     [world, viewport3d]
+  )
+
+  useEffect(
+    () => {
+      if (world && (ruler.scaling || ruler.measuring)) {
+        if (viewport3d.clicked) {
+          if (measureClick) {
+            console.log(world.endMeasure(ruler.scaling))
+            setMeasureClick(false)
+            setRuler({ ...ruler, scaling: false, measuring: false })
+          } else {
+            world.startMeasure()
+            setMeasureClick(true)
+          }
+        }
+      }
+    },
+    [viewport3d, world]
+  )
+
+  useEffect(
+    () => {
+      if (measureClick && world) {
+        world.updateLine()
+      }
+    },
+    [mouse, world, measureClick]
   )
 
   useEffect(

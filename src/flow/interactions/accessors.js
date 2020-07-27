@@ -241,3 +241,17 @@ export const useSelectionMethod = useAccessor(
     })
   ]
 )
+
+export const useRuler = useAccessor(
+  [
+    (state) => {
+      return state.interactions.ruler
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_RULER',
+      value
+    })
+  ]
+)

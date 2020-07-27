@@ -53,6 +53,10 @@
   "tooltip-take-snapshot": "Take a snapshot",
   "tooltip-download-snapshot": "Download the snapshot",
   "tooltip-photoset": "Change the set of displayed images in the carousel",
+  "tooltip-ruler": "Make interactive measures on the plant",
+  "tooltip-scale-button":
+    "Setup measurements by specifying a distance equal to the scale above",
+  "tooltip-measure-button": "Make a measure on the model",
 
   "tooltip-help-rotate": "Click left and hold to rotate",
   "tooltip-help-pan": "Click right and hold to pan",
@@ -68,6 +72,10 @@
   "photoset-images": "Raw",
   "photoset-undistorted": "Undistorted",
   "photoset-masks": "Masks",
+  
+  "ruler-scale": "Make an interactive measure",
+  "scale-button": "Scale",
+  "measure-button": "Measure",
   
   "organ-bubble": "Organ {ORGAN_NUMBER}",
 

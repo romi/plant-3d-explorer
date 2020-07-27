@@ -447,19 +447,23 @@ export default class World {
     return snapshot
   }
 
-  /* Casts a ray and checks if it intersects any organ. If it
-    does, returns the index of the organ, returns null otherwise */
-
-  castRayFromMouse (targetObjects) {
+  getVirtualMouse () {
     const { width, height } = this.renderer.getSize()
-    const virtualMouse = new THREE.Vector2(
+    return new THREE.Vector2(
       (this.mouse.x / width) * 2 - 1,
       -(this.mouse.y / height) * 2 + 1
     )
+  }
+
+  castRayFromMouse (targetObjects) {
+    const virtualMouse = this.getVirtualMouse()
     this.raycaster.setFromCamera(virtualMouse, this.controls.object)
     return this.raycaster
       .intersectObjects(targetObjects, true)
   }
+
+  /* Casts a ray and checks if it intersects any organ. If it
+    does, returns the index of the organ, returns null otherwise */
 
   selectOrgan () {
     if (!this.anlesPoints) return null
@@ -538,6 +542,91 @@ export default class World {
   colorSelectedPoints (points) {
     if (!this.segmentedPointCloud) return
     this.segmentedPointCloud.colorSelectedPoints(points)
+  }
+
+  startMeasure () {
+    const intersects = this.castRayFromMouse(this.scene.children)
+    if (intersects && intersects.length) {
+      console.log(intersects)
+      this.measureStartingPoint = intersects[0].point
+    } else {
+      this.measureStartingPoint = this.getVirtualMouse()
+    }
+    let points = [this.measureStartingPoint]
+    let planeNormal = new THREE.Vector3()
+    let plane = new THREE.Plane()
+    planeNormal.copy(this.camera.position).normalize()
+    plane.setFromNormalAndCoplanarPoint(planeNormal, this.scene.position)
+    points = points.map((d) => {
+      this.raycaster.setFromCamera(d, this.camera)
+      let point = new THREE.Vector3()
+      this.raycaster.ray.intersectPlane(plane, point)
+      return point
+    })
+    const geometry = new THREE.BufferGeometry().setFromPoints(points)
+    const material = new THREE.LineBasicMaterial({
+      color: 0xaaaaaa,
+      linewidth: 5
+    })
+    this.line = new THREE.Line(geometry, material)
+    this.scene.add(this.line)
+  }
+
+  clearLine () {
+    this.scene.remove(this.line)
+  }
+
+  updateLine () {
+    if (!this.line) return
+    this.clearLine()
+    const intersects = this.castRayFromMouse(this.scene.children)
+    if (intersects && intersects.length) {
+      this.currentEndPoint = intersects[0].point
+    } else {
+      this.currentEndPoint = this.getVirtualMouse()
+    }
+    let points = [
+      this.measureStartingPoint,
+      this.currentEndPoint
+    ]
+    let planeNormal = new THREE.Vector3()
+    let plane = new THREE.Plane()
+    planeNormal.copy(this.camera.position).normalize()
+    plane.setFromNormalAndCoplanarPoint(planeNormal, this.scene.position)
+    points = points.map((d) => {
+      if (d.z) return d
+      this.raycaster.setFromCamera(d, this.camera)
+      let point = new THREE.Vector3()
+      this.raycaster.ray.intersectPlane(plane, point)
+      return point
+    })
+    const geometry = new THREE.BufferGeometry().setFromPoints(points)
+    const material = new THREE.LineBasicMaterial({
+      color: 0xaaaaaa,
+      linewidth: 5
+    })
+    this.line = new THREE.Line(geometry, material)
+    this.scene.add(this.line)
+  /* const startPoint = this.measureStartingPoint
+    const firstPoint = [startPoint.x, startPoint.y, 0]
+    const endPoint = this.getVirtualMouse()
+    const secondPoint = [endPoint.x, endPoint.y, 0]
+    const points = [...firstPoint, ...secondPoint]
+    this.line.geometry.attributes.position.array = points */
+  }
+
+  endMeasure (scale) {
+    if (!this.measureStartingPoint || !this.line || !this.currentEndPoint) {
+      return
+    }
+    const dist = this.currentEndPoint.distanceTo(this.measureStartingPoint)
+    if (scale) {
+      this.scale = dist
+      this.clearLine()
+    } else {
+      if (!this.scale) return null
+      return dist / this.scale
+    }
   }
 
   interaction () {
