@@ -44,7 +44,8 @@ export const initialState = {
     activeTool: null
   },
   misc: {
-    activeTool: null
+    activeTool: null,
+    scale: 1
   },
   carousel: {
     photoSet: 'images'

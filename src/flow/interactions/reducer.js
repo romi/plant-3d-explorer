@@ -57,6 +57,13 @@ export const initialState = {
     image: null
   },
 
+  ruler: {
+    scaling: false,
+    measuring: false,
+    measure: 0,
+    scaleSet: false
+  },
+
   reset3dViewFn: null,
   reset2dViewFn: null
 }
@@ -146,6 +153,11 @@ export default function settingsReducer (state = initialState, action) {
       return {
         ...state,
         selectionMethod: action.value
+      }
+    case 'SET_RULER':
+      return {
+        ...state,
+        ruler: action.value
       }
     default:
       return state
