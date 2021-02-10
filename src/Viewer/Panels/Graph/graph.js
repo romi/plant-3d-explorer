@@ -305,6 +305,7 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
     data.automated.length,
     (data.manual ? data.manual.length : 0)
   )
+  const nb = vertiaclTickNb - 1
 
   const verticalTicks = Array(Math.ceil(vertiaclTickNb / 5))
     .fill()
@@ -332,6 +333,7 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
         y: verticalScale(i)
       }
     })
+
   const manualPoints = (!ifManualData ? [] : data.manual)
     .map((rad, i) => {
       return {
@@ -433,7 +435,7 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
       onMouseLeave={() => setHoveredAngle(null)}
     >
       {
-        new Array(vertiaclTickNb)
+        new Array(nb)
           .fill()
           .map((_, i) => {
             const d = points[i] || manualPoints[i]
