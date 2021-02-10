@@ -59,18 +59,17 @@ export default function Panels () {
   const panelsData = useMemo(() => {
     const tempFruitPoints = get(scan, 'data.angles.fruit_points')
     const fruitPoints = tempFruitPoints
-      ? tempFruitPoints.slice(0, tempFruitPoints.length - 1)
-      : undefined
-
+    // ? tempFruitPoints.slice(0, tempFruitPoints.length - 1)
+    // : undefined
     const tempAutomatedAngles = get(scan, 'data.angles.angles')
     const automatedAngles = tempAutomatedAngles
-      ? tempAutomatedAngles.slice(0, tempAutomatedAngles.length - 1)
-      : undefined
+    // ? tempAutomatedAngles.slice(0, tempAutomatedAngles.length - 1)
+    // : undefined
 
     const tempAutomatedInternodes = get(scan, 'data.angles.internodes')
     const automatedInternodes = tempAutomatedInternodes
-      ? tempAutomatedInternodes.slice(0, tempAutomatedInternodes.length - 1)
-      : undefined
+    // ? tempAutomatedInternodes.slice(0, tempAutomatedInternodes.length - 1)
+    // : undefined
     const internodes = [
       ...(get(scan, 'data.angles.measured_internodes') || []),
       ...(get(scan, 'data.angles.internodes') || [])
