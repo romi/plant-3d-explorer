@@ -3,10 +3,10 @@
 ###############################################################################
 # Example usages:
 ###############################################################################
-# 1. Default build options will create `roboticsmicrofarms/plantviewer:latest` pointing at ROMI database:
+# 1. Default build options will create `roboticsmicrofarms/plant_3d_explorer:latest` pointing at ROMI database:
 # $ ./build.sh
 #
-# 2. Build image with 'debug' image tag & another 'plantviewer' branch options:
+# 2. Build image with 'debug' image tag & another 'plant_3d_explorer' branch options:
 # $ ./build.sh -t debug -b 'feature/faster_docker'
 
 user=$USER
@@ -19,35 +19,26 @@ usage() {
   echo "USAGE:"
   echo "  ./build.sh [OPTIONS]
     "
-
   echo "DESCRIPTION:"
-  echo "  Build a docker image named 'roboticsmicrofarms/plantviewer' using Dockerfile in same location.
+  echo "  Build a docker image named 'roboticsmicrofarms/plant_3d_explorer' using Dockerfile in same location.
     "
-
   echo "OPTIONS:"
   echo "  -t, --tag
-    Docker image tag to use, default to '$vtag'.
-    "
+    Docker image tag to use, default to '$vtag'."
   echo "  -u, --user
-    User name to create inside docker image, default to '$user'.
-    "
+    User name to create inside docker image, default to '$user'."
   echo "  -b, --branch
-    Git branch to use for cloning '3d-plantviewer' inside docker image, default to '$branch'.
-    "
+    Git branch to use for cloning 'plant-3d-explorer' inside docker image, default to '$branch'."
   echo "  --api_url
-    REACT API URL to use to retrieve dataset, default is '$api_url'.
-    "
+    REACT API URL to use to retrieve dataset, default is '$api_url'."
   # Docker options:
   echo "  --no-cache
-    Do not use cache when building the image, (re)start from scratch.
-    "
+    Do not use cache when building the image, (re)start from scratch."
   echo "  --pull
-    Always attempt to pull a newer version of the parent image.
-    "
+    Always attempt to pull a newer version of the parent image."
   # General options:
   echo "  -h, --help
-    Output a usage message and exit.
-    "
+    Output a usage message and exit."
 }
 
 while [ "$1" != "" ]; do
@@ -92,7 +83,7 @@ done
 start_time=`date +%s`
 
 # Start the docker image build:
-docker build -t roboticsmicrofarms/plantviewer:$vtag $docker_opts \
+docker build -t roboticsmicrofarms/plant_3d_explorer:$vtag $docker_opts \
   --build-arg USER_NAME=$user \
   --build-arg BRANCH=$branch \
   --build-arg API_URL=$api_url \
