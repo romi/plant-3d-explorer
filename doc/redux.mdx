@@ -11,31 +11,24 @@ import ObjectFormatter from './components/objectFormatter'
 # Redux store
 
 ## About Redux
-
-As mentionned in the [technologies used section](/#technologies-used), this 
-application uses Redux for its state management, it is recommended that you 
-check out Redux if you don't know how it works to better understand this section
-and the app as a whole.
+As mentioned in the [technologies used section](/#technologies-used), this application uses Redux for its state management, it is recommended that you check out Redux if you don't know how it works to better understand this section and the app as a whole.
 
 ## Store structure
-
 The Redux store of the visualizer is divided into 3 main sections:
 
-### Interactions
-  
-This part of the store contains information about the state of
-user controls and the 3D view.
+1. Interactions
+2. Scans
+3. Settings
 
+### Interactions
+This part of the store contains information about the state of user controls and the 3D view.
 The initial state of this store is the following:
   
 <ObjectFormatter object={initialState} />
 
 
 ### Scans
-
-This part of the store contains sorting, search, and filtering information for
-the home page (the list of scans).
-
+This part of the store contains sorting, search, and filtering information for the home page (the list of scans).
 The initial state is the following:
 
 <ObjectFormatter object={scansState} />
@@ -44,11 +37,9 @@ What might be more interesting is the list of available sorting methods:
 
 <ObjectFormatter object={sortingMethods} />
 
+
 ### Settings
-
-This last part of the store contains settings informations, for example, which 
-layers are currently displayed, or which tool is currently active.
-
+This last part of the store contains settings information, for example, which layers are currently displayed, or which tool is currently active.
 The initial state is the following:
 
 <ObjectFormatter object={settingsState} />

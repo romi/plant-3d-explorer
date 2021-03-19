@@ -30,7 +30,7 @@ USER ${USER_NAME}
 # Change working directory:
 WORKDIR /home/${USER_NAME}
 
-RUN git clone --branch $BRANCH https://github.com/romi/3d-plantviewer.git && \
+RUN git clone --branch $BRANCH https://github.com/romi/plant-3d-explorer.git && \
     cd 3d-plantviewer && \
     # Install modules listed as dependencies in `package.json`:
     npm install
