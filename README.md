@@ -5,7 +5,7 @@
 Welcome to the Plant 3D Explorer repository.
 It is the home of our webapp dedicated to the exploration of single plant acquisitions and reconstruction.
 
-![Browsing screenshot](doc/images/screenshot_1.png | width=300)![Exploring screenshot](doc/images/screenshot_2.png | width=300)
+<img src="doc/images/screenshot_2.png" alt="Browsing screenshot" width="450"> <img src="doc/images/screenshot_1.png" alt="Exploring screenshot" width="450">
 
 For a general documentation on the whole ROMI project, head over [here](https://docs.romi-project.eu).
 
