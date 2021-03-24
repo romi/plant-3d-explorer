@@ -1,6 +1,6 @@
 version: '3'
 services:
-  db:
+  plantdb:
     image: "roboticsmicrofarms/romidb"
     volumes:
       - ${ROMI_DB}:/home/${USER}/db
@@ -8,10 +8,10 @@ services:
       - "5000:5000"
     healthcheck:
       test: "exit 0"
-  viewer:
-    image: "roboticsmicrofarms/plantviewer"
+  plant_3d_explorer:
+    image: "roboticsmicrofarms/plant_3d_explorer"
     depends_on:
-      - db
+      - plantdb
     environment:
         REACT_APP_API_URL: http://localhost:5000
     ports:

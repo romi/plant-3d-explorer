@@ -1,34 +1,28 @@
 #!/bin/bash
 
-###############################################################################
-# Example usages:
-###############################################################################
-# 1. Default run starts an interactive shell:
-# $ ./run.sh
-
 vtag="latest"
 api_url='https://db.romi-project.eu'
+port=3000
 
 usage() {
   echo "USAGE:"
   echo "  ./run.sh [OPTIONS]
     "
-
   echo "DESCRIPTION:"
-  echo "  Run 'roboticsmicrofarms/plantviewer:<vtag>' container with a mounted local (host) database.
+  echo "  Start the Plant 3D Explorer container.
+  Uses the docker image: 'roboticsmicrofarms/plant_3d_explorer'.
+  By default, start the container with the shared online database by ROMI.
     "
-
   echo "OPTIONS:"
   echo "  -t, --tag
-    Docker image tag to use, default to '$vtag'.
-    "
+    Docker image tag to use, default to '$vtag'."
   echo "  --api_url
     REACT API URL to use to retrieve dataset, default is '$api_url'.
-    "
-
+    Set it to 'localhost:5000' if you have a local PlantDB database running."
+  echo "  -p, --port
+    Port to expose, default is '$port'."
   echo "  -h, --help
-    Output a usage message and exit.
-    "
+    Output a usage message and exit."
 }
 
 while [ "$1" != "" ]; do
@@ -40,6 +34,10 @@ while [ "$1" != "" ]; do
   --api_url)
     shift
     api_url=$1
+  ;;
+  -p | --port)
+    shift
+    port=$1
   ;;
   -h | --help)
     usage
@@ -58,10 +56,12 @@ if [ "$api_url" != "" ]
 then
   docker run \
     --env REACT_APP_API_URL="$api_url" \
-    -it roboticsmicrofarms/plantviewer:$vtag
+    --env PORT=$port \
+    -it roboticsmicrofarms/plant_3d_explorer:$vtag
 else
   docker run \
-    -it roboticsmicrofarms/plantviewer:$vtag
+    --env PORT=$port \
+    -it roboticsmicrofarms/plant_3d_explorer:$vtag
 fi
 
 

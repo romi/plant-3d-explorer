@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM node:current-buster-slim
 LABEL maintainer="Jonathan LEGRAND <jonathan.legrand@ens-lyon.fr>"
 
 ENV LANG=C.UTF-8
@@ -8,18 +8,16 @@ ENV PYTHONUNBUFFERED=1
 ARG USER_NAME=scanner
 ARG BRANCH=master
 ARG API_URL='https://db.romi-project.eu'
+ARG PORT=3000
 
 USER root
 # Change shell to 'bash', default is 'sh'
 SHELL ["/bin/bash", "-c"]
 # Update package manager & install requirements:
 RUN apt-get update && \
-    apt-get install -yq --no-install-recommends \
-    git ca-certificates \
-    npm && \
-    npm install npm@latest -g && \
-    apt-get clean && \
-    apt-get autoremove && \
+    apt-get install -yq --no-install-recommends git ca-certificates && \
+    apt-get clean -y && \
+    apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/* && \
     useradd -m ${USER_NAME} && \
     cd /home/${USER_NAME} && \
@@ -31,13 +29,14 @@ USER ${USER_NAME}
 WORKDIR /home/${USER_NAME}
 
 RUN git clone --branch $BRANCH https://github.com/romi/plant-3d-explorer.git && \
-    cd 3d-plantviewer && \
+    cd plant-3d-explorer && \
     # Install modules listed as dependencies in `package.json`:
     npm install
 
-WORKDIR /home/${USER_NAME}/3d-plantviewer
+WORKDIR /home/${USER_NAME}/plant-3d-explorer
 
 # Link the docker image to romi database:
 ENV REACT_APP_API_URL=$API_URL
+EXPOSE $PORT
 
 CMD ["/bin/bash", "-c", "npm start"]
