@@ -52,7 +52,7 @@ export function useScan () {
   /**
     This is a hook used to get info on a scan. For more information
     on the exact structure of a scan, check out the REST API of
-    <a href='https://github.com/romi/romidata'>romidata</a>.
+    <a href='https://github.com/romi/plantdb'>plantdb</a>.
    */
   const { match } = useReactRouter()
   const selectedId = match.params.scanId
@@ -92,7 +92,7 @@ export function useFile (id, file = null, options = {}) {
     This hook allows loading any file from a scan.
 
     - id: The id (string) of the fileset where the file is located. Check
-      out the doc of romidata for more info on filesets. The
+      out the doc of plantdb for more info on filesets. The
       string doesn't need to been the exact name of the set, but it
       should be at least a substring of the set id.
     - file: id of the file to load (usually the file name without the
@@ -161,7 +161,7 @@ export function useScans (search) {
   /**
    Hook to load all scans the server has. For more detail on the
     format of the returned object, check out the REST API at the
-    <a href='https://github.com/romi/romidata'> romidata repository </a>.
+    <a href='https://github.com/romi/plantdb'> plantdb repository </a>.
 
    - search: A string used to filter the scans. The filtering is made
     server-side.

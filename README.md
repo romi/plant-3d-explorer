@@ -99,7 +99,7 @@ docker run -p 3000:3000 roboticsmicrofarms/plant_3d_explorer
 ## Docker compose
 To use a local database, for testing or development, we provide a docker compose recipe that:
 
-1. start a `PlantDB` container using `roboticsmicrofarms/romidata`
+1. start a `PlantDB` container using `roboticsmicrofarms/plantdb`
 2. start a `Plant 3D Explorer` container using `roboticsmicrofarms/plant_3d_explorer`
 
 **note**:
