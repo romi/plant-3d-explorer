@@ -305,7 +305,8 @@ const Chart = sceneWrapper(({ valueTransformFn, ifManualData, data, unit, contai
     data.automated.length,
     (data.manual ? data.manual.length : 0)
   )
-  const nb = vertiaclTickNb - 1
+
+  const nb = vertiaclTickNb - 1 // intermediate variable used when creating the Array to plot angles and internodes sequences with the correct size
 
   const verticalTicks = Array(Math.ceil(vertiaclTickNb / 5))
     .fill()
