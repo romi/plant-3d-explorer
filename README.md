@@ -1,6 +1,6 @@
-# Plant 3D Explorer
-
 ![badge](https://github.com/romi/plant-3d-explorer/workflows/Tests/badge.svg)
+
+# Plant 3D Explorer
 
 Welcome to the Plant 3D Explorer repository.
 It is the home of our webapp dedicated to the exploration of single plant acquisitions and reconstruction.
