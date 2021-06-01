@@ -23,25 +23,48 @@ npm install npm -g
 ```
 You may find that the npm packaged for your distro is too old... then head over to your browser, choose a search engine, type `npm`, and good luck!
 
-
-## Available Scripts
-In the project directory, you can run:
-
-### ```npm install```
-
-This is needed to install the dependencies of the project.
-
 To make sure everything works fine, your version of nodejs must be >= 10, and your version of npm must be >= 6.
 
+
+## Installation
+First clone the `plant-3d-explorer` git repository and enter the downloaded folder:
+```bash
+git clone https://github.com/romi/plant-3d-explorer.git
+cd plant-3d-explorer
+```
+
+### ```npm install```
+This is needed to install the dependencies of the project. At the root of the project directory, execute the following command:
+```bash
+npm install
+```
+
+## Test and run the webapp client
+Still at root of the project directory, you can run:
 ### ```npm test```
 This will run the tests for the project. It will permanently run and run again on files when they are changed. Multiple commands are available, see [this](https://create-react-app.dev/docs/running-tests/) for more info.
 
 Each test file is located with the component it is testing. So the tests for the file `src/ScanList/index.js` are located in `src/Scanlist/index.test.js`.
 
 ### ```npm start```
-Runs the app in the development mode.
+To run the app in the development mode, just execute :
+```bash
+npm start
+```
+After a brief, the terminal should display:
+```
+Compiled successfully!
 
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+You can now view sony_visualiseur-plantes-3d in the browser.
+
+  Local:            http://localhost:3000/
+  On Your Network:  http://192.168.0.18:3000/
+
+Note that the development build is not optimized.
+To create a production build, use npm run build.
+```
+
+Then Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 You need to add a file `.env.local` at project's root to set the `API URL`:
 ```
