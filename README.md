@@ -151,7 +151,12 @@ To use local builds for development or debugging purposes:
 2. edit the `docker-compose.yml` file to add the previously defined tag to the name of the image to start
 
 
-## Documentation
+## Technical documentation
+
+### view
+https://romi.github.io/plant-3d-explorer/
+
+### contribute
 
 The documentation of this package is done by [docz](https://www.docz.site/).
 To install it, and its dependencies, do:
