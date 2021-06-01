@@ -64,7 +64,7 @@ Note that the development build is not optimized.
 To create a production build, use npm run build.
 ```
 
-Then Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Then, open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 You need to add a file `.env.local` at project's root to set the `API URL`:
 ```
