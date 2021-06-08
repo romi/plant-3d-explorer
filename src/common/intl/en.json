@@ -2,14 +2,14 @@
   "misc-loading": "Loading…",
   "hello-world": "Hello World",
 
-  "app-title": "SCAN",
-  "app-intro": "Review 3D plant scans by matching them with their photos and data.",
+  "app-title": "PLANT 3D EXPLORER",
+  "app-intro": "Review plant 3D phenotyping experiments by matching all data from initial acquisitions to downstream analysis.",
 
   "filter-title": "Filter results",
   "filter-placeholder": "Type a keyword",
   "filter-submit": "Search",
 
-  "scanlist-title": "{NB_SCANS} {NB_SCANS, plural, =1 {scan} other {scans}}",
+  "scanlist-title": "{NB_SCANS} {NB_SCANS, plural, =1 {dataset} other {datasets}}",
   "scanlist-title-link": " for ",
   "scanlist-title-search-value": "‘‘{SEARCH}’’",
   "scanlist-sort-name": "Name",
@@ -26,7 +26,7 @@
   "scanlist-link-metadata": "Show metadata",
   "scanlist-cta": "Open",
 
-  "header-back": "All scans",
+  "header-back": "All datasets",
 
   "tooltip-mesh": "Mesh",
   "tooltip-pointcloud": "Point cloud",

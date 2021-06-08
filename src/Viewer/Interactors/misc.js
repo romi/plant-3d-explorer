@@ -8,7 +8,7 @@ import { useColor, useDefaultColors, useSnapshot, useRuler }
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 import { H3, H2 } from 'common/styles/UI/Text/titles'
 
-import { SnapIcon, PaintIcon, PhotoSetIcon } from 'Viewer/Interactors/icons'
+import { SnapIcon, PhotoSetIcon, RulerIcon, BackgroundColorIcon } from 'Viewer/Interactors/icons'
 import { Interactor } from 'Viewer/Interactors'
 
 import snapButton from 'common/assets/ico.snap.24x24.svg'
@@ -206,7 +206,7 @@ export default function () {
       toolsList={useMisc()}
       tool={tools.misc.ruler}
       tooltipId='tooltip-ruler'
-      icon={<PaintIcon
+      icon={<RulerIcon
         isActivated={misc.activeTool === tools.misc.ruler} />}
     >
       <div style={{
@@ -299,7 +299,7 @@ export default function () {
         isButton: true
       }}
       tooltipId='tooltip-background-color-picker'
-      icon={<PaintIcon
+      icon={<BackgroundColorIcon
         isActivated={misc.activeTool === tools.colorPickers.background} />}
     >
       <div data-testid='background-color'>
