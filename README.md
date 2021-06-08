@@ -12,19 +12,20 @@ For a general documentation on the whole ROMI project, head over [here](https://
 
 ## Requirements
 You will need `npm` to use this package.
-
-To install it, on UNIX systems with `apt`, do: 
-```bash
-sudo apt install npm
+It comes with `nodejs`, as per the official [instruction](https://github.com/nodesource/distributions/blob/master/README.md).
+To install v16.X, for ubuntu:
+```shell
+# Using Ubuntu
+curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+sudo apt-get install -y nodejs
 ```
-Then update the node.js package manager with:
-```bash
-npm install npm -g
-```
-You may find that the npm packaged for your distro is too old... then head over to your browser, choose a search engine, type `npm`, and good luck!
-
+For other distro look [here](https://github.com/nodesource/distributions/blob/master/README.md) or [here](https://nodejs.org/en/download/) for non linux distro.
 To make sure everything works fine, your version of nodejs must be >= 10, and your version of npm must be >= 6.
-
+To test it:
+```shell
+node -v
+npm -v
+```
 
 ## Installation
 First clone the `plant-3d-explorer` git repository and enter the downloaded folder:
