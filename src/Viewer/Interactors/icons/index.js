@@ -43,6 +43,8 @@ import paintRaw from 'common/assets/ico.paint.23x23.svg'
 import snapRaw from 'common/assets/ico.snap.24x24.svg'
 import segmentedPointCloudRaw from 'common/assets/ico.segmented_point_cloud.21x21.svg'
 import photoSetRaw from 'common/assets/ico.photoset.24x24.svg'
+import rulerRaw from 'common/assets/ico.ruler.21x21.svg'
+import backgroundColorRaw from 'common/assets/ico.background_color.21x21.svg'
 
 const rules = (props) => ({
   default: {
@@ -165,5 +167,23 @@ export const PhotoSetIcon = IconHOC((props) => {
     rules={rules(props)}
     raw={photoSetRaw}
     alt='photoset icon'
+  />
+})
+
+export const RulerIcon = IconHOC((props) => {
+  return <Icon
+    {...props}
+    rules={rules(props)}
+    raw={rulerRaw}
+    alt='ruler icon'
+  />
+})
+
+export const BackgroundColorIcon = IconHOC((props) => {
+  return <Icon
+    {...props}
+    rules={rules(props)}
+    raw={backgroundColorRaw}
+    alt='background color icon'
   />
 })
