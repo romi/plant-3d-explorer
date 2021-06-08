@@ -628,6 +628,11 @@ export default class World {
     }
   }
 
+  getSegmentation () {
+    if (!this.segmentedPointCloud) return null
+    return this.segmentedPointCloud.getSegmentation()
+  }
+
   interaction () {
     if (
       (this.mouse.x !== this.oldMouse.x) || (this.mouse.y !== this.oldMouse.y)

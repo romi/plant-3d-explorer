@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react'
 import styled from '@emotion/styled'
 import { SketchPicker } from 'react-color'
 
-import { useSelectedAngle, useColor, useDefaultColors } from 'flow/interactions/accessors'
+import { useSelectedAngle, useColor, useDefaultColors, useSegmentation } from 'flow/interactions/accessors'
 import { useLayerTools, useLayers } from 'flow/settings/accessors'
 import { useSegmentedPointCloud } from 'flow/scans/accessors'
 
-import { PaintIcon } from 'Viewer/Interactors/icons'
+import { PaintIcon, DownloadIcon } from 'Viewer/Interactors/icons'
 import { ResetButton } from 'rd/UI/Buttons'
 import { H3 } from 'common/styles/UI/Text/titles'
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
@@ -65,6 +65,7 @@ export default function MiscInteractors () {
   const [labels, setLabels] = useState()
   const [, segmentation] = useSegmentedPointCloud()
   const [legendPicker, setLegendPicker] = useState()
+  const [seg] = useSegmentation()
 
   useEffect(
     () => {
@@ -189,6 +190,21 @@ export default function MiscInteractors () {
           : null
         }
       </ToolButton>
+      <a
+        href={'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(seg))}
+        download='SegmentedPointCloud.json'>
+        <ToolButton
+          interactor={{
+            isButton: true,
+            onClick: () => {}
+          }}
+          toolsList={useLayerTools()}
+          tool={tools.downloadSeg}
+          layer={layers.segmentedPointCloud}
+          tooltipId={'tooltip-segmentedpointcloud-export'}
+          icon={<DownloadIcon />}
+        />
+      </a>
     </ColumnContainer>
     <ColumnContainer displayed={layers.skeleton}>
       <ToolButton

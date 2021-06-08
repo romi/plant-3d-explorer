@@ -22,7 +22,8 @@ export const tools = {
     ruler: 6,
     snapshot: 7,
     photoSets: 8
-  }
+  },
+  downloadSeg: 9
 }
 
 /* A general component for displaying tools that can

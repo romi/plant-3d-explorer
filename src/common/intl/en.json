@@ -47,6 +47,8 @@
   "tooltip-organ-global-color-picker": "Color every organ",
   "tooltip-background-color-picker": "Color the background",
   
+  "tooltip-segmentedpointcloud-export":
+    "Export the segmentation in JSON format",
   "tooltip-snapshot": "Capture an image of the current view",
   "tooltip-reset-resolution": "Reset to current resolution",
   "tooltip-delete-snapshot": "Click to delete this snapshot",

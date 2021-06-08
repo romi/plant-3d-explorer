@@ -38,6 +38,7 @@ export const initialState = {
   clickedPoint: null,
   selectedPoints: [],
   labels: [],
+  segmentation: null,
   selectedLabel: null,
   selectionMethod: null,
 
@@ -158,6 +159,11 @@ export default function settingsReducer (state = initialState, action) {
       return {
         ...state,
         ruler: action.value
+      }
+    case 'SET_SEGMENTATION':
+      return {
+        ...state,
+        segmentation: action.value
       }
     default:
       return state

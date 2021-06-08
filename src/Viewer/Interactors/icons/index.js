@@ -43,6 +43,7 @@ import paintRaw from 'common/assets/ico.paint.23x23.svg'
 import snapRaw from 'common/assets/ico.snap.24x24.svg'
 import segmentedPointCloudRaw from 'common/assets/ico.segmented_point_cloud.21x21.svg'
 import photoSetRaw from 'common/assets/ico.photoset.24x24.svg'
+import downloadRaw from 'common/assets/ico.download.24x24.svg'
 
 const rules = (props) => ({
   default: {
@@ -165,5 +166,14 @@ export const PhotoSetIcon = IconHOC((props) => {
     rules={rules(props)}
     raw={photoSetRaw}
     alt='photoset icon'
+  />
+})
+
+export const DownloadIcon = IconHOC((props) => {
+  return <Icon
+    {...props}
+    rules={rules(props)}
+    raw={downloadRaw}
+    alt='download icon'
   />
 })
