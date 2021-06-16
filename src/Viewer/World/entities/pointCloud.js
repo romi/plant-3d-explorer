@@ -64,13 +64,13 @@ export default class Mesh {
       ? window.devicePixelRatio
       : 1
 
-    var op = localStorage.getItem("defaultPointCloudOpacity");
-    var col = localStorage.getItem("defaultPointCloudColor");
+    var op = window.localStorage.getItem('defaultPointCloudOpacity')
+    var col = window.localStorage.getItem('defaultPointCloudColor')
     this.material = new THREE.ShaderMaterial({
       uniforms: {
         opacity: { value: (op != null) ? parseFloat(op) : 1 },
         ratio: { type: 'f', value: pixelRatio },
-        color: { type: 'c', value: (col != null) ? new THREE.Color(col) : new THREE.Color("#f8de96")},
+        color: { type: 'c', value: (col != null) ? new THREE.Color(col) : new THREE.Color('#f8de96') },
         zoom: { type: 'f', value: 1 }
       },
       vertexShader,

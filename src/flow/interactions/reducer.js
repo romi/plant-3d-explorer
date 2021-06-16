@@ -42,13 +42,13 @@ export const initialState = {
   selectionMethod: null,
 
   colors: {
-    //Previous color values are left in comments
+    // Previous color values are left in comments
     mesh: { rgb: '#96c0a7', a: 0.5 }, // a: 1
     pointCloud: { rgb: '#f8de96', a: 1 },
     segmentedPointCloud: [],
-    skeleton: { rgb: '#D0021B', a: 0.7 },//{ rgb: '#5ca001', a: 1 },
+    skeleton: { rgb: '#D0021B', a: 0.7 }, // { rgb: '#5ca001', a: 1 },
     organs: [],
-    globalOrganColors: [{ rgb: '#BD10E0', a: 0.5 }, { rgb: '#E691F7', a: 0.5 }], //[{ rgb: '#3a4d45', a: 0.2 }, { rgb: '#00a960', a: 0.2 }],
+    globalOrganColors: [{ rgb: '#BD10E0', a: 0.5 }, { rgb: '#E691F7', a: 0.5 }], // [{ rgb: '#3a4d45', a: 0.2 }, { rgb: '#00a960', a: 0.2 }],
     background: '#ecf3f0'
   },
 

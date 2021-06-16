@@ -30,15 +30,14 @@ export default class SegmentedPointCloud extends PointCloud {
     this.uniqueLabels = uniqueLabels
 
     // Set default colors
-    var col = JSON.parse(localStorage.getItem("defaultSegmentedColors"))
+    var col = JSON.parse(window.localStorage.getItem('defaultSegmentedColors'))
     const defaultColors = uniqueLabels.map((_, i) => {
-      if(col != null)
+      if (col != null) {
         return col[i]
-      else{
+      } else {
         return 'hsl(' + Math.round((360 / uniqueLabels.length) *
           i) + ', 100%, 50%)'
       }
-      
     })
     this.selectionColor = new THREE.Color(0.7, 0.7, 1)
     this.colors = defaultColors

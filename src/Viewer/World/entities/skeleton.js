@@ -60,13 +60,13 @@ export default class Skeleton {
       geometry.setPositions(positions)
       geometry.setColors(colors)
 
-      var op = localStorage.getItem("defaultSkeletonOpacity")
-      var col = localStorage.getItem("defaultSkeletonColor")
+      var op = window.localStorage.getItem('defaultSkeletonOpacity')
+      var col = window.localStorage.getItem('defaultSkeletonColor')
       const obj = new EnhancedTHREE.Line2(
         geometry,
         new EnhancedTHREE.LineMaterial({
           linewidth: 4,
-          color: (col != null) ? col : "#D0021B",
+          color: (col != null) ? col : '#D0021B',
           transparent: true,
           opacity: (op != null) ? parseFloat(op) : 1,
           dashed: true,

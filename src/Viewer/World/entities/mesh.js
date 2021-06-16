@@ -32,12 +32,12 @@ export default class Mesh {
   constructor (geometry, parent) {
     geometry.computeVertexNormals()
 
-    var op = localStorage.getItem("defaultMeshOpacity");
-    var col = localStorage.getItem("defaultMeshColor")
+    var op = window.localStorage.getItem('defaultMeshOpacity')
+    var col = window.localStorage.getItem('defaultMeshColor')
     const material = new THREE.MeshStandardMaterial({
       transparent: true,
       opacity: (op != null) ? op : 0.5,
-      color: (col != null) ? col : "#96c0a7",
+      color: (col != null) ? col : '#96c0a7',
       flatShading: true,
       metalness: 0.1
     })
