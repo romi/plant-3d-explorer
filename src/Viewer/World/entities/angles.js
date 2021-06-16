@@ -48,8 +48,13 @@ EnhancedTHREE = setLine2(EnhancedTHREE)
 
 export default class Angles {
   constructor (angles, parent) {
+    var op = localStorage.getItem("defaultOrganOpacity");
+    var col1 = localStorage.getItem("defaultOrgan1Color")
+    var col2 = localStorage.getItem("defaultOrgan2Color")
+
     this.group = new THREE.Object3D()
-    this.globalColors = [{ rgb: '#3a4d45', a: 0.2 }, { rgb: '#00a960', a: 0.2 }]
+    this.globalColors = [{ rgb: (col1 != null) ? col1 : "#BD10E0", a: (op != null) ? op : 0.5 }, 
+                        { rgb: (col2 != null) ? col2 : "#E691F7", a: (op != null) ? op : 0.5 }]
 
     angles.forEach((points, index) => {
       const geometry = new EnhancedTHREE.LineGeometry()

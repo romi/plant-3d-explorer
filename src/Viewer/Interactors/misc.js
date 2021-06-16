@@ -183,6 +183,9 @@ function ImagePreview (props) {
   </Tooltip>
 }
 
+var bgroundColor = "#ECF3F0";
+if(!localStorage.getItem("defaultBgroundColor")) localStorage.setItem("defaultBgroundColor", bgroundColor)
+
 export default function () {
   const [snapshot, setSnapshot] = useSnapshot()
   const [snapWidth, setSnapWidth] = useState(0)
@@ -304,20 +307,26 @@ export default function () {
     >
       <div data-testid='background-color'>
         <SketchPicker disableAlpha
+          //color={localStorage.getItem("defaultBgroundColor")}
           onChange={
             (color) => {
               setColors({
                 ...colors,
                 background: color.hex
               })
+              localStorage.setItem("defaultBgroundColor", color.hex);
+              
             }
           }
-          color={colors.background}
+          //color={colors.background}
+          //{...window.alert(localStorage.getItem("defaultBgroundColor"))}
+          color={localStorage.getItem("defaultBgroundColor")}
         />
       </div>
       <ResetButton
         onClick={
           () => {
+            localStorage.setItem("defaultBgroundColor", bgroundColor);
             resetDefaultColor('background')
           }
         }

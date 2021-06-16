@@ -56,6 +56,25 @@ const ColumnContainer = styled.div({
 const ToolContainer = styled(Container)({
 })
 
+//Setting the default color values to make sure every component has a base color value in addition to the one given in their file
+let defaults = {
+  defaultOrgan1Color : "#BD10E0",
+  defaultOrgan2Color : "#E79DF6",
+  defaultOrganOpacity : "0.5",
+  defaultMeshColor : "#96c0a7",
+  defaultMeshOpacity : "0.5",
+  defaultPointCloudColor : "#f8de96",
+  defaultPointCloudOpacity : "1",
+  defaultSkeletonColor : "#D0021B",
+  defaultSkeletonOpacity : "0.7"
+}
+
+for (let key in defaults){
+  if(!localStorage.getItem(key))
+    localStorage.setItem(key, defaults[key])
+}
+
+
 export default function MiscInteractors () {
   const [selectedAngle] = useSelectedAngle()
   const [colors, setColors] = useColor()
@@ -97,13 +116,18 @@ export default function MiscInteractors () {
                 ...colors,
                 mesh: { rgb: color.hex, a: color.rgb.a }
               })
+              localStorage.setItem("defaultMeshColor", color.hex)
+              localStorage.setItem("defaultMeshOpacity", color.rgb.a.toString())
             }
           }
-          color={{ ...hex2RGB(colors.mesh.rgb), a: colors.mesh.a }}
+          //color={{ ...hex2RGB(colors.mesh.rgb), a: colors.mesh.a }}
+          color={{ ...hex2RGB(localStorage.getItem("defaultMeshColor")), a: localStorage.getItem("defaultMeshOpacity") }}
         />
         <ResetButton
           onClick={
             () => {
+              localStorage.setItem("defaultMeshColor", defaults.defaultMeshColor)
+              localStorage.setItem("defaultMeshOpacity", defaults.defaultMeshOpacity)
               resetDefaultColor('mesh')
             }
           }
@@ -123,6 +147,7 @@ export default function MiscInteractors () {
         tools.colorPickers.pointCloud} />}
       >
         <SketchPicker
+          
           onChange={
             (color) => {
               if (color.hex === 'transparent') return
@@ -130,14 +155,19 @@ export default function MiscInteractors () {
                 ...colors,
                 pointCloud: { rgb: color.hex, a: color.rgb.a }
               })
+              localStorage.setItem("defaultPointCloudColor", color.hex)
+              localStorage.setItem("defaultPointCloudOpacity", color.rgb.a.toString())
             }
           }
-          color={{ ...hex2RGB(colors.pointCloud.rgb), a: colors.pointCloud.a }}
+          //color={{ ...hex2RGB(colors.pointCloud.rgb), a: colors.pointCloud.a }}
+          color={{...hex2RGB(localStorage.getItem("defaultPointCloudColor")), a: localStorage.getItem("defaultPointCloudOpacity")}}
         />
         <ResetButton
           onClick={
             () => {
               resetDefaultColor('pointCloud')
+              localStorage.setItem("defaultPointCloudColor", defaults.defaultPointCloudColor)
+              localStorage.setItem("defaultPointCloudOpacity", defaults.defaultPointCloudOpacity)
             }
           }
         />
@@ -179,6 +209,7 @@ export default function MiscInteractors () {
                       let copy = colors.segmentedPointCloud.slice()
                       copy[i] = val.hex
                       setColors({ ...colors, segmentedPointCloud: copy })
+                      localStorage.setItem("defaultSegmentedColors", JSON.stringify(copy))
                     }}
                     color={colors.segmentedPointCloud[i]}
                   />
@@ -210,14 +241,19 @@ export default function MiscInteractors () {
                 ...colors,
                 skeleton: { rgb: color.hex, a: color.rgb.a }
               })
+              localStorage.setItem("defaultSkeletonColor", color.hex);
+              localStorage.setItem("defaultSkeletonOpacity", color.rgb.a.toString())
             }
           }
-          color={{ ...hex2RGB(colors.skeleton.rgb), a: colors.skeleton.a }}
+          //color={{ ...hex2RGB(colors.skeleton.rgb), a: colors.skeleton.a }}
+          color={{ ...hex2RGB(localStorage.getItem("defaultSkeletonColor")), a: localStorage.getItem("defaultSkeletonOpacity") }}
         />
         <ResetButton
           onClick={
             () => {
               resetDefaultColor('skeleton')
+              localStorage.setItem("defaultSkeletonColor", defaults.defaultSkeletonColor);
+              localStorage.setItem("defaultSkeletonOpacity", defaults.defaultSkeletonOpacity)
             }
           }
         />
@@ -269,17 +305,30 @@ export default function MiscInteractors () {
                   ]
                 })
               }
+              localStorage.setItem("defaultOrgan1Color", color.hex)
+              localStorage.setItem("defaultOrgan2Color", color2String)
+              localStorage.setItem("defaultOrganOpacity", color.rgb.a.toString())
             }
           }
+          // color={(selectedAngle !== undefined && selectedAngle !== null &&
+          //   colors.organs[selectedAngle])
+          //   ? {
+          //     ...hex2RGB(colors.organs[selectedAngle].rgb),
+          //     a: colors.organs[selectedAngle].a
+          //   }
+          //   : {
+          //     ...hex2RGB(colors.globalOrganColors[0].rgb),
+          //     a: colors.globalOrganColors[0].a
+          //   }}
           color={(selectedAngle !== undefined && selectedAngle !== null &&
             colors.organs[selectedAngle])
             ? {
-              ...hex2RGB(colors.organs[selectedAngle].rgb),
-              a: colors.organs[selectedAngle].a
+              ...hex2RGB(localStorage.getItem("defaultOrgan1Color")), //hex2RGB(colors.organs[selectedAngle].rgb)
+              a: localStorage.getItem("defaultOrganOpacity")
             }
             : {
-              ...hex2RGB(colors.globalOrganColors[0].rgb),
-              a: colors.globalOrganColors[0].a
+              ...hex2RGB(localStorage.getItem("defaultOrgan1Color")), //hex2RGB(colors.organs[0].rgb)
+              a: localStorage.getItem("defaultOrganOpacity")
             }}
         />
         <ResetButton
@@ -296,6 +345,9 @@ export default function MiscInteractors () {
                   })
                 }
               } else {
+                localStorage.setItem("defaultOrgan1Color", defaults.defaultOrgan1Color)
+                localStorage.setItem("defaultOrgan2Color", defaults.defaultOrgan2Color)
+                localStorage.setItem("defaultOrganOpacity", defaults.defaultOrganOpacity)
                 resetDefaultColor('globalOrganColors')
               }
             }
