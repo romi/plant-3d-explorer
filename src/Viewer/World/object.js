@@ -47,9 +47,10 @@ export default class World {
     this.height = height
     this.elem = elem
     this.scene = new THREE.Scene()
-    this.scene.background = new THREE.Color(0xECF3F0)
-    this.originalBackground = new THREE.Color(0xECF3F0)
-    this.blackBackground = new THREE.Color(0x232122)
+    var color = window.localStorage.getItem('defaultBgroundColor')
+    this.scene.background = (color != null) ? new THREE.Color(color) : '#ECF3F0'
+    // this.originalBackground = new THREE.Color(0xECF3F0)
+    // this.blackBackground = new THREE.Color(0x232122)
     this.raycaster = new THREE.Raycaster()
     this.mouse = { x: 0, y: 0, moving: false }
     this.oldMouse = { ...this.mouse }
@@ -241,7 +242,7 @@ export default class World {
     if (this.imgMesh) this.scene.remove(this.imgMesh)
 
     if (camera) {
-      this.scene.background = this.blackBackground
+      // this.scene.background = this.blackBackground
       if (this.CameraPointsGroup) this.CameraPointsGroup.visible = false
 
       this.originPosition = new THREE.Vector3().copy(this.perspectiveCamera.position)
@@ -292,7 +293,7 @@ export default class World {
       this.setAspectRatio()
     } else {
       if (this.CameraPointsGroup) this.CameraPointsGroup.visible = true
-      this.scene.background = this.originalBackground
+      // this.scene.background = this.originalBackground
 
       this.scene.remove(this.camera)
       const lastCam = this.camera
