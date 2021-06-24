@@ -173,9 +173,9 @@ export default class World {
     this.viewport = [zoomLevel, x, y, width, height, centerX, centerY]
     this.renderer.setViewport(x, y, width, height)
 
-    if (this.pointCloud) {
-      this.pointCloud.setZoomLevel(zoomLevel)
-    }
+    // if (this.pointCloud) {
+    //   this.pointCloud.setZoomLevel(zoomLevel)
+    // }
   }
 
   getViewport () {
@@ -424,6 +424,15 @@ export default class World {
 
   setBackgroundColor (color) {
     if (color) this.scene.background = new THREE.Color(color)
+  }
+
+  setPointCloudZoom (zoomLevel) {
+    if (this.pointCloud) {
+      this.pointCloud.setZoomLevel(zoomLevel)
+    }
+    if (this.segmentedPointCloud) {
+      this.segmentedPointCloud.setZoomLevel(zoomLevel)
+    }
   }
 
   setLayers (layers) {

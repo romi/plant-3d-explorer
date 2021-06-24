@@ -255,3 +255,17 @@ export const useRuler = useAccessor(
     })
   ]
 )
+
+export const usePointCloudZoom = useAccessor(
+  [
+    (state) => {
+      return state.interactions.pointCloudZoom
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_POINT_CLOUD_ZOOM',
+      value
+    })
+  ]
+)

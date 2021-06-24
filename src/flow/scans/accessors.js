@@ -81,6 +81,7 @@ export function useImageSet (id) {
   const enhancedSet = useMemo(() => {
     if (!fileset) return null
     const imageSet = fileset.filesets.find((d) => d.id.toLowerCase().match(id))
+    if (!imageSet) return null
     return forgeImageSetEnhancer(imageSet.files
       .map((d) => getScanFile(selectedId, imageSet.id + '/' + d.file)))
   }, [selectedId, id, fileset])

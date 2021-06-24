@@ -34,6 +34,8 @@
   "tooltip-skeleton": "Skeleton",
   "tooltip-organs": "Organs",
 
+  "pointcloud-zoom": "Point Cloud zoom",
+
   "tooltip-cameras-hide": "Hide cameras",
   "tooltip-cameras-show": "Show cameras",
   "tooltip-reset": "Reset view",
