@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import styled from '@emotion/styled'
 import { SketchPicker } from 'react-color'
+import { FormattedMessage } from 'react-intl'
 
-import { useSelectedAngle, useColor, useDefaultColors } from 'flow/interactions/accessors'
+import { useSelectedAngle, useColor, useDefaultColors, usePointCloudZoom } from 'flow/interactions/accessors'
 import { useLayerTools, useLayers } from 'flow/settings/accessors'
 import { useSegmentedPointCloud } from 'flow/scans/accessors'
 
 import { PaintIcon } from 'Viewer/Interactors/icons'
 import { ResetButton } from 'rd/UI/Buttons'
-import { H3 } from 'common/styles/UI/Text/titles'
+import { H3, H2 } from 'common/styles/UI/Text/titles'
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 import MenuBox, { MenuBoxContent } from 'rd/UI/MenuBox'
+
+import { Interactor } from './index'
 
 const hex2RGB = (hex) => {
   return { r: parseInt(hex[1] + hex[2], 16),
@@ -56,8 +59,6 @@ const ColumnContainer = styled.div({
 const ToolContainer = styled(Container)({
 })
 
-// const windowG = typeof window !== 'undefined' && window
-
 // Setting the default color values to make sure every component has a base color value in addition to the one given in their file
 let defaults = {
   defaultOrgan1Color: '#BD10E0',
@@ -86,6 +87,7 @@ export default function MiscInteractors () {
   const [labels, setLabels] = useState()
   const [, segmentation] = useSegmentedPointCloud()
   const [legendPicker, setLegendPicker] = useState()
+  const [pointCloudZoom, setPointCloudZoom] = usePointCloudZoom()
 
   useEffect(
     () => {
@@ -356,5 +358,51 @@ export default function MiscInteractors () {
         />
       </ToolButton>
     </ColumnContainer>
+
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      marginTop: -40,
+      marginLeft: 10
+    }} >
+      <H3>
+        <FormattedMessage id='pointcloud-zoom' />
+      </H3>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'row',
+        width: 70,
+        height: 70,
+        marginLeft: 25
+      }} >
+        <Interactor
+          isButton
+          activated={false}
+          onClick={() => setPointCloudZoom({ ...pointCloudZoom, level: (pointCloudZoom.level > 1) ? pointCloudZoom.level - 1 : 1 })}
+        >
+          <H2 style={{ color: '#d9d9d9' }}>
+            -
+          </H2>
+        </Interactor>
+        <div style={{
+          marginRight: 5,
+          marginLeft: 5,
+          marginTop: -10
+        }} >
+          <H2 style={{ color: '#d9d9d9' }}>
+            x{pointCloudZoom.level}
+          </H2>
+        </div>
+        <Interactor
+          isButton
+          activated={false}
+          onClick={() => setPointCloudZoom({ ...pointCloudZoom, level: (pointCloudZoom.level < 4) ? pointCloudZoom.level + 1 : 4 })}
+        >
+          <H2 style={{ color: '#d9d9d9' }}>
+            +
+          </H2>
+        </Interactor>
+      </div>
+    </div>
   </ToolContainer>
 }

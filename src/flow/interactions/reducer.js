@@ -52,6 +52,10 @@ export const initialState = {
     background: '#ecf3f0'
   },
 
+  pointCloudZoom: {
+    level: 1
+  },
+
   snapshot: {
     snapResolution: null,
     trueResolution: null,
@@ -67,6 +71,7 @@ export const initialState = {
 
   reset3dViewFn: null,
   reset2dViewFn: null
+
 }
 
 export default function settingsReducer (state = initialState, action) {
@@ -159,6 +164,11 @@ export default function settingsReducer (state = initialState, action) {
       return {
         ...state,
         ruler: action.value
+      }
+    case 'SET_POINT_CLOUD_ZOOM':
+      return {
+        ...state,
+        pointCloudZoom: action.value
       }
     default:
       return state

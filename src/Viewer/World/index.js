@@ -34,7 +34,7 @@ import { useElementMouse } from 'rd/tools/hooks/mouse'
 
 import { useLayers } from 'flow/settings/accessors'
 import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useColor, useClickedPoint, useLabels,
-  useSnapshot, useOrganInfo, useSelectedPoints, useSelectedLabel, useSelectionMethod, useRuler } from 'flow/interactions/accessors'
+  useSnapshot, useOrganInfo, useSelectedPoints, useSelectedLabel, useSelectionMethod, useRuler, usePointCloudZoom } from 'flow/interactions/accessors'
 import { useScanFiles, useScan,
   useSegmentedPointCloud } from 'flow/scans/accessors'
 
@@ -101,6 +101,8 @@ export default function WorldComponent (props) {
   const eventFns = selectedCamera
     ? event2dFns
     : event3dFns
+
+  const [pointCloudZoom] = usePointCloudZoom()
 
   useEffect(
     () => {
@@ -486,6 +488,15 @@ export default function WorldComponent (props) {
       if (world) world.setMouse(mouse)
     },
     [world, mouse]
+  )
+
+  useEffect(
+    () => {
+      if (world) {
+        world.setPointCloudZoom(pointCloudZoom.level)
+      }
+    },
+    [pointCloudZoom.level]
   )
 
   return <Container ref={containerRef}>

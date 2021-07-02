@@ -123,6 +123,17 @@ export default function Carousel () {
   useEffect(
     () => {
       if (imageSet) {
+        // Portion of code to get only 'rgb' images in dataset
+        // if(carousel.photoSet == 'images'){
+        //   let index = 0
+        //   imageSet.forEach(function(image){
+        //     if(image.path.includes('rgb')){
+        //       //imageSet.splice(index, 1)
+        //       index--
+        //     }
+        //     index++
+        //   })
+        // }
         setUrlList(imageSet.map((d) => d.path))
       }
     },
