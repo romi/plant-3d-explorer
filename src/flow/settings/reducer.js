@@ -38,7 +38,11 @@ export const initialState = {
   },
   panels: {
     'panels-angles': true,
-    'panels-distances': true
+    'panels-distances': true,
+    'panels-segmentation2D': false
+  },
+  evaluation: {
+    data: 'precision'
   },
   layerTools: {
     activeTool: null
@@ -68,6 +72,11 @@ export default function settingsReducer (state = initialState, action) {
       return {
         ...state,
         panels: action.value
+      }
+    case 'SET_EVALUATION':
+      return {
+        ...state,
+        evaluation: action.value
       }
     case 'SET_LAYER_TOOLS':
       return {

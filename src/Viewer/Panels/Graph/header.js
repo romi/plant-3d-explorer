@@ -165,31 +165,33 @@ export default function Header (props) {
           onClick={props.onClose}
         />
       </Title>
-      <Values>
-        <LegendItem>
-          <ValueWording>
-            <FormattedMessage id='angles-legend-automated' />
-          </ValueWording>
-          <Value
-            condensed={!props.automatedValue}
-          >
-            {props.automatedValue}
-          </Value>
-        </LegendItem>
-        {
-          props.ifManualData && <LegendItem>
+      {
+        props.ifGraph && <Values>
+          <LegendItem>
             <ValueWording>
-              <FormattedMessage id='angles-legend-manuel' />
+              <FormattedMessage id='angles-legend-automated' />
             </ValueWording>
             <Value
-              condensed={!props.manualValue}
-              secondary
+              condensed={!props.automatedValue}
             >
-              {props.manualValue}
+              {props.automatedValue}
             </Value>
           </LegendItem>
-        }
-      </Values>
+          {
+            props.ifManualData && <LegendItem>
+              <ValueWording>
+                <FormattedMessage id='angles-legend-manuel' />
+              </ValueWording>
+              <Value
+                condensed={!props.manualValue}
+                secondary
+              >
+                {props.manualValue}
+              </Value>
+            </LegendItem>
+          }
+        </Values>
+      }
     </Top>
   </>
 }
