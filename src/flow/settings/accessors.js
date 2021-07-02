@@ -66,6 +66,20 @@ export const usePanels = useAccessor(
   ]
 )
 
+export const useEvaluation = useAccessor(
+  [
+    (state) => {
+      return state.settings.evaluation
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_EVALUATION',
+      value
+    })
+  ]
+)
+
 export const useLayerTools = useAccessor(
   [
     (state) => {

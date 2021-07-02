@@ -45,6 +45,8 @@ import segmentedPointCloudRaw from 'common/assets/ico.segmented_point_cloud.21x2
 import photoSetRaw from 'common/assets/ico.photoset.24x24.svg'
 import rulerRaw from 'common/assets/ico.ruler.21x21.svg'
 import backgroundColorRaw from 'common/assets/ico.background_color.21x21.svg'
+import zoomInRaw from 'common/assets/ico.zoom-in.14x14.svg'
+import zoomOutRaw from 'common/assets/ico.zoom-out.14x14.svg'
 
 const rules = (props) => ({
   default: {
@@ -185,5 +187,23 @@ export const BackgroundColorIcon = IconHOC((props) => {
     rules={rules(props)}
     raw={backgroundColorRaw}
     alt='background color icon'
+  />
+})
+
+export const ZoomInIcon = IconHOC((props) => {
+  return <Icon
+    {...props}
+    rules={rules(props)}
+    raw={zoomInRaw}
+    alt='point cloud zoom in icon'
+  />
+})
+
+export const ZoomOutIcon = IconHOC((props) => {
+  return <Icon
+    {...props}
+    rules={rules(props)}
+    raw={zoomOutRaw}
+    alt='point cloud zoom out icon'
   />
 })
