@@ -33,6 +33,7 @@
   "tooltip-segmentedpointcloud": "Segmented point cloud",
   "tooltip-skeleton": "Skeleton",
   "tooltip-organs": "Organs",
+  "tooltip-pcd-ground-truth": "Point cloud ground truth",
 
   "pointcloud-zoom": "Point Cloud zoom",
 
@@ -96,5 +97,9 @@
   "panels-add": "Add panel",
   "panels-angles": "Divergence angles",
   "panels-distances": "Internode distances",
-  "panels-segmentation2D": "Segmentation 2D Evaluation"
+  "panels-evaluation": "Plant Evaluation",
+
+  "segmentation2D": "Segmentation 2D Evaluation",
+  "segmentedPC": "Segmented Point Cloud Evaluation"
+
 }

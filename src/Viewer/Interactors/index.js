@@ -41,6 +41,7 @@ import PanelsInteractor from './panels'
 import ToolInteractors from './tools'
 import MiscInteractors from './misc'
 import OverlayInteractors from './overlay'
+import GroundTruthInteractors from './pcdGroundTruth'
 
 export const Interactor = styled(
   (props) => <div data-testid={props['data-testid'] || 'interactor'}
@@ -136,5 +137,6 @@ export {
   CameraInteractors,
   PanelsInteractor,
   MiscInteractors,
-  OverlayInteractors
+  OverlayInteractors,
+  GroundTruthInteractors
 }

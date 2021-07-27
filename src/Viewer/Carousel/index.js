@@ -123,7 +123,7 @@ export default function Carousel () {
   useEffect(
     () => {
       if (imageSet) {
-        // Portion of code to get only 'rgb' images in dataset
+        // Portion of code to get only 'rgb' images in dataset (doesn't work)
         // if(carousel.photoSet == 'images'){
         //   let index = 0
         //   imageSet.forEach(function(image){

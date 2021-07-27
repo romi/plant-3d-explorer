@@ -40,7 +40,8 @@ import {
   PanelsInteractor,
   ToolInteractors,
   MiscInteractors,
-  OverlayInteractors
+  OverlayInteractors,
+  GroundTruthInteractors
 } from './Interactors'
 
 const Container = styled.div({
@@ -92,6 +93,7 @@ export default function Viewer (props) {
           <MiscInteractors />
           <OverlayInteractors />
           <PanelsInteractor />
+          <GroundTruthInteractors />
           <Help />
         </WorldContainer>
         <Panels />
