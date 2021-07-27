@@ -118,7 +118,7 @@ export default function PanelsInteractor () {
     ),
     'panels-angles': !!get(scan, 'data.angles.angles'),
     'panels-distances': !!get(scan, 'data.angles.internodes'),
-    'panels-segmentation2D': !!get(scan, 'data.angles.flower')
+    'panels-evaluation': !!get(scan, 'data.segmentation2D') || !!get(scan, 'data.segmentedPcdEvaluation')
   }
 
   const validePanels = Object

@@ -45,6 +45,7 @@ export const initialState = {
     // Previous color values are left in comments
     mesh: { rgb: '#96c0a7', a: 0.5 }, // a: 1
     pointCloud: { rgb: '#f8de96', a: 1 },
+    pointCloudGroundTruth: { rgb: '#f8de96', a: 1 },
     segmentedPointCloud: [],
     skeleton: { rgb: '#D0021B', a: 0.7 }, // { rgb: '#5ca001', a: 1 },
     organs: [],

@@ -363,7 +363,7 @@ export default function MiscInteractors () {
       </ToolButton>
     </ColumnContainer>
 
-    <ColumnContainer displayed={layers.segmentedPointCloud || layers.pointCloud}>
+    <ColumnContainer displayed={layers.segmentedPointCloud || layers.pointCloud || layers.pointCloudGroundTruth}>
       <div style={{
         display: 'flex',
         flexDirection: 'column',

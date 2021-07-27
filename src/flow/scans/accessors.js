@@ -154,7 +154,8 @@ export function useScanFiles (scan) {
    */
   return [
     useFetch3dObject(scan && (getFile(scan.filesUri.mesh))),
-    useFetch3dObject(scan && (getFile(scan.filesUri.pointCloud)))
+    useFetch3dObject(scan && (getFile(scan.filesUri.pointCloud))),
+    useFetch3dObject(scan && (getFile(scan.filesUri.pcdGroundTruth)))
   ]
 }
 

@@ -31,6 +31,7 @@ export const initialState = {
   layers: {
     mesh: false,
     pointCloud: false,
+    pointCloudGroundTruth: false,
     skeleton: true,
     angles: true,
     cameras: false,
@@ -39,9 +40,10 @@ export const initialState = {
   panels: {
     'panels-angles': true,
     'panels-distances': true,
-    'panels-segmentation2D': false
+    'panels-evaluation': false
   },
   evaluation: {
+    activeEvaluation: 'segmentation2D',
     data: 'precision'
   },
   layerTools: {

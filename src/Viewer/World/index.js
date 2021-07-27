@@ -86,7 +86,7 @@ export default function WorldComponent (props) {
 
   const [scan] = useScan()
 
-  const [[meshGeometry], [pointCloudGeometry]] = useScanFiles(scan)
+  const [[meshGeometry], [pointCloudGeometry], [pointCloudGroundTruthGeometry]] = useScanFiles(scan)
   const [segmentedPointCloud, segmentation] = useSegmentedPointCloud()
   const [viewport, event2dFns, resetViewport2d, clicked2d] = useViewport2d(
     bounds.width || getSize().width,
@@ -195,7 +195,7 @@ export default function WorldComponent (props) {
         world.setCamera(scan.camera)
       }
     },
-    [world, scan, meshGeometry, pointCloudGeometry]
+    [world, scan, meshGeometry, pointCloudGeometry, pointCloudGroundTruthGeometry]
   )
 
   useEffect(
@@ -407,6 +407,16 @@ export default function WorldComponent (props) {
       }
     },
     [world, pointCloudGeometry]
+  )
+
+  useEffect(
+    () => {
+      if (world && pointCloudGroundTruthGeometry) {
+        world.setPointcloudGroundTruthGeometry(pointCloudGroundTruthGeometry)
+        world.setLayers(layers)
+      }
+    },
+    [world, pointCloudGroundTruthGeometry]
   )
 
   useEffect(

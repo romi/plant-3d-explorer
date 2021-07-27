@@ -388,6 +388,11 @@ export default class World {
     this.pointCloud = new PointCloud(geometry, this.viewerObjects)
   }
 
+  setPointcloudGroundTruthGeometry (geometry) {
+    geometry.computeBoundingBox()
+    this.pointCloudGroundTruth = new PointCloud(geometry, this.viewerObjects)
+  }
+
   setSegmentedPointCloudGeometry (geometry, segmentation, uniqueLabels) {
     geometry.computeBoundingBox()
     this.segmentedPointCloud = new SegmentedPointCloud(geometry,
@@ -433,11 +438,15 @@ export default class World {
     if (this.segmentedPointCloud) {
       this.segmentedPointCloud.setZoomLevel(zoomLevel)
     }
+    if (this.pointCloudGroundTruth) {
+      this.pointCloudGroundTruth.setZoomLevel(zoomLevel)
+    }
   }
 
   setLayers (layers) {
     if (this.mesh) this.mesh.setVisible(layers.mesh)
     if (this.pointCloud) this.pointCloud.setVisible(layers.pointCloud)
+    if (this.pointCloudGroundTruth) this.pointCloudGroundTruth.setVisible(layers.pointCloudGroundTruth)
     if (this.segmentedPointCloud) this.segmentedPointCloud.setVisible(layers.segmentedPointCloud)
     if (this.skeleton) this.skeleton.setVisible(layers.skeleton)
     if (this.anlesPoints) this.anlesPoints.setVisible(layers.angles)

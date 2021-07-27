@@ -141,7 +141,9 @@ export default function Header (props) {
   return <>
     <Top>
       <Title>
-        <FormattedMessage id={props.id} />
+        {
+          props.ifGraph && <FormattedMessage id={props.id} />
+        }
         <div style={{ position: 'relative' }}>
           <Tooltip>
 
@@ -157,9 +159,11 @@ export default function Header (props) {
             </TooltipContent>
           </Tooltip>
         </div>
-        <Download
-          data={props.data}
-        />
+        {
+          props.ifGraph && <div>
+            <Download data={props.data} />
+          </div>
+        }
         <CloseIcon
           src={closeIcon}
           onClick={props.onClose}

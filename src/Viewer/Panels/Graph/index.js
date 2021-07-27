@@ -76,6 +76,7 @@ export default function GraphPanel (props) {
       onClose={props.onClose}
       ifManualData={ifManualData}
       ifHighligthed={ifHighligthed}
+      ifGraph={props.ifGraph}
       data={props.data}
       automatedValue={
         ifHighligthed
