@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import styled from '@emotion/styled'
 import { get } from 'lodash'
+import pattern from 'patternomaly'
 import { FormattedMessage } from 'react-intl'
 
 import { green, darkGreen } from 'common/styles/colors'
@@ -91,12 +92,14 @@ export default function EvalGraphs (props) {
       case 'segmentedPC':
         let barData2 = []
         let barDataAverage = []
-        let backgroundColor2 = []
+        let customBarColor = []
+        let customBarColor2 = []
         for (let i = 0; i < labels.length; i++) {
           barData.push(get(scan, 'data.segmentedPcdEvaluation.groundtruth-to-prediction.' + labels[i] + '.' + value))
           barData2.push(get(scan, 'data.segmentedPcdEvaluation.prediction-to-groundtruth.' + labels[i] + '.' + value))
           barDataAverage.push((barData[i] + barData2[i]) / 2)
-          backgroundColor2[i] = backgroundColor[i] + '80'
+          customBarColor.push(pattern.draw('diagonal', backgroundColor[i] + 'CC'))
+          customBarColor2.push(pattern.draw('dot', backgroundColor[i] + '99'))
         }
         data = {
           labels: barLabels,
@@ -112,7 +115,7 @@ export default function EvalGraphs (props) {
             {
               type: 'bar',
               label: 'Prediction-to-groundtruth',
-              backgroundColor: backgroundColor2,
+              backgroundColor: customBarColor,
               borderColor: 'rgba(0,0,0,1)',
               borderWidth: 1,
               data: barData2
@@ -120,7 +123,7 @@ export default function EvalGraphs (props) {
             {
               type: 'bar',
               label: 'Average',
-              backgroundColor: backgroundColor,
+              backgroundColor: customBarColor2,
               borderColor: 'rgba(0,0,0,1)',
               borderWidth: 1,
               data: barDataAverage
@@ -142,21 +145,20 @@ export default function EvalGraphs (props) {
       headers[j] = []
     }
     let singleData = []
+    let boxData = []
     let singlePoints
-    let label
-    let test
-    var matches
+    let label // number of the selected image
+    let test // used to get the complete image number
     for (let i = 0; i < labels.length; i++) {
       for (let j = 0; j < cameraPoses.length; j++) {
         pointsData[(i * cameraPoses.length) + j].push(i)
         pointsData[(i * cameraPoses.length) + j].push(get(scan, 'data.segmentation2D.evaluation-results.0' + j + '_' + labels[i] + '.' + value))
         headers[(i * cameraPoses.length) + j].push('Image ' + j)
       }
-      // window.alert(pointsData[1][i])
+      boxData.push(get(scan, 'data.segmentation2D.' + labels[i] + '.' + value + '-quantiles'))
     }
     if (selected) {
-      matches = selected.id.match(/(\d+)/)
-      test = matches[0].toString()
+      test = selected.id.match(/(\d+)/)[0].toString()
       label = test[test.length - 3] + test[test.length - 2] + test[test.length - 1] // This is not the best option but it works fine
 
       for (let i = 0; i < labels.length; i++) {
@@ -205,13 +207,7 @@ export default function EvalGraphs (props) {
       series: [{
         type: 'boxplot',
         name: 'Metrics',
-        data: [
-          [0.1, 0.3, 0.5, 0.7, 0.8],
-          [0.1, 0.1, 0.1, 0.1, 0.1],
-          [0.1, 0.1, 0.1, 0.1, 0.1],
-          [0.1, 0.1, 0.1, 0.1, 0.1],
-          [0.1, 0.1, 0.1, 0.1, 0.1]
-        ],
+        data: boxData,
         tooltip: {
           headerFormat: '<em>{point.key}</em><br/>'
         }
