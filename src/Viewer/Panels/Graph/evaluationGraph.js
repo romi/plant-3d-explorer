@@ -181,9 +181,9 @@ export default function EvalGraphs (props) {
       singlePoints = {}
     }
 
-    const values = {
+    const plot = {
       chart: {
-        height: 533
+        height: '100%'
       },
       title: {
         text: ''
@@ -197,11 +197,6 @@ export default function EvalGraphs (props) {
       yAxis: {
         title: {
           enabled: false
-        }
-      },
-      plotOptions: {
-        series: {
-          animation: true
         }
       },
       series: [{
@@ -225,7 +220,7 @@ export default function EvalGraphs (props) {
         enabled: false
       }
     }
-    return values
+    return plot
   }
 
   const handleChange = e => {
@@ -283,20 +278,23 @@ export default function EvalGraphs (props) {
   }
 
   return <div style={{
-    width: 500,
-    height: 670,
+    width: 450,
+    height: '95%',
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
     marginLeft: 20,
     marginRight: 20,
     marginTop: 14
   }}>
     <div style={{
-      float: 'right',
       display: 'flex',
       flexFlow: 'row'
     }}>
       <div style={{
         width: 300,
-        marginTop: 5
+        marginTop: 5,
+        marginLeft: 90
       }}>
         <Select
           options={options}
@@ -319,7 +317,7 @@ export default function EvalGraphs (props) {
         />
       </div>
     </div>
-    <ButtonGroup>
+    <ButtonGroup style={{ marginLeft: 65 }}>
       {data.map(data => (
         <ButtonToggle
           key={data}
@@ -330,14 +328,23 @@ export default function EvalGraphs (props) {
         </ButtonToggle>
       ))}
     </ButtonGroup>
+    <div style={{
+      position: 'relative',
+      width: '100%',
+      height: '30%',
+      display: 'flex',
+      flexDirection: 'column',
+      flexGrow: 1
+    }}>
+      {
+        (active === types[0]) && <BarPlot data={barPlotData(evaluation.data)} />
+      }
+      {
+        (active === types[1]) && evaluation.activeEvaluation === 'segmentation2D' && <BoxPlot data={boxPlotData(evaluation.data)} />
+      }
+    </div>
     {
-      (active === types[0]) && <BarPlot data={barPlotData(evaluation.data)} />
-    }
-    {
-      (active === types[1]) && evaluation.activeEvaluation === 'segmentation2D' && <BoxPlot data={boxPlotData(evaluation.data)} />
-    }
-    {
-      evaluation.activeEvaluation === 'segmentation2D' && <div style={{ marginTop: 8 }}>
+      evaluation.activeEvaluation === 'segmentation2D' && <div style={{ marginTop: 15 }}>
         <ButtonGroup>
           {types.map(type => (
             <ButtonToggle

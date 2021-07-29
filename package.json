@@ -9,6 +9,7 @@
     "@emotion/styled": "^10.0.9",
     "axios": "^0.21.1",
     "axios-cancel": "^0.2.2",
+    "chart.js": "^3.5.0",
     "color": "^3.1.0",
     "d3-array": "^2.4.0",
     "d3-scale": "^3.0.0",
