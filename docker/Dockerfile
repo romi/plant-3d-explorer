@@ -9,7 +9,6 @@ ARG USER_NAME=scanner
 ARG USER_ID=1001
 ARG GROUP_NAME=scanner
 ARG GROUP_ID=1001
-ARG BRANCH=master
 ARG API_URL='https://db.romi-project.eu'
 ARG PORT=3000
 
@@ -32,8 +31,9 @@ USER ${USER_NAME}
 # Change working directory:
 WORKDIR /home/${USER_NAME}
 
-RUN git clone --branch $BRANCH https://github.com/romi/plant-3d-explorer.git && \
-    cd plant-3d-explorer && \
+COPY --chown=${USER_NAME} ./ plant-3d-explorer/
+
+RUN cd plant-3d-explorer && \
     # Install modules listed as dependencies in `package.json`:
     npm install
 

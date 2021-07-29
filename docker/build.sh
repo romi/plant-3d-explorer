@@ -6,15 +6,14 @@
 # 1. Default build options will create `roboticsmicrofarms/plant_3d_explorer:latest` pointing at ROMI database:
 # $ ./build.sh
 #
-# 2. Build image with 'debug' image tag & another 'plant_3d_explorer' branch options:
-# $ ./build.sh -t debug -b 'feature/faster_docker'
+# 2. Build image with 'debug' image tag:
+# $ ./build.sh -t debug
 
 user=$USER
 uid=$(id -u)
 group=$(id -g -n)
 gid=$(id -g)
 vtag="latest"
-branch='master'
 api_url='https://db.romi-project.eu'
 docker_opts=""
 
@@ -39,8 +38,6 @@ usage() {
   echo "  --gid
     Group id to use with 'user' inside docker image, default to '$gid'.
     "
-  echo "  -b, --branch
-    Git branch to use for cloning 'plant-3d-explorer' inside docker image, default to '$branch'."
   echo "  --api_url
     REACT API URL to use to retrieve dataset, default is '$api_url'."
   # Docker options:
@@ -75,10 +72,6 @@ while [ "$1" != "" ]; do
     shift
     gid=$1
     ;;
-  -b | --branch)
-    shift
-    branch=$1
-    ;;
   --api_url)
     shift
     api_url=$1
@@ -112,9 +105,8 @@ docker build -t roboticsmicrofarms/plant_3d_explorer:$vtag $docker_opts \
   --build-arg USER_ID=$uid \
   --build-arg GROUP_NAME=$group \
   --build-arg GROUP_ID=$gid \
-  --build-arg BRANCH=$branch \
   --build-arg API_URL=$api_url \
-  .
+  -f docker/Dockerfile .
 
 # Print docker image build time:
 echo
