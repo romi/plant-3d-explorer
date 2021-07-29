@@ -6,6 +6,9 @@ ENV PYTHONUNBUFFERED=1
 
 # Set non-root user name:
 ARG USER_NAME=scanner
+ARG USER_ID=1001
+ARG GROUP_NAME=scanner
+ARG GROUP_ID=1001
 ARG BRANCH=master
 ARG API_URL='https://db.romi-project.eu'
 ARG PORT=3000
@@ -19,8 +22,9 @@ RUN apt-get update && \
     apt-get clean -y && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/* && \
-    useradd -m ${USER_NAME} && \
-    cd /home/${USER_NAME} && \
+    # Create a non-root user and give it rights over its "home folder"
+    addgroup --gid $GROUP_ID $GROUP_NAME && \
+    adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID $USER_NAME && \
     chown -R ${USER_NAME}: /home/${USER_NAME}
 
 # Change user
