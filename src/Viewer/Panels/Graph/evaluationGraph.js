@@ -264,16 +264,23 @@ export default function EvalGraphs (props) {
 
   const styles = { // Style for the dropdown menu (to change)
     indicatorSeparator: () => {},
+    singleValue: (provided) => ({
+      ...provided,
+      paddingBottom: 1
+    }),
     control: base => ({
       ...base,
-      fontFamily: 'Times New Roman',
+      minHeight: 40,
+      fontFamily: '$InterRegular',
       fontSize: 15,
-      height: 20
+      fontWeight: 400,
+      width: 350
     }),
     menu: base => ({
       ...base,
-      fontFamily: 'Times New Roman',
-      fontSize: 15
+      fontFamily: '$InterRegular',
+      fontSize: 15,
+      width: 350
     })
   }
 

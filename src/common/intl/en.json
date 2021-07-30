@@ -89,6 +89,7 @@
 
   "angles-tooltip": "Divergence angles are the angular differences between two consecutive organs. In the graph below, the angles are presented from bottom to top, starting with the angle between organs 1 and 2. The ideal angle is represented by the dotted line and corresponds to the golden angle of 137.5°.",
   "internodes-tooltip": "Internode distances are distances between two consecutive organs, in millimeters. In the graph below, they are presented from bottom to top, starting with the distance between organs 1 and 2.",
+  "evaluation-tooltip": "There are two evaluations available: Segmentation 2D Evaluation and Segmented Point Cloud Evaluation. The first one has a barplot to show the mean of each metrics and a boxplot with values for each image. Opening an image will highlight it's value on the graph. The second evaluation has a barplot with two metrics and their mean (reprensents the MIOU for the IOU metric). You can switch between evaluations with the dropdown menu.",
 
   "angles-legend-automated": "AUTOMATED",
   "angles-legend-manuel": "MANUAL",

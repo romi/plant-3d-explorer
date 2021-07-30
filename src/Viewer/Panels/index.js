@@ -110,7 +110,7 @@ export default function Panels () {
       },
       'panels-evaluation': {
         isBarChart: true,
-        tooltipId: 'internodes-tooltip'
+        tooltipId: 'evaluation-tooltip'
       }
     }
   }, [scan])
