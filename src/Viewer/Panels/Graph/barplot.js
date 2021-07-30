@@ -8,7 +8,12 @@ export default function BarPlot (props) {
       responsive: true,
       maintainAspectRatio: false,
       aspectRatio: 1,
-      animation: { duration: 0 }
+      animation: { duration: 0 },
+      plugins: {
+        legend: {
+          display: props.legend
+        }
+      }
     }}
   />
 }
