@@ -344,7 +344,7 @@ export default function EvalGraphs (props) {
       flexGrow: 1
     }}>
       {
-        (active === types[0]) && <BarPlot data={barPlotData(evaluation.data)} />
+        (active === types[0]) && <BarPlot data={barPlotData(evaluation.data)} legend={evaluation.activeEvaluation !== 'segmentation2D'} />
       }
       {
         (active === types[1]) && evaluation.activeEvaluation === 'segmentation2D' && <BoxPlot data={boxPlotData(evaluation.data)} />
