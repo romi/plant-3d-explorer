@@ -3,12 +3,8 @@ LABEL maintainer="Jonathan LEGRAND <jonathan.legrand@ens-lyon.fr>"
 
 ENV LANG=C.UTF-8
 ENV PYTHONUNBUFFERED=1
+ENV USER_NAME=myuser
 
-# Set non-root user name:
-ARG USER_NAME=scanner
-ARG USER_ID=1001
-ARG GROUP_NAME=scanner
-ARG GROUP_ID=1001
 ARG API_URL='https://db.romi-project.eu'
 ARG PORT=3000
 
@@ -21,23 +17,22 @@ RUN apt-get update && \
     apt-get clean -y && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/* && \
-    # Create a non-root user and give it rights over its "home folder"
-    addgroup --gid $GROUP_ID $GROUP_NAME && \
-    adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID $USER_NAME && \
-    chown -R ${USER_NAME}: /home/${USER_NAME}
+    # Create a non-root user and give it rights over a "myapp" folder:
+    adduser --disabled-password ${USER_NAME} && \
+    mkdir /myapp && chown -R ${USER_NAME} /myapp
 
 # Change user
 USER ${USER_NAME}
 # Change working directory:
-WORKDIR /home/${USER_NAME}
-
+WORKDIR /myapp
+# Copy the package sources:
 COPY --chown=${USER_NAME} ./ plant-3d-explorer/
-
+# Install the dependencies and package:
 RUN cd plant-3d-explorer && \
     # Install modules listed as dependencies in `package.json`:
     npm install
 
-WORKDIR /home/${USER_NAME}/plant-3d-explorer
+WORKDIR /myapp/plant-3d-explorer
 
 # Link the docker image to romi database:
 ENV REACT_APP_API_URL=$API_URL
