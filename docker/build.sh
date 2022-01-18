@@ -10,7 +10,7 @@ usage() {
     "
 
   echo "DESCRIPTION:"
-  echo "  Build a docker image named 'roboticsmicrofarms/plant_3d_explorer' using Dockerfile in same location.
+  echo "  Build a docker image named 'roboticsmicrofarms/plant-3d-explorer' using Dockerfile in same location.
     "
 
   echo "OPTIONS:"
@@ -62,7 +62,7 @@ done
 start_time=`date +%s`
 
 # Start the docker image build:
-docker build -t roboticsmicrofarms/plant_3d_explorer:$vtag $docker_opts -f docker/Dockerfile .
+docker build -t roboticsmicrofarms/plant-3d-explorer:$vtag $docker_opts -f docker/Dockerfile .
 
 # Important to CI/CD pipeline to track docker build failure
 docker_build_status=$?

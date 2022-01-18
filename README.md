@@ -92,11 +92,11 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 ### Build docker image
 To build the image, at the root directory of the repo:
 ```bash
-docker build -t roboticsmicrofarms/plant_3d_explorer:2.1 .
+docker build -t roboticsmicrofarms/plant-3d-explorer:2.1 .
 ```
 To run it:
 ```bash
-docker run -it -p 3000:3000 roboticsmicrofarms/plant_3d_explorer:2.1
+docker run -it -p 3000:3000 roboticsmicrofarms/plant-3d-explorer:2.1
 ```
 Once it's up, you should be able to access the viewer here: http://localhost:3000/
 
@@ -105,18 +105,18 @@ Once it's up, you should be able to access the viewer here: http://localhost:300
 
 Push it on `roboticsmicrofarms` docker hub:
 ```bash
-docker push roboticsmicrofarms/plant_3d_explorer:2.1
+docker push roboticsmicrofarms/plant-3d-explorer:2.1
 ```
-This requires a valid account, token and existing repository (`plant_3d_explorer`) on docker hub!
+This requires a valid account, token and existing repository (`plant-3d-explorer`) on docker hub!
 
 ### Use pre-built docker image
 First you need to pull the docker image:
 ```bash
-docker pull roboticsmicrofarms/plant_3d_explorer
+docker pull roboticsmicrofarms/plant-3d-explorer
 ```
 Then you can run it with:
 ```bash
-docker run -p 3000:3000 roboticsmicrofarms/plant_3d_explorer
+docker run -p 3000:3000 roboticsmicrofarms/plant-3d-explorer
 ```
 
 
@@ -124,7 +124,7 @@ docker run -p 3000:3000 roboticsmicrofarms/plant_3d_explorer
 To use a local database, for testing or development, we provide a docker compose recipe that:
 
 1. start a `PlantDB` container using `roboticsmicrofarms/plantdb`
-2. start a `Plant 3D Explorer` container using `roboticsmicrofarms/plant_3d_explorer`
+2. start a `Plant 3D Explorer` container using `roboticsmicrofarms/plant-3d-explorer`
 
 **note**:
 > You need `docker-compose` installed, see 

@@ -8,8 +8,8 @@ services:
       - "5000:5000"
     healthcheck:
       test: "exit 0"
-  plant_3d_explorer:
-    image: "roboticsmicrofarms/plant_3d_explorer"
+  plant-3d-explorer:
+    image: "roboticsmicrofarms/plant-3d-explorer"
     depends_on:
       - plantdb
     environment:

@@ -3,7 +3,7 @@
 vtag="latest"
 api_url='https://db.romi-project.eu'
 port=3000
-cmd="npm start"
+cmd=""
 
 usage() {
   echo "USAGE:"
@@ -12,7 +12,7 @@ usage() {
 
   echo "DESCRIPTION:"
   echo "  Start the Plant 3D Explorer container.
-  Uses the docker image: 'roboticsmicrofarms/plant_3d_explorer'.
+  Uses the docker image: 'roboticsmicrofarms/plant-3d-explorer'.
   By default, start the container with the shared online database by ROMI.
     "
 
@@ -61,8 +61,17 @@ while [ "$1" != "" ]; do
   shift
 done
 
-docker run \
-  --env REACT_APP_API_URL="$api_url" \
-  --env PORT=$port \
-  -it roboticsmicrofarms/plant_3d_explorer:$vtag \
-  bash -c "$cmd"
+if [ "$cmd" = "" ]; then
+  # Start in interactive mode:
+  docker run \
+    --env REACT_APP_API_URL="$api_url" \
+    --env PORT=$port \
+    -it roboticsmicrofarms/plant-3d-explorer:$vtag bash
+else
+  # Start in non-interactive mode (run the command):
+  docker run \
+    --env REACT_APP_API_URL="$api_url" \
+    --env PORT=$port \
+    roboticsmicrofarms/plant-3d-explorer:$vtag \
+    bash -c "$cmd"
+fi
