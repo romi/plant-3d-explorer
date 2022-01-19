@@ -3,7 +3,7 @@ services:
   plantdb:
     image: "roboticsmicrofarms/plantdb"
     volumes:
-      - ${ROMI_DB}:/home/${USER}/db
+      - ${ROMI_DB}:/myapp/db
     ports:
       - "5000:5000"
     healthcheck:

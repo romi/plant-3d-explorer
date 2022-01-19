@@ -11,10 +11,10 @@ usage() {
     "
 
   echo "DESCRIPTION:"
-  echo "  Start the Plant 3D Explorer container.
-  Uses the docker image: 'roboticsmicrofarms/plant-3d-explorer'.
-  By default, start the container with the shared online database by ROMI.
-    "
+  echo "  Run 'roboticsmicrofarms/plant-3d-explorer' container
+  By default, start the container with the shared online database by ROMI:
+  $api_url
+  "
 
   echo "OPTIONS:"
   echo "  -t, --tag
@@ -24,7 +24,7 @@ usage() {
     Set it to 'localhost:5000' if you have a local plantdb instance running."
   echo "  -c, --cmd
     Defines the command to run at container startup.
-    By default it starts the Plant 3D Explorer listening to the set URL."
+    By default it starts the Plant 3D Explorer listening to the given API URL."
   echo "  -p, --port
     Port to expose, default is '$port'."
   echo "  -h, --help

@@ -11,7 +11,8 @@ usage() {
 
   echo "DESCRIPTION:"
   echo "  Build a docker image named 'roboticsmicrofarms/plant-3d-explorer' using Dockerfile in same location.
-    "
+  It must be run from the 'plant-3d-explorer' repository root folder!
+  "
 
   echo "OPTIONS:"
   echo "  -t, --tag
@@ -59,20 +60,19 @@ while [ "$1" != "" ]; do
 done
 
 # Get the date to estimate docker image build time:
-start_time=`date +%s`
+start_time=$(date +%s)
 
 # Start the docker image build:
 docker build -t roboticsmicrofarms/plant-3d-explorer:$vtag $docker_opts -f docker/Dockerfile .
 
 # Important to CI/CD pipeline to track docker build failure
 docker_build_status=$?
-if  [ $docker_build_status != 0 ]
-then
+if [ $docker_build_status != 0 ]; then
   echo "docker build failed with $docker_build_status code"
 fi
 
 # Print docker image build time:
 echo
-echo Build time is $(expr `date +%s` - $start_time) s
+echo Build time is $(expr $(date +%s) - $start_time) s
 
 exit $docker_build_status
