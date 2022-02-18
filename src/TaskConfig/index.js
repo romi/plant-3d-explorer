@@ -29,6 +29,14 @@ License along with this program.  If not, see
 import React from 'react'
 import styled from '@emotion/styled'
 
+import { Global } from '@emotion/core'
+import Logo from '../ScanList/assets/ico.logo.160x30.svg'
+
+import { H1, H2 } from 'common/styles/UI/Text/titles'
+import { green, grey, darkGreen } from 'common/styles/colors'
+
+import { FormattedMessage } from 'react-intl'
+
 const Container = styled.div({
   margin: '15px'
 })
@@ -71,6 +79,18 @@ const TextAreaComponent = styled.textarea({
   height: '780px'
 })
 
+const AppHeader = styled.div({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  paddingBottom: 0
+})
+
+const AppIntro = styled(H2)({
+  display: 'block',
+  color: green
+})
+
 var currentConfigContent = "";
 var currentTask = "";
 
@@ -78,8 +98,7 @@ const queryParams = new URLSearchParams(window.location.search);
 const apptype = queryParams.get('apptype');
 var scanid = '';
 var currentScanid = '';
-if (apptype === 'plant3dvision')
-{
+if (apptype === 'plant3dvision') {
   scanid = queryParams.get('scanid');
   currentScanid = scanid;
 }
@@ -92,29 +111,27 @@ const PLANT_IMAGER_LUIGID_PORT = 8086;
 
 var LUIGID_PORT = 0;
 var APP_PORT = 0;
-if (apptype === 'plant3dvision')
-{
+if (apptype === 'plant3dvision') {
   APP_PORT = PLANT_3D_VISION_PORT;
   LUIGID_PORT = PLANT_3D_VISION_LUIGID_PORT;
 }
-else
-{
+else {
   APP_PORT = PLANT_IMAGER_PORT;
   LUIGID_PORT = PLANT_IMAGER_LUIGID_PORT;
 }
 
 export function IFrameComponent(props) {
-  
+
   const [iframeKey, setIframeKey] = React.useState(0);
 
-  React.useEffect(()=> {
-    const interval = setInterval(() => {
+  React.useEffect(() => {
+    setInterval(() => {
       setIframeKey(iframeKey => iframeKey + 1);
-    }, 10000);
+    }, 100000);
   }, 0)
 
   return <Container>
-    <iframe src={`http://localhost:${LUIGID_PORT}/`} key={iframeKey} height="800px" width="100%" />
+    <iframe title='Luigi status' src={`http://localhost:${LUIGID_PORT}/`} key={iframeKey} height="800px" width="100%" />
   </Container>
 }
 
@@ -162,13 +179,13 @@ export function TaskConfigParamComponent(props) {
   }
 
   return <Container>
-    <form id="TaskForm">
+    <form>
       <fieldset>
         <legend>Task configuration</legend>
         <RowContainer>
           <div>
             <label for="ScanIdInput">Scan:</label>
-            <input type="text" id="ScanIdInput" defaultValue={scanid} disabled={apptype === 'plant3dvision'} onChange={(e) => handleChangeScanid(e)}/>
+            <input type="text" id="ScanIdInput" defaultValue={scanid} disabled={apptype === 'plant3dvision'} onChange={(e) => handleChangeScanid(e)} />
           </div>
 
           <div>
@@ -229,7 +246,7 @@ export function TaskRunComponent(props) {
 
   return <Container>
     {
-      <div form="TaskForm">
+      <div>
         <fieldset>
           <legend>Action</legend>
           <RowContainer>
@@ -251,20 +268,35 @@ export function TaskRunComponent(props) {
 
 export default function TaskConfig(props) {
   return <Container>
-    <WorldContainer>
-      <ColumnContainer>
-        <TaskConfigSection>
-          <TaskConfigParamComponent />
-        </TaskConfigSection>
-      </ColumnContainer>
+    <Global styles={{
+      'body': {
+        overflowY: 'scroll'
+      }
+    }} />
+    <div style={{ position: 'relative' }}>
+      <AppHeader>
+        <img src={Logo} alt='' />
 
-      <ColumnContainer>
-        <RunTaskSection>
-          <TaskRunComponent />
-        </RunTaskSection>
-        
-        <IFrameComponent />
-      </ColumnContainer>
-    </WorldContainer>
+        <AppIntro>
+          <FormattedMessage id='app-intro' />
+        </AppIntro>
+      </AppHeader>
+
+      <WorldContainer>
+        <ColumnContainer>
+          <TaskConfigSection>
+            <TaskConfigParamComponent />
+          </TaskConfigSection>
+        </ColumnContainer>
+
+        <ColumnContainer>
+          <RunTaskSection>
+            <TaskRunComponent />
+          </RunTaskSection>
+
+          <IFrameComponent />
+        </ColumnContainer>
+      </WorldContainer>
+    </div>
   </Container>
 }
