@@ -48,18 +48,20 @@ const WorldContainer = styled.div({
   width: '100%'
 })
 
-const ColumnContainer = styled.div({
+const ColumnContainerCfg = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  flexBasis: '100%',
-  flex: '1'
+  width: '25%'
 })
+
+const ColumnContainerLuigiStatus = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  width: '75%'
+})
+
 
 const TaskConfigSection = styled.div({
-  width: '100%'
-})
-
-const RunTaskSection = styled.div({
   width: '100%'
 })
 
@@ -71,12 +73,12 @@ const RowContainer = styled.div({
 const TextAreaContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  width: '50%',
-  height: '800px'
+  width: '100%',
+  height: '700px'
 })
 
 const TextAreaComponent = styled.textarea({
-  height: '780px'
+  height: '680px'
 })
 
 const AppHeader = styled.div({
@@ -131,7 +133,7 @@ export function IFrameComponent(props) {
   }, 0)
 
   return <Container>
-    <iframe title='Luigi status' src={`http://localhost:${LUIGID_PORT}/`} key={iframeKey} height="800px" width="100%" />
+    <iframe title='Luigi status' src={`http://localhost:${LUIGID_PORT}/`} key={iframeKey} height='855px' width='100%'/>
   </Container>
 }
 
@@ -178,6 +180,27 @@ export function TaskConfigParamComponent(props) {
     currentScanid = e.target.value;
   }
 
+
+  function handleRunClick() {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 'scanid': currentScanid, 'task': currentTask, 'config': currentConfigContent })
+    };
+
+    fetch(`http://localhost:${APP_PORT}/runtask/`, requestOptions);
+  };
+
+  function handleCleanClick() {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 'scanid': currentScanid })
+    };
+
+    fetch(`http://localhost:${PLANT_3D_VISION_PORT}/clean/`, requestOptions);
+  };
+
   return <Container>
     <form>
       <fieldset>
@@ -218,36 +241,7 @@ export function TaskConfigParamComponent(props) {
         </RowContainer>
       </fieldset>
 
-    </form>
-  </Container>
-}
-
-export function TaskRunComponent(props) {
-
-  function handleRunClick() {
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 'scanid': currentScanid, 'task': currentTask, 'config': currentConfigContent })
-    };
-
-    fetch(`http://localhost:${APP_PORT}/runtask/`, requestOptions);
-  };
-
-  function handleCleanClick() {
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 'scanid': currentScanid })
-    };
-
-    fetch(`http://localhost:${PLANT_3D_VISION_PORT}/clean/`, requestOptions);
-  };
-
-  return <Container>
-    {
-      <div>
-        <fieldset>
+      <fieldset>
           <legend>Action</legend>
           <RowContainer>
             <div>
@@ -261,8 +255,7 @@ export function TaskRunComponent(props) {
             </div>
           </RowContainer>
         </fieldset>
-      </div>
-    }
+    </form>
   </Container>
 }
 
@@ -283,19 +276,15 @@ export default function TaskConfig(props) {
       </AppHeader>
 
       <WorldContainer>
-        <ColumnContainer>
+        <ColumnContainerCfg>
           <TaskConfigSection>
-            <TaskConfigParamComponent />
+            <TaskConfigParamComponent/>
           </TaskConfigSection>
-        </ColumnContainer>
+        </ColumnContainerCfg>
 
-        <ColumnContainer>
-          <RunTaskSection>
-            <TaskRunComponent />
-          </RunTaskSection>
-
+        <ColumnContainerLuigiStatus>
           <IFrameComponent />
-        </ColumnContainer>
+        </ColumnContainerLuigiStatus>
       </WorldContainer>
     </div>
   </Container>
