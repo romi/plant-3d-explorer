@@ -28,5 +28,6 @@ License along with this program.  If not, see
 */
 export const landingUrl = '/'
 export const viewerUrl = '/viewer/:scanId'
+export const taskconfigUrl = '/taskconfig/'
 
 export const basename = process.env.NODE_ENV === 'production' ? '/viz/' : '/'
