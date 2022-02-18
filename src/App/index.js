@@ -31,10 +31,11 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { FormattedMessage } from 'react-intl'
 
 import { lazy } from 'rd/tools/routing'
-import { basename, landingUrl, viewerUrl } from 'common/routing'
+import { basename, landingUrl, viewerUrl, taskconfigUrl } from 'common/routing'
 
 const LandingPage = lazy(() => import('ScanList'))
 const ViewerPage = lazy(() => import('Viewer'))
+const TaskConfigPage = lazy(() => import('TaskConfig'))
 
 function Loading () {
   return <div style={{
@@ -64,6 +65,7 @@ class App extends Component {
           <Switch>
             <Route exact path={landingUrl} component={LandingPage} />
             <Route exact path={viewerUrl} component={ViewerPage} />
+            <Route exact path={taskconfigUrl} component={TaskConfigPage} />
             <Route path='*' component={NotFound} />
           </Switch>
         </Suspense>
