@@ -8,10 +8,64 @@ services:
       - "5000:5000"
     healthcheck:
       test: "exit 0"
+  plant3dvision:
+    image: "plant3dvision"
+    command:
+    - /bin/bash
+    - -c
+    - |
+       luigid --port 8085 &
+       romi_run_task_rest_api
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    volumes:
+      - ${ROMI_DB}:/home/nabil/database
+    environment:
+      - APP_PORT=2000
+      - LUIGID_PORT=8085
+    ports:
+      - "8085:8085"
+      - "2000:2000"
+    healthcheck:
+      test: "exit 0"
+  plantimager:
+    image: "virtualplantimager"
+    command:
+    - /bin/bash
+    - -lc
+    - |
+       luigid --port 8086 &
+       romi_virtualplantimager -- --port 9001 &
+       romi_run_task_rest_api
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    volumes:
+      - ${ROMI_DB}:/home/nabil/db
+    environment:
+      - APP_PORT=2500
+      - LUIGID_PORT=8086
+    ports:
+      - "8086:8086"
+      - "2500:2500"
+      - "9001:9001"
+    healthcheck:
+      test: "exit 0"
   plant_3d_explorer:
     image: "roboticsmicrofarms/plant_3d_explorer"
     depends_on:
       - plantdb
+      - plant3dvision
+      - plantimager
     environment:
         REACT_APP_API_URL: http://localhost:5000
     ports:
