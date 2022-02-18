@@ -34,7 +34,7 @@ import { Global } from '@emotion/core'
 import styled from '@emotion/styled'
 
 import { H1, H2 } from 'common/styles/UI/Text/titles'
-import { green, grey } from 'common/styles/colors'
+import { green, grey, darkGreen } from 'common/styles/colors'
 
 import { useSearchQuery, useScans, useFiltering } from 'flow/scans/accessors'
 
@@ -44,6 +44,32 @@ import closePicto from 'common/assets/ico.deselect.20x20.svg'
 import Search from './search'
 import List from './list'
 import Sorting from './sorting'
+
+import { Link } from 'react-router-dom'
+
+const OpenButton = styled((props) => <Link {...props} />)({
+  display: 'inline-block',
+  padding: '9px 38px',
+  margin: 5,
+  fontSize: 15,
+  textAlign: 'center',
+  background: green,
+  borderRadius: 2,
+  border: 'none',
+  color: 'white',
+  outline: 'none',
+  cursor: 'pointer',
+  textDecoration: 'none',
+
+  '&:focus, &:hover': {
+    textDecoration: 'underline',
+    filter: 'saturate(130%)'
+  },
+
+  '&:active': {
+    background: darkGreen
+  }
+})
 
 const Container = styled.div({
   margin: 'auto',
@@ -151,6 +177,9 @@ function Results (props) {
   const scans = props.scans.filter(filteringFn)
 
   return <div data-testid='results'>
+    <OpenButton to={`/taskconfig?apptype=plantimager`}>
+      <FormattedMessage id='add-plant-Btn' />
+    </OpenButton>
     <ResultsTitle
       scans={scans}
       search={search}

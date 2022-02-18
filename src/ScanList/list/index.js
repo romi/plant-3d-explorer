@@ -177,6 +177,7 @@ const Actions = styled.div({
 const OpenButton = styled((props) => <Link {...props} />)({
   display: 'inline-block',
   padding: '9px 38px',
+  margin: 5,
   fontSize: 15,
   textAlign: 'center',
   background: green,
@@ -203,6 +204,12 @@ const Links = styled.div({
   paddingLeft: 8
 })
 
+const Buttons = styled.div({
+  display: 'inline-block',
+  width: 135,
+  paddingLeft: 8
+})
+
 export const DocLink = styled.a({
   display: 'block',
   fontSize: 13,
@@ -216,6 +223,7 @@ export const DocLink = styled.a({
 })
 
 export const Item = memo(({ item }) => {
+
   return <Block data-testid='item'>
     <Thumbail uri={item.thumbnailUri} data-testid='thumbnail' />
     <Name data-testid='name'>{item.metadata.plant}</Name>
@@ -300,9 +308,14 @@ export const Item = memo(({ item }) => {
           <FormattedMessage id='scanlist-link-metadata' />
         </DocLink>
       </Links>
-      <OpenButton to={`/viewer/${item.id}`}>
-        <FormattedMessage id='scanlist-cta' />
-      </OpenButton>
+      <Buttons>
+        <OpenButton to={`/viewer/${item.id}`}>
+          <FormattedMessage id='scanlist-cta' />
+        </OpenButton>
+        <OpenButton to={`/taskconfig?apptype=plant3dvision&scanid=${item.id}`}>
+          <FormattedMessage id='analyze-plant-Btn' />
+        </OpenButton>
+      </Buttons>
     </Actions>
   </Block>
 })
