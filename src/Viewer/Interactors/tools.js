@@ -12,6 +12,7 @@ import { ResetButton } from 'rd/UI/Buttons'
 import { H3, H2 } from 'common/styles/UI/Text/titles'
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 import MenuBox, { MenuBoxContent } from 'rd/UI/MenuBox'
+import Slider from 'rd/UI/Slider'
 
 import { Interactor } from './index'
 
@@ -317,16 +318,7 @@ export default function MiscInteractors () {
               window.localStorage.setItem('defaultOrganOpacity', color.rgb.a.toString())
             }
           }
-          // color={(selectedAngle !== undefined && selectedAngle !== null &&
-          //   colors.organs[selectedAngle])
-          //   ? {
-          //     ...hex2RGB(colors.organs[selectedAngle].rgb),
-          //     a: colors.organs[selectedAngle].a
-          //   }
-          //   : {
-          //     ...hex2RGB(colors.globalOrganColors[0].rgb),
-          //     a: colors.globalOrganColors[0].a
-          //   }}
+
           color={(selectedAngle !== undefined && selectedAngle !== null &&
             colors.organs[selectedAngle])
             ? {
@@ -383,37 +375,7 @@ export default function MiscInteractors () {
           marginLeft: 25,
           marginTop: -1
         }} >
-          <Interactor
-            isButton
-            activated={false}
-            onClick={() => setPointCloudZoom({ ...pointCloudZoom, level: (pointCloudZoom.level > 1) ? pointCloudZoom.level - 1 : 1 })}
-          >
-            <ZoomOutIcon />
-          </Interactor>
-          <div style={{
-            marginRight: 5,
-            marginLeft: 5,
-            marginTop: -13.5
-          }} >
-            <H2 style={{
-              color: 'white',
-              backgroundColor: Color(darkGreen).alpha(0.4).toString(),
-              width: 30,
-              height: 30,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              x{pointCloudZoom.level}
-            </H2>
-          </div>
-          <Interactor
-            isButton
-            activated={false}
-            onClick={() => setPointCloudZoom({ ...pointCloudZoom, level: (pointCloudZoom.level < 4) ? pointCloudZoom.level + 1 : 4 })}
-          >
-            <ZoomInIcon />
-          </Interactor>
+            <Slider callback={(value) => setPointCloudZoom({...pointCloudZoom, level:value})}/>
         </div>
       </div>
     </ColumnContainer>
