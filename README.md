@@ -75,6 +75,8 @@ Without this, the app will use `http://localhost:5000`.
 
 To use a local database, you must run the data storage server [from this repository](https://github.com/romi/plantdb).
 
+**Warning** : To run `plant-3d-explorer` on bleeding edge linux (such as Fedora Linux or Arch-based distros), see [issue 155](https://github.com/romi/plant-3d-explorer/issues/155)
+
 ### `npm run build`
 Builds the app for production to the `build` folder.
 
@@ -92,11 +94,13 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 ### Build docker image
 To build the image, at the root directory of the repo:
 ```bash
-docker build -t roboticsmicrofarms/plant-3d-explorer:2.1 .
+./docker/build.sh
 ```
-To run it:
+You can use the `-h` option for more information.
+
+To run the container
 ```bash
-docker run -it -p 3000:3000 roboticsmicrofarms/plant-3d-explorer:2.1
+./docker/run.sh
 ```
 Once it's up, you should be able to access the viewer here: http://localhost:3000/
 
@@ -112,11 +116,11 @@ This requires a valid account, token and existing repository (`plant-3d-explorer
 ### Use pre-built docker image
 First you need to pull the docker image:
 ```bash
-docker pull roboticsmicrofarms/plant-3d-explorer
+docker pull roboticsmicrofarms/plant_3d_explorer
 ```
 Then you can run it with:
 ```bash
-docker run -p 3000:3000 roboticsmicrofarms/plant-3d-explorer
+docker run -p 3000:3000 roboticsmicrofarms/plant_3d_explorer
 ```
 
 
