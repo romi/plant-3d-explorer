@@ -355,29 +355,11 @@ export default function MiscInteractors () {
       </ToolButton>
     </ColumnContainer>
 
-    <ColumnContainer displayed={layers.segmentedPointCloud || layers.pointCloud || layers.pointCloudGroundTruth}>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        marginTop: -50,
-        marginLeft: 10
-      }} >
-        <H3 style={{
-          backgroundColor: 'white',
-          padding: 7.5
-        }}>
-          <FormattedMessage id='pointcloud-zoom' />
-        </H3>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'row',
-          width: 90,
-          marginLeft: 25,
-          marginTop: -1
-        }} >
-            <Slider callback={(value) => setPointCloudZoom({...pointCloudZoom, level:value})}/>
-        </div>
-      </div>
+    <ColumnContainer style={{marginTop: -9, marginLeft: 10}} displayed={layers.segmentedPointCloud || layers.pointCloud || layers.pointCloudGroundTruth}>
+      <H3 style={{backgroundColor: 'white', padding: 7.5}}>
+        <FormattedMessage id='pointcloud-zoom' />
+      </H3>
+      <Slider callback={(value) => setPointCloudZoom({...pointCloudZoom, level:value})}/>
     </ColumnContainer>
   </ToolContainer>
 }
