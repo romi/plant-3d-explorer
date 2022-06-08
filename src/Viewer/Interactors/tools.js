@@ -7,17 +7,12 @@ import { useSelectedAngle, useColor, useDefaultColors, usePointCloudZoom } from 
 import { useLayerTools, useLayers } from 'flow/settings/accessors'
 import { useSegmentedPointCloud } from 'flow/scans/accessors'
 
-import { PaintIcon, ZoomInIcon, ZoomOutIcon } from 'Viewer/Interactors/icons'
+import { PaintIcon } from 'Viewer/Interactors/icons'
 import { ResetButton } from 'rd/UI/Buttons'
-import { H3, H2 } from 'common/styles/UI/Text/titles'
+import { H3 } from 'common/styles/UI/Text/titles'
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 import MenuBox, { MenuBoxContent } from 'rd/UI/MenuBox'
-
-import { Interactor } from './index'
-
-import Color from 'color'
-
-import { darkGreen } from 'common/styles/colors'
+import Slider from 'rd/UI/Slider'
 
 const hex2RGB = (hex) => {
   return { r: parseInt(hex[1] + hex[2], 16),
@@ -317,16 +312,7 @@ export default function MiscInteractors () {
               window.localStorage.setItem('defaultOrganOpacity', color.rgb.a.toString())
             }
           }
-          // color={(selectedAngle !== undefined && selectedAngle !== null &&
-          //   colors.organs[selectedAngle])
-          //   ? {
-          //     ...hex2RGB(colors.organs[selectedAngle].rgb),
-          //     a: colors.organs[selectedAngle].a
-          //   }
-          //   : {
-          //     ...hex2RGB(colors.globalOrganColors[0].rgb),
-          //     a: colors.globalOrganColors[0].a
-          //   }}
+
           color={(selectedAngle !== undefined && selectedAngle !== null &&
             colors.organs[selectedAngle])
             ? {
@@ -363,59 +349,11 @@ export default function MiscInteractors () {
       </ToolButton>
     </ColumnContainer>
 
-    <ColumnContainer displayed={layers.segmentedPointCloud || layers.pointCloud || layers.pointCloudGroundTruth}>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        marginTop: -50,
-        marginLeft: 10
-      }} >
-        <H3 style={{
-          backgroundColor: 'white',
-          padding: 7.5
-        }}>
-          <FormattedMessage id='pointcloud-zoom' />
-        </H3>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'row',
-          width: 90,
-          marginLeft: 25,
-          marginTop: -1
-        }} >
-          <Interactor
-            isButton
-            activated={false}
-            onClick={() => setPointCloudZoom({ ...pointCloudZoom, level: (pointCloudZoom.level > 1) ? pointCloudZoom.level - 1 : 1 })}
-          >
-            <ZoomOutIcon />
-          </Interactor>
-          <div style={{
-            marginRight: 5,
-            marginLeft: 5,
-            marginTop: -13.5
-          }} >
-            <H2 style={{
-              color: 'white',
-              backgroundColor: Color(darkGreen).alpha(0.4).toString(),
-              width: 30,
-              height: 30,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              x{pointCloudZoom.level}
-            </H2>
-          </div>
-          <Interactor
-            isButton
-            activated={false}
-            onClick={() => setPointCloudZoom({ ...pointCloudZoom, level: (pointCloudZoom.level < 4) ? pointCloudZoom.level + 1 : 4 })}
-          >
-            <ZoomInIcon />
-          </Interactor>
-        </div>
-      </div>
+    <ColumnContainer style={{marginTop: -9, marginLeft: 10}} displayed={layers.segmentedPointCloud || layers.pointCloud || layers.pointCloudGroundTruth}>
+      <H3 style={{backgroundColor: 'white', padding: 7.5}}>
+        <FormattedMessage id='pointcloud-zoom' />
+      </H3>
+      <Slider callback={(value) => setPointCloudZoom({...pointCloudZoom, level:value})}/>
     </ColumnContainer>
   </ToolContainer>
 }
