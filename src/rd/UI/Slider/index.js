@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import React from "react";
 
 export default class Slider extends React.Component 

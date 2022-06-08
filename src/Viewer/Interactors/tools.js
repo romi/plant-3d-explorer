@@ -7,18 +7,12 @@ import { useSelectedAngle, useColor, useDefaultColors, usePointCloudZoom } from 
 import { useLayerTools, useLayers } from 'flow/settings/accessors'
 import { useSegmentedPointCloud } from 'flow/scans/accessors'
 
-import { PaintIcon, ZoomInIcon, ZoomOutIcon } from 'Viewer/Interactors/icons'
+import { PaintIcon } from 'Viewer/Interactors/icons'
 import { ResetButton } from 'rd/UI/Buttons'
-import { H3, H2 } from 'common/styles/UI/Text/titles'
+import { H3 } from 'common/styles/UI/Text/titles'
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 import MenuBox, { MenuBoxContent } from 'rd/UI/MenuBox'
 import Slider from 'rd/UI/Slider'
-
-import { Interactor } from './index'
-
-import Color from 'color'
-
-import { darkGreen } from 'common/styles/colors'
 
 const hex2RGB = (hex) => {
   return { r: parseInt(hex[1] + hex[2], 16),
