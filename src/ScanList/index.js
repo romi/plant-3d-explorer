@@ -45,6 +45,25 @@ import Search from './search'
 import List from './list'
 import Sorting from './sorting'
 
+
+/**
+ * Important note : EVERYTHING here is hardcoded. 
+ * A complete rework of the ScanList is needed in order to make things cleaner.
+ * The important information here is that you cannot change anything regarding 
+ * the columns and the filters with serious hassle.
+ * 
+ * This article can provide a good starting point : https://blog.logrocket.com/creating-react-sortable-table/
+ * 
+ * Regarding the inner workings of this app : 
+ *  * this file generate the whole page.
+ *  * The content of ./list corresponds to the array without the header
+ *  * The header is located in ./sorting and contains all the buttons to sort the table. All except ...
+ *  * ... the ./filtering which contains online the hide/show datasets given the data they provide (eg. hide dataset without pointcloud).
+ *  * ./search is the search bar
+ * 
+ * TODO : describe the hook interaction (it's messy and I don't quite)
+ */
+
 const Container = styled.div({
   margin: 'auto',
   maxWidth: 1420,
