@@ -55,7 +55,7 @@ const fragmentShader = `
   }
 `
 
-export default class Mesh {
+export default class PointCloud {
   constructor (geometry, parent) {
     this.geometry = geometry
     this.geometry.computeVertexNormals()
@@ -64,13 +64,14 @@ export default class Mesh {
       ? window.devicePixelRatio
       : 1
 
-    var op = window.localStorage.getItem('defaultPointCloudOpacity')
-    var col = window.localStorage.getItem('defaultPointCloudColor')
+    var opacity = window.localStorage.getItem('defaultPointCloudOpacity')
+    var 
+    var color = window.localStorage.getItem('defaultPointCloudColor')
     this.material = new THREE.ShaderMaterial({
       uniforms: {
-        opacity: { value: (op != null) ? parseFloat(op) : 1 },
+        opacity: { value: (opacity != null) ? parseFloat(opacity) : 1 },
         ratio: { type: 'f', value: pixelRatio },
-        color: { type: 'c', value: (col != null) ? new THREE.Color(col) : new THREE.Color('#f8de96') },
+        color: { type: 'c', value: (color != null) ? new THREE.Color(color) : new THREE.Color('#f8de96') },
         zoom: { type: 'f', value: 1 }
       },
       vertexShader,
@@ -105,5 +106,39 @@ export default class Mesh {
       this.material.uniforms.color.value = new THREE.Color(color.rgb)
       this.material.uniforms.opacity.value = color.a
     }
+  }
+
+  setCloudResolution(sampleSize) {
+
+    /**
+     * Direct implementation copied from the PCL.
+     * See : https://github.com/PointCloudLibrary/pcl/blob/master/filters/src/random_sample.cpp
+     * lines 122-147
+     */
+    const indices_ = Array.apply(null, Array(5)).map(function (x, i) { return i; })
+    const N = this.geometry.size() // TODO extract number of points
+    let indices = Array.apply(null, Array(sampleSize)).map(function () {return false;})
+    let i = 0;
+    let index = 0;
+    let n = sampleSize;
+    while (n > 0)
+    {
+      // Step 1: [Generate U.] Generate a random variate U that is uniformly distributed between 0 and 1.
+      const float U = unifRand ();
+      // Step 2: [Test.] If N * U > n, go to Step 4.
+      if ((N * U) <= n)
+      {
+        // Step 3: [Select.] Select the next record in the file for the sample, and set n : = n - 1.
+
+        indices[i++] = indices_[index];
+        --n;
+      }
+      // Step 4: [Don't select.] Skip over the next record (do not include it in the sample).
+      // Set N : = N - 1.
+      --N;
+      ++index;
+      // If n > 0, then return to Step 1; otherwise, the sample is complete and the algorithm terminates.
+    }
+    
   }
 }
