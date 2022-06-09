@@ -269,3 +269,17 @@ export const usePointCloudZoom = useAccessor(
     })
   ]
 )
+
+export const usePointCloudSize = useAccessor(
+  [
+    (state) => {
+      return state.interactions.pointCloudSize
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_POINT_CLOUD_SIZE',
+      value
+    })
+  ]
+)

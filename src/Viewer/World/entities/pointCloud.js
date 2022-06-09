@@ -57,6 +57,7 @@ const fragmentShader = `
 
 export default class PointCloud {
   constructor (geometry, parent) {
+    this.wholeGeometry = geometry
     this.geometry = geometry
     this.geometry.computeVertexNormals()
 
@@ -65,7 +66,8 @@ export default class PointCloud {
       : 1
 
     var opacity = window.localStorage.getItem('defaultPointCloudOpacity')
-    var 
+    var pointCount = window.localStorage.getItem('defaultPointCloudSize')
+
     var color = window.localStorage.getItem('defaultPointCloudColor')
     this.material = new THREE.ShaderMaterial({
       uniforms: {
@@ -139,6 +141,5 @@ export default class PointCloud {
       ++index;
       // If n > 0, then return to Step 1; otherwise, the sample is complete and the algorithm terminates.
     }
-    
   }
 }

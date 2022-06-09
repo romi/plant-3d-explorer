@@ -67,6 +67,7 @@ let defaults = {
   defaultMeshOpacity: '0.5',
   defaultPointCloudColor: '#f8de96',
   defaultPointCloudOpacity: '1',
+  defaultPointCloudSize : '1000',
   defaultSkeletonColor: '#D0021B',
   defaultSkeletonOpacity: '0.7'
 }
@@ -87,6 +88,7 @@ export default function MiscInteractors () {
   const [, segmentation] = useSegmentedPointCloud()
   const [legendPicker, setLegendPicker] = useState()
   const [pointCloudZoom, setPointCloudZoom] = usePointCloudZoom()
+  const [pointCloudSize, setPointCloudSize] = usePointCloudSize()
 
   useEffect(
     () => {

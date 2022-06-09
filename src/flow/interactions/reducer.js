@@ -54,7 +54,11 @@ export const initialState = {
   },
 
   pointCloudZoom: {
-    level: 1
+    level: 2
+  },
+
+  pointCloudSize: {
+    sampleSize : 1000
   },
 
   snapshot: {
