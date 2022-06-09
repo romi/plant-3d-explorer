@@ -443,6 +443,24 @@ export default class World {
     }
   }
 
+  setPointCloudSize(sampleSize)
+  {
+    if(this.pointCloud)
+    {
+      this.pointCloud.setCloudResolution(sampleSize)
+    }
+
+    if(this.segmentedPointCloud)
+    {
+      this.segmentedPointCloud.setCloudResolution(sampleSize)
+    }
+  
+    if (this.pointCloudGroundTruth) 
+    {
+      this.pointCloudGroundTruth.setZoomLevel(sampleSize)
+    }
+  }
+
   setLayers (layers) {
     if (this.mesh) this.mesh.setVisible(layers.mesh)
     if (this.pointCloud) this.pointCloud.setVisible(layers.pointCloud)

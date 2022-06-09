@@ -175,6 +175,11 @@ export default function settingsReducer (state = initialState, action) {
         ...state,
         pointCloudZoom: action.value
       }
+    case 'SET_POINT_CLOUD_SIZE':
+      return {
+        ...state,
+        pointCloudSize: action.value
+      }
     default:
       return state
   }

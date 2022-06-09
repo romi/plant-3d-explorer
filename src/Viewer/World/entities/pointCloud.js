@@ -57,8 +57,9 @@ const fragmentShader = `
 
 export default class PointCloud {
   constructor (geometry, parent) {
-    this.wholeGeometry = geometry
+    this.vertices = []
     this.geometry = geometry
+    this.computeVerticesPositionFromBufferGeometry(geometry);
     this.geometry.computeVertexNormals()
 
     const pixelRatio = window.devicePixelRatio
@@ -66,8 +67,6 @@ export default class PointCloud {
       : 1
 
     var opacity = window.localStorage.getItem('defaultPointCloudOpacity')
-    var pointCount = window.localStorage.getItem('defaultPointCloudSize')
-
     var color = window.localStorage.getItem('defaultPointCloudColor')
     this.material = new THREE.ShaderMaterial({
       uniforms: {
@@ -85,6 +84,16 @@ export default class PointCloud {
 
     if (parent) parent.add(this.object)
     return this
+  }
+
+  computeVerticesPositionFromBufferGeometry(geometry)
+  {
+    const position = geometry.getAttribute('position');
+    let vertices = Array.apply(null, Array(position.count)).map(function () { return new THREE.Vector3(); });
+    for(let v = 0; v < position.count; v++)
+      vertices[v].fromBufferAttribute(position, v);
+
+    this.vertices = vertices;
   }
 
   setPosition (x = 0, y = 0, z = 0) {
@@ -109,24 +118,30 @@ export default class PointCloud {
       this.material.uniforms.opacity.value = color.a
     }
   }
+  // setCloudResolution(sampleSize) {
+  // }
 
   setCloudResolution(sampleSize) {
+    sampleSize = sampleSize ? sampleSize : 10000;
 
-    /**
-     * Direct implementation copied from the PCL.
-     * See : https://github.com/PointCloudLibrary/pcl/blob/master/filters/src/random_sample.cpp
-     * lines 122-147
-     */
-    const indices_ = Array.apply(null, Array(5)).map(function (x, i) { return i; })
-    const N = this.geometry.size() // TODO extract number of points
-    let indices = Array.apply(null, Array(sampleSize)).map(function () {return false;})
+    // 
+    // Direct implementation from the PCL pcl::RandomSample
+    // See : https://github.com/PointCloudLibrary/pcl/blob/master/filters/src/random_sample.cpp
+    // lines 122-147
+    // 
+    if (this.vertices.length < sampleSize)
+      return;
+    const indices_ = Array.apply(null, Array(this.vertices.length)).map(function (x, i) { return i; })
+    let N = this.vertices.length // TODO extract number of points
+    let indices = Array.apply(null, Array(sampleSize)).map(function (x,i) {return -1;})
+    console.log(sampleSize)
     let i = 0;
     let index = 0;
     let n = sampleSize;
     while (n > 0)
     {
       // Step 1: [Generate U.] Generate a random variate U that is uniformly distributed between 0 and 1.
-      const float U = unifRand ();
+      const U = Math.random();
       // Step 2: [Test.] If N * U > n, go to Step 4.
       if ((N * U) <= n)
       {
@@ -141,5 +156,13 @@ export default class PointCloud {
       ++index;
       // If n > 0, then return to Step 1; otherwise, the sample is complete and the algorithm terminates.
     }
+
+    const selected_vertices = indices.map(i => this.vertices[i])
+    console.log(selected_vertices)
+    const newGeometry = new THREE.BufferGeometry().setFromPoints(selected_vertices)
+    newGeometry.computeBoundingBox()
+    newGeometry.computeVertexNormals()
+    this.object.geometry.copy(newGeometry)
+    return this
   }
 }
