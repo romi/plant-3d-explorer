@@ -48,6 +48,7 @@ import SekeletonIcon from 'common/assets/ico.skeleton.21x21.svg'
 import NodeIcon from 'common/assets/ico.internodes.21x21.svg'
 import SegmentedPointCloudIcon from 'common/assets/ico.segmented_point_cloud.21x21.svg'
 
+
 const Blocks = styled.div({
   '& > :nth-of-type(even)': {
     background: 'rgba(151, 172, 163, 0.1)'
@@ -96,7 +97,8 @@ const Name = styled.div({
   color: darkGreen,
   lineHeight: '18px',
   fontWeight: 700,
-  padding: 5
+  padding: 5,
+  justifyContent:'centered'
 })
 
 const Options = styled.div({
@@ -203,6 +205,17 @@ const Links = styled.div({
   paddingLeft: 8
 })
 
+const DatasetName = styled.div(
+  {
+    width: 'auto',
+    fontSize: 10,
+    minHeight: 45,
+    padding: 0,
+    margin: 0,
+    fontWeight:400
+  }
+)
+
 export const DocLink = styled.a({
   display: 'block',
   fontSize: 13,
@@ -218,7 +231,10 @@ export const DocLink = styled.a({
 export const Item = memo(({ item }) => {
   return <Block data-testid='item'>
     <Thumbail uri={item.thumbnailUri} data-testid='thumbnail' />
-    <Name data-testid='name'>{item.metadata.plant}</Name>
+    <Name data-testid='name'>
+      <div style={{overflowWrap: "anywhere"}}>{item.metadata.plant}</div>
+      <DatasetName>{item.id}</DatasetName>    
+    </Name>
     <Options data-testid='species'>{item.metadata.species}</Options>
     <Options data-testid='env'>{item.metadata.environment}</Options>
     <Options data-testid='date'>
