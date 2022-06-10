@@ -26,7 +26,7 @@ License along with this program.  If not, see
 <https://www.gnu.org/licenses/>.
 
 */
-import * as THREE from 'three'
+import * as THREE from "three";
 
 const vertexShader = `
   uniform vec3 color;
@@ -44,7 +44,8 @@ const vertexShader = `
     gl_PointSize = ratio * zoom * clamp(1.0 * ( 200.0 / -mvPosition.z ), 0.8, 500.0);
     gl_Position = projectionMatrix * mvPosition;
   }
-`
+`;
+
 const fragmentShader = `
   varying vec3 vColor;
   uniform float opacity;
@@ -53,98 +54,87 @@ const fragmentShader = `
     if ( length( gl_PointCoord - vec2( 0.5, 0.5 ) ) > 0.475 ) discard;
     gl_FragColor = vec4( vColor, opacity );
   }
-`
+`;
 
 export default class PointCloud {
-  constructor (geometry, parent) {
-    this.vertices = []
-    this.geometry = geometry
-    this.computeVerticesPositionFromBufferGeometry(geometry);
-    this.geometry.computeVertexNormals()
+  constructor(geometry, parent) {
+    this.geometry = geometry;
+    this.vertices = this.bufferToVector3(geometry.getAttribute('position'));
+    this.geometry.computeVertexNormals();
+    const pixelRatio = window.devicePixelRatio ? window.devicePixelRatio : 1;
 
-    const pixelRatio = window.devicePixelRatio
-      ? window.devicePixelRatio
-      : 1
-
-    var opacity = window.localStorage.getItem('defaultPointCloudOpacity')
-    var color = window.localStorage.getItem('defaultPointCloudColor')
+    var opacity = window.localStorage.getItem("defaultPointCloudOpacity");
+    var color = window.localStorage.getItem("defaultPointCloudColor");
     this.material = new THREE.ShaderMaterial({
       uniforms: {
-        opacity: { value: (opacity != null) ? parseFloat(opacity) : 1 },
-        ratio: { type: 'f', value: pixelRatio },
-        color: { type: 'c', value: (color != null) ? new THREE.Color(color) : new THREE.Color('#f8de96') },
-        zoom: { type: 'f', value: 1 }
+        opacity: { value: opacity != null ? parseFloat(opacity) : 1 },
+        ratio: { type: "f", value: pixelRatio },
+        color: {
+          type: "c",
+          value:
+            color != null ? new THREE.Color(color) : new THREE.Color("#f8de96"),
+        },
+        zoom: { type: "f", value: 1 },
       },
       vertexShader,
-      fragmentShader
-    })
+      fragmentShader,
+    });
 
-    this.object = new THREE.Points(this.geometry, this.material)
-    this.object.renderOrder = -1
+    this.object = new THREE.Points(this.geometry, this.material);
+    this.object.renderOrder = -1;
 
-    if (parent) parent.add(this.object)
-    return this
+    if (parent) parent.add(this.object);
+    return this;
   }
 
-  computeVerticesPositionFromBufferGeometry(geometry)
-  {
-    const position = geometry.getAttribute('position');
-    let vertices = Array.apply(null, Array(position.count)).map(function () { return new THREE.Vector3(); });
-    for(let v = 0; v < position.count; v++)
-      vertices[v].fromBufferAttribute(position, v);
+  bufferToVector3(attribute) {
+    const values = attribute;
+    let vectors = Array.from({length : attribute.count}, () => new THREE.Vector3())
+    for (let v = 0; v < values.count; v++)
+      vectors[v].fromBufferAttribute(values, v);
 
-    this.vertices = vertices;
+    return vectors;
   }
 
-  setPosition (x = 0, y = 0, z = 0) {
-    this.object.position.x = x
-    this.object.position.y = y
-    this.object.position.z = z
+  setPosition(x = 0, y = 0, z = 0) {
+    this.object.position.x = x;
+    this.object.position.y = y;
+    this.object.position.z = z;
 
-    return this
+    return this;
   }
 
-  setVisible (boolean) {
-    this.object.visible = boolean
+  setVisible(boolean) {
+    this.object.visible = boolean;
   }
 
-  setZoomLevel (zoomLevel) {
-    this.material.uniforms.zoom.value = zoomLevel
+  setZoomLevel(zoomLevel) {
+    this.material.uniforms.zoom.value = zoomLevel;
   }
 
-  setColor (color) {
+  setColor(color) {
     if (color && color.rgb && color.a) {
-      this.material.uniforms.color.value = new THREE.Color(color.rgb)
-      this.material.uniforms.opacity.value = color.a
+      this.material.uniforms.color.value = new THREE.Color(color.rgb);
+      this.material.uniforms.opacity.value = color.a;
     }
   }
   // setCloudResolution(sampleSize) {
   // }
 
-  setCloudResolution(sampleSize) {
-    sampleSize = sampleSize ? sampleSize : 10000;
-
-    // 
-    // Direct implementation from the PCL pcl::RandomSample
-    // See : https://github.com/PointCloudLibrary/pcl/blob/master/filters/src/random_sample.cpp
-    // lines 122-147
-    // 
-    if (this.vertices.length < sampleSize)
-      return;
-    const indices_ = Array.apply(null, Array(this.vertices.length)).map(function (x, i) { return i; })
-    let N = this.vertices.length // TODO extract number of points
-    let indices = Array.apply(null, Array(sampleSize)).map(function (x,i) {return -1;})
-    console.log(sampleSize)
+  getRandomSampleOfIndicesFromSize(indicesRange, sampleSize) {
+    if (this.vertices.length < sampleSize) return;
+    const indices_ = Array.from({ length: indicesRange}, (x, i) => i)
+    let N = indicesRange;
+    let indices = Array.from({ length: sampleSize}, (x, i) => -1);
     let i = 0;
+
     let index = 0;
     let n = sampleSize;
-    while (n > 0)
-    {
+    while (n > 0) {
       // Step 1: [Generate U.] Generate a random variate U that is uniformly distributed between 0 and 1.
       const U = Math.random();
       // Step 2: [Test.] If N * U > n, go to Step 4.
-      if ((N * U) <= n)
-      {
+      if (N * U <= n) {
         // Step 3: [Select.] Select the next record in the file for the sample, and set n : = n - 1.
 
         indices[i++] = indices_[index];
@@ -157,12 +147,22 @@ export default class PointCloud {
       // If n > 0, then return to Step 1; otherwise, the sample is complete and the algorithm terminates.
     }
 
-    const selected_vertices = indices.map(i => this.vertices[i])
-    console.log(selected_vertices)
-    const newGeometry = new THREE.BufferGeometry().setFromPoints(selected_vertices)
-    newGeometry.computeBoundingBox()
-    newGeometry.computeVertexNormals()
-    this.object.geometry.copy(newGeometry)
-    return this
+    return indices;
+  }
+
+  setCloudResolution(sampleSize) {
+    sampleSize = Math.round(sampleSize * this.vertices.length);
+
+    const indices = this.getRandomSampleOfIndicesFromSize(this.vertices.length, sampleSize)
+    
+
+    const selected_vertices = indices.map((i) => this.vertices[i]);
+    const newGeometry = new THREE.BufferGeometry().setFromPoints(
+      selected_vertices
+    );
+    newGeometry.computeBoundingBox();
+    newGeometry.computeVertexNormals();
+
+    this.object.geometry.copy(newGeometry);
   }
 }

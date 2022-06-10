@@ -395,8 +395,8 @@ export default class World {
 
   setSegmentedPointCloudGeometry (geometry, segmentation, uniqueLabels) {
     geometry.computeBoundingBox()
-    this.segmentedPointCloud = new SegmentedPointCloud(geometry,
-      segmentation, uniqueLabels, this.viewerObjects)
+    this.segmentedPointCloud = new SegmentedPointCloud(geometry,this.viewerObjects,
+      segmentation, uniqueLabels)
   }
 
   getSegementedPointCloudColors () {

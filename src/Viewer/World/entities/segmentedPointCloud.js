@@ -19,29 +19,28 @@ const vertexShader = `
   }
 `
 
-export default class SegmentedPointCloud extends PointCloud {
-  constructor (geometry, segmentation, uniqueLabels, parent) {
-    super(geometry, parent)
+function hslToHex (h, s, l) {
+  l /= 100
+  const a = s * Math.min(l, 1 - l) / 100
+  const f = n => {
+    const k = (n + h / 30) % 12
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
+    return Math.round(255 * color).toString(16).padStart(2, '0') // convert to Hex and prefix "0" if needed
+  }
+  return `#${f(0)}${f(8)}${f(4)}`
+}
 
+// This class would need to get refactored out as there is no distinction
+// between a pcd and a segmented pcd, only colors.
+export default class SegmentedPointCloud extends PointCloud {
+  constructor (geometry, parent, segmentation, uniqueLabels) {
+
+    // All those changes are needed before the call to super
     const labelNumbers = segmentation.labels.map((d) => {
       return uniqueLabels.indexOf(d)
-    })
-    this.labelNumbers = labelNumbers
-    this.uniqueLabels = uniqueLabels
-
-    function hslToHex (h, s, l) {
-      l /= 100
-      const a = s * Math.min(l, 1 - l) / 100
-      const f = n => {
-        const k = (n + h / 30) % 12
-        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
-        return Math.round(255 * color).toString(16).padStart(2, '0') // convert to Hex and prefix "0" if needed
-      }
-      return `#${f(0)}${f(8)}${f(4)}`
-    }
-
+    });
     // Set default colors
-    var col = JSON.parse(window.localStorage.getItem('defaultSegmentedColors'))
+    let col = JSON.parse(window.localStorage.getItem('defaultSegmentedColors'))
     const defaultColors = uniqueLabels.map((_, i) => {
       if (col != null && col[i] != null) {
         return col[i]
@@ -49,34 +48,47 @@ export default class SegmentedPointCloud extends PointCloud {
         return hslToHex(Math.round((360 / uniqueLabels.length) * i), 100, 50)
       }
     })
-    this.selectionColor = new THREE.Color(0.7, 0.7, 1)
-    this.colors = defaultColors
 
+    const selectionColor = new THREE.Color(0.7, 0.7, 1)
+    
     let color = new THREE.Color(0xffffff)
-    this.colorsArray = new Float32Array(segmentation.labels.length * 3)
+    let colorsArray = new Float32Array(segmentation.labels.length * 3)
     labelNumbers.forEach((elem, i) => {
       color.set(defaultColors[elem])
-      color.toArray(this.colorsArray, i * 3)
+      color.toArray(colorsArray, i * 3)
     })
+    const attr = new THREE.BufferAttribute(colorsArray, 3);
 
-    // Change material to use customColor
+    // Here we add the attribute before modifying a set of attributes
+
+    super(geometry, parent)
+    this.geometry.addAttribute('customColor', attr);
+    this.colorVectors = this.bufferToVector3(colorsArray);
+    this.labelNumbers = labelNumbers
+    this.uniqueLabels = uniqueLabels
+    this.colors = defaultColors
+    this.colorsArray = colorsArray
+    this.selectionColor = selectionColor
     this.object.material.setValues({ vertexShader: vertexShader })
-    this.geometry.addAttribute('customColor',
-      new THREE.BufferAttribute(this.colorsArray, 3))
+  }
 
-    // Transform positions to vector 3 for practical reasons
-    this.positions = []
-    this.geometry.attributes.position.array.forEach(
-      (d, i, array) => {
-        if (i % 3 === 0) {
-          this.positions.push(new THREE.Vector3(d, array[i + 1], array[i + 2]))
-        }
-      }
-    )
+  setCloudResolution(sampleSize) {
+    sampleSize = Math.round(sampleSize * this.vertices.length);
+
+    const indices = this.getRandomSampleOfIndicesFromSize(this.vertices.length, sampleSize)
+    const selected_vertices = indices.map((i) => this.vertices[i]);
+    const selected_colors = this.colorVectors.map((i) => this.colorsVector[i]);
+    const newGeometry = new THREE.BufferGeometry()
+    const attrColor = new THREE.BufferAttribute().copyVector3sArray(selected_colors);
+
+    newGeometry.setFromPoints(selected_vertices);
+    newGeometry.setAttribute('customColor', attrColor)
+    console.log("here")
   }
 
   colorSelectedPoints (selection) {
     selection.forEach((d) => {
+      console.log(d)
       this.selectionColor.toArray(this.colorsArray, d * 3)
     })
     this.geometry.removeAttribute('customColor')
@@ -106,14 +118,14 @@ export default class SegmentedPointCloud extends PointCloud {
   }
 
   getPointPos (point) {
-    return this.object.localToWorld(this.positions[point].clone())
+    return this.object.localToWorld(this.vertices[point].clone())
   }
 
   selectBySphere (base, point) {
-    const origin = this.positions[base]
-    const dist = origin.distanceTo(this.positions[point])
+    const origin = this.vertices[base]
+    const dist = origin.distanceTo(this.vertices[point])
     let result = []
-    this.positions.forEach((d, i) => {
+    this.vertices.forEach((d, i) => {
       if (d.distanceTo(origin) <= dist) {
         result.push(i)
       }
@@ -142,7 +154,7 @@ export default class SegmentedPointCloud extends PointCloud {
       let nextPointsMax = { x: 0, y: 0, z: 0 }
       let nextPointsMin = { x: 0, y: 0, z: 0 }
       const num = this.labelNumbers[point]
-      this.positions.forEach((d, i, array) => {
+      this.vertices.forEach((d, i, array) => {
         if (i !== point && this.labelNumbers[i] !== num) {
           const dist = array[point].distanceTo(d)
           if (dist < minDist) {
@@ -151,7 +163,7 @@ export default class SegmentedPointCloud extends PointCloud {
         }
       })
       const oldLength = set.size
-      this.positions.forEach((d, i, array) => {
+      this.vertices.forEach((d, i, array) => {
         const dist = d.distanceTo(array[point])
         if (this.labelNumbers[i] === num && (dist < minDist)) {
           set.add(i)

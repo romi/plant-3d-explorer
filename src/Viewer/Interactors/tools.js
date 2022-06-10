@@ -361,7 +361,7 @@ export default function MiscInteractors () {
       <H3 style={{backgroundColor: 'white', padding: 7.5}}>
         <FormattedMessage id='pointcloud-size' />
       </H3>
-      <Slider min={1} max={1e6} default={1e4} step={10} callback={(value) => setPointCloudSize({...pointCloudSize, sampleSize : value})}/>
+      <Slider min={0.01} max={1} default={0.75} step={0.01} callback={(value) => setPointCloudSize({...pointCloudSize, sampleSize : value})}/>
     </ColumnContainer>
   </ToolContainer>
 }
