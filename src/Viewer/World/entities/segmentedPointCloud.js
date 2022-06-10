@@ -19,28 +19,29 @@ const vertexShader = `
   }
 `
 
-function hslToHex (h, s, l) {
-  l /= 100
-  const a = s * Math.min(l, 1 - l) / 100
-  const f = n => {
-    const k = (n + h / 30) % 12
-    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
-    return Math.round(255 * color).toString(16).padStart(2, '0') // convert to Hex and prefix "0" if needed
-  }
-  return `#${f(0)}${f(8)}${f(4)}`
-}
-
-// This class would need to get refactored out as there is no distinction
-// between a pcd and a segmented pcd, only colors.
 export default class SegmentedPointCloud extends PointCloud {
   constructor (geometry, parent, segmentation, uniqueLabels) {
+    super(geometry, parent)
 
-    // All those changes are needed before the call to super
     const labelNumbers = segmentation.labels.map((d) => {
       return uniqueLabels.indexOf(d)
-    });
+    })
+    this.labelNumbers = labelNumbers
+    this.uniqueLabels = uniqueLabels
+
+    function hslToHex (h, s, l) {
+      l /= 100
+      const a = s * Math.min(l, 1 - l) / 100
+      const f = n => {
+        const k = (n + h / 30) % 12
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
+        return Math.round(255 * color).toString(16).padStart(2, '0') // convert to Hex and prefix "0" if needed
+      }
+      return `#${f(0)}${f(8)}${f(4)}`
+    }
+
     // Set default colors
-    let col = JSON.parse(window.localStorage.getItem('defaultSegmentedColors'))
+    var col = JSON.parse(window.localStorage.getItem('defaultSegmentedColors'))
     const defaultColors = uniqueLabels.map((_, i) => {
       if (col != null && col[i] != null) {
         return col[i]
@@ -48,47 +49,33 @@ export default class SegmentedPointCloud extends PointCloud {
         return hslToHex(Math.round((360 / uniqueLabels.length) * i), 100, 50)
       }
     })
+    this.selectionColor = new THREE.Color(0.7, 0.7, 1)
+    this.colors = defaultColors
 
-    const selectionColor = new THREE.Color(0.7, 0.7, 1)
-    
     let color = new THREE.Color(0xffffff)
-    let colorsArray = new Float32Array(segmentation.labels.length * 3)
+    this.colorsArray = new Float32Array(segmentation.labels.length * 3)
     labelNumbers.forEach((elem, i) => {
       color.set(defaultColors[elem])
-      color.toArray(colorsArray, i * 3)
+      color.toArray(this.colorsArray, i * 3)
     })
-    const attr = new THREE.BufferAttribute(colorsArray, 3);
 
-    // Here we add the attribute before modifying a set of attributes
-
-    super(geometry, parent)
-    this.geometry.addAttribute('customColor', attr);
-    this.colorVectors = this.bufferToVector3(colorsArray);
-    this.labelNumbers = labelNumbers
-    this.uniqueLabels = uniqueLabels
-    this.colors = defaultColors
-    this.colorsArray = colorsArray
-    this.selectionColor = selectionColor
+    // Change material to use customColor
     this.object.material.setValues({ vertexShader: vertexShader })
+    const attr = new THREE.BufferAttribute(this.colorsArray, 3)
+    this.geometry.setAttribute('customColor', attr)
+    this.colorVectors = this.bufferToVector3(attr);
+
+    this.colorVectors = this.bufferToVector3(this.geometry.getAttribute('customColor'))
+
   }
 
   setCloudResolution(sampleSize) {
-    sampleSize = Math.round(sampleSize * this.vertices.length);
-
-    const indices = this.getRandomSampleOfIndicesFromSize(this.vertices.length, sampleSize)
-    const selected_vertices = indices.map((i) => this.vertices[i]);
-    const selected_colors = this.colorVectors.map((i) => this.colorsVector[i]);
-    const newGeometry = new THREE.BufferGeometry()
-    const attrColor = new THREE.BufferAttribute().copyVector3sArray(selected_colors);
-
-    newGeometry.setFromPoints(selected_vertices);
-    newGeometry.setAttribute('customColor', attrColor)
-    console.log("here")
+    super.setCloudResolution(sampleSize)
+    this.object.material.setValues({ vertexShader: vertexShader })
   }
 
   colorSelectedPoints (selection) {
     selection.forEach((d) => {
-      console.log(d)
       this.selectionColor.toArray(this.colorsArray, d * 3)
     })
     this.geometry.removeAttribute('customColor')

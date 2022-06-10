@@ -457,7 +457,7 @@ export default class World {
   
     if (this.pointCloudGroundTruth) 
     {
-      this.pointCloudGroundTruth.setZoomLevel(sampleSize)
+      this.pointCloudGroundTruth.setCloudResolution(sampleSize)
     }
   }
 

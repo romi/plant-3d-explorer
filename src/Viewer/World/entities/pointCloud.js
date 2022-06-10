@@ -59,7 +59,7 @@ const fragmentShader = `
 export default class PointCloud {
   constructor(geometry, parent) {
     this.geometry = geometry;
-    this.vertices = this.bufferToVector3(geometry.getAttribute('position'));
+    this.vertices = this.bufferToVector3(geometry.getAttribute("position"));
     this.geometry.computeVertexNormals();
     const pixelRatio = window.devicePixelRatio ? window.devicePixelRatio : 1;
 
@@ -89,7 +89,10 @@ export default class PointCloud {
 
   bufferToVector3(attribute) {
     const values = attribute;
-    let vectors = Array.from({length : attribute.count}, () => new THREE.Vector3())
+    let vectors = Array.from(
+      { length: attribute.count },
+      () => new THREE.Vector3()
+    );
     for (let v = 0; v < values.count; v++)
       vectors[v].fromBufferAttribute(values, v);
 
@@ -123,9 +126,9 @@ export default class PointCloud {
 
   getRandomSampleOfIndicesFromSize(indicesRange, sampleSize) {
     if (this.vertices.length < sampleSize) return;
-    const indices_ = Array.from({ length: indicesRange}, (x, i) => i)
+    const indices_ = Array.from({ length: indicesRange }, (x, i) => i);
     let N = indicesRange;
-    let indices = Array.from({ length: sampleSize}, (x, i) => -1);
+    let indices = Array.from({ length: sampleSize }, (x, i) => -1);
     let i = 0;
 
     let index = 0;
@@ -152,17 +155,30 @@ export default class PointCloud {
 
   setCloudResolution(sampleSize) {
     sampleSize = Math.round(sampleSize * this.vertices.length);
-
-    const indices = this.getRandomSampleOfIndicesFromSize(this.vertices.length, sampleSize)
-    
-
-    const selected_vertices = indices.map((i) => this.vertices[i]);
-    const newGeometry = new THREE.BufferGeometry().setFromPoints(
-      selected_vertices
+    console.log(sampleSize)
+    const indices = this.getRandomSampleOfIndicesFromSize(
+      this.vertices.length,
+      sampleSize
     );
-    newGeometry.computeBoundingBox();
-    newGeometry.computeVertexNormals();
 
-    this.object.geometry.copy(newGeometry);
+    for (const key in this.geometry.attributes) {
+      let attr = this.geometry.getAttribute(key);
+      for (let i = 0; i < sampleSize; i++) {
+        const newX = attr.array[indices[i] * 3];
+        const newY = attr.array[indices[i] * 3 + 1];
+        const newZ = attr.array[indices[i] * 3 + 2];
+
+        attr.array[indices[i] * 3] = attr.array[i * 3];
+        attr.array[indices[i] * 3 + 1] = attr.array[i * 3 + 1];
+        attr.array[indices[i] * 3 + 2] = attr.array[i * 3 + 2];
+
+        attr.array[i * 3] = newX;
+        attr.array[i * 3 + 1] = newY;
+        attr.array[i * 3 + 2] = newZ;
+      }
+      attr.needsUpdate = true;
+    }
+
+    this.geometry.setDrawRange(0, sampleSize);
   }
 }
