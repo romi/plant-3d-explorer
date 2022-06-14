@@ -39,7 +39,7 @@ import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
 
 import { useSorting } from 'flow/scans/accessors'
 
-import { green, darkGreen } from 'common/styles/colors'
+import { green, darkGreen, red } from 'common/styles/colors'
 import { H3 } from 'common/styles/UI/Text/titles'
 
 import MeshIcon from 'common/assets/ico.mesh.21x21.svg'
@@ -48,6 +48,7 @@ import SekeletonIcon from 'common/assets/ico.skeleton.21x21.svg'
 import NodeIcon from 'common/assets/ico.internodes.21x21.svg'
 import SegmentedPointCloudIcon from 'common/assets/ico.segmented_point_cloud.21x21.svg'
 
+import DatasetErrorIcon from 'ScanList/assets/ico.dataset_error.90x90.svg'
 
 const Blocks = styled.div({
   '& > :nth-of-type(even)': {
@@ -176,18 +177,18 @@ const Actions = styled.div({
   marginLeft: '42px'
 })
 
-const OpenButton = styled((props) => <Link {...props} />)({
+const OpenButton = styled((props) => <Link {...omit(props, "isActiveLink")} />)({
   display: 'inline-block',
   padding: '9px 38px',
   fontSize: 15,
   textAlign: 'center',
-  background: green,
   borderRadius: 2,
   border: 'none',
   color: 'white',
   outline: 'none',
   cursor: 'pointer',
   textDecoration: 'none',
+  background:green,
 
   '&:focus, &:hover': {
     textDecoration: 'underline',
@@ -197,6 +198,12 @@ const OpenButton = styled((props) => <Link {...props} />)({
   '&:active': {
     background: darkGreen
   }
+}, (props) => {
+  if(props.isActiveLink)
+    return {
+      pointerEvents: 'none',
+      background:red
+    }
 })
 
 const Links = styled.div({
@@ -212,7 +219,7 @@ const DatasetName = styled.div(
     minHeight: 45,
     padding: 0,
     margin: 0,
-    fontWeight:400
+    fontWeight: 400
   }
 )
 
@@ -229,8 +236,13 @@ export const DocLink = styled.a({
 })
 
 export const Item = memo(({ item }) => {
+
+  const docLinkArchive = item.error ? void(0) : item.metadata.files.archive
+  const docLinkMeta = item.error ? void(0) : item.metadata.files.metadatas
+  const ThumbnailUri = item.error ? DatasetErrorIcon : item.thumbnailUri; // in a React component means ReactDOM will ignore such attribute
+
   return <Block data-testid='item'>
-    <Thumbail uri={item.thumbnailUri} data-testid='thumbnail' />
+    <Thumbail uri={ThumbnailUri} data-testid='thumbnail' />
     <Name data-testid='name'>
       <div style={{overflowWrap: "anywhere"}}>{item.metadata.plant}</div>
       <DatasetName>{item.id}</DatasetName>    
@@ -296,7 +308,7 @@ export const Item = memo(({ item }) => {
       <MeasuresText
         automated
         data-testid='auto'
-        isActive={item.hasAutomatedMeasures}
+        icolorsActive={item.hasAutomatedMeasures}
       >
         <FormattedMessage id='angles-legend-automated' />
       </MeasuresText>
@@ -309,14 +321,14 @@ export const Item = memo(({ item }) => {
 
     <Actions>
       <Links>
-        <DocLink href={item.metadata.files.archive} target='_blank'>
+        <DocLink href={docLinkArchive} target='_blank'>
           <FormattedMessage id='scanlist-link-download' />
         </DocLink>
-        <DocLink href={item.metadata.files.metadatas} target='_blank'>
+        <DocLink href={docLinkMeta} target='_blank'>
           <FormattedMessage id='scanlist-link-metadata' />
         </DocLink>
       </Links>
-      <OpenButton to={`/viewer/${item.id}`}>
+      <OpenButton to={`/viewer/${item.id}`} isActiveLink={ item.error }>
         <FormattedMessage id='scanlist-cta' />
       </OpenButton>
     </Actions>
@@ -364,38 +376,3 @@ export default memo(function (props) {
     }
   </Blocks>
 })
-
-/**
-|--------------------------------------------------
-| Multiline ellipsis in pure CSS
-| @TODO to remove
-|--------------------------------------------------
-
-const Elipsifier = (component) => styled(component)({
-  overflow: 'hidden',
-  position: 'relative',
-  lineHeight: '18px',
-  maxHeight: 54,
-  textAlign: 'justify',
-  marginRight: '-1em',
-  paddingRight: '1em',
-
-  '&:before': {
-    content: '"..."',
-    position: 'absolute',
-    right: 0,
-    bottom: 0
-  },
-
-  '&:after': {
-    content: '""',
-    position: 'absolute',
-    right: 0,
-    width: '1em',
-    height: '1em',
-    marginTop: '0.2em',
-    background: 'white'
-  }
-})
-
-*/
