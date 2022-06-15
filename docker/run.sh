@@ -66,20 +66,24 @@ if [ "$cmd" = "" ]; then
   # Start in interactive mode:
   docker run \
     -it \
-    --rm \ # Remove container after closing
-    -v ${PWD}:/app \ # Mount the app folder
-    -v /app/node_modules \ # Mount the node modules
-    -p $port:$port \ # open port
-    -e CHOKIDAR_USEPOLLING="true" \ # Allow hot-reload
+    --rm \
+    -v ${PWD}:/app \
+    -v /app/node_modules \
+    -p $port:$port \
+    -e CHOKIDAR_USEPOLLING="true" \
     -e REACT_APP_API_URL="$api_url" \
     roboticsmicrofarms/plant-3d-explorer:$vtag
+    # --rm : Remove container after closing
+    # -v ${PWD}:/app : Mount the app folder
+    # -v /app/node_modules : Mount the node modules
+    # -e CHOKIDAR_USEPOLLING="true" : Allow hot-reload
 else
   # Start in non-interactive mode (run the command):
   docker run \
-    --rm \ # Once the container is closed, delete it
+    --rm \
     --env REACT_APP_API_URL="$api_url" \
-    -v ${PWD}:/app \ # We mount the app content
-    -v /app/node_modules \ # I didnt really get this one, but the tutorial said so
+    -v ${PWD}:/app \
+    -v /app/node_modules \
     -p $port:$port \
     roboticsmicrofarms/plant-3d-explorer:$vtag \
     bash -c "$cmd"
