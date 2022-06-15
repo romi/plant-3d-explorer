@@ -1,41 +1,20 @@
-FROM node:current-buster-slim
+# Reworked original image based on https://mherman.org/blog/dockerizing-a-react-app/#docker
+FROM node:10
 LABEL maintainer="Jonathan LEGRAND <jonathan.legrand@ens-lyon.fr>"
 
-ENV LANG=C.UTF-8
-ENV PYTHONUNBUFFERED=1
-ENV USER_NAME=myuser
-
 ARG API_URL='https://db.romi-project.eu'
-ARG PORT=3000
+WORKDIR /app
+ENV PATH /app/node_modules/.bin:$PATH
 
-USER root
-# Change shell to 'bash', default is 'sh'
-SHELL ["/bin/bash", "-c"]
-# Update package manager & install requirements:
-RUN apt-get update && \
-    apt-get install -yq --no-install-recommends git ca-certificates && \
-    apt-get clean -y && \
-    apt-get autoremove -y && \
-    rm -rf /var/lib/apt/lists/* && \
-    # Create a non-root user and give it rights over a "myapp" folder:
-    adduser --disabled-password ${USER_NAME} && \
-    mkdir /myapp && chown -R ${USER_NAME} /myapp
+COPY package.json ./
+COPY package-lock.json ./
 
-# Change user
-USER ${USER_NAME}
-# Change working directory:
-WORKDIR /myapp
-# Copy the package sources:
-COPY --chown=${USER_NAME} ./ plant-3d-explorer/
-# Install the dependencies and package:
-RUN cd plant-3d-explorer && \
-    # Install modules listed as dependencies in `package.json`:
-    npm install
+RUN npm install --silent
+RUN npm install react-scripts@3.4.1 -g --silent
 
-WORKDIR /myapp/plant-3d-explorer
+COPY . ./
 
 # Link the docker image to romi database:
 ENV REACT_APP_API_URL=$API_URL
-EXPOSE $PORT
 
-CMD ["/bin/bash", "-c", "npm start"]
+CMD ["npm", "start"]

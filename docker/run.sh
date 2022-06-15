@@ -61,17 +61,26 @@ while [ "$1" != "" ]; do
   shift
 done
 
+# Docker commands based on : https://mherman.org/blog/dockerizing-a-react-app/#docker
 if [ "$cmd" = "" ]; then
   # Start in interactive mode:
   docker run \
-    --env REACT_APP_API_URL="$api_url" \
-    --env PORT=$port \
-    -it roboticsmicrofarms/plant-3d-explorer:$vtag bash
+    -it \
+    --rm \ # Remove container after closing
+    -v ${PWD}:/app \ # Mount the app folder
+    -v /app/node_modules \ # Mount the node modules
+    -p $port:$port \ # open port
+    -e CHOKIDAR_USEPOLLING="true" \ # Allow hot-reload
+    -e REACT_APP_API_URL="$api_url" \
+    roboticsmicrofarms/plant-3d-explorer:$vtag
 else
   # Start in non-interactive mode (run the command):
   docker run \
+    --rm \ # Once the container is closed, delete it
     --env REACT_APP_API_URL="$api_url" \
-    --env PORT=$port \
+    -v ${PWD}:/app \ # We mount the app content
+    -v /app/node_modules \ # I didnt really get this one, but the tutorial said so
+    -p $port:$port \
     roboticsmicrofarms/plant-3d-explorer:$vtag \
     bash -c "$cmd"
 fi
