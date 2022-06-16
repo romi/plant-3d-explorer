@@ -135,10 +135,10 @@ To use a local database, for testing or development, we provide a docker compose
 [here](https://docs.docker.com/compose/install/).
 
 ### Use pre-built docker image
-From the directory containing the `docker-compose.yml` in a terminal:
+From `plant-3d-explorer`'s root directory :
 ```bash
 export ROMI_DB=<path/to/db>
-docker-compose up -d 
+docker-compose -f ./docker/docker-compose.yml up -d
 ```
 **important**:
 > Do not forget to set `ROMI_DB`, the path to the database.

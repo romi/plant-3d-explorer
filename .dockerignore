@@ -27,3 +27,10 @@
 # IDEs
 **/.vscode
 **/.idea
+
+# Node and build related excludes
+node_modules
+build
+.dockerignore
+Dockerfile
+Dockerfile.prod
