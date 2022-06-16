@@ -12,6 +12,9 @@ services:
     image: "roboticsmicrofarms/plant-3d-explorer"
     depends_on:
       - plantdb
+    volumes: 
+      - ${PWD}:/app
+      - /app/node_modules
     environment:
         REACT_APP_API_URL: http://localhost:5000
     ports:
