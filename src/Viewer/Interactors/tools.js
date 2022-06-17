@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 import { SketchPicker } from 'react-color'
 import { FormattedMessage } from 'react-intl'
 
-import { useSelectedAngle, useColor, useDefaultColors, usePointCloudZoom } from 'flow/interactions/accessors'
+import { useSelectedAngle, useColor, useDefaultColors, usePointCloudZoom, usePointCloudSize } from 'flow/interactions/accessors'
 import { useLayerTools, useLayers } from 'flow/settings/accessors'
 import { useSegmentedPointCloud } from 'flow/scans/accessors'
 
@@ -67,6 +67,7 @@ let defaults = {
   defaultMeshOpacity: '0.5',
   defaultPointCloudColor: '#f8de96',
   defaultPointCloudOpacity: '1',
+  defaultPointCloudSize : '1000',
   defaultSkeletonColor: '#D0021B',
   defaultSkeletonOpacity: '0.7'
 }
@@ -87,6 +88,7 @@ export default function MiscInteractors () {
   const [, segmentation] = useSegmentedPointCloud()
   const [legendPicker, setLegendPicker] = useState()
   const [pointCloudZoom, setPointCloudZoom] = usePointCloudZoom()
+  const [pointCloudSize, setPointCloudSize] = usePointCloudSize()
 
   useEffect(
     () => {
@@ -353,7 +355,13 @@ export default function MiscInteractors () {
       <H3 style={{backgroundColor: 'white', padding: 7.5}}>
         <FormattedMessage id='pointcloud-zoom' />
       </H3>
-      <Slider callback={(value) => setPointCloudZoom({...pointCloudZoom, level:value})}/>
+      <Slider min={1} max={4} default={2} step={0.1} callback={(value) => setPointCloudZoom({...pointCloudZoom, level:value})}/>
+    </ColumnContainer>
+    <ColumnContainer style={{marginTop: -9, marginLeft: 10}} displayed={layers.segmentedPointCloud || layers.pointCloud || layers.pointCloudGroundTruth}>
+      <H3 style={{backgroundColor: 'white', padding: 7.5}}>
+        <FormattedMessage id='pointcloud-size' />
+      </H3>
+      <Slider min={0.01} max={1} default={0.75} step={0.01} callback={(value) => setPointCloudSize({...pointCloudSize, sampleSize : value})}/>
     </ColumnContainer>
   </ToolContainer>
 }

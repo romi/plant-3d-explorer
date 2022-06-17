@@ -395,8 +395,8 @@ export default class World {
 
   setSegmentedPointCloudGeometry (geometry, segmentation, uniqueLabels) {
     geometry.computeBoundingBox()
-    this.segmentedPointCloud = new SegmentedPointCloud(geometry,
-      segmentation, uniqueLabels, this.viewerObjects)
+    this.segmentedPointCloud = new SegmentedPointCloud(geometry,this.viewerObjects,
+      segmentation, uniqueLabels)
   }
 
   getSegementedPointCloudColors () {
@@ -440,6 +440,24 @@ export default class World {
     }
     if (this.pointCloudGroundTruth) {
       this.pointCloudGroundTruth.setZoomLevel(zoomLevel)
+    }
+  }
+
+  setPointCloudSize(sampleSize)
+  {
+    if(this.pointCloud)
+    {
+      this.pointCloud.setCloudResolution(sampleSize)
+    }
+
+    if(this.segmentedPointCloud)
+    {
+      this.segmentedPointCloud.setCloudResolution(sampleSize)
+    }
+  
+    if (this.pointCloudGroundTruth) 
+    {
+      this.pointCloudGroundTruth.setCloudResolution(sampleSize)
     }
   }
 

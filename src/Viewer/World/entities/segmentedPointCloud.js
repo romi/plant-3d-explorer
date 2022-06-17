@@ -20,7 +20,7 @@ const vertexShader = `
 `
 
 export default class SegmentedPointCloud extends PointCloud {
-  constructor (geometry, segmentation, uniqueLabels, parent) {
+  constructor (geometry, parent, segmentation, uniqueLabels) {
     super(geometry, parent)
 
     const labelNumbers = segmentation.labels.map((d) => {
@@ -61,18 +61,17 @@ export default class SegmentedPointCloud extends PointCloud {
 
     // Change material to use customColor
     this.object.material.setValues({ vertexShader: vertexShader })
-    this.geometry.addAttribute('customColor',
-      new THREE.BufferAttribute(this.colorsArray, 3))
+    const attr = new THREE.BufferAttribute(this.colorsArray, 3)
+    this.geometry.setAttribute('customColor', attr)
+    this.colorVectors = this.bufferToVector3(attr);
 
-    // Transform positions to vector 3 for practical reasons
-    this.positions = []
-    this.geometry.attributes.position.array.forEach(
-      (d, i, array) => {
-        if (i % 3 === 0) {
-          this.positions.push(new THREE.Vector3(d, array[i + 1], array[i + 2]))
-        }
-      }
-    )
+    this.colorVectors = this.bufferToVector3(this.geometry.getAttribute('customColor'))
+
+  }
+
+  setCloudResolution(sampleSize) {
+    super.setCloudResolution(sampleSize)
+    this.object.material.setValues({ vertexShader: vertexShader })
   }
 
   colorSelectedPoints (selection) {
@@ -106,14 +105,14 @@ export default class SegmentedPointCloud extends PointCloud {
   }
 
   getPointPos (point) {
-    return this.object.localToWorld(this.positions[point].clone())
+    return this.object.localToWorld(this.vertices[point].clone())
   }
 
   selectBySphere (base, point) {
-    const origin = this.positions[base]
-    const dist = origin.distanceTo(this.positions[point])
+    const origin = this.vertices[base]
+    const dist = origin.distanceTo(this.vertices[point])
     let result = []
-    this.positions.forEach((d, i) => {
+    this.vertices.forEach((d, i) => {
       if (d.distanceTo(origin) <= dist) {
         result.push(i)
       }
@@ -142,7 +141,7 @@ export default class SegmentedPointCloud extends PointCloud {
       let nextPointsMax = { x: 0, y: 0, z: 0 }
       let nextPointsMin = { x: 0, y: 0, z: 0 }
       const num = this.labelNumbers[point]
-      this.positions.forEach((d, i, array) => {
+      this.vertices.forEach((d, i, array) => {
         if (i !== point && this.labelNumbers[i] !== num) {
           const dist = array[point].distanceTo(d)
           if (dist < minDist) {
@@ -151,7 +150,7 @@ export default class SegmentedPointCloud extends PointCloud {
         }
       })
       const oldLength = set.size
-      this.positions.forEach((d, i, array) => {
+      this.vertices.forEach((d, i, array) => {
         const dist = d.distanceTo(array[point])
         if (this.labelNumbers[i] === num && (dist < minDist)) {
           set.add(i)

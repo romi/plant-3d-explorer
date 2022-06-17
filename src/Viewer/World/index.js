@@ -34,7 +34,7 @@ import { useElementMouse } from 'rd/tools/hooks/mouse'
 
 import { useLayers } from 'flow/settings/accessors'
 import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useColor, useClickedPoint, useLabels,
-  useSnapshot, useOrganInfo, useSelectedPoints, useSelectedLabel, useSelectionMethod, useRuler, usePointCloudZoom } from 'flow/interactions/accessors'
+  useSnapshot, useOrganInfo, useSelectedPoints, useSelectedLabel, useSelectionMethod, useRuler, usePointCloudZoom, usePointCloudSize } from 'flow/interactions/accessors'
 import { useScanFiles, useScan,
   useSegmentedPointCloud } from 'flow/scans/accessors'
 
@@ -103,6 +103,7 @@ export default function WorldComponent (props) {
     : event3dFns
 
   const [pointCloudZoom] = usePointCloudZoom()
+  const [pointCloudSize] = usePointCloudSize()
 
   useEffect(
     () => {
@@ -508,6 +509,14 @@ export default function WorldComponent (props) {
     },
     [pointCloudZoom.level]
   )
+  useEffect(
+    () => {
+      if (world) {
+        world.setPointCloudSize(pointCloudSize.sampleSize)
+      }
+    },
+    [pointCloudSize.sampleSize]
+  )
 
   return <Container ref={containerRef}>
     <CanvasContainer
@@ -520,27 +529,3 @@ export default function WorldComponent (props) {
     />
   </Container>
 }
-
-/**
-|--------------------------------------------------
-| ANIMATION
-|--------------------------------------------------
-*/
-
-// import { config } from 'react-spring'
-// import { Spring } from 'react-spring/renderprops'
-//
-// <CameraTransitionner world={world} selectedCamera={selectedCamera} />
-// function CameraTransitionner ({ world, selectedCamera }) {
-//   return <Spring
-//     from={{ transition: 0 }}
-//     to={{ transition: selectedCamera ? 1 : 0 }}
-//   >
-//     {
-//       props => {
-//         if (world) world.animateCamera(props.transition, !!selectedCamera)
-//         return null
-//       }
-//     }
-//   </Spring>
-// }
