@@ -36,6 +36,8 @@
   "tooltip-pcd-ground-truth": "Point cloud ground truth",
 
   "pointcloud-zoom": "Point Cloud zoom",
+  "pointcloud-size": "Point Cloud displayed vertices",
+
 
   "tooltip-cameras-hide": "Hide cameras",
   "tooltip-cameras-show": "Show cameras",

@@ -54,7 +54,11 @@ export const initialState = {
   },
 
   pointCloudZoom: {
-    level: 1
+    level: 2
+  },
+
+  pointCloudSize: {
+    sampleSize : 1000
   },
 
   snapshot: {
@@ -170,6 +174,11 @@ export default function settingsReducer (state = initialState, action) {
       return {
         ...state,
         pointCloudZoom: action.value
+      }
+    case 'SET_POINT_CLOUD_SIZE':
+      return {
+        ...state,
+        pointCloudSize: action.value
       }
     default:
       return state

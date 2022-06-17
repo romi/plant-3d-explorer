@@ -6,8 +6,12 @@ export default class Slider extends React.Component
     {
         super(props);
         this.state = {
-            value: '',
-            callback: props.callback
+            value: 1,
+            callback: props.callback,
+            min : props.min && props.min > 0 ? props.min : 1,
+            max : props.min && props.max > 0 ? props.max : 1,
+            default : props.default && props.default > 0 ? props.default : 1,
+            step : props.step && props.step !== 0 ? props.step : 1
         };
 
 
@@ -18,11 +22,17 @@ export default class Slider extends React.Component
     handleChange(event) 
     {
         this.setState({value: event.target.value});
-        this.state.callback(this.state.value);
+        this.state.callback(event.target.value);
     }
 
     render()
     {
-        return <input type="range" min="1" max="4" defaultValue="2" step="0.1" onChange={this.handleChange}/>
+        return <input 
+            type="range" 
+            min={this.state.min} 
+            max={this.state.max} 
+            defaultValue={this.state.default} 
+            step={this.state.step} 
+            onChange={this.handleChange}/>
     }
 }
