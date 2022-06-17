@@ -26,211 +26,222 @@ License along with this program.  If not, see
 <https://www.gnu.org/licenses/>.
 
 */
-import React, { useState } from 'react'
-import { omit } from 'lodash'
-import { FormattedMessage } from 'react-intl'
-import { Global } from '@emotion/core'
+import React, { useState } from "react";
+import { omit } from "lodash";
+import { FormattedMessage } from "react-intl";
+import { Global } from "@emotion/core";
 
-import styled from '@emotion/styled'
+import styled from "@emotion/styled";
 
-import { H1, H2 } from 'common/styles/UI/Text/titles'
-import { green, grey } from 'common/styles/colors'
+import { H1, H2 } from "common/styles/UI/Text/titles";
+import { green, grey } from "common/styles/colors";
 
-import { useSearchQuery, useScans, useFiltering } from 'flow/scans/accessors'
+import { useSearchQuery, useScans, useFiltering } from "flow/scans/accessors";
 
-import Logo from './assets/ico.logo.160x30.svg'
-import closePicto from 'common/assets/ico.deselect.20x20.svg'
+import Logo from "./assets/ico.logo.160x30.svg";
+import closePicto from "common/assets/ico.deselect.20x20.svg";
 
-import Search from './search'
-import List from './list'
-import Sorting from './sorting'
-
+import Search from "./search";
+import List from "./list";
+import Sorting from "./sorting";
 
 /**
- * Important note : EVERYTHING here is hardcoded. 
+ * Important note : EVERYTHING here is hardcoded.
  * A complete rework of the ScanList is needed in order to make things cleaner.
- * The important information here is that you cannot change anything regarding 
+ * The important information here is that you cannot change anything regarding
  * the columns and the filters with serious hassle.
- * 
+ *
  * This article can provide a good starting point : https://blog.logrocket.com/creating-react-sortable-table/
- * 
- * Regarding the inner workings of this app : 
+ *
+ * Regarding the inner workings of this app :
  *  * this file generate the whole page.
  *  * The content of ./list corresponds to the array without the header
  *  * The header is located in ./sorting and contains all the buttons to sort the table. All except ...
  *  * ... the ./filtering which contains online the hide/show datasets given the data they provide (eg. hide dataset without pointcloud).
  *  * ./search is the search bar
- * 
+ *
  * TODO : describe the hook interaction (it's messy and I don't quite)
  */
 
 const Container = styled.div({
-  margin: 'auto',
+  margin: "auto",
   maxWidth: 1420,
-  padding: '80px 60px',
-  height: '100%',
+  padding: "80px 60px",
+  height: "100%",
   color: green,
-  position: 'relative'
-})
+  position: "relative",
+});
 
 const AppHeader = styled.div({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  paddingBottom: 50
-})
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  paddingBottom: 50,
+});
 
 const AppIntro = styled(H2)({
-  display: 'block',
-  color: green
-})
+  display: "block",
+  color: green,
+});
 
-const TaintedFormattedMessage = styled((props) => <span className={props.className}>
-  <FormattedMessage {...omit(props, ['classNaame'])} />
-</span>
-)({}, (props) => {
+const TaintedFormattedMessage = styled((props) => (
+  <span className={props.className}>
+    <FormattedMessage {...omit(props, ["classNaame"])} />
+  </span>
+))({}, (props) => {
   return {
-    color: props.color
-  }
-})
+    color: props.color,
+  };
+});
 
 const ClearButton = styled((props) => {
-  return <button type='button' {...props}>
-    <img src={closePicto} alt='' />
-  </button>
+  return (
+    <button type="button" {...props}>
+      <img src={closePicto} alt="" />
+    </button>
+  );
 })({
-  border: 'none',
+  border: "none",
   width: 20,
   height: 20,
-  transition: 'all 0.15s ease',
-  cursor: 'pointer',
-  outline: 'none',
+  transition: "all 0.15s ease",
+  cursor: "pointer",
+  outline: "none",
   marginLeft: 7,
   opacity: 1,
   padding: 0,
 
-  '&:focus, &:hover': {
-    transform: 'scale(1.25)',
-    opacity: 0.9
-  }
-})
+  "&:focus, &:hover": {
+    transform: "scale(1.25)",
+    opacity: 0.9,
+  },
+});
 
 const ResultsTitleContainer = styled.div({
-  borderBottom: '1px solid rgba(21,119,65, 0.15)',
+  borderBottom: "1px solid rgba(21,119,65, 0.15)",
   marginTop: 51,
-  height: 65
-})
+  height: 65,
+});
 
-function ResultsTitle ({ scans = [], search, clear }) {
-  return <ResultsTitleContainer data-testid='results-title'>
-    <H1>
-      { scans
-        ? <div>
-          <TaintedFormattedMessage
-            color={(search) ? grey : green}
-            id='scanlist-title'
-            values={{
-              NB_SCANS: scans.length
-            }}
-          />
-          {
-            (search && search !== '') &&
-              <div style={{ display: 'inline' }}>
-                <TaintedFormattedMessage color={grey} id='scanlist-title-link' />
+function ResultsTitle({ scans = [], search, clear }) {
+  return (
+    <ResultsTitleContainer data-testid="results-title">
+      <H1>
+        {scans ? (
+          <div>
+            <TaintedFormattedMessage
+              color={search ? grey : green}
+              id="scanlist-title"
+              values={{
+                NB_SCANS: scans.length,
+              }}
+            />
+            {search && search !== "" && (
+              <div style={{ display: "inline" }}>
+                <TaintedFormattedMessage
+                  color={grey}
+                  id="scanlist-title-link"
+                />
                 <FormattedMessage
-                  id='scanlist-title-search-value'
+                  id="scanlist-title-search-value"
                   values={{
-                    SEARCH: search
+                    SEARCH: search,
                   }}
                 />
-                <ClearButton onClick={clear} data-testid='clear-button' />
+                <ClearButton onClick={clear} data-testid="clear-button" />
               </div>
-          }
-        </div>
-        : ''
-      }
-    </H1>
-  </ResultsTitleContainer>
+            )}
+          </div>
+        ) : (
+          ""
+        )}
+      </H1>
+    </ResultsTitleContainer>
+  );
 }
 
-function Results (props) {
-  const [search] = useState(props.search)
-  const [filtering] = useFiltering()
+function Results(props) {
+  const [search] = useState(props.search);
+  const [filtering] = useFiltering();
 
   const filteringFn = (elem) => {
-    let test = true
+    let test = true;
     for (let key in filtering) {
       if (filtering[key]) {
-        test = test && elem[key]
+        test = test && elem[key];
       }
     }
-    return test
-  }
+    return test;
+  };
 
-  const scans = props.scans.filter(filteringFn)
+  const scans = props.scans.filter(filteringFn);
 
-  return <div data-testid='results'>
-    <ResultsTitle
-      scans={scans}
-      search={search}
-      clear={props.clear}
-    />
-    <Sorting />
-    <List items={scans} />
-  </div>
+  return (
+    <div data-testid="results">
+      <ResultsTitle scans={scans} search={search} clear={props.clear} />
+      <Sorting />
+      <List items={scans} />
+    </div>
+  );
 }
 
-export default function () {
-  const [search, setSearch] = useSearchQuery()
-  const [scans] = useScans(search)
-
+export default function() {
+  const [search, setSearch] = useSearchQuery();
+  const [scans] = useScans(search);
+  
   const elements = [
     scans
       ? scans.length
         ? {
-          key: 'scans',
-          element: <Results
-            search={search}
-            clear={() => setSearch(null)}
-            scans={scans}
-          />
-        }
+            key: "scans",
+            element: (
+              <Results
+                search={search}
+                clear={() => setSearch(null)}
+                scans={scans}
+              />
+            ),
+          }
         : {
-          key: 'no-results',
-          element: <ResultsTitle
-            scans={[]}
-            search={search}
-            clear={() => setSearch(null)}
-          />
-        }
+            key: "no-results",
+            element: (
+              <ResultsTitle
+                scans={[]}
+                search={search}
+                clear={() => setSearch(null)}
+              />
+            ),
+          }
       : {
-        key: 'loading',
-        element: ''
-      }
-  ]
+          key: "loading",
+          element: "",
+        },
+  ];
 
-  return <Container>
-    <Global styles={{
-      'body': {
-        overflowY: 'scroll'
-      }
-    }} />
-    <div style={{ position: 'relative' }}>
-      <AppHeader>
-        <img src={Logo} alt='' />
+  return (
+    <Container>
+      <Global
+        styles={{
+          body: {
+            overflowY: "scroll",
+          },
+        }}
+      />
+      <div style={{ position: "relative" }}>
+        <AppHeader>
+          <img src={Logo} alt="" />
 
-        <AppIntro>
-          <FormattedMessage id='app-intro' />
-        </AppIntro>
-      </AppHeader>
+          <AppIntro>
+            <FormattedMessage id="app-intro" />
+          </AppIntro>
+        </AppHeader>
 
-      <Search search={search} onSearch={setSearch} />
+        <Search search={search} onSearch={setSearch} />
 
-      <br />
+        <br />
 
-      <div key={'result'}>
-        {elements[0].element}
+        <div key={"result"}>{elements[0].element}</div>
       </div>
-    </div>
-  </Container>
+    </Container>
+  );
 }

@@ -20,7 +20,7 @@ const vertexShader = `
 `
 
 export default class SegmentedPointCloud extends PointCloud {
-  constructor (geometry, parent, segmentation, uniqueLabels) {
+  constructor (geometry, parent, segmentation = null, uniqueLabels = null) {
     super(geometry, parent)
 
     const labelNumbers = segmentation.labels.map((d) => {
