@@ -67,8 +67,6 @@ if [ "$cmd" = "" ]; then
   docker run \
     -it \
     --rm \
-    -v ${PWD}:/app \
-    -v /app/node_modules \
     -p $port:$port \
     -e CHOKIDAR_USEPOLLING="true" \
     -e REACT_APP_API_URL="$api_url" \
@@ -82,8 +80,6 @@ else
   docker run \
     --rm \
     --env REACT_APP_API_URL="$api_url" \
-    -v ${PWD}:/app \
-    -v /app/node_modules \
     -p $port:$port \
     roboticsmicrofarms/plant-3d-explorer:$vtag \
     bash -c "$cmd"

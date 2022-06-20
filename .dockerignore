@@ -30,7 +30,9 @@
 
 # Node and build related excludes
 node_modules
+npm-debug.log
 build
 .dockerignore
-Dockerfile
-Dockerfile.prod
+**/.git
+**/.DS_Store
+**/node_modules
