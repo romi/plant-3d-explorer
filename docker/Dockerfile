@@ -19,6 +19,4 @@ RUN npm ci --only=production
 
 COPY . ./
 
-RUN ls -la ./
-
 CMD ["npm", "start"]
