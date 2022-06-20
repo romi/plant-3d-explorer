@@ -3,18 +3,22 @@ FROM node:10
 LABEL maintainer="Jonathan LEGRAND <jonathan.legrand@ens-lyon.fr>"
 
 ARG API_URL='https://db.romi-project.eu'
-WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
+ENV REACT_APP_API_URL $API_URL
+
+# I have no clue why, but without this line, everything is broken
+ENV NODE_PATH src/
+
+WORKDIR /app
 
 COPY package.json ./
 COPY package-lock.json ./
 
-RUN npm install --silent
-RUN npm install react-scripts@3.4.1 -g --silent
+RUN npm ci --only=production
+#RUN npm install react-scripts@3.4.1 -g
 
 COPY . ./
 
-# Link the docker image to romi database:
-ENV REACT_APP_API_URL=$API_URL
+RUN ls -la ./
 
 CMD ["npm", "start"]
