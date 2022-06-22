@@ -62,7 +62,7 @@ export default function GraphPanel (props) {
   const highlightedAngle = first([hoveredAngle, selectedAngle]
     .filter((value) => ((value !== null) && (value !== undefined))))
 
-  if (!props.data.automated) return null
+  if (!props.data.automated || props.data.automated.length === 0) return null
 
   const ifManualData = !!props.data.manual
   const ifHighligthed = highlightedAngle !== null && highlightedAngle !== undefined
