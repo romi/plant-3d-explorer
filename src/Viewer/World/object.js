@@ -38,6 +38,7 @@ import SegmentedPointCloud from './entities/segmentedPointCloud'
 import Skeleton from './entities/skeleton'
 import Angles from './entities/angles'
 import Workspace from './entities/workspace'
+import AABB from './entities/aabb'
 
 const clock = new THREE.Clock()
 
@@ -386,6 +387,7 @@ export default class World {
   setPointcloudGeometry (geometry) {
     geometry.computeBoundingBox()
     this.pointCloud = new PointCloud(geometry, this.viewerObjects)
+    this.pcdAABB = new AABB(this.viewerObjects, this.pointCloud)
   }
 
   setPointcloudGroundTruthGeometry (geometry) {

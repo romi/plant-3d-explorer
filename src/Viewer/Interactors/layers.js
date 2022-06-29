@@ -41,7 +41,7 @@ import { H3 } from 'common/styles/UI/Text/titles'
 
 import { Interactor } from './index'
 import { MeshIcon, PointCloudIcon, SegmentedPointCloudIcon,
-  SkeletonIcon, InternodesIcon } from './icons'
+  SkeletonIcon, InternodesIcon, BoundingBoxIcon } from './icons'
 
 export const Container = styled.div({
   position: 'absolute',
@@ -167,7 +167,27 @@ export default function LayersInteractors () {
       </Interactor>
       <TooltipContent>
         <H3>
-          <FormattedMessage id='tooltip-organs' />
+          <FormattedMessage id='tooltip-layer-aabb' />
+        </H3>
+      </TooltipContent>
+    </Tooltip>
+    <Tooltip>
+      <Interactor
+        isDisabled={!pointCloudGeometry}
+        activated={layers.aabb}
+        onClick={() => setLayers({ ...layers, aabb: !layers.aabb })}
+      >
+        <IconStateCatcher style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }} >
+          <BoundingBoxIcon isActivated={layers.aabb} />
+        </IconStateCatcher>
+      </Interactor>
+      <TooltipContent>
+        <H3>
+          <FormattedMessage id='tooltip-layer-aabb' />
         </H3>
       </TooltipContent>
     </Tooltip>

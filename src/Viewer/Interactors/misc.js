@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl'
 import styled from '@emotion/styled'
 
 import { useMisc, useCarousel } from 'flow/settings/accessors'
-import { useColor, useDefaultColors, useSnapshot, useRuler }
+import { useColor, useDefaultColors, useSnapshot, useRuler, useAxisAlignedBoundingBox }
   from 'flow/interactions/accessors'
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 import { H3, H2 } from 'common/styles/UI/Text/titles'
@@ -183,7 +183,59 @@ function ImagePreview (props) {
   </Tooltip>
 }
 
-// const windowG = typeof window !== 'undefined' && window
+function Point3D (props)
+{
+  const [aabb, setAABB] = useAxisAlignedBoundingBox()
+  const [id, ] = useState(props.id)
+
+  return <div style={{
+    display: 'flex', 
+    flexDirection:'row',
+    justifyContent:'center',
+    alignItems:'center'
+    }}>
+    <div>X</div>
+    <input style={{
+      width: '20%',
+      height: '20%',
+      flex: '1 1 100%',
+      margin: '2%',
+    }} 
+      type="number" 
+      defaultValue={aabb[id].x}
+      onChange={(event) => {
+        setAABB({...aabb, [id] : {...aabb[id], x:event.target.value}}, () => console.log('test'))
+      }}
+    />
+    <div>Y</div>
+    <input style={{
+      width: '20%',
+      height: '20%',
+      flex: '1 1 100%',
+      margin: '2%',
+    }}
+      type="number" 
+      defaultValue={aabb[id].y}
+      onChange={(event) => {
+        setAABB({...aabb, [id] : {...aabb[id], y:event.target.value}})
+      }}
+    />
+    <div>Z
+    </div>
+    <input style={{
+      width: '20%',
+      height: '20%',
+      flex: '1 1 100%',
+      margin: '2%',
+    }}
+      type="number" 
+      defaultValue={aabb[id].z}
+      onChange={(event) => {
+        setAABB({...aabb, [id] : {...aabb[id], z:event.target.value}})
+      }}
+    />  
+  </div>
+}
 
 var bgroundColor = '#ECF3F0'
 if (!window.localStorage.getItem('defaultBgroundColor')) window.localStorage.setItem('defaultBgroundColor', bgroundColor)
@@ -295,6 +347,24 @@ export default function () {
           />
           <H3> cm </H3>
         </div>
+      </div>
+    </ToolButton>
+    <ToolButton
+        toolsList={useMisc()}
+        tool={tools.misc.aabb}
+        interactor={{
+          isButton: true,
+        }}
+        tooltipId={'tooltip-tool-aabb'}
+        icon={<PhotoSetIcon isActivated={misc.activeTool === tools.misc.photoSets} />}
+      >
+      <div style={{
+        display:'flex',
+        flexDirection:'column',
+        justifyContent:'center'
+      }}>
+        <Point3D id="min"/>
+        <Point3D id="max"/>
       </div>
     </ToolButton>
     <ToolButton data-testid='background'
