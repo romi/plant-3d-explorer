@@ -387,7 +387,23 @@ export default class World {
   setPointcloudGeometry (geometry) {
     geometry.computeBoundingBox()
     this.pointCloud = new PointCloud(geometry, this.viewerObjects)
-    this.pcdAABB = new AABB(this.viewerObjects, this.pointCloud)
+  }
+
+  setBoundingBoxFromPointCloud()
+  {
+    this.aabb = new AABB(this.viewerObjects, this.pointCloud.geometry.boundingBox)
+  }
+
+  setAxisAlignedBoundingBox(aabb)
+  {
+    if(!this.aabb) return;
+    this.aabb.setBoundingBox(aabb)
+  }
+
+  getPointCloudBoundingBox()
+  {
+
+    return this.aabb.getBoundingBox()
   }
 
   setPointcloudGroundTruthGeometry (geometry) {
@@ -471,6 +487,7 @@ export default class World {
     if (this.skeleton) this.skeleton.setVisible(layers.skeleton)
     if (this.anlesPoints) this.anlesPoints.setVisible(layers.angles)
     if (this.CameraPointsGroup) this.CameraPointsGroup.visible = layers.cameras
+    if (this.aabb) this.aabb.setVisible(layers.axisAlignedBoundingBox)
   }
 
   takeSnapshot (size) {

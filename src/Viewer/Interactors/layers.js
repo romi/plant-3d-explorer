@@ -174,15 +174,15 @@ export default function LayersInteractors () {
     <Tooltip>
       <Interactor
         isDisabled={!pointCloudGeometry}
-        activated={layers.aabb}
-        onClick={() => setLayers({ ...layers, aabb: !layers.aabb })}
+        activated={layers.axisAlignedBoundingBox}
+        onClick={() => setLayers({ ...layers, axisAlignedBoundingBox: !layers.axisAlignedBoundingBox})}
       >
         <IconStateCatcher style={{
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center'
         }} >
-          <BoundingBoxIcon isActivated={layers.aabb} />
+          <BoundingBoxIcon isActivated={layers.axisAlignedBoundingBox} />
         </IconStateCatcher>
       </Interactor>
       <TooltipContent>

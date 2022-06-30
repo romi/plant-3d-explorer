@@ -9,8 +9,9 @@ import {
   useDefaultColors,
   usePointCloudZoom,
   usePointCloudSize,
+  useAxisAlignedBoundingBox,
 } from "flow/interactions/accessors";
-import { useLayerTools, useLayers } from "flow/settings/accessors";
+import { useLayerTools, useLayers, } from "flow/settings/accessors";
 import { useSegmentedPointCloud } from "flow/scans/accessors";
 
 import { PaintIcon } from "Viewer/Interactors/icons";
@@ -82,6 +83,64 @@ for (let key in defaults) {
   }
 }
 
+function Point3D (props)
+{
+  const [aabb, setAABB] = useAxisAlignedBoundingBox()
+  const [id, ] = useState(props.id)
+
+  return <div style={{
+    display: 'flex', 
+    flexDirection:'row',
+    justifyContent:'center',
+    alignItems:'center',
+    backgroundColor: 'white',
+    height:"50%",
+    paddingLeft: "10px",
+    paddingRight: "10px"
+    }}>
+    <div>X</div>
+    <input style={{
+      width: '30%',
+      height: '50%',
+      flex: '1 1 100%',
+      margin: '2%',
+    }} 
+      type="number" 
+      onChange={(event) => {
+        setAABB({...aabb, [id] : {...aabb[id], x: isNaN(event.target.value) ? 0 : event.target.value}})
+      }}
+      value={aabb[id].x}
+    />
+    <div>Y</div>
+    <input style={{
+      width: '30%',
+      height: '50%',
+      flex: '1 1 100%',
+      margin: '2%',
+    }}
+      type="number" 
+      onChange={(event) => {
+        setAABB({...aabb, [id] : {...aabb[id], y: isNaN(event.target.value) ? 0 : event.target.value}})
+      }}
+      value={aabb[id].y}
+    />
+    <div>Z
+    </div>
+    <input style={{
+      width: '30%',
+      height: '50%',
+      flex: '1 1 100%',
+      margin: '0.5em'
+    }}
+      type="number" 
+      onChange={(event) => {
+        setAABB({...aabb, [id] : {...aabb[id], z: isNaN(event.target.value) ? 0 : event.target.value}})
+      }}
+      value={aabb[id].z}
+    />  
+  </div>
+}
+
 export default function MiscInteractors() {
   const [selectedAngle] = useSelectedAngle();
   const [colors, setColors] = useColor();
@@ -103,7 +162,11 @@ export default function MiscInteractors() {
       );
     }
   }, [segmentation]);
-
+  
+  // This is probably the worst part of the interface. This is the row of tools appearing when you click on various layers.
+  // There is no links between the layer buttons and the tools associated to it. 
+  // Improvement : Rework the interactors to have tools associated to specific layers. Its mostly the component hierarchy with some CSS
+  // most of what's done is working fine
   return (
     <ToolContainer>
       <ColumnContainer displayed={layers.mesh}>
@@ -429,7 +492,24 @@ export default function MiscInteractors() {
           />
         </ToolButton>
       </ColumnContainer>
-
+      
+      <ColumnContainer displayed={layers.axisAlignedBoundingBox}>
+      <div style={{
+        display:'flex',
+        flexDirection:'column',
+        justifyContent:'center',
+        width:"60%",
+      }}>
+        <H3 style={{ backgroundColor: "white", padding: 7.5, margin:0 }}>
+          <FormattedMessage id="bbox-min"></FormattedMessage>
+        </H3>
+        <Point3D id="min"/>
+        <H3 style={{ backgroundColor: "white", padding: 7.5, margin:0}}>
+          <FormattedMessage id="bbox-max"></FormattedMessage>
+        </H3>
+        <Point3D id="max"/>
+      </div>
+      </ColumnContainer>
 
       <ColumnContainer
         style={{ marginTop: -9, marginLeft: 10 }}

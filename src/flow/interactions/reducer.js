@@ -195,6 +195,7 @@ export default function settingsReducer(state = initialState, action) {
         pointCloudSize: action.value,
       };
     case "SET_AABB":
+      console.log(action.value)
       return {
         ...state,
         aabb: action.value,

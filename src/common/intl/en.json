@@ -72,6 +72,9 @@
   "tooltip-download-sequence": "Download the sequences in CSV/TSV format",
   "tooltip-download-auto-sequence": "Download automated sequence",
   "tooltip-download-man-sequence": "Download manual sequence",
+
+  "bbox-min": "Top coordinates",
+  "bbox-max": "Bottom coordinates",
   
   "snapshot-preview-alt": "The image preview couldn't load",
   "snapshot-preview": "Preview",

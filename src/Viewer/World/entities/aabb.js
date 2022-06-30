@@ -1,38 +1,58 @@
 /**
- * This is a simple implementation of an Axis Aligned Bounding Box.
+ * This is unused code. 
  *
  */
 
-import * as THREE from "three";
-
+import { Vector3, Box3, Box3Helper } from "three";
 export default class AABB {
-  constructor(parent, fromCloud) {
-    if (parent) parent.add(this.object);
+  constructor(parent, box) {
+    this.box = new Box3(
+      new Vector3(parseFloat(box.min.x), parseFloat(box.min.y), parseFloat(box.min.z)), 
+      new Vector3(parseFloat(box.max.x), parseFloat(box.max.y), parseFloat(box.max.z))
+    )
 
-    // This is not the nicest way to do that.
-    this.object = new THREE.Box3Helper(fromCloud.object, 0xffff00);
+    this.object = new Box3Helper(this.box, 0xffffff);
+    this.object.renderOrder = -1;
+    if(parent) parent.add(this.object);
   }
 
-  resizeBox(min, max) {
-    const vecs = [
-      new THREE.Vector3(min.x, min.y, min.z),
-      new THREE.Vector3(max.x, max.y, max.z),
-    ];
-    this.object.box.setFromPoints(vecs);
+  setVisible(boolean)
+  {
+    this.object.visible = boolean;
   }
 
-  getBoxSize() {
-    return {
+  setBoundingBox(aabb) {
+    // We could maybe do without creating a new GeometryBuffer
+    // This is left as excercise for the next intern here :)
+    this.box = new Box3(
+      new Vector3(parseFloat(aabb.min.x), parseFloat(aabb.min.y), parseFloat(aabb.min.z)), 
+      new Vector3(parseFloat(aabb.max.x), parseFloat(aabb.max.y), parseFloat(aabb.max.z))
+    )
+    let oldObj = this.object
+    const newObj = new Box3Helper(this.box, 0xffffff);
+    newObj.visible = oldObj.visible
+    //oldObj.visible = false
+    oldObj.parent.add(newObj)
+    newObj.parent.remove(oldObj)
+    this.object = newObj
+    
+  }
+
+  getBoundingBox()
+  {
+     
+    const ret = {
       min: {
-        x: this.object.box.min.x,
-        y: this.object.box.min.y,
-        z: this.object.box.min.z,
+        x: this.box.min.x.toFixed(4),
+        y: this.box.min.y.toFixed(4),
+        z: this.box.min.z.toFixed(4),
       },
       max: {
-        x: this.object.box.max.x,
-        y: this.object.box.max.y,
-        z: this.object.box.max.z,
-      },
-    };
+        x: this.box.max.x.toFixed(4),
+        y: this.box.max.y.toFixed(4),
+        z: this.box.max.z.toFixed(4),
+      }
+    }
+    return ret
   }
 }
