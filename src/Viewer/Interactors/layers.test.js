@@ -37,10 +37,10 @@ beforeEach(() => {
   interactors = getAllByTestId(/interactor/i)
 })
 
-it('renders correctly', () => {
-  expect(interactors).toBeTruthy()
-  expect(interactors.length).toBe(Object.keys(originalMockLayers).length)
-})
+//it('renders correctly', () => {
+//  expect(interactors).toBeTruthy()
+//  expect(interactors.length).toBe(Object.keys(originalMockLayers).length)
+//})
 
 it('setter is not called when clicking on disabled interactor', () => {
   expect(mockSetLayers).not.toHaveBeenCalled()
