@@ -169,9 +169,7 @@ export default function Carousel() {
         cameraPoses.map((d, i) => {
           const isSelected = selected && d.id === selected.id;
           const isHovered = hovered && d.id === hovered.id;
-          const matchedImageIds = scan.data.matchedImages;
           // e - 1 because Colmap image ids are [1; N] and dataset are from [0; N-1]
-          const isMatched = matchedImageIds === null ? true : matchedImageIds.some(e => (e - 1) === parseInt(d.id.split("_")[0]));
           const x = last.x + last.width;
           const width = selected
             ? isSelected
@@ -195,7 +193,6 @@ export default function Carousel() {
             height,
             hovered: isHovered,
             selected: isSelected,
-            matched : isMatched
           };
 
           last = obj;
@@ -233,7 +230,7 @@ export default function Carousel() {
           d.width,
           height
         );
-        if(!d.matched)
+        if(!d.item.isMatched)
         {
           context.fillStyle = "rgba(255, 85, 95, 0.2)";
           context.fillRect(d.x, 0, d.width, imgHeight);
