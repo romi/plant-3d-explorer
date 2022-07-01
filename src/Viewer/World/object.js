@@ -389,7 +389,7 @@ export default class World {
     this.pointCloud = new PointCloud(geometry, this.viewerObjects)
   }
 
-  setBoundingBoxFromPointCloud()
+  setAxisAlignedBoundingBoxFromPointCloud()
   {
     this.aabb = new AABB(this.viewerObjects, this.pointCloud.geometry.boundingBox)
   }
@@ -400,10 +400,14 @@ export default class World {
     this.aabb.setBoundingBox(aabb)
   }
 
-  getPointCloudBoundingBox()
+  getAxisAlignedBoundingBox()
   {
-
     return this.aabb.getBoundingBox()
+  }
+
+  resetAxisAlignedBoundingBox()
+  {
+    this.aabb.resetBoundingBox()
   }
 
   setPointcloudGroundTruthGeometry (geometry) {

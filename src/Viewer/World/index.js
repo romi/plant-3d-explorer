@@ -405,8 +405,8 @@ export default function WorldComponent (props) {
     () => {
       if (world && pointCloudGeometry) {
         world.setPointcloudGeometry(pointCloudGeometry)
-        world.setBoundingBoxFromPointCloud()
-        setAABB(world.getPointCloudBoundingBox())
+        world.setAxisAlignedBoundingBoxFromPointCloud()
+        setAABB(world.getAxisAlignedBoundingBox())
         world.setLayers(layers)
       }
     },
@@ -416,7 +416,17 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world && pointCloudGeometry) {
-        world.setAxisAlignedBoundingBox(aabb)
+        if(aabb.enforceReset)
+        {
+          world.resetAxisAlignedBoundingBox(aabb)
+          const bb = world.getAxisAlignedBoundingBox()
+          const merge = (...objects) => objects.reduce((acc, cur) => ({ ...acc, ...cur }));
+          setAABB(merge(aabb, bb, { enforceReset:false }));
+        } else
+        {
+          world.setAxisAlignedBoundingBox(aabb)
+        }
+
       }
     },
     [aabb]

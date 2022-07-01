@@ -88,6 +88,7 @@ export const initialState = {
       y: 0,
       z: 0,
     },
+    enforceReset: false,
   },
   reset3dViewFn: null,
   reset2dViewFn: null,
@@ -195,7 +196,6 @@ export default function settingsReducer(state = initialState, action) {
         pointCloudSize: action.value,
       };
     case "SET_AABB":
-      console.log(action.value)
       return {
         ...state,
         aabb: action.value,
