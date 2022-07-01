@@ -308,7 +308,7 @@ export const Item = memo(({ item }) => {
       <MeasuresText
         automated
         data-testid='auto'
-        icolorsActive={item.hasAutomatedMeasures}
+        isActive={item.hasAutomatedMeasures}
       >
         <FormattedMessage id='angles-legend-automated' />
       </MeasuresText>
