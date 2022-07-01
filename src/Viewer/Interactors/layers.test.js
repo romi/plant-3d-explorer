@@ -8,7 +8,8 @@ const originalMockLayers = {
   pointCloud: false,
   segmentedPointCloud: false,
   skeleton: false,
-  angles: false
+  angles: false,
+  axisAlignedBoundingBox: false 
 }
 
 let mockLayers = originalMockLayers
@@ -33,7 +34,6 @@ jest.mock('flow/scans/accessors', () => ({
 let interactors
 beforeEach(() => {
   const { getAllByTestId } = render(<Layers />)
-
   interactors = getAllByTestId(/interactor/i)
 })
 
