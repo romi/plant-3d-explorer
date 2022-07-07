@@ -44,6 +44,7 @@ import Logo from './assets/ico.logo_minified.25x31.svg'
 import chevronIco from './assets/ico.chevron.8x12.svg'
 import { useResetSettings } from 'flow/settings/accessors'
 import { useResetInteraction } from 'flow/interactions/accessors'
+import { Settings } from './Settings'
 
 export const headerHeight = 80
 
@@ -112,87 +113,154 @@ const MarginedDocLink = styled(DocLink)({
   display: 'inline-block'
 })
 
+
+
+
 export default function () {
   const [scan] = useScan()
   const [resetSettings] = useResetSettings()
   const [resetInteractions] = useResetInteraction()
 
-  return <Container>
-    <Column>
-      <InlineElement style={{ marginRight: 10 }}>
-        <img src={Logo} alt='' />
-      </InlineElement>
-      <InlineElement>
-        <AllScans
-          to={landingUrl}
-          onClick={() => {
-            resetSettings()
-            resetInteractions()
-          }}
-        >
-          <BackH2>
-            <FormattedMessage id='header-back' />
-          </BackH2>
-        </AllScans>
-        <Chevron src={chevronIco} />
-        <H2>
-          {scan && scan.metadata.plant}
-        </H2>
-      </InlineElement>
-    </Column>
-    <Column
-      style={{
-        marginRight: 50,
-        justifyContent: 'flex-end'
-      }}
-    >
-      <TypeContainer>
-        <TypeWording>
-          <FormattedMessage id='scanlist-sort-species' />
-        </TypeWording>
-        <TypeValue>
-          {scan && scan.metadata.species}
-        </TypeValue>
-      </TypeContainer>
-      <TypeContainer>
-        <TypeWording>
-          <FormattedMessage id='scanlist-sort-environment' />
-        </TypeWording>
-        <TypeValue>
-          {scan && scan.metadata.environment}
-        </TypeValue>
-      </TypeContainer>
-      <TypeContainer>
-        <TypeWording>
-          <FormattedMessage id='scanlist-sort-date' />
-        </TypeWording>
-        <TypeValue>
-          {scan && format(
-            new Date(scan.metadata.date),
-            'MMM DD YYYY HH:mm:ss'
-          )}
-        </TypeValue>
-      </TypeContainer>
-    </Column>
-    <Column>
-      <TypeContainer
+  return (
+    <Container>
+      <Column>
+        <InlineElement style={{ marginRight: 10 }}>
+          <img src={Logo} alt="" />
+        </InlineElement>
+        <InlineElement>
+          <AllScans
+            to={landingUrl}
+            onClick={() => {
+              resetSettings();
+              resetInteractions();
+            }}
+          >
+            <BackH2>
+              <FormattedMessage id="header-back" />
+            </BackH2>
+          </AllScans>
+          <Chevron src={chevronIco} />
+          <H2>{scan && scan.metadata.plant}</H2>
+        </InlineElement>
+      </Column>
+      <Column
         style={{
-          justifyContent: 'space-between',
-          marginRight: 0
+          marginRight: 50,
+          justifyContent: "flex-end",
         }}
       >
-        {
-          scan && <MarginedDocLink href={scan.metadata.files.archive} target='_blank'>
-            <FormattedMessage id='scanlist-link-download' />
-          </MarginedDocLink>
-        }
-        {
-          scan && <MarginedDocLink href={scan.metadata.files.metadatas} target='_blank'>
-            <FormattedMessage id='scanlist-link-metadata' />
-          </MarginedDocLink>
-        }
-
-      </TypeContainer>
-    </Column>
-  </Container>
+        <TypeContainer>
+          <TypeWording>
+            <FormattedMessage id="scanlist-sort-species" />
+          </TypeWording>
+          <TypeValue>{scan && scan.metadata.species}</TypeValue>
+        </TypeContainer>
+        <TypeContainer>
+          <TypeWording>
+            <FormattedMessage id="scanlist-sort-environment" />
+          </TypeWording>
+          <TypeValue>{scan && scan.metadata.environment}</TypeValue>
+        </TypeContainer>
+        <TypeContainer>
+          <TypeWording>
+            <FormattedMessage id="scanlist-sort-date" />
+          </TypeWording>
+          <TypeValue>
+            {scan &&
+              format(new Date(scan.metadata.date), "MMM DD YYYY HH:mm:ss")}
+          </TypeValue>
+        </TypeContainer>
+      </Column>
+      <Column>
+        <TypeContainer
+          style={{
+            justifyContent: "space-between",
+            marginRight: 0,
+          }}
+        >
+          {scan && (
+            <MarginedDocLink href={scan.metadata.files.archive} target="_blank">
+              <FormattedMessage id="scanlist-link-download" />
+            </MarginedDocLink>
+          )}
+          {scan && (
+            <MarginedDocLink
+              href={scan.metadata.files.metadatas}
+              target="_blank"
+            >
+              <FormattedMessage id="scanlist-link-metadata" />
+            </MarginedDocLink>
+          )}
+        </TypeContainer>
+        <InlineElement>
+          <Settings
+            menu={{
+              id: "id",
+              settings: [
+                {
+                  id: "mesh",
+                  name: "Mesh",
+                  fields: [
+                    {
+                      id: "color",
+                      name: "Color",
+                      type: "colorpicker",
+                    },
+                  ],
+                },
+                {
+                  id: "pcd",
+                  name: "PointCloud",
+                  fields: [
+                    {
+                      id: "color",
+                      name: "Color",
+                      type: "colorpicker",
+                    },
+                  ],
+                },
+                {
+                  id: "segmentedPcd",
+                  name: "Segmented Point Cloud",
+                  fields: [
+                    {
+                      id: "colors",
+                      name: "Colors",
+                      fields: [
+                        {
+                          id: "fruit",
+                          name: "Fruit",
+                          type: "colorpicker",
+                        },
+                        {
+                          id: "pedicel",
+                          name: "Pedicel",
+                          type: "colorpicker",
+                        },
+                        {
+                          id: "stem",
+                          name: "Stem",
+                          type: "colorpicker",
+                        },
+                        {
+                          id: "flower",
+                          name: "Flower",
+                          type: "colorpicker",
+                        },
+                        {
+                          id: "leaf",
+                          name: "Leaf",
+                          type: "colorpicker",
+                        }
+                      ],
+                    },
+                  ],
+                },
+              ],
+            }}
+          />
+        </InlineElement>
+      </Column>
+    </Container>
+  );
 }
