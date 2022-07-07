@@ -38,6 +38,7 @@ import SegmentedPointCloud from './entities/segmentedPointCloud'
 import Skeleton from './entities/skeleton'
 import Angles from './entities/angles'
 import Workspace from './entities/workspace'
+import AABB from './entities/aabb'
 
 const clock = new THREE.Clock()
 
@@ -388,6 +389,27 @@ export default class World {
     this.pointCloud = new PointCloud(geometry, this.viewerObjects)
   }
 
+  setAxisAlignedBoundingBoxFromPointCloud()
+  {
+    this.aabb = new AABB(this.viewerObjects, this.pointCloud.geometry.boundingBox)
+  }
+
+  setAxisAlignedBoundingBox(aabb)
+  {
+    if(!this.aabb) return;
+    this.aabb.setBoundingBox(aabb)
+  }
+
+  getAxisAlignedBoundingBox()
+  {
+    return this.aabb.getBoundingBox()
+  }
+
+  resetAxisAlignedBoundingBox()
+  {
+    this.aabb.resetBoundingBox()
+  }
+
   setPointcloudGroundTruthGeometry (geometry) {
     geometry.computeBoundingBox()
     this.pointCloudGroundTruth = new PointCloud(geometry, this.viewerObjects)
@@ -469,6 +491,7 @@ export default class World {
     if (this.skeleton) this.skeleton.setVisible(layers.skeleton)
     if (this.anlesPoints) this.anlesPoints.setVisible(layers.angles)
     if (this.CameraPointsGroup) this.CameraPointsGroup.visible = layers.cameras
+    if (this.aabb) this.aabb.setVisible(layers.axisAlignedBoundingBox)
   }
 
   takeSnapshot (size) {

@@ -183,7 +183,6 @@ function ImagePreview (props) {
   </Tooltip>
 }
 
-// const windowG = typeof window !== 'undefined' && window
 
 var bgroundColor = '#ECF3F0'
 if (!window.localStorage.getItem('defaultBgroundColor')) window.localStorage.setItem('defaultBgroundColor', bgroundColor)
@@ -297,6 +296,7 @@ export default function () {
         </div>
       </div>
     </ToolButton>
+
     <ToolButton data-testid='background'
       toolsList={useMisc()}
       tool={tools.colorPickers.background}

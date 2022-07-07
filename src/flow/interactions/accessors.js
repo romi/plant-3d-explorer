@@ -242,6 +242,13 @@ export const useSelectionMethod = useAccessor(
   ]
 )
 
+/**
+ * Value should look like this
+ * {
+ *   topPoint : { x : <num>, y: <num>, z : <num> },
+ *   bottomPoint : { x : <num>, y: <num>, z : <num> }
+ * }
+ */
 export const useRuler = useAccessor(
   [
     (state) => {
@@ -251,6 +258,20 @@ export const useRuler = useAccessor(
   [
     (value) => ({
       type: 'SET_RULER',
+      value
+    })
+  ]
+)
+
+export const useAxisAlignedBoundingBox = useAccessor(
+  [
+    (state) => {
+      return state.interactions.aabb
+    }
+  ],
+  [
+    (value) => ({
+      type: 'SET_AABB',
       value
     })
   ]

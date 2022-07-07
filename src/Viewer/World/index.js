@@ -34,7 +34,7 @@ import { useElementMouse } from 'rd/tools/hooks/mouse'
 
 import { useLayers } from 'flow/settings/accessors'
 import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useColor, useClickedPoint, useLabels,
-  useSnapshot, useOrganInfo, useSelectedPoints, useSelectedLabel, useSelectionMethod, useRuler, usePointCloudZoom, usePointCloudSize } from 'flow/interactions/accessors'
+  useSnapshot, useOrganInfo, useSelectedPoints, useSelectedLabel, useSelectionMethod, useRuler, usePointCloudZoom, usePointCloudSize, useAxisAlignedBoundingBox } from 'flow/interactions/accessors'
 import { useScanFiles, useScan,
   useSegmentedPointCloud } from 'flow/scans/accessors'
 
@@ -104,6 +104,7 @@ export default function WorldComponent (props) {
 
   const [pointCloudZoom] = usePointCloudZoom()
   const [pointCloudSize] = usePointCloudSize()
+  const [aabb, setAABB] = useAxisAlignedBoundingBox()
 
   useEffect(
     () => {
@@ -310,7 +311,7 @@ export default function WorldComponent (props) {
     },
     [mouse, world, measureClick]
   )
-
+  
   useEffect(
     () => {
       if (world) {
@@ -404,10 +405,31 @@ export default function WorldComponent (props) {
     () => {
       if (world && pointCloudGeometry) {
         world.setPointcloudGeometry(pointCloudGeometry)
+        world.setAxisAlignedBoundingBoxFromPointCloud()
+        setAABB(world.getAxisAlignedBoundingBox())
         world.setLayers(layers)
       }
     },
     [world, pointCloudGeometry]
+  )
+
+  useEffect(
+    () => {
+      if (world && pointCloudGeometry) {
+        if(aabb.enforceReset)
+        {
+          world.resetAxisAlignedBoundingBox(aabb)
+          const bb = world.getAxisAlignedBoundingBox()
+          const merge = (...objects) => objects.reduce((acc, cur) => ({ ...acc, ...cur }));
+          setAABB(merge(aabb, bb, { enforceReset:false }));
+        } else
+        {
+          world.setAxisAlignedBoundingBox(aabb)
+        }
+
+      }
+    },
+    [aabb]
   )
 
   useEffect(
@@ -516,6 +538,13 @@ export default function WorldComponent (props) {
       }
     },
     [pointCloudSize.sampleSize]
+  )
+
+  useEffect(
+    () => {
+
+    },
+    [aabb]
   )
 
   return <Container ref={containerRef}>
