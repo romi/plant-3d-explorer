@@ -1,41 +1,58 @@
-import React from 'react';
-import { useState } from 'react';
-import { SketchPicker } from 'react-color';
+import React from "react";
+import { useState, useEffect } from "react";
+import { SketchPicker } from "react-color";
 
-import get from 'lodash';
+import { get } from "lodash";
 
+// eslint-disable-next-line
 const hex2rgb = (hex) => {
-    return { r: parseInt(hex[1] + hex[2], 16),
-      g: parseInt(hex[3] + hex[4], 16),
-      b: parseInt(hex[5] + hex[6], 16) }
-}
+  return {
+    r: parseInt(hex[1] + hex[2], 16),
+    g: parseInt(hex[3] + hex[4], 16),
+    b: parseInt(hex[5] + hex[6], 16),
+  };
+};
 
+// eslint-disable-next-line
 const rgb2hex = (rgb) => {
-    const f = (n) => n.toString(16).padStart(2, '0')
-    return `#${f(rgb.r)}${f(rgb.g)}${f(rgb.b)}`
-} 
+  const f = (n) => n.toString(16).padStart(2, "0");
+  return `#${f(rgb.r)}${f(rgb.g)}${f(rgb.b)}`;
+};
 
-const ColorInput = props => {
-    const [color, setColor] = useState(get(props, 'default', '#ffffff'));
-    const [picking, setPicking] = useState(false);
-    return <div>
-        <label>Color :
-            <button style={{
-                backgroundColor: color,
-            }} onClick={() => setPicking(!picking)} />
-            <div style={{ display: picking ? 'inherit' : 'none' }}>
-                <SketchPicker 
-                    color ={color}  
-                    onChange = {(val) => {
-                        console.log(val.hex)
-                        setColor(val.hex)
-                    }}
+const ColorInput = (props) => {
+  const [color, setColor] = useState(get(props, "default", "#ffffff"));
+  const [picking, setPicking] = useState(false);
 
-                />
+  useEffect(() => {
+    props.onChangeValue(color)
+  }, [color]);
 
-            </div>
-        </label>
+  return (
+    <div style={{
+      padding: "5px 25px"
+    }}>
+      <label>
+        {props.label + " :"}
+        <button
+          style={{
+            backgroundColor: color.hex,
+            width: "30px",
+            height: "20px",
+            margin: " 0 5px"
+          }}
+          onClick={() => setPicking(!picking)}
+        />
+      </label>
+      <div style={{ display: picking ? "inherit" : "none" }}>
+        <SketchPicker disableAlpha
+          color={color}
+          onChange={(val) => {
+            setColor(val);
+          }}
+        />
+      </div>
     </div>
-}
+  );
+};
 
-export { ColorInput }
+export { ColorInput };

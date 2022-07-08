@@ -72,19 +72,30 @@ const NavigationItem = (props) => {
 
 const SettingsCategory = (props) => {
   const fields = props.fields;
+  const [settings, setSettings] = useState({ [props.id]: {} });
+
+  useEffect(() => {
+    props.onChangeValue(settings)
+  }, [settings]);
 
   return (
-    <div style={{padding:"10px"}}>
+    <div style={{ padding: "25px" }}>
       <H3>{props.title}</H3>
-      {fields.map((element, i) => {
-        if (React.isValidElement(element.type)) {
-          const Elem = element.type;
-          return <Elem key={i} />;
+      {fields.map((el, i) => {
+        const changeSettings = (val) =>
+          setSettings({
+              ...settings,
+              [el.id]: val,
+          });
+        if (React.isValidElement(el.type)) {
+          const Elem = el.type;
+          return <Elem key={i} onChangeValue={changeSettings} />;
         } else {
-          const Elem = typeReducer(element.type);
-          if (Elem === null)
-            return null;
-          return <Elem key  ={i} />;
+          const Elem = typeReducer(el.type);
+          if (Elem === null) return null;
+          return (
+            <Elem key={i} onChangeValue={changeSettings} label={el.name} />
+                      );
         }
       })}
     </div>
@@ -92,37 +103,53 @@ const SettingsCategory = (props) => {
 };
 
 const SettingsLayer = (props) => {
+  const [settings, setSettings] = useState({ });
+
+  useEffect(() => {
+    props.onChangeValue(settings)
+  }, [settings]);
+
   return (
     <div
       style={{
         padding: "10px",
-        display: props.isEnabled ? "grid" : "none",
+        height: "calc(100% - 25px)", // calc the total height of the container - the height of the nav
+        display: props.isEnabled ? "block" : "none",
       }}
     >
       <H2>{props.name}</H2>
-      {
-        props.fields.map((element, i) => {
-          if ("type" in element) {
-            if (React.isValidElement(element.type)) {
-              const Elem = element.type;
-              return <Elem key={i} />;
-            } else {
-              const Elem = typeReducer(element.type);
-              return <Elem key={i} />;
-            }
-          } else if ('fields' in element)
-          {
-            return <SettingsCategory title={element.name} fields={element.fields} />
+      {props.fields.map((element, i) => {
+        const changeSettings = (val) =>
+          setSettings({
+            ...settings,
+            [element.id]: val,
+          });
+        if ("type" in element) {
+          if (React.isValidElement(element.type)) {
+            const Elem = element.type;
+            return <Elem key={i} onChangeValue={changeSettings} label={element.name} />;
+          } else {
+            const Elem = typeReducer(element.type);
+            return <Elem key={i} onChangeValue={changeSettings} label={element.name} />;
           }
-          return null;
-        })
-      }
+        } else if ("fields" in element) {
+          return (
+            <SettingsCategory key={i} id={element.id} title={element.name} fields={element.fields} onChangeValue={changeSettings}/>
+          );
+        }
+        return null;
+      })}
     </div>
   );
 };
 
 function Panel(props) {
   const [activated, setActivated] = useState("");
+  const [settings, setSettings] = useState({});
+
+  useEffect(() => {
+    console.log(settings);
+  }, [settings]);
 
   const panel = (
     <Background>
@@ -153,6 +180,12 @@ function Panel(props) {
             name={el.name}
             isEnabled={activated === el.id}
             fields={el.fields}
+            onChangeValue={(val) =>
+              setSettings({
+                ...settings,
+                [el.id]: val,
+              })
+            }
           />
         );
       })}
@@ -177,6 +210,7 @@ function Settings(props) {
     if (validate) setLocalStorage(Object.assign(localStorage, currentChanges));
     setValidate(false);
   }, [validate]);
+
   return (
     <div>
       <input

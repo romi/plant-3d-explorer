@@ -198,6 +198,17 @@ export default function () {
               id: "id",
               settings: [
                 {
+                  id: 'general',
+                  name: 'General',
+                  fields : [
+                    {
+                      id: 'backgroundColor',
+                      name : 'Background Color',
+                      type : 'colorpicker'
+                    }
+                  ]
+                },
+                {
                   id: "mesh",
                   name: "Mesh",
                   fields: [

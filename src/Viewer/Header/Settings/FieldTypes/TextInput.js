@@ -1,7 +1,17 @@
-import React from 'react'
+import React from "react";
 
-const TextInput = props => {
-    return <div><label>{'Label'}<input type="text" value="Value"/></label></div>
-}
+const TextInput = ({ defaultValue, outerStyle }) => {
+  return (
+    <div style={{
+      ...outerStyle,
+      padding:"25px"
+    }}>
+      <label>
+        {"Label"}
+        <input type="text" value={defaultValue} />
+      </label>
+    </div>
+  );
+};
 
-export { TextInput }
+export { TextInput };
