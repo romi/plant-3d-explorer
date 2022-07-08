@@ -24,30 +24,26 @@ const ColorInput = (props) => {
   const [picking, setPicking] = useState(false);
 
   useEffect(() => {
-    props.onChangeValue(color)
+    props.onChangeValue(color);
   }, [color]);
 
   return (
-    <div style={{
-      padding: "5px 25px"
-    }}>
-      <label>
-        {props.label + " :"}
-        <button
-          style={{
-            backgroundColor: color.hex,
-            width: "30px",
-            height: "20px",
-            margin: " 0 5px"
-          }}
-          onClick={() => setPicking(!picking)}
-        />
-      </label>
-      <div style={{ display: picking ? "inherit" : "none" }}>
-        <SketchPicker disableAlpha
+    <div style={{display:"inline-block"}}>
+      <button
+        style={{
+          backgroundColor: color,
+          width: "30px",
+          height: "20px",
+          margin: " 0 5px",
+        }}
+        onClick={() => setPicking(!picking)}
+      />
+      <div style={{ display: picking ? "inline" : "none", position:'absolute'}}>
+        <SketchPicker
+          disableAlpha
           color={color}
           onChange={(val) => {
-            setColor(val);
+            setColor(val.hex);
           }}
         />
       </div>

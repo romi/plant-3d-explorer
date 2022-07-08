@@ -70,12 +70,23 @@ const NavigationItem = (props) => {
   return <input type="button" value={name} onClick={action} />;
 };
 
+const SettingsItem = (props) => {
+  return (
+    <div style={{ position: 'relative', display : "block", padding:"0 25px", height:'max-content', alignItems:'center'}}>
+      <div style={{ positon:'absolute', top:'50%', display: "inline-block", width : "75px", textOverflow: "ellipsis" }}>
+        {props.label}
+      </div>
+      <div style={{ positon:'absolute', top:'50%', display:"inline-block"}}>{props.children}</div>
+    </div>
+  );
+};
+
 const SettingsCategory = (props) => {
   const fields = props.fields;
   const [settings, setSettings] = useState({ [props.id]: {} });
 
   useEffect(() => {
-    props.onChangeValue(settings)
+    props.onChangeValue(settings);
   }, [settings]);
 
   return (
@@ -84,18 +95,24 @@ const SettingsCategory = (props) => {
       {fields.map((el, i) => {
         const changeSettings = (val) =>
           setSettings({
-              ...settings,
-              [el.id]: val,
+            ...settings,
+            [el.id]: val,
           });
         if (React.isValidElement(el.type)) {
           const Elem = el.type;
-          return <Elem key={i} onChangeValue={changeSettings} />;
+          return (
+            <SettingsItem key={i} label={el.name}>
+              <Elem onChangeValue={changeSettings} />
+            </SettingsItem>
+          );
         } else {
           const Elem = typeReducer(el.type);
           if (Elem === null) return null;
           return (
-            <Elem key={i} onChangeValue={changeSettings} label={el.name} />
-                      );
+            <SettingsItem key={i} label={el.name}>
+              <Elem onChangeValue={changeSettings} />
+            </SettingsItem>
+          );
         }
       })}
     </div>
@@ -103,10 +120,10 @@ const SettingsCategory = (props) => {
 };
 
 const SettingsLayer = (props) => {
-  const [settings, setSettings] = useState({ });
+  const [settings, setSettings] = useState({});
 
   useEffect(() => {
-    props.onChangeValue(settings)
+    props.onChangeValue(settings);
   }, [settings]);
 
   return (
@@ -118,23 +135,37 @@ const SettingsLayer = (props) => {
       }}
     >
       <H2>{props.name}</H2>
-      {props.fields.map((element, i) => {
+      {props.fields.map((el, i) => {
         const changeSettings = (val) =>
           setSettings({
             ...settings,
-            [element.id]: val,
+            [el.id]: val,
           });
-        if ("type" in element) {
-          if (React.isValidElement(element.type)) {
-            const Elem = element.type;
-            return <Elem key={i} onChangeValue={changeSettings} label={element.name} />;
+        if ("type" in el) {
+          if (React.isValidElement(el.type)) {
+            const Elem = el.type;
+            return (
+              <SettingsItem key={i} label={el.name}>
+                <Elem onChangeValue={changeSettings} />
+              </SettingsItem>
+            );
           } else {
-            const Elem = typeReducer(element.type);
-            return <Elem key={i} onChangeValue={changeSettings} label={element.name} />;
+            const Elem = typeReducer(el.type);
+            return (
+              <SettingsItem key={i} label={el.name}>
+                <Elem onChangeValue={changeSettings} />
+              </SettingsItem>
+            );
           }
-        } else if ("fields" in element) {
+        } else if ("fields" in el) {
           return (
-            <SettingsCategory key={i} id={element.id} title={element.name} fields={element.fields} onChangeValue={changeSettings}/>
+            <SettingsCategory
+              key={i}
+              id={el.id}
+              title={el.name}
+              fields={el.fields}
+              onChangeValue={changeSettings}
+            />
           );
         }
         return null;

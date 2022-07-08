@@ -1,5 +1,6 @@
 import { TextInput } from './TextInput';
 import { ColorInput } from './ColorInput';
+import { Slider } from './Slider';
 
 function typeReducer(type)
 {
@@ -8,6 +9,8 @@ function typeReducer(type)
             return TextInput;
         case 'colorpicker':
             return ColorInput;
+        case 'slider':
+            return Slider;
         default:
             return null;
     }

@@ -195,7 +195,7 @@ export default function () {
         <InlineElement>
           <Settings
             menu={{
-              id: "id",
+              id: 'id',
               settings: [
                 {
                   id: 'general',
@@ -204,39 +204,52 @@ export default function () {
                     {
                       id: 'backgroundColor',
                       name : 'Background Color',
-                      type : 'colorpicker'
+                      type : 'colorpicker',
+                      default: '#ECF3F0'
                     }
                   ]
                 },
                 {
-                  id: "mesh",
-                  name: "Mesh",
+                  id: 'mesh',
+                  name: 'Mesh',
                   fields: [
                     {
-                      id: "color",
-                      name: "Color",
-                      type: "colorpicker",
+                      id: 'color',
+                      name: 'Color',
+                      type: 'colorpicker',
+                      default: '#96C0A7'
                     },
                   ],
                 },
                 {
-                  id: "pcd",
-                  name: "PointCloud",
+                  id: 'pcd',
+                  name: 'PointCloud',
                   fields: [
                     {
-                      id: "color",
-                      name: "Color",
-                      type: "colorpicker",
+                      id: 'color',
+                      name: 'Color',
+                      type: 'colorpicker',
+                      default : '#F8DE96'
                     },
+                    {
+                      id : 'density',
+                      name : 'Cloud density',
+                      type : 'slider' 
+                    },
+                    {
+                      id : 'opacity',
+                      name : 'Cloud opacity',
+                      type : 'slider' 
+                    }
                   ],
                 },
                 {
-                  id: "segmentedPcd",
-                  name: "Segmented Point Cloud",
+                  id: 'segmentedPcd',
+                  name: 'Segmented Point Cloud',
                   fields: [
                     {
-                      id: "colors",
-                      name: "Colors",
+                      id: 'colors',
+                      name: 'Colors',
                       fields: [
                         {
                           id: "fruit",
@@ -267,6 +280,16 @@ export default function () {
                     },
                   ],
                 },
+                {
+                  id: 'skeleton',
+                  name: 'Skeleton',
+                  fields : []
+                },
+                {
+                  id: 'organs',
+                  name: 'Organs',
+                  fields : []
+                }
               ],
             }}
           />
