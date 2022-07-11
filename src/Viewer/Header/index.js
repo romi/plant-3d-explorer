@@ -195,7 +195,7 @@ export default function () {
         <InlineElement>
           <Settings
             menu={{
-              id: 'id',
+              id: 'user-settings',
               settings: [
                 {
                   id: 'general',
@@ -278,6 +278,16 @@ export default function () {
                         }
                       ],
                     },
+                    {
+                      id : 'density',
+                      name : 'Cloud density',
+                      type : 'slider' 
+                    },
+                    {
+                      id : 'opacity',
+                      name : 'Cloud opacity',
+                      type : 'slider' 
+                    }
                   ],
                 },
                 {

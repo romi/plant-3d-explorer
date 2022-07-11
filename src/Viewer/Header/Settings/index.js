@@ -7,10 +7,10 @@ import { H2, H3 } from "common/styles/UI/Text/titles";
 import { omit } from "lodash";
 import { typeReducer } from "./FieldTypes";
 
-function Navigation(props) {
+const Navigation = (props) => {
   const [childrenCount] = useState(Children.count(props.children));
 
-  const obj = (
+  return (
     <div
       style={{
         display: "grid",
@@ -23,8 +23,26 @@ function Navigation(props) {
       {props.children}
     </div>
   );
+};
 
-  return obj;
+const Actions = (props) => {
+  return (
+    <div      
+      style={{
+      display: "grid",
+      gridTemplateColumns: `auto 150px 150px auto`,
+      gridTemplateRows: "25px",
+      gridGap: '5px'
+    }}>
+    <button style={{
+      gridColumn : '2 / 3'
+    }}/>
+    <button style={{
+      gridColumn : '3 / 4'
+    }}/>
+      
+    </div>
+  );
 }
 
 // According to ctrl + f, the highest z-index except this one is 2000. As This must be over everything, I'm setting it to this absurde value.
@@ -72,32 +90,51 @@ const NavigationItem = (props) => {
 
 const SettingsItem = (props) => {
   return (
-    <div style={{ position: 'relative', display : "block", padding:"0 25px", height:'max-content', alignItems:'center'}}>
-      <div style={{ positon:'absolute', top:'50%', display: "inline-block", width : "75px", textOverflow: "ellipsis" }}>
+    <div
+      style={{
+        position: "relative",
+        display: "block",
+        padding: "0 25px",
+        height: "max-content",
+        alignItems: "center",
+      }}
+    >
+      <div
+        style={{
+          positon: "absolute",
+          top: "50%",
+          display: "inline-block",
+          width: "75px",
+          textOverflow: "ellipsis",
+        }}
+      >
         {props.label}
       </div>
-      <div style={{ positon:'absolute', top:'50%', display:"inline-block"}}>{props.children}</div>
+      <div style={{ positon: "absolute", top: "50%", display: "inline-block" }}>
+        {props.children}
+      </div>
     </div>
   );
 };
 
 const SettingsCategory = (props) => {
   const fields = props.fields;
-  const [settings, setSettings] = useState({ [props.id]: {} });
-
-  useEffect(() => {
-    props.onChangeValue(settings);
-  }, [settings]);
+  const [settings, setSettings] = useState();
 
   return (
     <div style={{ padding: "25px" }}>
       <H3>{props.title}</H3>
       {fields.map((el, i) => {
-        const changeSettings = (val) =>
+        const changeSettings = (val) => {
           setSettings({
             ...settings,
             [el.id]: val,
           });
+          props.onChangeValue({
+            ...settings,
+            [el.id]: val,
+          });
+        };
         if (React.isValidElement(el.type)) {
           const Elem = el.type;
           return (
@@ -122,25 +159,26 @@ const SettingsCategory = (props) => {
 const SettingsLayer = (props) => {
   const [settings, setSettings] = useState({});
 
-  useEffect(() => {
-    props.onChangeValue(settings);
-  }, [settings]);
-
   return (
     <div
       style={{
         padding: "10px",
-        height: "calc(100% - 25px)", // calc the total height of the container - the height of the nav
+        height: "calc(100% - 50px)", // calc the total height of the container - the height of the nav - height of footer
         display: props.isEnabled ? "block" : "none",
       }}
     >
       <H2>{props.name}</H2>
       {props.fields.map((el, i) => {
-        const changeSettings = (val) =>
+        const changeSettings = (val) => {
           setSettings({
             ...settings,
             [el.id]: val,
           });
+          props.onChangeValue({
+            ...settings,
+            [el.id]: val,
+          });
+        };
         if ("type" in el) {
           if (React.isValidElement(el.type)) {
             const Elem = el.type;
@@ -175,7 +213,7 @@ const SettingsLayer = (props) => {
 };
 
 function Panel(props) {
-  const [activated, setActivated] = useState("");
+  const [activated, setActivated] = useState();
   const [settings, setSettings] = useState({});
 
   useEffect(() => {
@@ -220,6 +258,7 @@ function Panel(props) {
           />
         );
       })}
+      <Actions />
     </Background>
   );
 
@@ -229,18 +268,11 @@ function Panel(props) {
 function Settings(props) {
   const id = props.menu.id;
   const menuItems = props.menu.settings;
-  // This hook is set when the user validate changes. If true, settings are saved in localStorage
-  const [validate, setValidate] = useState(false);
+
   // This hook defines the current changes made by the user.
-  const [currentChanges, setCurrentChanges] = useState({});
   // This hook defines the current condition of the Setting panel (open or closed)
   const [openSettings, setOpenSettings] = useState(false);
   const [localStorage, setLocalStorage] = useLocalStorage(id);
-
-  useEffect(() => {
-    if (validate) setLocalStorage(Object.assign(localStorage, currentChanges));
-    setValidate(false);
-  }, [validate]);
 
   return (
     <div>
@@ -254,7 +286,8 @@ function Settings(props) {
         <Panel
           close={() => setOpenSettings(false)}
           items={menuItems}
-          fetch={(val) => setCurrentChanges({ ...currentChanges, ...val })}
+          save={(val) => setLocalStorage(Object.assign(localStorage, val))}
+          reset={() => localStorage}
         />
       )}
     </div>

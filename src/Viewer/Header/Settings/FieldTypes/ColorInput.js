@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { SketchPicker } from "react-color";
 
 import { get } from "lodash";
@@ -23,10 +23,6 @@ const ColorInput = (props) => {
   const [color, setColor] = useState(get(props, "default", "#ffffff"));
   const [picking, setPicking] = useState(false);
 
-  useEffect(() => {
-    props.onChangeValue(color);
-  }, [color]);
-
   return (
     <div style={{display:"inline-block"}}>
       <button
@@ -44,6 +40,7 @@ const ColorInput = (props) => {
           color={color}
           onChange={(val) => {
             setColor(val.hex);
+            props.onChangeValue(val.hex);
           }}
         />
       </div>
