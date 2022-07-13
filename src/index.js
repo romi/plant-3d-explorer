@@ -26,7 +26,7 @@ License along with this program.  If not, see
 <https://www.gnu.org/licenses/>.
 
 */
-import React from 'react'
+import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
 import IntlProvider from 'rd/tools/intl'
@@ -37,22 +37,31 @@ import ReduxProvider from 'common/redux'
 
 import App from './App'
 import * as serviceWorker from './serviceWorker'
-
+import { SettingsContext, fnPrepareMenu } from 'Viewer/Header/Settings/settingsContext'
+import SettingsMenu from 'Viewer/Header/Settings/MenuDescription.json'
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister()
 
-const render = (Component) => {
-  return ReactDOM.render(
-    <div>
+const Main = () => {
+  const [settingsValue, setSettingsValue] = useState(fnPrepareMenu(SettingsMenu.settings));
+  const value = {settingsValue, setSettingsValue}
+  return <div>
+    <SettingsContext.Provider value={value}>
       <GlobalStyles />
       <ReduxProvider>
         <IntlProvider messages={messages}>
           <App />
         </IntlProvider>
       </ReduxProvider>
-    </div>,
+    </SettingsContext.Provider>
+  </div>
+
+}
+
+const render = (Component) => {
+  return ReactDOM.render( <Main/>,
     document.getElementById('root')
   )
 }

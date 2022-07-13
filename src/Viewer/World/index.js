@@ -26,7 +26,7 @@ License along with this program.  If not, see
 <https://www.gnu.org/licenses/>.
 
 */
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState, useContext } from 'react'
 import useMeasure from 'react-use-measure'
 import styled from '@emotion/styled'
 
@@ -44,6 +44,7 @@ import useViewport2d from './behaviors/viewport2d'
 import { headerHeight } from 'Viewer/Header'
 import { moduleHeight as carouselHeight } from 'Viewer/Carousel'
 import useViewport3d from './behaviors/viewport3d'
+import {SettingsContext} from '../Header/Settings/settingsContext'
 
 const Container = styled.div({
   position: 'relative',
@@ -104,6 +105,15 @@ export default function WorldComponent (props) {
 
   const [pointCloudZoom] = usePointCloudZoom()
   const [pointCloudSize] = usePointCloudSize()
+  const settings = useContext(SettingsContext)
+
+  useEffect(
+    () => {
+      console.log("Updated in world")
+      console.log(settings.settingsValue)
+    },
+    [world, settings]
+  )
 
   useEffect(
     () => {

@@ -1,9 +1,19 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Slider = (props) => {
-  const [value, setValue] = useState(props.default || "0.75");
+  const [value, setValue] = useState(props.default);
 
+  useEffect(() => {
+    if(props.settingsShouldReset)
+      setValue(props.default)
+  }, [props.settingsShouldReset]);
+
+  useEffect(() => {
+    if(props.settingsShouldRestore)
+      setValue(props.currentValue)
+  }, [props.settingsShouldRestore])
+  
   return (
     <div style={{  display: "flex", flexDirection:'row', alignItems:'center'}}>
       <input

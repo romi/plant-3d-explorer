@@ -26,100 +26,128 @@ License along with this program.  If not, see
 <https://www.gnu.org/licenses/>.
 
 */
-import React from 'react'
-import styled from '@emotion/styled'
-import { Link } from 'react-router-dom'
-import { FormattedMessage } from 'react-intl'
-import { format } from 'date-fns'
+import React from "react";
+import styled from "@emotion/styled";
+import { Link } from "react-router-dom";
+import { FormattedMessage } from "react-intl";
+import { format } from "date-fns";
 
-import { H2, H3 } from 'common/styles/UI/Text/titles'
-import { green, darkGreen } from 'common/styles/colors'
-import { landingUrl } from 'common/routing'
+import { H2, H3 } from "common/styles/UI/Text/titles";
+import { green, darkGreen } from "common/styles/colors";
+import { landingUrl } from "common/routing";
 
-import { useScan } from 'flow/scans/accessors'
+import { useScan } from "flow/scans/accessors";
 
-import { DocLink } from 'ScanList/list/index'
+import { DocLink } from "ScanList/list/index";
 
-import Logo from './assets/ico.logo_minified.25x31.svg'
-import chevronIco from './assets/ico.chevron.8x12.svg'
-import { useResetSettings } from 'flow/settings/accessors'
-import { useResetInteraction } from 'flow/interactions/accessors'
-import { Settings } from './Settings'
+import Logo from "./assets/ico.logo_minified.25x31.svg";
+import chevronIco from "./assets/ico.chevron.8x12.svg";
+import { useResetSettings } from "flow/settings/accessors";
+import { useResetInteraction } from "flow/interactions/accessors";
 
-export const headerHeight = 80
+import { Settings } from "./Settings";
+import MenuDescription from './Settings/MenuDescription.json'
+
+
+// This is stored here because we might need it somewhere.
+// Those should be used as default colors whenever possible.
+
+MenuDescription['kelly_colors_hex'] = [
+  "0xFFB300", // Vivid Yellow
+  "0x803E75", // Strong Purple
+  "0xFF6800", // Vivid Orange
+  "0xA6BDD7", // Very Light Blue
+  "0xC10020", // Vivid Red
+  "0xCEA262", // Grayish Yellow
+  "0x817066", // Medium Gray
+
+  // The following don't work well for people with defective color vision
+  "0x007D34", // Vivid Green
+  "0xF6768E", // Strong Purplish Pink
+  "0x00538A", // Strong Blue
+  "0xFF7A5C", // Strong Yellowish Pink
+  "0x53377A", // Strong Violet
+  "0xFF8E00", // Vivid Orange Yellow
+  "0xB32851", // Strong Purplish Red
+  "0xF4C800", // Vivid Greenish Yellow
+  "0x7F180D", // Strong Reddish Brown
+  "0x93AA00", // Vivid Yellowish Green
+  "0x593315", // Deep Yellowish Brown
+  "0xF13A13", // Vivid Reddish Orange
+  "0x232C16", // Dark Olive Green
+]
+
+export const headerHeight = 80;
 
 const Container = styled.div({
-  width: '100%',
+  width: "100%",
   height: headerHeight,
-  background: 'white',
-  padding: '0px 40px',
+  background: "white",
+  padding: "0px 40px",
 
-  gridTemplateColumns: '0.55fr 1fr 210px',
-  display: 'grid',
-  gridColumnGap: 0
-})
+  gridTemplateColumns: "0.55fr 1fr 210px",
+  display: "grid",
+  gridColumnGap: 0,
+});
 
 const Column = styled.div({
-  display: 'flex',
-  alignItems: 'center',
-  height: '100%'
-})
+  display: "flex",
+  alignItems: "center",
+  height: "100%",
+});
 const InlineElement = styled.div({
-  display: 'flex',
-  alignItems: 'center'
-})
+  display: "flex",
+  alignItems: "center",
+});
 
 const AllScans = styled((props) => <Link {...props} />)({
-  textDecoration: 'none',
+  textDecoration: "none",
   color: green,
 
-  '&:hover': {
-    textDecoration: 'underline'
-  }
-})
+  "&:hover": {
+    textDecoration: "underline",
+  },
+});
 const BackH2 = styled(H2)({
-  color: green
-})
+  color: green,
+});
 
 const Chevron = styled.img({
   marginLeft: 13,
   marginRight: 13,
-  marginTop: 2
-})
+  marginTop: 2,
+});
 
 const TypeContainer = styled.div({
-  marginRight: 35
-})
+  marginRight: 35,
+});
 
 const TypeWording = styled(H3)({
   margin: 0,
   marginBottom: 3,
-  marginRight: 11
-})
+  marginRight: 11,
+});
 
 const TypeValue = styled(H3)({
   margin: 0,
-  textTransform: 'none',
+  textTransform: "none",
   fontWeight: 700,
   color: darkGreen,
   fontSize: 13,
   letterSpacing: 0,
-  overflow: 'hidden',
-  textOverflow: 'ellipsis'
-})
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+});
 
 const MarginedDocLink = styled(DocLink)({
   marginRight: 10,
-  display: 'inline-block'
-})
+  display: "inline-block",
+});
 
-
-
-
-export default function () {
-  const [scan] = useScan()
-  const [resetSettings] = useResetSettings()
-  const [resetInteractions] = useResetInteraction()
+export default function() {
+  const [scan] = useScan();
+  const [resetSettings] = useResetSettings();
+  const [resetInteractions] = useResetInteraction();
 
   return (
     <Container>
@@ -194,114 +222,7 @@ export default function () {
         </TypeContainer>
         <InlineElement>
           <Settings
-            menu={{
-              id: 'user-settings',
-              settings: [
-                {
-                  id: 'general',
-                  name: 'General',
-                  fields : [
-                    {
-                      id: 'backgroundColor',
-                      name : 'Background Color',
-                      type : 'colorpicker',
-                      default: '#ECF3F0'
-                    }
-                  ]
-                },
-                {
-                  id: 'mesh',
-                  name: 'Mesh',
-                  fields: [
-                    {
-                      id: 'color',
-                      name: 'Color',
-                      type: 'colorpicker',
-                      default: '#96C0A7'
-                    },
-                  ],
-                },
-                {
-                  id: 'pcd',
-                  name: 'PointCloud',
-                  fields: [
-                    {
-                      id: 'color',
-                      name: 'Color',
-                      type: 'colorpicker',
-                      default : '#F8DE96'
-                    },
-                    {
-                      id : 'density',
-                      name : 'Cloud density',
-                      type : 'slider' 
-                    },
-                    {
-                      id : 'opacity',
-                      name : 'Cloud opacity',
-                      type : 'slider' 
-                    }
-                  ],
-                },
-                {
-                  id: 'segmentedPcd',
-                  name: 'Segmented Point Cloud',
-                  fields: [
-                    {
-                      id: 'colors',
-                      name: 'Colors',
-                      fields: [
-                        {
-                          id: "fruit",
-                          name: "Fruit",
-                          type: "colorpicker",
-                        },
-                        {
-                          id: "pedicel",
-                          name: "Pedicel",
-                          type: "colorpicker",
-                        },
-                        {
-                          id: "stem",
-                          name: "Stem",
-                          type: "colorpicker",
-                        },
-                        {
-                          id: "flower",
-                          name: "Flower",
-                          type: "colorpicker",
-                        },
-                        {
-                          id: "leaf",
-                          name: "Leaf",
-                          type: "colorpicker",
-                        }
-                      ],
-                    },
-                    {
-                      id : 'density',
-                      name : 'Cloud density',
-                      type : 'slider' 
-                    },
-                    {
-                      id : 'opacity',
-                      name : 'Cloud opacity',
-                      type : 'slider' 
-                    }
-                  ],
-                },
-                {
-                  id: 'skeleton',
-                  name: 'Skeleton',
-                  fields : []
-                },
-                {
-                  id: 'organs',
-                  name: 'Organs',
-                  fields : []
-                }
-              ],
-            }}
+            menu={MenuDescription}
           />
         </InlineElement>
       </Column>

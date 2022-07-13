@@ -38,6 +38,7 @@ import SegmentedPointCloud from './entities/segmentedPointCloud'
 import Skeleton from './entities/skeleton'
 import Angles from './entities/angles'
 import Workspace from './entities/workspace'
+import { get } from 'lodash'
 
 const clock = new THREE.Clock()
 
@@ -356,6 +357,36 @@ export default class World {
       this.perspectiveCamera.fov -= (this.perspectiveCamera.fov - this.thiscamera.fov) * percent
       this.perspectiveCamera.updateProjectionMatrix()
     }
+  }
+
+  setSettings(settings)
+  {
+    // This function handles all settings.
+    // The ideal would be a common interface but a large if/else will do
+    const generalSettings = settings.general
+    const meshSettings = settings.mesh
+    const pcdSettings = settings.pcd
+    const segmentedPcdSettings = settings.segmentedPcd
+    const skeletonSettings = settings.skeleton
+    const organsSettings = settings.organs
+
+    // Set background color, done each time update is clicked as it's cheap
+    this.scene.background = new THREE.Color(generalSettings.backgroundColor)
+
+    if(this.mesh)
+    {
+      this.mesh.setColor(meshSettings.color)
+    }
+
+    if(this.pointCloud)
+    {
+      this.pointCloud.setColor(pcdSettings.color)
+
+    }
+
+
+
+
   }
 
   setOrganColors (organColors) {

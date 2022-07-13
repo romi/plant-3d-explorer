@@ -1,11 +1,20 @@
-import { useState, useEffect, Children } from "react";
-import React from "react";
+/**
+ * This file allows for creating a quick menu for p3dexp.
+ * You shouldn't have to edit this (and subsequent components) to use it.
+ * To add a menu item, see the index.js file above in the hierarchy.
+ * To add a field type, see ./FieldTypes. Don't forget to edit the index.js for the typeReducer function.
+ */
+
+import { omit, isEmpty, isEqual, rest } from "lodash";
+import React, { useState, useEffect, useContext, Children } from "react";
 import cogIcon from "common/assets/ico.settings.21x21.svg";
 import PropTypes from "prop-types";
-import { useLocalStorage } from "react-use";
 import { H2, H3 } from "common/styles/UI/Text/titles";
-import { omit } from "lodash";
 import { typeReducer } from "./FieldTypes";
+import { useLocalStorage } from "react-use";
+import {SettingsContext} from "./settingsContext";
+import { EqualDepth } from "three";
+
 
 const Navigation = (props) => {
   const [childrenCount] = useState(Children.count(props.children));
@@ -27,27 +36,44 @@ const Navigation = (props) => {
 
 const Actions = (props) => {
   return (
-    <div      
+    <div
       style={{
-      display: "grid",
-      gridTemplateColumns: `auto 150px 150px auto`,
-      gridTemplateRows: "25px",
-      gridGap: '5px'
-    }}>
-    <button style={{
-      gridColumn : '2 / 3'
-    }}/>
-    <button style={{
-      gridColumn : '3 / 4'
-    }}/>
-      
+        display: "grid",
+        gridTemplateColumns: `auto 150px 150px 150px auto`,
+        gridTemplateRows: "25px",
+        gridGap: "5px",
+      }}
+    >
+      <input
+        type="button"
+        style={{
+          gridColumn: "2 / 3",
+        }}
+        value="Restore defaults"
+        onClick={() => props.restore(true)}
+      />
+      <input
+        type="button"
+        style={{
+          gridColumn: "3 / 4",
+        }}
+        value="Reset"
+        onClick={() => props.reset(true)}
+      />
+      <input
+        type="button"
+        style={{
+          gridColumn: "4 / 5",
+        }}
+        value="Confirm"
+        onClick={() => props.confirm(true)}
+      />
     </div>
   );
-}
+};
 
 // According to ctrl + f, the highest z-index except this one is 2000. As This must be over everything, I'm setting it to this absurde value.
-// Please don't go above that.
-// A smarter way must existe but I don't know it (appart going through the whole DOM to find the largest value)
+// Please don't goimport { useSettings } from "flow/user-settings/settings";
 const Background = (props) => {
   return (
     <div
@@ -135,30 +161,34 @@ const SettingsCategory = (props) => {
             [el.id]: val,
           });
         };
-        if (React.isValidElement(el.type)) {
-          const Elem = el.type;
+
+        if (el.type) {
+          const Element = el.type;
           return (
             <SettingsItem key={i} label={el.name}>
-              <Elem onChangeValue={changeSettings} />
-            </SettingsItem>
-          );
-        } else {
-          const Elem = typeReducer(el.type);
-          if (Elem === null) return null;
-          return (
-            <SettingsItem key={i} label={el.name}>
-              <Elem onChangeValue={changeSettings} />
+              <Element
+                onConfirm={(val) =>
+                  props.confirm.setSettings({
+                    ...props.lastSettings,
+                    [el.id]: val,
+                  })
+                }
+                lastSettings={props.lastSettings[el.id]}
+                default={el.default}
+                reset={props.reset.setSettingsShouldReset}
+                restore={props.restore.settingsShouldRestore}
+                confirm={props.confirm.setSettingsShouldConfirm}
+              />
             </SettingsItem>
           );
         }
+        return null;
       })}
     </div>
   );
 };
 
 const SettingsLayer = (props) => {
-  const [settings, setSettings] = useState({});
-
   return (
     <div
       style={{
@@ -169,32 +199,26 @@ const SettingsLayer = (props) => {
     >
       <H2>{props.name}</H2>
       {props.fields.map((el, i) => {
-        const changeSettings = (val) => {
-          setSettings({
-            ...settings,
-            [el.id]: val,
-          });
-          props.onChangeValue({
-            ...settings,
-            [el.id]: val,
-          });
-        };
-        if ("type" in el) {
-          if (React.isValidElement(el.type)) {
-            const Elem = el.type;
-            return (
-              <SettingsItem key={i} label={el.name}>
-                <Elem onChangeValue={changeSettings} />
-              </SettingsItem>
-            );
-          } else {
-            const Elem = typeReducer(el.type);
-            return (
-              <SettingsItem key={i} label={el.name}>
-                <Elem onChangeValue={changeSettings} />
-              </SettingsItem>
-            );
-          }
+        // After typeReducer it's either a React Component or null
+        if ("type" in el && el.type) {
+          const Element = el.type;
+          return (
+            <SettingsItem key={i} label={el.name}>
+              <Element
+                onConfirm={(val) =>
+                  props.confirm.setSettings({
+                    ...props.lastSettings,
+                    [el.id]: val,
+                  })
+                }
+                lastSettings={props.lastSettings[el.id]}
+                default={el.default}
+                reset={props.reset.setSettingsShouldReset}
+                restore={props.restore.settingsShouldRestore}
+                confirm={props.confirm.setSettingsShouldConfirm}
+              />
+            </SettingsItem>
+          );
         } else if ("fields" in el) {
           return (
             <SettingsCategory
@@ -202,8 +226,16 @@ const SettingsLayer = (props) => {
               id={el.id}
               title={el.name}
               fields={el.fields}
-              onChangeValue={changeSettings}
-            />
+              lastSettings={props.lastSettings[el.id]}
+              reset={props.reset}
+              restore={props.restore}
+              confirm={props.confirm}
+              onConfirm={(val) =>
+              props.confirm.setSettings({
+                ...props.lastSettings,
+                [el.id]: val,
+              })
+            }            />
           );
         }
         return null;
@@ -214,12 +246,7 @@ const SettingsLayer = (props) => {
 
 function Panel(props) {
   const [activated, setActivated] = useState();
-  const [settings, setSettings] = useState({});
-
-  useEffect(() => {
-    console.log(settings);
-  }, [settings]);
-
+  
   const panel = (
     <Background>
       <Navigation>
@@ -249,16 +276,26 @@ function Panel(props) {
             name={el.name}
             isEnabled={activated === el.id}
             fields={el.fields}
-            onChangeValue={(val) =>
-              setSettings({
-                ...settings,
+            lastSettings={props.lastSettings[el.id]}
+            reset={props.reset}
+            restore={props.restore}
+            confirm={props.confirm}
+            onConfirm={(val) =>
+              props.confirm.setSettings({
+                ...props.lastSettings,
                 [el.id]: val,
               })
             }
           />
         );
       })}
-      <Actions />
+      {activated && (
+        <Actions
+          reset={props.reset.setSettingsShouldReset}
+          restore={props.restore.setSettingsShouldRestore}
+          confirm={props.confirm.setSettingsShouldConfirm}
+        />
+      )}
     </Background>
   );
 
@@ -266,13 +303,46 @@ function Panel(props) {
 }
 
 function Settings(props) {
+  // Constant variables 
   const id = props.menu.id;
   const menuItems = props.menu.settings;
 
-  // This hook defines the current changes made by the user.
-  // This hook defines the current condition of the Setting panel (open or closed)
+  // Context and states
+  const context = useContext(SettingsContext);
+  // Here we manage 2 parallel state. This is super error prone, but I don't think there is a better solution.
+  // Each time settings are confirmed, the Context.Provider is updated with the localStorage
+  
+  // This line should always be the default values because first context is always default
+  const [defaultSettings] = useState(context.settingsValue);
+  const [localStorage, setLocalStorage] = useLocalStorage(id, defaultSettings)
+  const [settings, setSettings] = useState(context.settingsValue);
   const [openSettings, setOpenSettings] = useState(false);
-  const [localStorage, setLocalStorage] = useLocalStorage(id);
+  const [settingsShouldReset, setSettingsShouldReset] = useState(false);
+  const [settingsShouldRestore, setSettingsShouldRestore] = useState(false);
+  const [settingsShouldConfirm, setSettingsShouldConfirm] = useState(false);
+  
+  // Functions for ease of access (and readability)
+
+  const resetObject = { settingsShouldReset, setSettingsShouldReset }
+  const confirmObject = { settingsShouldConfirm, setSettingsShouldConfirm, setSettings}
+  const restoreObject = { settingsShouldRestore, setSettingsShouldRestore }
+
+  // Prepare effect
+  useEffect(() => {
+    const fn = (items) => items.forEach((val, id) => {
+      if('type' in val)
+        val.type = typeReducer(val.type)
+      else if ('fields' in val)
+        fn(val.fields);
+    });
+    fn(menuItems)
+    console.log(resetObject)
+
+    // Base settings are : the defaults overriden by what's in localStorage already
+    setSettings(Object.assign({}, defaultSettings, localStorage === undefined ? {} : localStorage))
+  }, []); // Empty brackets means "runs only once". Should be executed first
+
+
 
   return (
     <div>
@@ -286,31 +356,14 @@ function Settings(props) {
         <Panel
           close={() => setOpenSettings(false)}
           items={menuItems}
-          save={(val) => setLocalStorage(Object.assign(localStorage, val))}
-          reset={() => localStorage}
+          reset={resetObject}
+          restore={restoreObject}
+          confirm={confirmObject}
+          lastSettings={settings}
         />
       )}
     </div>
   );
 }
-
-Settings.propsType = {
-  menu: PropTypes.shape({
-    id: PropTypes.string,
-    name: PropTypes.string,
-    settings: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.string, // settings id
-        name: PropTypes.string, // Human readable
-        type: PropTypes.oneOf([
-          PropTypes.oneOfType([React.Component]),
-          "number",
-          "text",
-          "color",
-        ]),
-      })
-    ),
-  }).isRequired,
-};
 
 export { Settings };

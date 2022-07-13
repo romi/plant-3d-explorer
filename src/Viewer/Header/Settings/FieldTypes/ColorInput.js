@@ -1,8 +1,8 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SketchPicker } from "react-color";
 
-import { get } from "lodash";
+import { get, isEqual } from "lodash";
 
 // eslint-disable-next-line
 const hex2rgb = (hex) => {
@@ -20,8 +20,28 @@ const rgb2hex = (rgb) => {
 };
 
 const ColorInput = (props) => {
-  const [color, setColor] = useState(get(props, "default", "#ffffff"));
+  const [color, setColor] = useState(props.default);
   const [picking, setPicking] = useState(false);
+
+  useEffect(() => {
+    if(props.settingsShouldReset)
+      setColor(props.default)
+  }, [props.reset]);
+
+  useEffect(() => {
+    if(props.settingsShouldRestore)
+      setColor(props.lastSettings)
+  }, [props.restore])
+
+  useEffect(() => {
+    if(!isEqual(props.lastValue, color) && picking)
+    {
+      console.log("sent")
+      props.onChangeValue(color);
+    }
+  }, [color, picking])
+
+
 
   return (
     <div style={{display:"inline-block"}}>
@@ -40,7 +60,6 @@ const ColorInput = (props) => {
           color={color}
           onChange={(val) => {
             setColor(val.hex);
-            props.onChangeValue(val.hex);
           }}
         />
       </div>

@@ -155,7 +155,6 @@ export default class PointCloud {
 
   setCloudResolution(sampleSize) {
     sampleSize = Math.round(sampleSize * this.vertices.length);
-    console.log(sampleSize)
     const indices = this.getRandomSampleOfIndicesFromSize(
       this.vertices.length,
       sampleSize
