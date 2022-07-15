@@ -34,12 +34,15 @@ const ColorInput = (props) => {
   }, [props.restore])
 
   useEffect(() => {
-    if(!isEqual(props.lastValue, color) && picking)
+    if(!(isEqual(props.lastValue, color)) && props.confirm.settingsShouldConfirm)
     {
       console.log("sent")
-      props.onChangeValue(color);
+      props.onChangeSettings({
+        path: props.path,
+        value: color
+      })
     }
-  }, [color, picking])
+  }, [props.confirm.settingsShouldConfirm])
 
 
 

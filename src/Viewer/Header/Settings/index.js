@@ -5,7 +5,7 @@
  * To add a field type, see ./FieldTypes. Don't forget to edit the index.js for the typeReducer function.
  */
 
-import { omit, isEmpty, isEqual, rest } from "lodash";
+import { omit, isEmpty, isEqual, rest, set } from "lodash";
 import React, { useState, useEffect, useContext, Children } from "react";
 import cogIcon from "common/assets/ico.settings.21x21.svg";
 import PropTypes from "prop-types";
@@ -145,39 +145,24 @@ const SettingsItem = (props) => {
 
 const SettingsCategory = (props) => {
   const fields = props.fields;
-  const [settings, setSettings] = useState();
 
   return (
     <div style={{ padding: "25px" }}>
       <H3>{props.title}</H3>
       {fields.map((el, i) => {
-        const changeSettings = (val) => {
-          setSettings({
-            ...settings,
-            [el.id]: val,
-          });
-          props.onChangeValue({
-            ...settings,
-            [el.id]: val,
-          });
-        };
 
         if (el.type) {
           const Element = el.type;
           return (
             <SettingsItem key={i} label={el.name}>
               <Element
-                onConfirm={(val) =>
-                  props.confirm.setSettings({
-                    ...props.lastSettings,
-                    [el.id]: val,
-                  })
-                }
                 lastSettings={props.lastSettings[el.id]}
                 default={el.default}
                 reset={props.reset.setSettingsShouldReset}
                 restore={props.restore.settingsShouldRestore}
-                confirm={props.confirm.setSettingsShouldConfirm}
+                confirm={props.confirm}
+                onChangeSettings={props.onChangeSettings}
+                path={[...props.path, el.id]}
               />
             </SettingsItem>
           );
@@ -205,17 +190,13 @@ const SettingsLayer = (props) => {
           return (
             <SettingsItem key={i} label={el.name}>
               <Element
-                onConfirm={(val) =>
-                  props.confirm.setSettings({
-                    ...props.lastSettings,
-                    [el.id]: val,
-                  })
-                }
                 lastSettings={props.lastSettings[el.id]}
                 default={el.default}
                 reset={props.reset.setSettingsShouldReset}
                 restore={props.restore.settingsShouldRestore}
-                confirm={props.confirm.setSettingsShouldConfirm}
+                confirm={props.confirm}
+                onChangeSettings={props.onChangeSettings}
+                path={[...props.path, el.id]}
               />
             </SettingsItem>
           );
@@ -230,12 +211,9 @@ const SettingsLayer = (props) => {
               reset={props.reset}
               restore={props.restore}
               confirm={props.confirm}
-              onConfirm={(val) =>
-              props.confirm.setSettings({
-                ...props.lastSettings,
-                [el.id]: val,
-              })
-            }            />
+              onChangeSettings={props.onChangeSettings}
+              path={[...props.path, el.id]}
+            />
           );
         }
         return null;
@@ -280,12 +258,8 @@ function Panel(props) {
             reset={props.reset}
             restore={props.restore}
             confirm={props.confirm}
-            onConfirm={(val) =>
-              props.confirm.setSettings({
-                ...props.lastSettings,
-                [el.id]: val,
-              })
-            }
+            onChangeSettings={props.onChangeSettings}
+            path={[...props.path, el.id]}
           />
         );
       })}
@@ -320,12 +294,35 @@ function Settings(props) {
   const [settingsShouldReset, setSettingsShouldReset] = useState(false);
   const [settingsShouldRestore, setSettingsShouldRestore] = useState(false);
   const [settingsShouldConfirm, setSettingsShouldConfirm] = useState(false);
-  
+  const [acc, setAcc] = useState([])
+
   // Functions for ease of access (and readability)
+  const onChangeSettings = (settingUpdate) => {
+    setAcc(last => {
+      let index = -1;
+      const exist = last.some((element, i) => {
+        if(element.path.every((el, i) => el === settingUpdate.path[i]))
+        {
+          index = i;
+          return true
+        }
+        return false;
+      })
+
+      if(exist)
+      {
+        last.splice(index, 1)
+        return [...last, settingUpdate]
+      }
+      
+      return [...last, settingUpdate]
+    })
+  }
 
   const resetObject = { settingsShouldReset, setSettingsShouldReset }
-  const confirmObject = { settingsShouldConfirm, setSettingsShouldConfirm, setSettings}
+  const confirmObject = { settingsShouldConfirm, setSettingsShouldConfirm }
   const restoreObject = { settingsShouldRestore, setSettingsShouldRestore }
+
 
   // Prepare effect
   useEffect(() => {
@@ -342,7 +339,23 @@ function Settings(props) {
     setSettings(Object.assign({}, defaultSettings, localStorage === undefined ? {} : localStorage))
   }, []); // Empty brackets means "runs only once". Should be executed first
 
+  useEffect(() => {
+    if(settingsShouldConfirm)
+    {
+      let object = {}
+      acc.forEach((val) => {
+        set(object, val.path, val.value)
+      })
+      setSettings(Object.assign({}, settings, object))
+      return () => {
+        setSettingsShouldConfirm(false);
+      }
+    }
+  }, [acc])
 
+  useEffect(() => {
+    console.log(settings)
+  }, [settings])
 
   return (
     <div>
@@ -360,6 +373,8 @@ function Settings(props) {
           restore={restoreObject}
           confirm={confirmObject}
           lastSettings={settings}
+          onChangeSettings={onChangeSettings}
+          path={[]}
         />
       )}
     </div>
