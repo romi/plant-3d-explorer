@@ -43,13 +43,12 @@ import { get } from 'lodash'
 const clock = new THREE.Clock()
 
 export default class World {
-  constructor (width, height, elem) {
+  constructor (width, height, elem, color) {
     this.width = width
     this.height = height
     this.elem = elem
     this.scene = new THREE.Scene()
-    var color = window.localStorage.getItem('defaultBgroundColor')
-    this.scene.background = (color != null) ? new THREE.Color(color) : '#ECF3F0'
+    this.scene.background = new THREE.Color(color)
     // this.originalBackground = new THREE.Color(0xECF3F0)
     // this.blackBackground = new THREE.Color(0x232122)
     this.raycaster = new THREE.Raycaster()
@@ -414,14 +413,14 @@ export default class World {
     }
   }
 
-  setPointcloudGeometry (geometry) {
+  setPointcloudGeometry (geometry, opacity, color) {
     geometry.computeBoundingBox()
-    this.pointCloud = new PointCloud(geometry, this.viewerObjects)
+    this.pointCloud = new PointCloud(geometry, this.viewerObjects, opacity, color)
   }
 
-  setPointcloudGroundTruthGeometry (geometry) {
+  setPointcloudGroundTruthGeometry (geometry, opacity, color) {
     geometry.computeBoundingBox()
-    this.pointCloudGroundTruth = new PointCloud(geometry, this.viewerObjects)
+    this.pointCloudGroundTruth = new PointCloud(geometry, this.viewerObjects, opacity, color)
   }
 
   setSegmentedPointCloudGeometry (geometry, segmentation, uniqueLabels) {

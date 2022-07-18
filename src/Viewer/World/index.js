@@ -105,14 +105,14 @@ export default function WorldComponent (props) {
 
   const [pointCloudZoom] = usePointCloudZoom()
   const [pointCloudSize] = usePointCloudSize()
-  const settings = useContext(SettingsContext)
+  const {settingsValue: settings} = useContext(SettingsContext)
 
   useEffect(
     () => {
       if(world)    
-        world.setSettings(settings.settingsValue)
+        world.setSettings(settings)
     },
-    [world, settings.settingsValue]
+    [world, settings]
   )
 
   useEffect(
@@ -121,7 +121,8 @@ export default function WorldComponent (props) {
         const world = new WorldObject(
           bounds.width,
           bounds.height,
-          canvasRef.current
+          canvasRef.current,
+          settings.general.backgroundColor
         )
         world.onHover((data) => setHoveredCamera(data))
         setWorld(world)
@@ -413,7 +414,7 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world && pointCloudGeometry) {
-        world.setPointcloudGeometry(pointCloudGeometry)
+        world.setPointcloudGeometry(pointCloudGeometry, settings.pcd.opacity, settings.pcd.color)
         world.setLayers(layers)
       }
     },
@@ -460,11 +461,11 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
-      if (world && pointCloudGeometry) {
-        world.setPointCloudColor(colors.pointCloud)
+      if (world && pointCloudGeometry ) {
+        world.setPointCloudColor({rgb : settings.pcd.color, a: settings.pcd.opacity})
       }
     },
-    [colors.pointCloud]
+    [settings.pcd.color]
   )
 
   useEffect(
@@ -517,15 +518,27 @@ export default function WorldComponent (props) {
         world.setPointCloudZoom(pointCloudZoom.level)
       }
     },
-    [pointCloudZoom.level]
+    [settings.pcd.zoom]
   )
+
   useEffect(
     () => {
       if (world) {
-        world.setPointCloudSize(pointCloudSize.sampleSize)
+        console.log("Density is now : " + settings.pcd.density)
+        world.setPointCloudSize(settings.pcd.density)
       }
     },
-    [pointCloudSize.sampleSize]
+    [settings.pcd.density]
+  )
+
+  useEffect(
+    () => {
+      if (world) {
+        console.log("Density is now : " + settings.pcd.density)
+        world.setBackgroundColor(settings.general.backgroundColor)
+      }
+    },
+    [settings.general.backgroundColor]
   )
 
   return <Container ref={containerRef}>

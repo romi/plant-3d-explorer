@@ -52,6 +52,17 @@
             "name": "Cloud opacity",
             "type": "slider",
             "default": "1"
+          },
+          {
+            "id": "zoom",
+            "name": "Point size",
+            "type": "slider",
+            "default": 1,
+            "props" : {
+              "min": 1,
+              "max": 4,
+              "step": 1
+            }
           }
         ]
       },
@@ -99,13 +110,13 @@
             "id": "density",
             "name": "Cloud density",
             "type": "slider",
-            "default": "0.75"
+            "default": 0.75
           },
           {
             "id": "opacity",
             "name": "Cloud opacity",
             "type": "slider",
-            "default": "1"
+            "default": 1
           }
         ]
       },

@@ -121,8 +121,8 @@ export default function MiscInteractors () {
                 ...colors,
                 mesh: { rgb: color.hex, a: color.rgb.a }
               })
-              window.localStorage.setItem('defaultMeshColor', color.hex)
-              window.localStorage.setItem('defaultMeshOpacity', color.rgb.a.toString())
+              // window.localStorage.setItem('defaultMeshColor', color.hex)
+              // window.localStorage.setItem('defaultMeshOpacity', color.rgb.a.toString())
             }
           }
           // color={{ ...hex2RGB(colors.mesh.rgb), a: colors.mesh.a }}
@@ -131,8 +131,8 @@ export default function MiscInteractors () {
         <ResetButton
           onClick={
             () => {
-              window.localStorage.setItem('defaultMeshColor', defaults.defaultMeshColor)
-              window.localStorage.setItem('defaultMeshOpacity', defaults.defaultMeshOpacity)
+              // window.localStorage.setItem('defaultMeshColor', defaults.defaultMeshColor)
+              // window.localStorage.setItem('defaultMeshOpacity', defaults.defaultMeshOpacity)
               resetDefaultColor('mesh')
             }
           }
@@ -159,8 +159,8 @@ export default function MiscInteractors () {
                 ...colors,
                 pointCloud: { rgb: color.hex, a: color.rgb.a }
               })
-              window.localStorage.setItem('defaultPointCloudColor', color.hex)
-              window.localStorage.setItem('defaultPointCloudOpacity', color.rgb.a.toString())
+              //window.localStorage.setItem('defaultPointCloudColor', color.hex)
+              //window.localStorage.setItem('defaultPointCloudOpacity', color.rgb.a.toString())
             }
           }
           // color={{ ...hex2RGB(colors.pointCloud.rgb), a: colors.pointCloud.a }}
@@ -170,8 +170,8 @@ export default function MiscInteractors () {
           onClick={
             () => {
               resetDefaultColor('pointCloud')
-              window.localStorage.setItem('defaultPointCloudColor', defaults.defaultPointCloudColor)
-              window.localStorage.setItem('defaultPointCloudOpacity', defaults.defaultPointCloudOpacity)
+              //window.localStorage.setItem('defaultPointCloudColor', defaults.defaultPointCloudColor)
+              //window.localStorage.setItem('defaultPointCloudOpacity', defaults.defaultPointCloudOpacity)
             }
           }
         />
@@ -213,7 +213,7 @@ export default function MiscInteractors () {
                       let copy = colors.segmentedPointCloud.slice()
                       copy[i] = val.hex
                       setColors({ ...colors, segmentedPointCloud: copy })
-                      window.localStorage.setItem('defaultSegmentedColors', JSON.stringify(copy))
+                      //window.localStorage.setItem('defaultSegmentedColors', JSON.stringify(copy))
                     }}
                     color={colors.segmentedPointCloud[i]}
                   />
@@ -245,8 +245,8 @@ export default function MiscInteractors () {
                 ...colors,
                 skeleton: { rgb: color.hex, a: color.rgb.a }
               })
-              window.localStorage.setItem('defaultSkeletonColor', color.hex)
-              window.localStorage.setItem('defaultSkeletonOpacity', color.rgb.a.toString())
+              //window.localStorage.setItem('defaultSkeletonColor', color.hex)
+              //window.localStorage.setItem('defaultSkeletonOpacity', color.rgb.a.toString())
             }
           }
           // color={{ ...hex2RGB(colors.skeleton.rgb), a: colors.skeleton.a }}
@@ -256,8 +256,8 @@ export default function MiscInteractors () {
           onClick={
             () => {
               resetDefaultColor('skeleton')
-              window.localStorage.setItem('defaultSkeletonColor', defaults.defaultSkeletonColor)
-              window.localStorage.setItem('defaultSkeletonOpacity', defaults.defaultSkeletonOpacity)
+              //window.localStorage.setItem('defaultSkeletonColor', defaults.defaultSkeletonColor)
+              //window.localStorage.setItem('defaultSkeletonOpacity', defaults.defaultSkeletonOpacity)
             }
           }
         />
@@ -309,9 +309,9 @@ export default function MiscInteractors () {
                   ]
                 })
               }
-              window.localStorage.setItem('defaultOrgan1Color', color.hex)
-              window.localStorage.setItem('defaultOrgan2Color', color2String)
-              window.localStorage.setItem('defaultOrganOpacity', color.rgb.a.toString())
+              //window.localStorage.setItem('defaultOrgan1Color', color.hex)
+              //window.localStorage.setItem('defaultOrgan2Color', color2String)
+              //window.localStorage.setItem('defaultOrganOpacity', color.rgb.a.toString())
             }
           }
 
@@ -340,9 +340,9 @@ export default function MiscInteractors () {
                   })
                 }
               } else {
-                window.localStorage.setItem('defaultOrgan1Color', defaults.defaultOrgan1Color)
-                window.localStorage.setItem('defaultOrgan2Color', defaults.defaultOrgan2Color)
-                window.localStorage.setItem('defaultOrganOpacity', defaults.defaultOrganOpacity)
+                // window.localStorage.setItem('defaultOrgan1Color', defaults.defaultOrgan1Color)
+                // window.localStorage.setItem('defaultOrgan2Color', defaults.defaultOrgan2Color)
+                // window.localStorage.setItem('defaultOrganOpacity', defaults.defaultOrganOpacity)
                 resetDefaultColor('globalOrganColors')
               }
             }

@@ -46,8 +46,8 @@ import { useLocalStorage } from 'react-use'
 serviceWorker.unregister()
 
 const Main = () => {
-  const [localStorage ] = useLocalStorage(SettingsMenu.id)
-  const [ settingsValue, setSettingsValue] = useState(Object.assign(fnPrepareMenu(SettingsMenu.settings), localStorage));
+  const [ localStorage ] = useLocalStorage(SettingsMenu.id, fnPrepareMenu(SettingsMenu.settings))
+  const [ settingsValue, setSettingsValue] = useState(localStorage);
   const value = { settingsValue, setSettingsValue }
   useState(() => console.log(settingsValue), [])
   return <div>

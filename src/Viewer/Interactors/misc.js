@@ -185,9 +185,6 @@ function ImagePreview (props) {
 
 // const windowG = typeof window !== 'undefined' && window
 
-var bgroundColor = '#ECF3F0'
-if (!window.localStorage.getItem('defaultBgroundColor')) window.localStorage.setItem('defaultBgroundColor', bgroundColor)
-
 export default function () {
   const [snapshot, setSnapshot] = useSnapshot()
   const [snapWidth, setSnapWidth] = useState(0)
@@ -296,42 +293,6 @@ export default function () {
           <H3> cm </H3>
         </div>
       </div>
-    </ToolButton>
-    <ToolButton data-testid='background'
-      toolsList={useMisc()}
-      tool={tools.colorPickers.background}
-      interactor={{
-        isButton: true
-      }}
-      tooltipId='tooltip-background-color-picker'
-      icon={<BackgroundColorIcon
-        isActivated={misc.activeTool === tools.colorPickers.background} />}
-    >
-      <div data-testid='background-color'>
-        <SketchPicker disableAlpha
-          // color={localStorage.getItem("defaultBgroundColor")}
-          onChange={
-            (color) => {
-              setColors({
-                ...colors,
-                background: color.hex
-              })
-              window.localStorage.setItem('defaultBgroundColor', color.hex)
-            }
-          }
-          // color={colors.background}
-          // {...window.alert(localStorage.getItem("defaultBgroundColor"))}
-          color={window.localStorage.getItem('defaultBgroundColor')}
-        />
-      </div>
-      <ResetButton
-        onClick={
-          () => {
-            window.localStorage.setItem('defaultBgroundColor', bgroundColor)
-            resetDefaultColor('background')
-          }
-        }
-      />
     </ToolButton>
     <ToolButton
       toolsList={useMisc()}

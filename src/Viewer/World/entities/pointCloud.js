@@ -57,14 +57,12 @@ const fragmentShader = `
 `;
 
 export default class PointCloud {
-  constructor(geometry, parent) {
+  constructor(geometry, parent, opacity, color) {
     this.geometry = geometry;
     this.vertices = this.bufferToVector3(geometry.getAttribute("position"));
     this.geometry.computeVertexNormals();
     const pixelRatio = window.devicePixelRatio ? window.devicePixelRatio : 1;
 
-    var opacity = window.localStorage.getItem("defaultPointCloudOpacity");
-    var color = window.localStorage.getItem("defaultPointCloudColor");
     this.material = new THREE.ShaderMaterial({
       uniforms: {
         opacity: { value: opacity != null ? parseFloat(opacity) : 1 },
@@ -116,10 +114,8 @@ export default class PointCloud {
   }
 
   setColor(color) {
-    if (color && color.rgb && color.a) {
-      this.material.uniforms.color.value = new THREE.Color(color.rgb);
-      this.material.uniforms.opacity.value = color.a;
-    }
+    this.material.uniforms.color.value = new THREE.Color(color.rgb);
+    this.material.uniforms.opacity.value = color.a;
   }
   // setCloudResolution(sampleSize) {
   // }

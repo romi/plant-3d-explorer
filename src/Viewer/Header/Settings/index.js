@@ -5,13 +5,13 @@
  * To add a field type, see ./FieldTypes. Don't forget to edit the index.js for the typeReducer function.
  */
 
-import { omit, isEmpty, isEqual, rest, set } from "lodash";
+import { omit, isEmpty, isEqual, rest, set, get } from "lodash";
 import React, { useState, useEffect, useContext, Children } from "react";
 import cogIcon from "common/assets/ico.settings.21x21.svg";
 import { H2, H3 } from "common/styles/UI/Text/titles";
 import { typeReducer } from "./FieldTypes";
 import { useLocalStorage } from "react-use";
-import {SettingsContext} from "./settingsContext";
+import { SettingsContext } from "./settingsContext";
 
 
 const Navigation = (props) => {
@@ -156,7 +156,7 @@ const SettingsCategory = (props) => {
               <Element
                 lastSettings={props.lastSettings[el.id]}
                 default={el.default}
-                reset={props.reset.setSettingsShouldReset}
+                reset={props.reset.settingsShouldReset}
                 restore={props.restore.settingsShouldRestore}
                 confirm={props.confirm}
                 onChangeSettings={props.onChangeSettings}
@@ -188,13 +188,14 @@ const SettingsLayer = (props) => {
           return (
             <SettingsItem key={i} label={el.name}>
               <Element
-                lastSettings={props.lastSettings[el.id]}
                 default={el.default}
+                lastSettings={props.lastSettings[el.id]}
                 reset={props.reset.setSettingsShouldReset}
                 restore={props.restore.settingsShouldRestore}
                 confirm={props.confirm}
                 onChangeSettings={props.onChangeSettings}
                 path={[...props.path, el.id]}
+                {...el.props}
               />
             </SettingsItem>
           );
@@ -333,7 +334,7 @@ function Settings(props) {
     fn(menuItems)
 
     // Base settings are : the defaults overriden by what's in localStorage already
-    setSettings(Object.assign({}, defaultSettings, localStorage === undefined ? {} : localStorage))
+    setSettings(Object.assign(defaultSettings, localStorage === undefined ? {} : localStorage))
   }, []); // Empty brackets means "runs only once". Should be executed first
 
   useEffect(() => {
@@ -341,9 +342,10 @@ function Settings(props) {
     {
       let object = {}
       acc.forEach((val) => {
-        set(object, val.path, val.value)
+        if(get(settings, val.path, null) !== val.value)
+          set(object, val.path, val.value)
       })
-      setSettings(Object.assign({}, settings, object))
+      setSettings(Object.assign(settings, object))
       return () => {
         setSettingsShouldConfirm(false);
       }
@@ -351,11 +353,12 @@ function Settings(props) {
   })
 
   useEffect(() => {
+    console.log(settings)
     setLocalStorage(settings)
     context.setSettingsValue(settings)
   }, [settings])
 
-  useEffect(() => {console.log("localstorage changed"); console.log(localStorage)}, [localStorage])
+  useEffect(() => { console.log(localStorage) }, [localStorage])
 
   return (
     <div>

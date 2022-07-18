@@ -1,0 +1,51 @@
+:root {
+  --main-color: rgb(104, 117, 217);
+  --main-color-hover: rgb(104, 117, 217, 0.2);
+  --track-color: #ddd;
+  --mark-color: #aaaaaa;
+}
+
+.customSlider {
+  display: inline-block;
+  width: 150px;
+  height: 20px;
+  align-items: center;
+}
+
+.customSlider-track {
+  height: 6px;
+  background: var(--track-color);
+  top:50%;
+}
+
+.customSlider-track.customSlider-track-0 {
+  background: var(--main-color);
+}
+
+.customSlider-thumb {
+
+  cursor: pointer;
+  top:35%;
+  background: var(--main-color);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  /* remove default outline when selected */
+  outline: none;
+}
+
+.customSlider-thumb:hover {
+  box-shadow: 0 0 0 8px var(--main-color-hover);
+}
+
+.customSlider-mark {
+  cursor: pointer;
+  width: 1.5px;
+  height: 8px;
+  background-color: var(--mark-color);
+}
+
+.label {
+  padding: 9px;
+  display: inline;
+}

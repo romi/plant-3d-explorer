@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { SketchPicker } from "react-color";
 
-import { get, isEqual } from "lodash";
+import { isEqual } from "lodash";
 
 // eslint-disable-next-line
 const hex2rgb = (hex) => {
@@ -34,9 +34,9 @@ const ColorInput = (props) => {
   }, [props.restore])
 
   useEffect(() => {
+    console.log("Value is " + color + " and lastValue is " + props.lastSettings)
     if(!(isEqual(props.lastValue, color)) && props.confirm.settingsShouldConfirm)
     {
-      console.log("sent")
       props.onChangeSettings({
         path: props.path,
         value: color
@@ -44,7 +44,7 @@ const ColorInput = (props) => {
     }
   }, [props.confirm.settingsShouldConfirm])
 
-
+  useEffect(() => setColor(props.lastSettings), [props.lastSettings])
 
   return (
     <div style={{display:"inline-block"}}>
@@ -53,11 +53,11 @@ const ColorInput = (props) => {
           backgroundColor: color,
           width: "30px",
           height: "20px",
-          margin: " 0 5px",
+          margin: "0px 5px",
         }}
         onClick={() => setPicking(!picking)}
       />
-      <div style={{ display: picking ? "inline" : "none", position:'absolute'}}>
+      <div style={{ display: picking ? "inline" : "none", position:'absolute', zIndex:10002 }}>
         <SketchPicker
           disableAlpha
           color={color}
