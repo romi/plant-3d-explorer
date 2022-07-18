@@ -39,14 +39,17 @@ import App from './App'
 import * as serviceWorker from './serviceWorker'
 import { SettingsContext, fnPrepareMenu } from 'Viewer/Header/Settings/settingsContext'
 import SettingsMenu from 'Viewer/Header/Settings/MenuDescription.json'
+import { useLocalStorage } from 'react-use'
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister()
 
 const Main = () => {
-  const [settingsValue, setSettingsValue] = useState(fnPrepareMenu(SettingsMenu.settings));
-  const value = {settingsValue, setSettingsValue}
+  const [localStorage ] = useLocalStorage(SettingsMenu.id)
+  const [ settingsValue, setSettingsValue] = useState(Object.assign(fnPrepareMenu(SettingsMenu.settings), localStorage));
+  const value = { settingsValue, setSettingsValue }
+  useState(() => console.log(settingsValue), [])
   return <div>
     <SettingsContext.Provider value={value}>
       <GlobalStyles />

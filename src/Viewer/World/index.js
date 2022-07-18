@@ -109,10 +109,10 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
-      console.log("Updated in world")
-      console.log(settings.settingsValue)
+      if(world)    
+        world.setSettings(settings.settingsValue)
     },
-    [world, settings]
+    [world, settings.settingsValue]
   )
 
   useEffect(

@@ -8,12 +8,10 @@
 import { omit, isEmpty, isEqual, rest, set } from "lodash";
 import React, { useState, useEffect, useContext, Children } from "react";
 import cogIcon from "common/assets/ico.settings.21x21.svg";
-import PropTypes from "prop-types";
 import { H2, H3 } from "common/styles/UI/Text/titles";
 import { typeReducer } from "./FieldTypes";
 import { useLocalStorage } from "react-use";
 import {SettingsContext} from "./settingsContext";
-import { EqualDepth } from "three";
 
 
 const Navigation = (props) => {
@@ -333,7 +331,6 @@ function Settings(props) {
         fn(val.fields);
     });
     fn(menuItems)
-    console.log(resetObject)
 
     // Base settings are : the defaults overriden by what's in localStorage already
     setSettings(Object.assign({}, defaultSettings, localStorage === undefined ? {} : localStorage))
@@ -351,11 +348,14 @@ function Settings(props) {
         setSettingsShouldConfirm(false);
       }
     }
-  }, [acc])
+  })
 
   useEffect(() => {
-    console.log(settings)
+    setLocalStorage(settings)
+    context.setSettingsValue(settings)
   }, [settings])
+
+  useEffect(() => {console.log("localstorage changed"); console.log(localStorage)}, [localStorage])
 
   return (
     <div>
