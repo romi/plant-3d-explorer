@@ -51,7 +51,8 @@
   "tooltip-organ-color-picker": "Color the selected organs",
   "tooltip-organ-global-color-picker": "Color every organ",
   "tooltip-background-color-picker": "Color the background",
-  
+  "tooltip-tool-aabb" : "Defines an axis aligned bounding box",
+  "tooltip-layer-aabb" : "Show point cloud bounding box",
   "tooltip-snapshot": "Capture an image of the current view",
   "tooltip-reset-resolution": "Reset to current resolution",
   "tooltip-delete-snapshot": "Click to delete this snapshot",
@@ -71,6 +72,9 @@
   "tooltip-download-sequence": "Download the sequences in CSV/TSV format",
   "tooltip-download-auto-sequence": "Download automated sequence",
   "tooltip-download-man-sequence": "Download manual sequence",
+
+  "bbox-min": "Top coordinates",
+  "bbox-max": "Bottom coordinates",
   
   "snapshot-preview-alt": "The image preview couldn't load",
   "snapshot-preview": "Preview",

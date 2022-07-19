@@ -32,14 +32,15 @@ export const initialState = {
     mesh: false,
     pointCloud: false,
     pointCloudGroundTruth: false,
-    skeleton: true,
-    angles: true,
+    skeleton: false,
+    angles: false,
     cameras: false,
-    segmentedPointCloud: false
+    segmentedPointCloud: false,
+    axisAlignedBoundingBox : false,
   },
   panels: {
-    'panels-angles': true,
-    'panels-distances': true,
+    'panels-angles': false,
+    'panels-distances': false,
     'panels-evaluation': false
   },
   evaluation: {

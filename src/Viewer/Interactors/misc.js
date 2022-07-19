@@ -3,18 +3,16 @@ import { FormattedMessage } from 'react-intl'
 import styled from '@emotion/styled'
 
 import { useMisc, useCarousel } from 'flow/settings/accessors'
-import { useColor, useDefaultColors, useSnapshot, useRuler }
+import { useColor, useDefaultColors, useSnapshot, useRuler, useAxisAlignedBoundingBox }
   from 'flow/interactions/accessors'
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 import { H3, H2 } from 'common/styles/UI/Text/titles'
 
-import { SnapIcon, PhotoSetIcon, RulerIcon, BackgroundColorIcon } from 'Viewer/Interactors/icons'
+import { SnapIcon, PhotoSetIcon, RulerIcon } from 'Viewer/Interactors/icons'
 import { Interactor } from 'Viewer/Interactors'
 
 import snapButton from 'common/assets/ico.snap.24x24.svg'
 import downloadButton from 'common/assets/ico.download.24x24.svg'
-
-import { SketchPicker } from 'react-color'
 
 import { ResetButton } from 'rd/UI/Buttons'
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
@@ -112,6 +110,63 @@ const DownloadButtonImage = styled.div({
   cursor: 'pointer'
 })
 
+function Point3D (props)
+{
+  const [aabb, setAABB] = useAxisAlignedBoundingBox()
+  const id = props.id
+
+  return <div style={{
+    display: 'flex', 
+    flexDirection:'row',
+    justifyContent:'center',
+    alignItems:'center',
+    backgroundColor: 'white',
+    paddingLeft: "10px",
+    paddingRight: "10px"
+    }}>
+    <div style={{flex:"1 1 5px", padding:"10px",justifyContent:"center"}}>X</div>
+    <input style={{
+      width: '20%',
+      height: '50%',
+      flex: '3 3 100px',
+      margin: '2%',
+    }} 
+      type="number" 
+      onChange={(event) => {
+        setAABB({...aabb, [id] : {...aabb[id], x: isNaN(event.target.value) ? 0 : event.target.value}})
+      }}
+      value={aabb[id].x}
+    />
+    <div style={{flex:"1 1 5px", padding:"10px",justifyContent:"center"}}>Y</div>
+    <input style={{
+      width: '20%',
+      height: '50%',
+      flex: '3 3 100px',
+      margin: '2%',
+    }}
+      type="number" 
+      onChange={(event) => {
+        setAABB({...aabb, [id] : {...aabb[id], y: isNaN(event.target.value) ? 0 : event.target.value}})
+      }}
+      value={aabb[id].y}
+    />
+    <div style={{flex:"1 1 5px", padding:"10px",justifyContent:"center"}}>Z</div>
+    <input style={{
+      width: '20%',
+      height: '50%',
+      flex: '3 3 100px',
+      margin: '0.5em'
+    }}
+      type="number" 
+      onChange={(event) => {
+        setAABB({...aabb, [id] : {...aabb[id], z: isNaN(event.target.value) ? 0 : event.target.value}})
+      }}
+      value={aabb[id].z}
+    />  
+  </div>
+}
+
+
 function PhotoSetButton ({ set }) {
   const [carousel, setCarousel] = useCarousel()
   return <PhotoSetButtonContainer
@@ -183,7 +238,6 @@ function ImagePreview (props) {
   </Tooltip>
 }
 
-// const windowG = typeof window !== 'undefined' && window
 
 export default function () {
   const [snapshot, setSnapshot] = useSnapshot()
@@ -193,6 +247,7 @@ export default function () {
   const [resetDefaultColor] = useDefaultColors()
   const [misc, setMisc] = useMisc()
   const [ruler, setRuler] = useRuler()
+  const [aabb, setAABB] = useAxisAlignedBoundingBox()
 
   useEffect(() => {
     if (misc.activeTool === null) {
@@ -204,6 +259,32 @@ export default function () {
   }, [misc.activeTool])
 
   return <MiscContainer>
+      <ToolButton toolsList={useMisc()}
+        tool={tools.misc.aabb}
+        tooltipId='tooltip-aabb'
+        icon={<RulerIcon
+          isActivated={misc.activeTool === tools.misc.aabb} />} >
+        <H3 style={{ padding: 7.5, margin: 0 }}>
+          <FormattedMessage id="bbox-min"></FormattedMessage>
+        </H3>
+        <Point3D id="min" />
+        <H3 style={{ backgroundColor: "white", padding: 7.5, margin: 0 }}>
+          <FormattedMessage id="bbox-max"></FormattedMessage>
+        </H3>
+        <Point3D id="max" />
+        <ResetButton style={{ marginBottom: "10px" }} onClick={() => setAABB({ ...aabb, enforceReset: true })} />
+        <input style={{ marginBottom: "10px" }} type="button" value="Dump bounding box to console." onClick={() => {
+          let str = JSON.stringify({
+            bounding_box: {
+              x: [aabb.min.x, aabb.max.x],
+              y: [aabb.min.y, aabb.max.y],
+              z: [aabb.min.z, aabb.max.z],
+            },
+          }, null, 2);
+          console.info(str);
+        }} />
+      </ToolButton>
+
     <ToolButton data-testid='ruler'
       toolsList={useMisc()}
       tool={tools.misc.ruler}
@@ -262,8 +343,10 @@ export default function () {
             isButton
             onClick={() => {
               if (!ruler.scaling) {
-                setRuler({ ...ruler,
-                  measuring: !ruler.measuring })
+                setRuler({
+                  ...ruler,
+                  measuring: !ruler.measuring
+                })
               }
             }}
           >
@@ -347,9 +430,9 @@ export default function () {
             }
             value={
               snapWidth ||
-                (snapshot.trueResolution
-                  ? snapshot.trueResolution.width
-                  : 0)}
+              (snapshot.trueResolution
+                ? snapshot.trueResolution.width
+                : 0)}
           /> <H3> X </H3>
           <InputResolution
             type='number'
@@ -365,12 +448,12 @@ export default function () {
             }
             value={
               snapHeight ||
-                (snapshot.trueResolution
-                  ? snapshot.trueResolution.height
-                  : 0)}
+              (snapshot.trueResolution
+                ? snapshot.trueResolution.height
+                : 0)}
           />
         </div>
-        { snapshot.image
+        {snapshot.image
           ? <div>
             <H3
               style={{ textAlign: 'center' }}>
