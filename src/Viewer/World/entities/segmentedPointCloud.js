@@ -20,7 +20,7 @@ const vertexShader = `
 `
 
 export default class SegmentedPointCloud extends PointCloud {
-  constructor (geometry, parent, segmentation = null, uniqueLabels = null) {
+  constructor (geometry, parent, segmentation = null, uniqueLabels = null, labelColors=null) {
     super(geometry, parent)
 
     const labelNumbers = segmentation.labels.map((d) => {
@@ -29,28 +29,7 @@ export default class SegmentedPointCloud extends PointCloud {
     this.labelNumbers = labelNumbers
     this.uniqueLabels = uniqueLabels
 
-    function hslToHex (h, s, l) {
-      l /= 100
-      const a = s * Math.min(l, 1 - l) / 100
-      const f = n => {
-        const k = (n + h / 30) % 12
-        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
-        return Math.round(255 * color).toString(16).padStart(2, '0') // convert to Hex and prefix "0" if needed
-      }
-      return `#${f(0)}${f(8)}${f(4)}`
-    }
-
-    // Set default colors
-    var col = JSON.parse(window.localStorage.getItem('defaultSegmentedColors'))
-    const defaultColors = uniqueLabels.map((_, i) => {
-      if (col != null && col[i] != null) {
-        console.log("preset")
-        return col[i]
-      } else {
-        console.log("generated")
-        return hslToHex(Math.round((360 / uniqueLabels.length) * i), 100, 50)
-      }
-    })
+    const defaultColors = uniqueLabels.map((val) => labelColors[val])
     this.selectionColor = new THREE.Color(0.7, 0.7, 1)
     this.colors = defaultColors
 
@@ -92,7 +71,6 @@ export default class SegmentedPointCloud extends PointCloud {
   setColor (colors) {
     window.clearTimeout(this.timeoutFunction)
     colors = Object.keys(colors).reduce((acc, val) => {acc.push(colors[val]); return acc;}, [])
-    console.log(colors)
     if (colors && colors.length === this.colors.length) {
       this.colors = colors
       this.timeoutFunction = setTimeout(() => { this.refreshColors() }, 500)

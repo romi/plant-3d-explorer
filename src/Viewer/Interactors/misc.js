@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl'
 import styled from '@emotion/styled'
 
 import { useMisc, useCarousel } from 'flow/settings/accessors'
-import { useColor, useDefaultColors, useSnapshot, useRuler, useAxisAlignedBoundingBox }
+import { useSnapshot, useRuler, useAxisAlignedBoundingBox }
   from 'flow/interactions/accessors'
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 import { H3, H2 } from 'common/styles/UI/Text/titles'
@@ -243,8 +243,6 @@ export default function () {
   const [snapshot, setSnapshot] = useSnapshot()
   const [snapWidth, setSnapWidth] = useState(0)
   const [snapHeight, setSnapHeight] = useState(0)
-  const [colors, setColors] = useColor()
-  const [resetDefaultColor] = useDefaultColors()
   const [misc, setMisc] = useMisc()
   const [ruler, setRuler] = useRuler()
   const [aabb, setAABB] = useAxisAlignedBoundingBox()

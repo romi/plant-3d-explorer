@@ -5,7 +5,7 @@
  * To add a field type, see ./FieldTypes. Don't forget to edit the index.js for the typeReducer function.
  */
 
-import { omit, isEmpty, isEqual, rest, set, get } from "lodash";
+import { omit, set } from "lodash";
 import React, { useState, useEffect, useContext, Children } from "react";
 import cogIcon from "common/assets/ico.settings.21x21.svg";
 import { H2, H3 } from "common/styles/UI/Text/titles";
@@ -15,14 +15,12 @@ import { SettingsContext } from "./settingsContext";
 
 
 const Navigation = (props) => {
-  const [childrenCount] = useState(Children.count(props.children));
-
   return (
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: `repeat(max(0, ${childrenCount -
-          1}), minmax(150px,1fr)) 25px`,
+        gridTemplateColumns: `repeat(max(0, ${Children.count(props.children) -
+          1}), minmax(100px,1fr)) 25px`,
         gridTemplateRows: "25px",
       }}
       {...omit(props, ["children"])}
@@ -109,7 +107,7 @@ const Background = (props) => {
 const NavigationItem = (props) => {
   const action = props.action;
   const name = props.name;
-  return <input type="button" value={name} onClick={action} />;
+  return <input style={{overflow:"hidden", textOverflow:"ellipsis"}} type="button" value={name} onClick={action} />;
 };
 
 const SettingsItem = (props) => {

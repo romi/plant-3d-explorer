@@ -38,7 +38,6 @@ import SegmentedPointCloud from './entities/segmentedPointCloud'
 import Skeleton from './entities/skeleton'
 import Angles from './entities/angles'
 import Workspace from './entities/workspace'
-import { get } from 'lodash'
 import AABB from './entities/aabb'
 
 const clock = new THREE.Clock()
@@ -359,36 +358,6 @@ export default class World {
     }
   }
 
-  setSettings(settings)
-  {
-    // This function handles all settings.
-    // The ideal would be a common interface but a large if/else will do
-    const generalSettings = settings.general
-    const meshSettings = settings.mesh
-    const pcdSettings = settings.pcd
-    const segmentedPcdSettings = settings.segmentedPcd
-    const skeletonSettings = settings.skeleton
-    const organsSettings = settings.organs
-
-    // Set background color, done each time update is clicked as it's cheap
-    this.scene.background = new THREE.Color(generalSettings.backgroundColor)
-
-    if(this.mesh)
-    {
-      this.mesh.setColor(meshSettings.color)
-    }
-
-    if(this.pointCloud)
-    {
-      this.pointCloud.setColor(pcdSettings.color)
-
-    }
-
-
-
-
-  }
-
   setOrganColors (organColors) {
     if (!this.anlesPoints) return
     this.anlesPoints.setGlobalColors(organColors)
@@ -414,9 +383,31 @@ export default class World {
     this.pointCloud = new PointCloud(geometry, this.viewerObjects, opacity, color)
   }
 
-  setAxisAlignedBoundingBoxFromPointCloud()
+  setPointCloudColor (color) {
+    this.pointCloud.setColor(color)
+  }
+
+  setPointCloudZoom (zoomLevel) {
+    if (this.pointCloud)
+      this.pointCloud.setZoomLevel(zoomLevel);
+  }
+
+  setSegmentedPointCloudZomm(zoomLevel)
   {
-    this.aabb = new AABB(this.viewerObjects, this.pointCloud.geometry.boundingBox)
+    if (this.segmentedPointCloud) {
+      this.segmentedPointCloud.setZoomLevel(zoomLevel)
+    }
+  }
+
+  setPointCloudGroundTruthZoom(zoomLevel) {
+    if (this.pointCloudGroundTruth) {
+      this.pointCloudGroundTruth.setZoomLevel(zoomLevel)
+    }
+  }
+
+  setAxisAlignedBoundingBoxFromPointCloud(color)
+  {
+    this.aabb = new AABB(this.viewerObjects, this.pointCloud.geometry.boundingBox, color)
   }
 
   setAxisAlignedBoundingBox(aabb)
@@ -430,6 +421,11 @@ export default class World {
     return this.aabb.getBoundingBox()
   }
 
+  setAxisAlignedBoundingBoxColor(color)
+  {
+    this.aabb.setColor(color)
+  }
+
   resetAxisAlignedBoundingBox()
   {
     this.aabb.resetBoundingBox()
@@ -440,26 +436,22 @@ export default class World {
     this.pointCloudGroundTruth = new PointCloud(geometry, this.viewerObjects, opacity, color)
   }
 
-  setSegmentedPointCloudGeometry (geometry, segmentation, uniqueLabels) {
+  setSegmentedPointCloudGeometry (geometry, segmentation, uniqueLabels, colors) {
     geometry.computeBoundingBox()
     this.segmentedPointCloud = new SegmentedPointCloud(geometry,this.viewerObjects,
-      segmentation, uniqueLabels)
+      segmentation, uniqueLabels, colors)
   }
 
   getSegementedPointCloudColors () {
     return this.segmentedPointCloud.getColors()
   }
 
-  setSegmentedPointCloudColor (color) {
-    this.segmentedPointCloud.setColor(color)
+  setSegmentedPointCloudColors(colors) {
+    this.segmentedPointCloud.setColor(colors)
   }
 
   setSegmentedPointCloudLabels (labels, points) {
     this.segmentedPointCloud.setLabels(labels, points)
-  }
-
-  setPointCloudColor (color) {
-    this.pointCloud.setColor(color)
   }
 
   setSkeletonPoints (skeleton) {
@@ -478,34 +470,26 @@ export default class World {
     if (color) this.scene.background = new THREE.Color(color)
   }
 
-  setPointCloudZoom (zoomLevel) {
-    if (this.pointCloud) {
-      this.pointCloud.setZoomLevel(zoomLevel)
-    }
-    if (this.segmentedPointCloud) {
-      this.segmentedPointCloud.setZoomLevel(zoomLevel)
-    }
-    if (this.pointCloudGroundTruth) {
-      this.pointCloudGroundTruth.setZoomLevel(zoomLevel)
-    }
-  }
 
   setPointCloudSize(sampleSize)
   {
-    if(this.pointCloud)
-    {
       this.pointCloud.setCloudResolution(sampleSize)
-    }
+  }
 
-    if(this.segmentedPointCloud)
-    {
+  setSegmentedPointCloudSize(sampleSize)
+  {
+
       this.segmentedPointCloud.setCloudResolution(sampleSize)
-    }
-  
-    if (this.pointCloudGroundTruth) 
-    {
+  }
+
+  setPointCloudGroundTruthColor(color)
+  {
+      this.pointCloudGroundTruth.setColor(color)
+  }
+
+  setPointCloudGroundTruthSize(sampleSize)
+  {
       this.pointCloudGroundTruth.setCloudResolution(sampleSize)
-    }
   }
 
   setLayers (layers) {

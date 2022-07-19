@@ -121,6 +121,41 @@
         ]
       },
       {
+        "id": "groundTruthPcd",
+        "name": "Point Cloud ground truth",
+        "fields": [
+          {
+            "id": "color",
+            "name": "Color",
+            "type": "colorpicker",
+            "default": "#F8DE96"
+          },
+          {
+            "id": "density",
+            "name": "Cloud density",
+            "type": "slider",
+            "default": 0.75
+          },
+          {
+            "id": "opacity",
+            "name": "Cloud opacity",
+            "type": "slider",
+            "default": 1
+          },
+          {
+            "id": "zoom",
+            "name": "Point size",
+            "type": "slider",
+            "default": 2,
+            "props" : {
+              "min": 1,
+              "max": 4,
+              "step": 1
+            }
+          }
+        ]
+      },
+      {
         "id": "skeleton",
         "name": "Skeleton",
         "fields": [
@@ -177,6 +212,18 @@
                 "default": 0.5
               }
             ]
+          }
+        ]
+      },
+      {
+        "id": "aabb",
+        "name": "Bounding box",
+        "fields": [
+          {
+            "id": "color",
+            "name": "Color",
+            "type": "colorpicker",
+            "default": "#D0021B"
           }
         ]
       }

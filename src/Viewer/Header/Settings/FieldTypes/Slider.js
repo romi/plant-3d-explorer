@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import ReactSlider from "react-slider";
-import { omit } from "lodash";
-
 import { isEqual } from "lodash";
 
 import "./Slider.css";
