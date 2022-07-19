@@ -391,12 +391,7 @@ export default class World {
 
   setOrganColors (organColors) {
     if (!this.anlesPoints) return
-    this.anlesPoints.setCustomColors(organColors)
-  }
-
-  setGlobalOrganColors (globalOrganColors) {
-    if (!this.anlesPoints) return
-    this.anlesPoints.setGlobalColors(globalOrganColors)
+    this.anlesPoints.setGlobalColors(organColors)
   }
 
   setHighlightedAngle (indexes) {
@@ -457,6 +452,7 @@ export default class World {
 
   setSegmentedPointCloudColor (color) {
     this.segmentedPointCloud.setColor(color)
+    this.segmentedPointCloud.refreshColors()
   }
 
   setSegmentedPointCloudLabels (labels, points) {

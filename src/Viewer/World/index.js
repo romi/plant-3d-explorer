@@ -266,10 +266,19 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world) {
-        world.setOrganColors(colors.organs)
+        console.log(settings.organs)
+        let organ1 = {
+          rgb: settings.organs.organ1.color,
+          a: settings.organs.organ1.opacity
+        }
+        let organ2 = {
+          rgb: settings.organs.organ2.color,
+          a : settings.organs.organ2.opacity
+        }
+        world.setOrganColors([organ1, organ2])
       }
     },
-    [colors.organs]
+    [settings.organs]
   )
 
   useEffect(
@@ -407,7 +416,6 @@ export default function WorldComponent (props) {
     () => {
       if (world && pointCloudGeometry) {
         world.setPointcloudGeometry(pointCloudGeometry, settings.pcd.opacity, settings.pcd.color)
-        world.setPointcloudGeometry(pointCloudGeometry)
         world.setAxisAlignedBoundingBoxFromPointCloud()
         setAABB(world.getAxisAlignedBoundingBox())
         world.setLayers(layers)
@@ -467,10 +475,10 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world && segmentedPointCloud && segmentation) {
-        world.setSegmentedPointCloudColor(colors.segmentedPointCloud)
+        world.setSegmentedPointCloudColor(settings.segmentedPcd.colors)
       }
     },
-    [colors.segmentedPointCloud]
+    [settings.segmentedPcd.colors]
   )
 
   useEffect(
@@ -539,18 +547,10 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world) {
-        console.log("Density is now : " + settings.pcd.density)
         world.setBackgroundColor(settings.general.backgroundColor)
       }
     },
     [settings.general.backgroundColor]
-  )
-
-  useEffect(
-    () => {
-
-    },
-    [aabb]
   )
 
   return <Container ref={containerRef}>

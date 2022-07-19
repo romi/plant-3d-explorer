@@ -44,8 +44,10 @@ export default class SegmentedPointCloud extends PointCloud {
     var col = JSON.parse(window.localStorage.getItem('defaultSegmentedColors'))
     const defaultColors = uniqueLabels.map((_, i) => {
       if (col != null && col[i] != null) {
+        console.log("preset")
         return col[i]
       } else {
+        console.log("generated")
         return hslToHex(Math.round((360 / uniqueLabels.length) * i), 100, 50)
       }
     })
@@ -89,6 +91,8 @@ export default class SegmentedPointCloud extends PointCloud {
 
   setColor (colors) {
     window.clearTimeout(this.timeoutFunction)
+    colors = Object.keys(colors).reduce((acc, val) => {acc.push(colors[val]); return acc;}, [])
+    console.log(colors)
     if (colors && colors.length === this.colors.length) {
       this.colors = colors
       this.timeoutFunction = setTimeout(() => { this.refreshColors() }, 500)
@@ -188,7 +192,7 @@ export default class SegmentedPointCloud extends PointCloud {
       color.toArray(this.colorsArray, i * 3)
     })
     this.geometry.removeAttribute('customColor')
-    this.geometry.addAttribute('customColor',
+    this.geometry.setAttribute('customColor',
       new THREE.BufferAttribute(this.colorsArray, 3))
   }1
 }

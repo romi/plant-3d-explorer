@@ -342,10 +342,9 @@ function Settings(props) {
     {
       let object = {}
       acc.forEach((val) => {
-        if(get(settings, val.path, null) !== val.value)
           set(object, val.path, val.value)
       })
-      setSettings(Object.assign(settings, object))
+      setSettings(Object.assign(defaultSettings, settings, object))
       return () => {
         setSettingsShouldConfirm(false);
       }

@@ -261,7 +261,7 @@ export default function () {
   return <MiscContainer>
       <ToolButton toolsList={useMisc()}
         tool={tools.misc.aabb}
-        tooltipId='tooltip-aabb'
+        tooltipId='tooltip-tool-aabb'
         icon={<RulerIcon
           isActivated={misc.activeTool === tools.misc.aabb} />} >
         <H3 style={{ padding: 7.5, margin: 0 }}>
