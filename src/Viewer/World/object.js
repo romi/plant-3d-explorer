@@ -452,7 +452,6 @@ export default class World {
 
   setSegmentedPointCloudColor (color) {
     this.segmentedPointCloud.setColor(color)
-    this.segmentedPointCloud.refreshColors()
   }
 
   setSegmentedPointCloudLabels (labels, points) {
