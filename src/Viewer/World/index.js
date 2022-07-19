@@ -385,15 +385,6 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
-      if (world) {
-        world.setGlobalOrganColors(colors.globalOrganColors)
-      }
-    },
-    [colors.globalOrganColors]
-  )
-
-  useEffect(
-    () => {
       if (world && meshGeometry) {
         world.setMeshGeometry(meshGeometry)
         world.setLayers(layers)
@@ -405,10 +396,10 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world) {
-        world.setMeshColor(colors.mesh)
+        world.setMeshColor(settings.mesh.color)
       }
     },
-    [colors.mesh]
+    [settings.mesh.color]
   )
 
   useEffect(
@@ -484,7 +475,7 @@ export default function WorldComponent (props) {
         world.setSkeletonColor(colors.skeleton)
       }
     },
-    [colors.skeleton]
+    [settings.skeleton.color]
   )
 
   useEffect(
@@ -495,15 +486,7 @@ export default function WorldComponent (props) {
       }
     },
     [world, scan]
-  )
-
-  useEffect(
-    () => {
-      if (world) {
-        world.setBackgroundColor(colors.background)
-      }
-    }, [colors.background]
-  )
+  ) 
 
   useEffect(
     () => {
@@ -524,7 +507,6 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world) {
-        console.log("Density is now : " + settings.pcd.density)
         world.setPointCloudSize(settings.pcd.density)
       }
     },

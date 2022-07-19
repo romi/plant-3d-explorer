@@ -45,19 +45,19 @@
             "id": "density",
             "name": "Cloud density",
             "type": "slider",
-            "default": "0.75"
+            "default": 0.75
           },
           {
             "id": "opacity",
             "name": "Cloud opacity",
             "type": "slider",
-            "default": "1"
+            "default": 1
           },
           {
             "id": "zoom",
             "name": "Point size",
             "type": "slider",
-            "default": 1,
+            "default": 2,
             "props" : {
               "min": 1,
               "max": 4,
@@ -123,12 +123,62 @@
       {
         "id": "skeleton",
         "name": "Skeleton",
-        "fields": []
+        "fields": [
+          {
+            "id": "color",
+            "name": "Color",
+            "type": "colorpicker",
+            "default": "#D0021B"
+          },
+          {
+            "id": "opacity",
+            "name": "Cloud opacity",
+            "type": "slider",
+            "default": 0.7
+          }
+        ]
       },
       {
         "id": "organs",
         "name": "Organs",
-        "fields": []
+        "fields": [
+          {
+            "id" : "organ1",
+            "name" : "Organ 1",
+            "fields" : [
+              {
+                "id": "color",
+                "name": "Color",
+                "type": "colorpicker",
+                "default": "#BD10E0"
+              },          
+              {
+                "id": "opacity",
+                "name": "Opacity",
+                "type": "slider",
+                "default": 0.5
+              }
+            ]
+          },
+          {
+            "id" : "organ2",
+            "name" : "Organ 2",
+            "fields" : [
+              {
+                "id": "color",
+                "name": "Color",
+                "type": "colorpicker",
+                "default": "#E691F7"
+              },          
+              {
+                "id": "opacity",
+                "name": "Opacity",
+                "type": "slider",
+                "default": 0.5
+              }
+            ]
+          }
+        ]
       }
     ]
   }

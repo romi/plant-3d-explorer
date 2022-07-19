@@ -17,9 +17,6 @@ const Slider = (props) => {
   }, [props.restore]);
 
   useEffect(() => {
-    console.log(
-      "Value is " + value + " and lastValue is " + props.lastSettings
-    );
     if (
       !isEqual(parseFloat(props.lastValue), value) &&
       props.confirm.settingsShouldConfirm

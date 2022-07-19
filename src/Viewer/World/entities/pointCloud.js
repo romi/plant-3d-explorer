@@ -69,8 +69,7 @@ export default class PointCloud {
         ratio: { type: "f", value: pixelRatio },
         color: {
           type: "c",
-          value:
-            color != null ? new THREE.Color(color) : new THREE.Color("#f8de96"),
+          value: new THREE.Color(color),
         },
         zoom: { type: "f", value: 1 },
       },

@@ -190,7 +190,7 @@ const SettingsLayer = (props) => {
               <Element
                 default={el.default}
                 lastSettings={props.lastSettings[el.id]}
-                reset={props.reset.setSettingsShouldReset}
+                reset={props.reset.settingsShouldReset}
                 restore={props.restore.settingsShouldRestore}
                 confirm={props.confirm}
                 onChangeSettings={props.onChangeSettings}
@@ -353,12 +353,9 @@ function Settings(props) {
   })
 
   useEffect(() => {
-    console.log(settings)
     setLocalStorage(settings)
     context.setSettingsValue(settings)
   }, [settings])
-
-  useEffect(() => { console.log(localStorage) }, [localStorage])
 
   return (
     <div>

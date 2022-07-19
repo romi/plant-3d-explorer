@@ -34,7 +34,6 @@ const ColorInput = (props) => {
   }, [props.restore])
 
   useEffect(() => {
-    console.log("Value is " + color + " and lastValue is " + props.lastSettings)
     if(!(isEqual(props.lastValue, color)) && props.confirm.settingsShouldConfirm)
     {
       props.onChangeSettings({
