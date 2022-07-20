@@ -44,7 +44,8 @@ import useViewport2d from './behaviors/viewport2d'
 import { headerHeight } from 'Viewer/Header'
 import { moduleHeight as carouselHeight } from 'Viewer/Carousel'
 import useViewport3d from './behaviors/viewport3d'
-import {SettingsContext} from '../Header/Settings/settingsContext'
+import { SettingsContext } from '../Header/Settings/settingsContext'
+import useDeepCompareEffect from './useDeepEffect'
 
 const Container = styled.div({
   position: 'relative',
@@ -253,7 +254,7 @@ export default function WorldComponent (props) {
     [world, hoveredAngle, selectedAngle, layers, viewport]
   )
 
-  useEffect(
+  useDeepCompareEffect(
     () => {
       if (world) {
         console.log(settings.organs)
@@ -499,12 +500,13 @@ export default function WorldComponent (props) {
     [world, mouse]
   )
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (world)
       world.setPointCloudSettings(settings.pcd)
   }, [settings.pcd])
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
+      console.log("fired event")
       if (world && segmentedPointCloud && segmentation) {
         world.setSegmentedPointCloudSettings(settings.segmentedPcd)
       }

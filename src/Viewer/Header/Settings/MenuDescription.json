@@ -117,6 +117,17 @@
             "name": "Cloud opacity",
             "type": "slider",
             "default": 1
+          },
+          {
+            "id": "zoom",
+            "name": "Point size",
+            "type": "slider",
+            "default": 2,
+            "props" : {
+              "min": 1,
+              "max": 4,
+              "step": 1
+            }
           }
         ]
       },

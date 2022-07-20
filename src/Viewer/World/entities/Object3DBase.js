@@ -7,7 +7,6 @@ export default class Object3DBase
         this.parent = parent;
         this.geometry = geometry;
         this.settings = settings;
-        this.object = null;
     }
 
     setSettings(settings)
