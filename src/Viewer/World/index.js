@@ -404,14 +404,15 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
-      if (world && pointCloudGeometry) {
-        world.setPointcloudGeometry(pointCloudGeometry, settings.pcd.opacity, settings.pcd.color)
+      if (world && pointCloudGeometry && settings.pcd !== undefined) {
+        console.log(settings.pcd)
+        world.setPointCloudGeometry(pointCloudGeometry, settings.pcd)
         world.setAxisAlignedBoundingBoxFromPointCloud(settings.aabb.color)
         setAABB(world.getAxisAlignedBoundingBox())
         world.setLayers(layers)
       }
     },
-    [world, pointCloudGeometry]
+    [world, pointCloudGeometry, settings.pcd]
   )
 
   useEffect(
@@ -436,7 +437,7 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world && pointCloudGroundTruthGeometry) {
-        world.setPointcloudGroundTruthGeometry(pointCloudGroundTruthGeometry)
+        world.setPointCloudGroundTruthGeometry(pointCloudGroundTruthGeometry, settings.groundTruthPcd)
         world.setLayers(layers)
       }
     },
@@ -449,9 +450,8 @@ export default function WorldComponent (props) {
         const uniqueLabels = segmentation.labels.filter(
           (value, index, self) => self.indexOf(value) === index
         )
-        console.log(settings)
         world.setSegmentedPointCloudGeometry(segmentedPointCloud,
-          segmentation, uniqueLabels, settings.segmentedPcd.colors)
+          segmentation, uniqueLabels, settings.segmentedPcd)
         world.setLayers(layers)
         setColors({
           ...colors,
@@ -461,15 +461,6 @@ export default function WorldComponent (props) {
       }
     },
     [world, segmentedPointCloud, segmentation]
-  )
-
-  useEffect(
-    () => {
-      if (world && segmentedPointCloud && segmentation) {
-        world.setSegmentedPointCloudColors(settings.segmentedPcd.colors)
-      }
-    },
-    [settings.segmentedPcd.colors]
   )
 
   useEffect(
@@ -508,61 +499,18 @@ export default function WorldComponent (props) {
     [world, mouse]
   )
 
-  useEffect(
-    () => {
-      if (world && pointCloudGeometry) {
-        world.setPointCloudZoom(settings.pcd.zoom)
+  useEffect(() => {
+    if (world)
+      world.setPointCloudSettings(settings.pcd)
+  }, [settings.pcd])
+
+  useEffect(() => {
+      if (world && segmentedPointCloud && segmentation) {
+        world.setSegmentedPointCloudSettings(settings.segmentedPcd)
       }
-    },
-    [settings.pcd.zoom]
-  )
+  }, [settings.segmentedPcd])
 
   useEffect(
-    () => {
-      if (world && pointCloudGeometry ) {
-        world.setPointCloudColor({rgb : settings.pcd.color, a: settings.pcd.opacity})
-      }
-    },
-    [settings.pcd.color, settings.pcd.opacity]
-  )
-
-  useEffect(
-    () => {
-      if (world && pointCloudGeometry) {
-        world.setPointCloudSize(settings.pcd.density)
-      }
-    },
-    [settings.pcd.density]
-  )
-
-  useEffect(
-    () => {
-      if (world) {
-        world.setPointCloudZoom(settings.segmentedPcd.zoom)
-      }
-    },
-    [settings.segmentedPcd.zoom]
-  )
-
-  useEffect(
-    () => {
-      if (world && segmentedPointCloud) {
-        world.setPointCloudZoom(settings.segmentedPcd.zoom)
-      }
-    },
-    [settings.segmentedPcd.zoom]
-  )
-
-  useEffect(
-    () => {
-      if (world && segmentedPointCloud) {
-        world.setSegmentedPointCloudSize(settings.segmentedPcd.density)
-      }
-    },
-    [settings.segmentedPcd.density]
-  )
-
-    useEffect(
     () => {
       if (world && pointCloudGroundTruthGeometry) {
         world.setPointCloudGroundTruthZoom(settings.groundTruthPcd.zoom)

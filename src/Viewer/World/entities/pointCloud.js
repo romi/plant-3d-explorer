@@ -27,6 +27,7 @@ License along with this program.  If not, see
 
 */
 import * as THREE from "three";
+import Object3DBase from "./Object3DBase";
 
 const vertexShader = `
   uniform vec3 color;
@@ -56,20 +57,24 @@ const fragmentShader = `
   }
 `;
 
-export default class PointCloud {
-  constructor(geometry, parent, opacity, color) {
-    this.geometry = geometry;
-    this.vertices = this.bufferToVector3(geometry.getAttribute("position"));
+export default class PointCloud extends Object3DBase {
+  constructor(geometry, parent, settings, segmentation = null, uniqueLabels = null) {
+    super(parent, geometry, settings)
+    if(segmentation && uniqueLabels)
+    {
+      
+    }
+    this.vertices = this.bufferToVector3(this.geometry.getAttribute("position"));
     this.geometry.computeVertexNormals();
     const pixelRatio = window.devicePixelRatio ? window.devicePixelRatio : 1;
 
     this.material = new THREE.ShaderMaterial({
       uniforms: {
-        opacity: { value: opacity != null ? parseFloat(opacity) : 1 },
+        opacity: { value: this.settings.opacity},
         ratio: { type: "f", value: pixelRatio },
         color: {
           type: "c",
-          value: new THREE.Color(color),
+          value: new THREE.Color(this.settings.color),
         },
         zoom: { type: "f", value: 1 },
       },
@@ -82,6 +87,18 @@ export default class PointCloud {
 
     if (parent) parent.add(this.object);
     return this;
+  }
+
+  setSettings(settings)
+  {
+    if(this.settings.color !== settings.color)
+      this.material.uniforms.color.value = new THREE.Color(settings.color);
+    if(this.settings.opacity !== settings.opacity)
+      this.material.uniforms.opacity.value = settings.opacity;
+    if(this.settings.zoom !== settings.zoom)
+      this.material.uniforms.zoom.value = settings.zoom
+
+    super.setSettings(settings)
   }
 
   bufferToVector3(attribute) {

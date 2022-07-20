@@ -378,18 +378,15 @@ export default class World {
     }
   }
 
-  setPointcloudGeometry (geometry, opacity, color) {
+  setPointCloudGeometry (geometry, settings) {
     geometry.computeBoundingBox()
-    this.pointCloud = new PointCloud(geometry, this.viewerObjects, opacity, color)
+    this.pointCloud = new PointCloud(geometry, this.viewerObjects, settings)
   }
 
-  setPointCloudColor (color) {
-    this.pointCloud.setColor(color)
-  }
-
-  setPointCloudZoom (zoomLevel) {
-    if (this.pointCloud)
-      this.pointCloud.setZoomLevel(zoomLevel);
+  setPointCloudSettings(settings)
+  {
+    if(this.pointCloud)
+    this.pointCloud.setSettings(settings);
   }
 
   setSegmentedPointCloudZomm(zoomLevel)
@@ -431,15 +428,20 @@ export default class World {
     this.aabb.resetBoundingBox()
   }
 
-  setPointcloudGroundTruthGeometry (geometry, opacity, color) {
+  setPointCloudGroundTruthGeometry (geometry, opacity, color) {
     geometry.computeBoundingBox()
     this.pointCloudGroundTruth = new PointCloud(geometry, this.viewerObjects, opacity, color)
   }
 
-  setSegmentedPointCloudGeometry (geometry, segmentation, uniqueLabels, colors) {
+  setSegmentedPointCloudGeometry (geometry, segmentation, uniqueLabels, settings) {
     geometry.computeBoundingBox()
-    this.segmentedPointCloud = new SegmentedPointCloud(geometry,this.viewerObjects,
-      segmentation, uniqueLabels, colors)
+    this.segmentedPointCloud = new SegmentedPointCloud(geometry,this.viewerObjects, settings,
+      segmentation, uniqueLabels)
+  }
+
+  setSegmentedPointCloudSettings(settings)
+  {
+    this.segmentedPointCloud.setSettings(settings)
   }
 
   getSegementedPointCloudColors () {

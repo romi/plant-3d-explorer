@@ -20,8 +20,8 @@ const vertexShader = `
 `
 
 export default class SegmentedPointCloud extends PointCloud {
-  constructor (geometry, parent, segmentation = null, uniqueLabels = null, labelColors=null) {
-    super(geometry, parent)
+  constructor (geometry, parent, settings, segmentation = null, uniqueLabels = null) {
+    super(geometry, parent, settings)
 
     const labelNumbers = segmentation.labels.map((d) => {
       return uniqueLabels.indexOf(d)
@@ -29,7 +29,7 @@ export default class SegmentedPointCloud extends PointCloud {
     this.labelNumbers = labelNumbers
     this.uniqueLabels = uniqueLabels
 
-    const defaultColors = uniqueLabels.map((val) => labelColors[val])
+    const defaultColors = uniqueLabels.map((val) => this.settings.colors[val])
     this.selectionColor = new THREE.Color(0.7, 0.7, 1)
     this.colors = defaultColors
 
@@ -41,18 +41,31 @@ export default class SegmentedPointCloud extends PointCloud {
     })
 
     // Change material to use customColor
-    this.object.material.setValues({ vertexShader: vertexShader })
     const attr = new THREE.BufferAttribute(this.colorsArray, 3)
     this.geometry.setAttribute('customColor', attr)
     this.colorVectors = this.bufferToVector3(attr);
 
     this.colorVectors = this.bufferToVector3(this.geometry.getAttribute('customColor'))
+    super.setCloudResolution(this.settings.density)
+    this.object.material.setValues({ vertexShader: vertexShader })
+  }
 
+  setSettings(settings, force = false)
+  {
+    if(this.settings.color !== settings.color && !force)
+      this.material.uniforms.color.value = new THREE.Color(settings.color);
+    if(this.settings.opacity !== settings.opacity && !force)
+      this.material.uniforms.opacity.value = settings.opacity;
+    if(this.settings.zoom !== settings.zoom && !force)
+      this.material.uniforms.zoom.value = settings.zoom
+    if(this.settings.density !== settings.density && !force)
+    {
+      super.setCloudResolution(settings.density)
+      this.object.material.setValues({ vertexShader: vertexShader })
+    }
   }
 
   setCloudResolution(sampleSize) {
-    super.setCloudResolution(sampleSize)
-    this.object.material.setValues({ vertexShader: vertexShader })
   }
 
   colorSelectedPoints (selection) {
