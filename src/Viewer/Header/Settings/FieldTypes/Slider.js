@@ -26,6 +26,8 @@ const Slider = (props) => {
     }
   }, [props.confirm.settingsShouldConfirm]);
 
+  useEffect(() => setValue(parseFloat(props.lastSettings)), [props.lastSettings])
+
   return (
     <div style={{ display: "inline-block", position: "relative" }}>
       <ReactSlider
