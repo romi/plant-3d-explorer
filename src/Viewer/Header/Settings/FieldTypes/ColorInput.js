@@ -24,12 +24,12 @@ const ColorInput = (props) => {
   const [picking, setPicking] = useState(false);
 
   useEffect(() => {
-    if(props.settingsShouldReset)
+    if(props.reset)
       setColor(props.default)
   }, [props.reset]);
 
   useEffect(() => {
-    if(props.settingsShouldRestore)
+    if(props.restore)
       setColor(props.lastSettings)
   }, [props.restore])
 

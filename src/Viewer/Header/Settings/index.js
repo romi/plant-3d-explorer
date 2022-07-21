@@ -350,6 +350,20 @@ function Settings(props) {
   })
 
   useEffect(() => {
+    return () => {
+      if (settingsShouldReset)
+        setSettingsShouldReset(false)
+    }
+  })
+
+  useEffect(() => {
+    return () => {
+      if (settingsShouldRestore)
+        setSettingsShouldRestore(false)
+    }
+  })
+
+  useEffect(() => {
     setLocalStorage(settings)
     context.setSettingsValue(settings)
   }, [settings])
@@ -378,4 +392,4 @@ function Settings(props) {
   );
 }
 
-export { Settings };
+export default Settings;

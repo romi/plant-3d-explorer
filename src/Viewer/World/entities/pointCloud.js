@@ -189,14 +189,15 @@ export default class PointCloud extends Object3DBase {
   refreshColors()
   {
     let color = new THREE.Color(0xffffff)
+    let c = this.geometry.color.array
     this.colorsArray = new Float32Array(this.labelNumbers.length * 3)
     this.labelNumbers.forEach((elem, i) => {
       color.set(this.colors[elem])
-      color.toArray(this.colorsArray, i * 3)
+      color.toArray(c, i * 3)
     })
-    this.geometry.removeAttribute('color')
-    this.geometry.setAttribute('color',
-      new THREE.BufferAttribute(this.colorsArray, 3))
+
+    this.geometry.attributes.color.needsUpdate = true;
+    this.geometry.attributes.position.needsUpdate = true;
   }
 
   setPosition(x = 0, y = 0, z = 0) {

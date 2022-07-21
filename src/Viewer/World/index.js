@@ -45,7 +45,7 @@ import { headerHeight } from 'Viewer/Header'
 import { moduleHeight as carouselHeight } from 'Viewer/Carousel'
 import useViewport3d from './behaviors/viewport3d'
 import { SettingsContext } from '../Header/Settings/settingsContext'
-import useDeepCompareEffect from './useDeepEffect'
+import useDeepCompareEffect from './useDeepCompareEffect'
 
 const Container = styled.div({
   position: 'relative',
@@ -512,31 +512,13 @@ export default function WorldComponent (props) {
       }
   }, [settings.segmentedPcd])
 
-  useEffect(
+  useDeepCompareEffect(
     () => {
       if (world && pointCloudGroundTruthGeometry) {
-        world.setPointCloudGroundTruthZoom(settings.groundTruthPcd.zoom)
+        //world.setPointCloudGroundTruthZoom(settings.groundTruthPcd.zoom)
       }
     },
-    [settings.groundTruthPcd.zoom]
-  )
-
-  useEffect(
-    () => {
-      if (world && pointCloudGroundTruthGeometry ) {
-        world.setPointCloudGroundTruthColor({rgb : settings.pcd.color, a: settings.pcd.opacity})
-      }
-    },
-    [settings.groundTruthPcd.color, settings.groundTruthPcd.opacity]
-  )
-
-  useEffect(
-    () => {
-      if (world && pointCloudGroundTruthGeometry) {
-        world.setPointCloudGroundTruthSize(settings.pcd.density)
-      }
-    },
-    [settings.groundTruthPcd.density]
+    [settings.groundTruthPcd]
   )
 
   useEffect(

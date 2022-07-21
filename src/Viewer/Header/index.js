@@ -45,7 +45,7 @@ import chevronIco from "./assets/ico.chevron.8x12.svg";
 import { useResetSettings } from "flow/settings/accessors";
 import { useResetInteraction } from "flow/interactions/accessors";
 
-import { Settings } from "./Settings";
+import Settings from "./Settings";
 import MenuDescription from './Settings/MenuDescription.json'
 
 

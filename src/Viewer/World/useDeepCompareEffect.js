@@ -1,7 +1,6 @@
-// From https://stackoverflow.com/questions/54095994/react-useeffect-comparing-objects
-
 import { useEffect, useRef } from "react";
 import { isEqual } from "lodash";
+// From https://stackoverflow.com/questions/54095994/react-useeffect-comparing-objects
 function deepCompareEquals(a, b) {
   // TODO: implement deep comparison here
   // something like lodash
@@ -23,7 +22,7 @@ function useDeepCompareMemoize(value) {
 // WARNING : This is a super costly useEffect. I got it to deepCompare on settings which are a 
 // small object. I advise *not* using it on big objects for performance reasons.
 // Otherwise it is used exactly the same way as useEffect
-const useDeepCompareEffect = (callback, dependencies) => {
+function useDeepCompareEffect(callback, dependencies) {
   useEffect(callback, dependencies.map(useDeepCompareMemoize));
 }
 
