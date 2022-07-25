@@ -26,14 +26,15 @@ License along with this program.  If not, see
 <https://www.gnu.org/licenses/>.
 
 */
-import React from 'react'
-import styled from '@emotion/styled'
+import React from "react";
 
-import Header from './Header'
-import World from './World'
-import Carousel from './Carousel'
-import Panels from './Panels'
-import Help from './Help'
+import styled from "@emotion/styled";
+
+import Header from "./Header";
+import World from "./World";
+import Carousel from "./Carousel";
+import Panels from "./Panels";
+import Help from "./Help";
 import {
   LayersInteractors,
   CameraInteractors,
@@ -41,66 +42,68 @@ import {
   ToolInteractors,
   MiscInteractors,
   OverlayInteractors,
-  GroundTruthInteractors
-} from './Interactors'
+  GroundTruthInteractors,
+} from "./Interactors";
 
 const Container = styled.div({
-  position: 'relative',
-  width: '100%',
-  height: '100vh',
-  overflow: 'hidden',
-  userSelect: 'none'
-})
+  position: "relative",
+  width: "100%",
+  height: "100vh",
+  overflow: "hidden",
+  userSelect: "none",
+});
 
 const ModuleContainer = styled.div({
-  position: 'relative',
-  justifyContent: 'space-between',
-  width: '100%',
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column'
-})
+  position: "relative",
+  justifyContent: "space-between",
+  width: "100%",
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
+});
 
 const TopContainer = styled.div({
-  position: 'relative',
-  display: 'flex',
-  width: '100%',
-  justifyContent: 'space-between',
-  flexGrow: 1
-})
+  position: "relative",
+  display: "flex",
+  width: "100%",
+  justifyContent: "space-between",
+  flexGrow: 1,
+});
 
 const WorldContainer = styled.div({
-  position: 'relative',
-  height: '100%',
-  flexGrow: 1
-})
+  position: "relative",
+  height: "100%",
+  flexGrow: 1,
+});
 
 const BottomContainer = styled.div({
-  display: 'flex',
-  width: '100%'
-})
+  display: "flex",
+  width: "100%",
+});
 
-export default function Viewer (props) {
-  return <Container>
-    <ModuleContainer>
-      <Header />
-      <TopContainer>
-        <WorldContainer>
-          <World />
-          <LayersInteractors />
-          <CameraInteractors />
-          <ToolInteractors />
-          <MiscInteractors />
-          <OverlayInteractors />
-          <PanelsInteractor />
-          <GroundTruthInteractors />
-          <Help />
-        </WorldContainer>
-        <Panels />
-      </TopContainer>
-      <BottomContainer>
-        <Carousel />
-      </BottomContainer>
-    </ModuleContainer>
-  </Container>
+export default function Viewer(props) {
+  return (
+    <Container>
+      <ModuleContainer>
+        <Header />
+        <TopContainer>
+          <WorldContainer>
+            <World />
+            <LayersInteractors />
+            <CameraInteractors />
+            <ToolInteractors />
+            <MiscInteractors />
+            <OverlayInteractors />
+            <PanelsInteractor />
+            <GroundTruthInteractors />
+            <Help />
+          </WorldContainer>
+          <Panels />
+        </TopContainer>
+        <BottomContainer>
+          <Carousel />
+        </BottomContainer>
+      </ModuleContainer>
+    </Container>
+  );
 }

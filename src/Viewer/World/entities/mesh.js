@@ -27,17 +27,18 @@ License along with this program.  If not, see
 
 */
 import * as THREE from 'three'
+import Object3DBase from './Object3DBase'
 
-export default class Mesh {
-  constructor (geometry, parent) {
+export default class Mesh extends Object3DBase {
+  constructor (geometry, parent, settings) {
+    super(parent, geometry, settings)
+
     geometry.computeVertexNormals()
 
-    var op = window.localStorage.getItem('defaultMeshOpacity')
-    var col = window.localStorage.getItem('defaultMeshColor')
     const material = new THREE.MeshStandardMaterial({
       transparent: true,
-      opacity: (op != null) ? op : 0.5,
-      color: (col != null) ? col : '#96c0a7',
+      opacity: this.settings.opacity,
+      color: this.settings.color,
       flatShading: true,
       metalness: 0.1
     })
@@ -65,5 +66,13 @@ export default class Mesh {
       this.object.material.color = new THREE.Color(color.rgb)
       this.object.material.opacity = color.a
     }
+  }
+
+  setSettings(settings) {
+
+    if(this.settings.color !== settings.color || this.settings.opacity !== settings.opacity)
+      this.setColor({rgb: settings.color, a: settings.opacity})
+
+    this.settings = settings
   }
 }

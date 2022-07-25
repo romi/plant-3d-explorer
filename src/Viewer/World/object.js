@@ -88,6 +88,7 @@ export default class World {
     this.setSize(width, height)
 
     this.viewerObjects.add(this.cameraGroup)
+    //this.viewerObjects.scale.multiply(new THREE.Vector3(1, 1, -1))
 
     const animate = () => {
       this.render()
@@ -191,13 +192,13 @@ export default class World {
     this.workspace = workspace
     this.setWorkSpaceBox(workspace)
 
-    this.viewerObjects.position.x = -(workspace.x[1] - workspace.x[0])
-    this.viewerObjects.position.y = -(workspace.y[1] - workspace.y[0])
-    this.viewerObjects.position.z = -(workspace.z[1] - workspace.z[0])
+    //this.viewerObjects.position.x = -(workspace.x[1] - workspace.x[0])
+    //this.viewerObjects.position.y = -(workspace.y[1] - workspace.y[0])
+    //this.viewerObjects.position.z = -(workspace.z[1] - workspace.z[0])
 
-    this.viewerObjects.position.x = -(workspace.x[1] - workspace.x[0])
-    this.viewerObjects.position.y = -(workspace.y[1] - workspace.y[0])
-    this.viewerObjects.position.z = workspace.z[1] - (workspace.z[1] - workspace.z[0])
+    //this.viewerObjects.position.x = -(workspace.x[1] - workspace.x[0])
+    //this.viewerObjects.position.y = -(workspace.y[1] - workspace.y[0])
+    //this.viewerObjects.position.z = workspace.z[1] - (workspace.z[1] - workspace.z[0])
   }
 
   setCamera (camera) {
@@ -368,13 +369,13 @@ export default class World {
     this.anlesPoints.setHighlighted(indexes)
   }
 
-  setMeshGeometry (geometry) {
-    this.mesh = new Mesh(geometry, this.viewerObjects)
+  setMeshGeometry (geometry, settings) {
+    this.mesh = new Mesh(geometry, this.viewerObjects, settings)
   }
 
-  setMeshColor (color) {
+  setMeshSettings (settings) {
     if (this.mesh) {
-      this.mesh.setColor(color)
+      this.mesh.setSettings(settings)
     }
   }
 
@@ -387,13 +388,6 @@ export default class World {
   {
     if(this.pointCloud)
     this.pointCloud.setSettings(settings);
-  }
-
-  setSegmentedPointCloudZomm(zoomLevel)
-  {
-    if (this.segmentedPointCloud) {
-      this.segmentedPointCloud.setZoomLevel(zoomLevel)
-    }
   }
 
   setPointCloudGroundTruthZoom(zoomLevel) {
@@ -460,8 +454,8 @@ export default class World {
     this.skeleton = new Skeleton(skeleton, this.viewerObjects)
   }
 
-  setSkeletonColor (color) {
-    this.skeleton.setColor(color)
+  setSkeletonSettings (settings) {
+    this.skeleton.setSettings(settings)
   }
 
   setAnglesPoints (angles) {

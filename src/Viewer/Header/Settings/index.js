@@ -5,23 +5,23 @@
  * To add a field type, see ./FieldTypes. Don't forget to edit the index.js for the typeReducer function.
  */
 
-import { omit, set } from "lodash";
-import React, { useState, useEffect, useContext, Children } from "react";
+import { isEqual, omit, set } from "lodash";
+import React, { useState, useEffect, Children } from "react";
 import cogIcon from "common/assets/ico.settings.21x21.svg";
 import { H2, H3 } from "common/styles/UI/Text/titles";
 import { typeReducer } from "./FieldTypes";
 import { useLocalStorage } from "react-use";
-import { SettingsContext } from "./settingsContext";
-
+import { useUserPrefs } from "flow/settings/accessors";
 
 const Navigation = (props) => {
   return (
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: `repeat(max(0, ${Children.count(props.children) -
-          1}), minmax(100px,1fr)) 25px`,
-        gridTemplateRows: "25px",
+        gridTemplateColumns: "25px",
+        gridTemplateRows: ` 25px repeat(max(0, ${Children.count(props.children) -
+          1}), minmax(100px,1fr))`,
+        width: "25px"
       }}
       {...omit(props, ["children"])}
     >
@@ -35,7 +35,7 @@ const Actions = (props) => {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: `auto 150px 150px 150px auto`,
+        gridTemplateColumns: `auto 100px 100px 100px auto`,
         gridTemplateRows: "25px",
         gridGap: "5px",
       }}
@@ -44,6 +44,7 @@ const Actions = (props) => {
         type="button"
         style={{
           gridColumn: "2 / 3",
+
         }}
         value="Restore defaults"
         onClick={() => props.restore(true)}
@@ -75,9 +76,6 @@ const Background = (props) => {
     <div
       style={{
         position: "fixed",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
         padding: 0,
         margin: 0,
 
@@ -86,16 +84,21 @@ const Background = (props) => {
         right: 0,
         bottom: 0,
 
-        background: "rgba(32,62,66,0.7)", // Gray Anthracite
         zIndex: 10000,
+        backfaceVisibility:false,
+        backgroundColor:'rgba(192,192,192,0.2)',
+        pointerEvents:"none"
       }}
     >
       <div
         style={{
           position: "relative",
           backgroundColor: "white",
-          width: "min(80vw, 100% - 10px)",
-          height: "min(95vh, 100% - 10px)",
+          top:"100px",
+          bottom:"100px",
+          right: "10px",
+          left:"66%",
+          pointerEvents:"auto"
         }}
       >
         {props.children}
@@ -107,7 +110,8 @@ const Background = (props) => {
 const NavigationItem = (props) => {
   const action = props.action;
   const name = props.name;
-  return <input style={{overflow:"hidden", textOverflow:"ellipsis"}} type="button" value={name} onClick={action} />;
+  return <input style={{overflow:"hidden", textOverflow:"ellipsis", textOrientation: "upright",
+  textCombineUpright: "all",}} type="button" value={name} onClick={action} />;
 };
 
 const SettingsItem = (props) => {
@@ -174,8 +178,10 @@ const SettingsLayer = (props) => {
     <div
       style={{
         padding: "10px",
-        height: "calc(100% - 50px)", // calc the total height of the container - the height of the nav - height of footer
+        height: "content", // calc the total height of the container - the height of the nav - height of footer,
+        width: "calc(100% - 25px)",
         display: props.isEnabled ? "block" : "none",
+        margin: 0,
       }}
     >
       <H2>{props.name}</H2>
@@ -224,49 +230,53 @@ function Panel(props) {
   
   const panel = (
     <Background>
-      <Navigation>
+      <div style={{display:"inline-block", width:"25px"}}>
+        <Navigation>
+            <input
+            type="button"
+            style={{
+              backgroundColor: "black",
+            }}
+            onClick={props.close}
+          />
+          {props.items.map((el, i) => {
+            return (
+              <NavigationItem
+                key={i}
+                id={el.id}
+                name={el.name}
+                action={() => setActivated(el.id)}
+              />
+            );
+          })}
+        </Navigation>
+      </div>
+      <div style={{display:"inline-block"}}>
         {props.items.map((el, i) => {
           return (
-            <NavigationItem
+            <SettingsLayer
               key={i}
               id={el.id}
               name={el.name}
-              action={() => setActivated(el.id)}
+              isEnabled={activated === el.id}
+              fields={el.fields}
+              lastSettings={props.lastSettings[el.id]}
+              reset={props.reset}
+              restore={props.restore}
+              confirm={props.confirm}
+              onChangeSettings={props.onChangeSettings}
+              path={[...props.path, el.id]}
             />
           );
         })}
-        <input
-          type="button"
-          style={{
-            backgroundColor: "black",
-          }}
-          onClick={props.close}
-        />
-      </Navigation>
-      {props.items.map((el, i) => {
-        return (
-          <SettingsLayer
-            key={i}
-            id={el.id}
-            name={el.name}
-            isEnabled={activated === el.id}
-            fields={el.fields}
-            lastSettings={props.lastSettings[el.id]}
-            reset={props.reset}
-            restore={props.restore}
-            confirm={props.confirm}
-            onChangeSettings={props.onChangeSettings}
-            path={[...props.path, el.id]}
+        {activated && (
+          <Actions
+            reset={props.reset.setSettingsShouldReset}
+            restore={props.restore.setSettingsShouldRestore}
+            confirm={props.confirm.setSettingsShouldConfirm}
           />
-        );
-      })}
-      {activated && (
-        <Actions
-          reset={props.reset.setSettingsShouldReset}
-          restore={props.restore.setSettingsShouldRestore}
-          confirm={props.confirm.setSettingsShouldConfirm}
-        />
-      )}
+        )}
+      </div>
     </Background>
   );
 
@@ -279,26 +289,24 @@ function Settings(props) {
   const menuItems = props.menu.settings;
 
   // Context and states
-  const context = useContext(SettingsContext);
   // Here we manage 2 parallel state. This is super error prone, but I don't think there is a better solution.
   // Each time settings are confirmed, the Context.Provider is updated with the localStorage
   
   // This line should always be the default values because first context is always default
-  const [defaultSettings] = useState(context.settingsValue);
-  const [localStorage, setLocalStorage] = useLocalStorage(id, defaultSettings)
-  const [settings, setSettings] = useState(context.settingsValue);
+  const [localStorage, setLocalStorage] = useLocalStorage(id)
   const [openSettings, setOpenSettings] = useState(false);
   const [settingsShouldReset, setSettingsShouldReset] = useState(false);
   const [settingsShouldRestore, setSettingsShouldRestore] = useState(false);
   const [settingsShouldConfirm, setSettingsShouldConfirm] = useState(false);
   const [acc, setAcc] = useState([])
 
+  const [settings, setSettings] = useUserPrefs()
   // Functions for ease of access (and readability)
   const onChangeSettings = (settingUpdate) => {
     setAcc(last => {
       let index = -1;
       const exist = last.some((element, i) => {
-        if(element.path.every((el, i) => el === settingUpdate.path[i]))
+        if(isEqual(element.path, settingUpdate.path))
         {
           index = i;
           return true
@@ -320,7 +328,6 @@ function Settings(props) {
   const confirmObject = { settingsShouldConfirm, setSettingsShouldConfirm }
   const restoreObject = { settingsShouldRestore, setSettingsShouldRestore }
 
-
   // Prepare effect
   useEffect(() => {
     const fn = (items) => items.forEach((val, id) => {
@@ -329,10 +336,11 @@ function Settings(props) {
       else if ('fields' in val)
         fn(val.fields);
     });
-    fn(menuItems)
+    fn(menuItems);
 
-    // Base settings are : the defaults overriden by what's in localStorage already
-    setSettings(Object.assign(defaultSettings, localStorage === undefined ? {} : localStorage))
+    if(localStorage)
+      setSettings(Object.assign({}, settings, localStorage));
+
   }, []); // Empty brackets means "runs only once". Should be executed first
 
   useEffect(() => {
@@ -342,12 +350,12 @@ function Settings(props) {
       acc.forEach((val) => {
           set(object, val.path, val.value)
       })
-      setSettings(Object.assign(defaultSettings, settings, object))
+      setSettings(object);
       return () => {
         setSettingsShouldConfirm(false);
       }
     }
-  })
+  }, [acc])
 
   useEffect(() => {
     return () => {
@@ -365,7 +373,6 @@ function Settings(props) {
 
   useEffect(() => {
     setLocalStorage(settings)
-    context.setSettingsValue(settings)
   }, [settings])
 
   return (

@@ -26,7 +26,7 @@ License along with this program.  If not, see
 <https://www.gnu.org/licenses/>.
 
 */
-import { isEqual, uniq } from "lodash";
+import { isEqual } from "lodash";
 import * as THREE from "three";
 import Object3DBase from "./Object3DBase";
 
@@ -43,7 +43,7 @@ const vertexShader = `
     vColor = color;
     vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
     gl_PointSize = ratio * zoom * clamp(1.0 * ( 200.0 / -mvPosition.z ), 0.8, 500.0);
-    gl_Position = projectionMatrix * mvPosition;
+    gl_Position = projectionMatrix * mvPosition ;
   }
 `;
 
@@ -60,7 +60,6 @@ const fragmentShader = `
 export default class PointCloud extends Object3DBase {
   constructor(geometry, parent, settings, segmentation = null, uniqueLabels = null) {
     super(parent, geometry, settings)
-    console.log(this.settings)
     const pixelRatio = window.devicePixelRatio ? window.devicePixelRatio : 1;
     const cloudSize = this.geometry.getAttribute('position').count
     this.permutation = this.getRandomSampleOfIndicesFromSize(cloudSize, cloudSize);
@@ -98,7 +97,6 @@ export default class PointCloud extends Object3DBase {
       })
     } else
     {
-      console.log(this.geometry)
       this.colorsArray = new Float32Array(this.geometry.attributes.position.array.length);
       const color = new THREE.Color(this.settings.color)
       for(let pt = 0; pt < this.geometry.attributes.position.count; pt++)
@@ -149,7 +147,6 @@ export default class PointCloud extends Object3DBase {
 
     this.object = new THREE.Points(this.geometry, this.material);
     this.object.renderOrder = -1;
-
     this.setCloudResolution(this.settings.density)
 
     if (parent) parent.add(this.object);
@@ -158,9 +155,13 @@ export default class PointCloud extends Object3DBase {
 
   setSettings(settings)
   {
-    console.log(settings)
     if(!(this.labelNumbers && this.uniqueLabels) && this.settings.color !== settings.color)
-      this.material.uniforms.color.value = new THREE.Color(settings.color);
+    {
+      let color = new THREE.Color(settings.color)
+      for(let pt = 0; pt < this.geometry.attributes.position.count; pt++)
+        color.toArray(this.geometry.attributes.color.array, pt * 3);
+      this.geometry.attributes.color.needsUpdate = true
+    }
     if (!(this.labelNumbers && this.uniqueLabels) && !isEqual(this.settings.colors, settings.colors))
       this.setColor(settings.colors)
     if(this.settings.opacity !== settings.opacity)
@@ -195,9 +196,6 @@ export default class PointCloud extends Object3DBase {
       color.set(this.colors[elem])
       color.toArray(c, i * 3)
     })
-
-    this.geometry.attributes.color.needsUpdate = true;
-    this.geometry.attributes.position.needsUpdate = true;
   }
 
   setPosition(x = 0, y = 0, z = 0) {
@@ -255,5 +253,97 @@ export default class PointCloud extends Object3DBase {
       vectors[v].fromBufferAttribute(values, v);
 
     return vectors;
+  }
+
+  setLabels (label, points) {
+    const number = this.uniqueLabels.indexOf(label)
+    points.forEach((d) => {
+      this.labelNumbers[d] = number
+    })
+
+    this.refreshColors()
+  }
+
+  getPointPos (point) {
+    return this.object.localToWorld(this.vertices[point].clone())
+  }
+
+  selectBySphere (base, point) {
+    const origin = this.vertices[base]
+    const dist = origin.distanceTo(this.vertices[point])
+    let result = []
+    this.vertices.forEach((d, i) => {
+      if (d.distanceTo(origin) <= dist) {
+        result.push(i)
+      }
+    })
+    return result
+  }
+
+  selectSameLabel (point) {
+    const num = this.labelNumbers[point]
+    const res = this.labelNumbers.map((d, i) => {
+      return d === num ? i : null
+    })
+    return res
+  }
+
+  selectByProximity (clickedPoint) {
+    /* Recursive helper function that selects all points of the same label
+        from a point by creating a sphere around it with only points of the
+        same label inside of it. This process is repeated for the 6 points in
+        the sphere that are the farthest from the center, until no point is
+        added to the set. */
+    const maxSphere = (point, set) => {
+      let minDist = +Infinity
+      let max = { x: 0, y: 0, z: 0 }
+      let min = { x: +Infinity, y: +Infinity, z: +Infinity }
+      let nextPointsMax = { x: 0, y: 0, z: 0 }
+      let nextPointsMin = { x: 0, y: 0, z: 0 }
+      const num = this.labelNumbers[point]
+      this.vertices.forEach((d, i, array) => {
+        if (i !== point && this.labelNumbers[i] !== num) {
+          const dist = array[point].distanceTo(d)
+          if (dist < minDist) {
+            minDist = dist
+          }
+        }
+      })
+      const oldLength = set.size
+      this.vertices.forEach((d, i, array) => {
+        const dist = d.distanceTo(array[point])
+        if (this.labelNumbers[i] === num && (dist < minDist)) {
+          set.add(i)
+          for (let key in max) {
+            if (d[key] > max[key]) {
+              max[key] = d[key]
+              nextPointsMax[key] = i
+            }
+
+            if (d[key] < min[key]) {
+              min[key] = d[key]
+              nextPointsMin[key] = i
+            }
+          }
+        }
+      })
+      if (oldLength !== set.size) {
+        for (let key in nextPointsMax) {
+          maxSphere(nextPointsMax[key], set)
+          maxSphere(nextPointsMin[key], set)
+        }
+      }
+    }
+    let set = new Set()
+    maxSphere(clickedPoint, set)
+    const res = [...set]
+    return res
+  }
+
+  colorSelectedPoints (selection) {
+    selection.forEach((d) => {
+      this.selectionColor.toArray(this.colorsArray, d * 3)
+    })
+    this.geometry.attributes.color.needsUpdate = true;
   }
 }

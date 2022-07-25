@@ -92,6 +92,13 @@ export default class Skeleton {
       child.visible = boolean
     })
   }
+  
+  setSettings(settings) {
+    if(this.settings.color !== settings.color || this.settings.opacity !== settings.opacity)
+      this.setColor({rgb: settings.color, a: settings.opacity})
+
+    this.settings = settings
+  }
 
   setColor (color) {
     this.group.children.forEach((child) => {

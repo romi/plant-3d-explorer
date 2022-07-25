@@ -26,13 +26,13 @@ License along with this program.  If not, see
 <https://www.gnu.org/licenses/>.
 
 */
-import React, { useRef, useEffect, useState, useContext } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import useMeasure from 'react-use-measure'
 import styled from '@emotion/styled'
 
 import { useElementMouse } from 'rd/tools/hooks/mouse'
 
-import { useLayers } from 'flow/settings/accessors'
+import { useLayers, useUserPrefs } from 'flow/settings/accessors'
 import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useColor, useClickedPoint, useLabels,
   useSnapshot, useOrganInfo, useSelectedPoints, useSelectedLabel, useSelectionMethod, useRuler, useAxisAlignedBoundingBox } from 'flow/interactions/accessors'
 import { useScanFiles, useScan,
@@ -44,7 +44,6 @@ import useViewport2d from './behaviors/viewport2d'
 import { headerHeight } from 'Viewer/Header'
 import { moduleHeight as carouselHeight } from 'Viewer/Carousel'
 import useViewport3d from './behaviors/viewport3d'
-import { SettingsContext } from '../Header/Settings/settingsContext'
 import useDeepCompareEffect from './useDeepCompareEffect'
 
 const Container = styled.div({
@@ -105,7 +104,8 @@ export default function WorldComponent (props) {
     : event3dFns
 
   const [aabb, setAABB] = useAxisAlignedBoundingBox()
-  const {settingsValue: settings} = useContext(SettingsContext)
+  // const [localStorage, setLocalStorage] = useLocalStorage()
+  const [settings,] = useUserPrefs()
 
   useEffect(
     () => {
@@ -254,10 +254,10 @@ export default function WorldComponent (props) {
     [world, hoveredAngle, selectedAngle, layers, viewport]
   )
 
+
   useDeepCompareEffect(
     () => {
       if (world) {
-        console.log(settings.organs)
         let organ1 = {
           rgb: settings.organs.organ1.color,
           a: settings.organs.organ1.opacity
@@ -387,7 +387,7 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world && meshGeometry) {
-        world.setMeshGeometry(meshGeometry)
+        world.setMeshGeometry(meshGeometry, settings.mesh)
         world.setLayers(layers)
       }
     },
@@ -397,23 +397,22 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world) {
-        world.setMeshColor(settings.mesh.color)
+        world.setMeshSettings(settings.mesh)
       }
     },
-    [settings.mesh.color, settings.mesh.opacity]
+    [settings.mesh]
   )
 
   useEffect(
     () => {
-      if (world && pointCloudGeometry && settings.pcd !== undefined) {
-        console.log(settings.pcd)
+      if (world && pointCloudGeometry) {
         world.setPointCloudGeometry(pointCloudGeometry, settings.pcd)
         world.setAxisAlignedBoundingBoxFromPointCloud(settings.aabb.color)
         setAABB(world.getAxisAlignedBoundingBox())
         world.setLayers(layers)
       }
     },
-    [world, pointCloudGeometry, settings.pcd]
+    [world, pointCloudGeometry]
   )
 
   useEffect(
@@ -506,7 +505,6 @@ export default function WorldComponent (props) {
   }, [settings.pcd])
 
   useDeepCompareEffect(() => {
-      console.log("fired event")
       if (world && segmentedPointCloud && segmentation) {
         world.setSegmentedPointCloudSettings(settings.segmentedPcd)
       }
