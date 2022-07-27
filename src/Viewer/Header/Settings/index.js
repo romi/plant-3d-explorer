@@ -13,11 +13,11 @@ import { typeReducer } from "./FieldTypes";
 import { useLocalStorage } from "react-use";
 import { useResetUserPrefs, useUserPrefs } from "flow/settings/accessors";
 import "./index.css";
-import styled from '@emotion/styled'
+import styled from "@emotion/styled";
 
 const Button = styled.div`
   display: block;
-  box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);
+  box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   vertical-align: middle;
   padding: 5px;
@@ -28,8 +28,7 @@ const Button = styled.div`
     font-weight: bolder;
     background: lightgray;
   }
-`
-
+`;
 
 const Navigation = (props) => {
   return (
@@ -40,8 +39,8 @@ const Navigation = (props) => {
         gridTemplateRows: ` 25px repeat(max(0, ${Children.count(
           props.children
         ) - 1}), minmax(100px,1fr))`,
-        height:"100%",
-        verticalAlign:"top"
+        height: "100%",
+        verticalAlign: "top",
       }}
       {...omit(props, ["children"])}
     >
@@ -126,17 +125,19 @@ const NavigationItem = (props) => {
   const action = props.action;
   const name = props.name;
   return (
-      <Button onClick={action} active={props.active}>
-        <div style={{
-          writingMode:"vertical-lr",
-          justifyContent: 'center',
-          fontSize:'1rem',
-          marginTop:"auto",
-          marginBottom:"auto",
-        }}>
-          {name}
-        </div>
-      </Button>
+    <Button onClick={action} active={props.active}>
+      <div
+        style={{
+          writingMode: "vertical-lr",
+          justifyContent: "center",
+          fontSize: "1rem",
+          marginTop: "auto",
+          marginBottom: "auto",
+        }}
+      >
+        {name}
+      </div>
+    </Button>
   );
 };
 
@@ -144,25 +145,23 @@ const SettingsItem = (props) => {
   return (
     <div
       style={{
-        position: "relative",
         display: "block",
         padding: "0 25px",
-        height: "max-content",
-        alignItems: "center",
+        height: "20px",
+        margin: "1px",
       }}
     >
       <div
         style={{
-          positon: "absolute",
-          top: "50%",
           display: "inline-block",
-          width: "75px",
           textOverflow: "ellipsis",
+          width: "75px",
+          marginTop: "auto",
         }}
       >
         {props.label}
       </div>
-      <div style={{ positon: "absolute", top: "50%", display: "inline-block" }}>
+      <div style={{ top: "50%", display: "inline-block" }}>
         {props.children}
       </div>
     </div>
@@ -206,7 +205,7 @@ const SettingsLayer = (props) => {
         padding: "10px",
         height: "calc(100% - 25px)", // calc the total height of the container - the height of the nav - height of footer,
         display: props.isEnabled ? "block" : "none",
-        verticalAlign:"top",
+        verticalAlign: "top",
         margin: 0,
       }}
     >
@@ -255,60 +254,60 @@ const SettingsLayer = (props) => {
 
 function Panel(props) {
   const [activated, setActivated] = useState();
-  useEffect(() => console.log(activated), [activated])
   const panel = (
     <Background>
-        <Navigation>
-          <input
-            type="button"
-            style={{
-              backgroundColor: "black",
-            }}
-            onClick={props.close}
-          />
-          {props.items.map((el, i) => {
-            return (
-              <NavigationItem
-                key={i}
-                id={el.id}
-                name={el.name}
-                action={() => setActivated(el.id)}
-                active={activated === el.id}
-              />
-            );
-          })}
-        </Navigation>
-        <div style={{
-          display:"inline-block",
+      <Navigation>
+        <input
+          type="button"
+          style={{
+            backgroundColor: "black",
+          }}
+          onClick={props.close}
+        />
+        {props.items.map((el, i) => {
+          return (
+            <NavigationItem
+              key={i}
+              id={el.id}
+              name={el.name}
+              action={() => setActivated(el.id)}
+              active={activated === el.id}
+            />
+          );
+        })}
+      </Navigation>
+      <div
+        style={{
+          display: "inline-block",
           width: "calc(100% - 25px)",
           height: "100%",
-        }}>
-          {props.items.map((el, i) => {
-            return (
-              <SettingsLayer
-                key={i}
-                id={el.id}
-                name={el.name}
-                isEnabled={activated === el.id}
-                fields={el.fields}
-                lastSettings={props.lastSettings[el.id]}
-                //reset={props.reset}
-                //restore={props.restore}
-                //confirm={props.confirm}
-                onSettingChanged={props.onSettingChanged}
-                registerMenuElement={props.registerMenuElement}
-                path={[...props.path, el.id]}
-              />
-            );
-          })}
-          {activated && (
-              <Actions
-                reset={props.reset}
-                restore={props.restore}
-                confirm={props.confirm}
-              />
-          )}
-        </div>
+        }}
+      >
+        {props.items.map((el, i) => {
+          return (
+            <SettingsLayer
+              key={i}
+              id={el.id}
+              name={el.name}
+              isEnabled={activated === el.id}
+              fields={el.fields}
+              lastSettings={props.lastSettings[el.id]}
+              //reset={props.reset}
+              //restore={props.restore}
+              //confirm={props.confirm}
+              onSettingChanged={props.onSettingChanged}
+              registerMenuElement={props.registerMenuElement}
+              path={[...props.path, el.id]}
+            />
+          );
+        })}
+
+        <Actions
+          reset={props.reset}
+          restore={props.restore}
+          confirm={props.confirm}
+        />
+      </div>
     </Background>
   );
 
@@ -340,7 +339,6 @@ function Settings(props) {
     setMenuElements((previous) => {
       previous.forEach((element) => {
         if (isEqual(element.path, path)) {
-          console.log(`Updating ${element.value} with ${value}`);
           element.needsUpdate = !isEqual(value, element.needsUpdate);
           element.value = value;
         }
@@ -356,7 +354,6 @@ function Settings(props) {
         set(object, element.path, element.value);
       }
     });
-    console.log(object);
     setSettings(Object.assign({}, settings, object));
     setMenuElements((previous) => {
       previous.forEach((element) => {

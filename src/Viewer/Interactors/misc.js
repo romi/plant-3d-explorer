@@ -16,6 +16,7 @@ import downloadButton from 'common/assets/ico.download.24x24.svg'
 
 import { ResetButton } from 'rd/UI/Buttons'
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 export const Container = styled.div({
   position: 'absolute',
@@ -31,6 +32,7 @@ export const Container = styled.div({
     borderRadius: '0 2px 2px 0'
   }
 })
+
 
 const ChooserContainer = styled.div({
   display: 'flex',
@@ -115,55 +117,62 @@ function Point3D (props)
   const [aabb, setAABB] = useAxisAlignedBoundingBox()
   const id = props.id
 
-  return <div style={{
-    display: 'flex', 
-    flexDirection:'row',
-    justifyContent:'center',
-    alignItems:'center',
-    backgroundColor: 'white',
-    paddingLeft: "10px",
-    paddingRight: "10px"
-    }}>
-    <div style={{flex:"1 1 5px", padding:"10px",justifyContent:"center"}}>X</div>
-    <input style={{
-      width: '20%',
-      height: '50%',
-      flex: '3 3 100px',
-      margin: '2%',
-    }} 
-      type="number" 
-      onChange={(event) => {
-        setAABB({...aabb, [id] : {...aabb[id], x: isNaN(event.target.value) ? 0 : event.target.value}})
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(3, 25px 100px)",
+        gridTemplateRows: "25px",
+        gridGap: "5px",
       }}
-      value={aabb[id].x}
-    />
-    <div style={{flex:"1 1 5px", padding:"10px",justifyContent:"center"}}>Y</div>
-    <input style={{
-      width: '20%',
-      height: '50%',
-      flex: '3 3 100px',
-      margin: '2%',
-    }}
-      type="number" 
-      onChange={(event) => {
-        setAABB({...aabb, [id] : {...aabb[id], y: isNaN(event.target.value) ? 0 : event.target.value}})
-      }}
-      value={aabb[id].y}
-    />
-    <div style={{flex:"1 1 5px", padding:"10px",justifyContent:"center"}}>Z</div>
-    <input style={{
-      width: '20%',
-      height: '50%',
-      flex: '3 3 100px',
-      margin: '0.5em'
-    }}
-      type="number" 
-      onChange={(event) => {
-        setAABB({...aabb, [id] : {...aabb[id], z: isNaN(event.target.value) ? 0 : event.target.value}})
-      }}
-      value={aabb[id].z}
-    />  
-  </div>
+    >
+      <div style={{gridColumn: "1/2", margin:"auto"}} >X</div>
+      <input
+      style={{gridColumn: "2/3"}}
+        type="number"
+        onChange={(event) => {
+          setAABB({
+            ...aabb,
+            [id]: {
+              ...aabb[id],
+              x: isNaN(event.target.value) ? 0 : event.target.value,
+            },
+          });
+        }}
+        value={aabb[id].x}
+      />
+      <div style={{gridColumn: "3/4", margin:'auto'}} > Y </div>
+      <input
+        style={{gridColumn: "4/5"}}
+        type="number"
+        onChange={(event) => {
+          setAABB({
+            ...aabb,
+            [id]: {
+              ...aabb[id],
+              y: isNaN(event.target.value) ? 0 : event.target.value,
+            },
+          });
+        }}
+        value={aabb[id].y}
+      />
+      <div style={{gridColumn: "5/6", margin:"auto" }}>Z</div>
+      <input
+        style={{gridColumn: "6/7"}}
+        type="number"
+        onChange={(event) => {
+          setAABB({
+            ...aabb,
+            [id]: {
+              ...aabb[id],
+              z: isNaN(event.target.value) ? 0 : event.target.value,
+            },
+          });
+        }}
+        value={aabb[id].z}
+      />
+    </div>
+  );
 }
 
 
@@ -246,6 +255,7 @@ export default function () {
   const [misc, setMisc] = useMisc()
   const [ruler, setRuler] = useRuler()
   const [aabb, setAABB] = useAxisAlignedBoundingBox()
+  const [doShowAABB, setDoShowAABB] = useState(false)
 
   useEffect(() => {
     if (misc.activeTool === null) {
@@ -256,250 +266,294 @@ export default function () {
     }
   }, [misc.activeTool])
 
-  return <MiscContainer>
-      <ToolButton toolsList={useMisc()}
+  return (
+    <MiscContainer>
+      <ToolButton
+        toolsList={useMisc()}
         tool={tools.misc.aabb}
-        tooltipId='tooltip-tool-aabb'
-        icon={<CropIcon
-          isActivated={misc.activeTool === tools.misc.aabb} />} >
-        <H3 style={{ padding: 7.5, margin: 0 }}>
-          <FormattedMessage id="bbox-min"></FormattedMessage>
-        </H3>
-        <Point3D id="min" />
-        <H3 style={{ backgroundColor: "white", padding: 7.5, margin: 0 }}>
-          <FormattedMessage id="bbox-max"></FormattedMessage>
-        </H3>
-        <Point3D id="max" />
-        <ResetButton style={{ marginBottom: "10px" }} onClick={() => setAABB({ ...aabb, enforceReset: true })} />
-        <input style={{ marginBottom: "10px" }} type="button" value="Dump bounding box to console." onClick={() => {
-          let str = JSON.stringify({
-            bounding_box: {
-              x: [aabb.min.x, aabb.max.x],
-              y: [aabb.min.y, aabb.max.y],
-              z: [aabb.min.z, aabb.max.z],
-            },
-          }, null, 2);
-          console.info(str);
-        }} />
+        tooltipId="tooltip-tool-aabb"
+        icon={<CropIcon isActivated={misc.activeTool === tools.misc.aabb} />}
+      >
+        <div
+          style={{
+            minWidth: "200px",
+          }}
+        >
+          <H3 style={{ padding: 7.5, margin: 0 }}>
+            <FormattedMessage id="bbox-min"></FormattedMessage>
+          </H3>
+          <Point3D id="min" />
+          <H3 style={{ backgroundColor: "white", padding: 7.5, margin: 0 }}>
+            <FormattedMessage id="bbox-max"></FormattedMessage>
+          </H3>
+          <Point3D id="max" />
+          <ResetButton
+            style={{ marginBottom: "10px" }}
+            onClick={() => setAABB({ ...aabb, enforceReset: true })}
+          />
+          <CopyToClipboard
+            text={JSON.stringify(
+                {
+                  bounding_box: {
+                    x: [aabb.min.x, aabb.max.x],
+                    y: [aabb.min.y, aabb.max.y],
+                    z: [aabb.min.z, aabb.max.z],
+                  },
+                },
+                null,
+                2
+              )}>
+            <button>Copy to clipboard</button>
+          </CopyToClipboard>
+        </div>
       </ToolButton>
 
-    <ToolButton data-testid='ruler'
-      toolsList={useMisc()}
-      tool={tools.misc.ruler}
-      tooltipId='tooltip-ruler'
-      icon={<RulerIcon
-        isActivated={misc.activeTool === tools.misc.ruler} />}
-    >
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'space-between',
-        justifyItems: 'center'
-      }} >
-        <H3>
-          <FormattedMessage id='ruler-scale' />
-        </H3>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'row',
-          margin: 'auto',
-          marginBottom: 10
-        }} >
-          <InputResolution
-            type='number'
-            min='0.0001'
-            step='1'
-            placeholder='scale'
-            onChange={(e) => {
-              const value = e.target.value > 0.0001 ? e.target.value : 0.0001
-              setMisc({ ...misc, scale: value })
-            }}
-            value={misc.scale} /> <H3> cm </H3>
-        </div>
-        <Tooltip>
-          <Interactor
-            style={{ margin: 'auto', width: '100%', marginBottom: 10 }}
-            activated={ruler.scaling}
-            isButton
-            onClick={() => {
-              if (!ruler.measuring) {
-                setRuler({ ...ruler, scaling: !ruler.scaling })
-              }
-            }}
-          >
-            <H2> <FormattedMessage id='scale-button' /> </H2>
-          </Interactor>
-          <TooltipContent>
-            <H3> <FormattedMessage id='tooltip-scale-button' /> </H3>
-          </TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <Interactor
-            isDisabled={!ruler.scaleSet}
-            style={{ margin: 'auto', width: '100%' }}
-            activated={ruler.measuring}
-            isButton
-            onClick={() => {
-              if (!ruler.scaling) {
-                setRuler({
-                  ...ruler,
-                  measuring: !ruler.measuring
-                })
-              }
-            }}
-          >
-            <H2> <FormattedMessage id='measure-button' /> </H2>
-          </Interactor>
-          <TooltipContent>
-            <H3>
-              <FormattedMessage
-                id={ruler.scaleSet ? 'tooltip-measure-button' : 'tooltip-scale-needed'} />
-            </H3>
-          </TooltipContent>
-        </Tooltip>
-        <H3 style={{ margin: 'auto', marginTop: 10 }}>
-          <FormattedMessage id='current-measure' />
-        </H3>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'row',
-          margin: 'auto',
-          marginBottom: 10
-        }} >
-          <InputResolution
-            style={{ margin: 'auto' }}
-            value={ruler.measure ? (misc.scale * ruler.measure).toFixed(3) : 0}
-            readOnly
-          />
-          <H3> cm </H3>
-        </div>
-      </div>
-    </ToolButton>
-    <ToolButton
-      toolsList={useMisc()}
-      tool={tools.misc.snapshot}
-      icon={<SnapIcon isActivated={misc.activeTool === tools.misc.snapshot} />}
-      interactor={{
-        isButton: true
-      }}
-      tooltipId='tooltip-snapshot'
-    >
-      <div style={{
-        minWidth: 200,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignContent: 'center'
-      }} data-testid='snapshot-menu'>
-        <Tooltip
+      <ToolButton
+        data-testid="ruler"
+        toolsList={useMisc()}
+        tool={tools.misc.ruler}
+        tooltipId="tooltip-ruler"
+        icon={<RulerIcon isActivated={misc.activeTool === tools.misc.ruler} />}
+      >
+        <div
           style={{
-            padding: 0,
-            margin: 'auto',
-            width: 40
-          }}>
-          <ResetButton
-            onClick={
-              () => {
-                setSnapWidth(snapshot.trueResolution.width)
-                setSnapHeight(snapshot.trueResolution.height)
-              }
-            }
-          />
-          <TooltipContent>
-            <H3> <FormattedMessage id='tooltip-reset-resolution' /> </H3>
-          </TooltipContent>
-        </Tooltip>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'row',
-          margin: 'auto'
-        }} >
-          <InputResolution
-            type='number'
-            min='0'
-            max='4096'
-            step='10'
-            placeholder='X'
-            onChange={
-              (e) => {
-                setSnapWidth(parseInt(
-                  Math.min(Math.max(e.target.value, 0), 4096)))
-              }
-            }
-            value={
-              snapWidth ||
-              (snapshot.trueResolution
-                ? snapshot.trueResolution.width
-                : 0)}
-          /> <H3> X </H3>
-          <InputResolution
-            type='number'
-            min='0'
-            max='2160'
-            step='10'
-            placeholder='Y'
-            onChange={
-              (e) => {
-                setSnapHeight(parseInt(Math.min(Math.max(
-                  e.target.value, 0), 2160)))
-              }
-            }
-            value={
-              snapHeight ||
-              (snapshot.trueResolution
-                ? snapshot.trueResolution.height
-                : 0)}
-          />
-        </div>
-        {snapshot.image
-          ? <div>
-            <H3
-              style={{ textAlign: 'center' }}>
-              <FormattedMessage id='snapshot-preview' />
-            </H3>
-            <ImagePreview
-              image={snapshot.image}
-              onClick={
-                () => {
-                  setSnapshot({
-                    ...snapshot,
-                    image: null
-                  })
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "space-between",
+            justifyItems: "center",
+          }}
+        >
+          <H3>
+            <FormattedMessage id="ruler-scale" />
+          </H3>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              margin: "auto",
+              marginBottom: 10,
+            }}
+          >
+            <InputResolution
+              type="number"
+              min="0.0001"
+              step="1"
+              placeholder="scale"
+              onChange={(e) => {
+                const value = e.target.value > 0.0001 ? e.target.value : 0.0001;
+                setMisc({ ...misc, scale: value });
+              }}
+              value={misc.scale}
+            />{" "}
+            <H3> cm </H3>
+          </div>
+          <Tooltip>
+            <Interactor
+              style={{ margin: "auto", width: "100%", marginBottom: 10 }}
+              activated={ruler.scaling}
+              isButton
+              onClick={() => {
+                if (!ruler.measuring) {
+                  setRuler({ ...ruler, scaling: !ruler.scaling });
                 }
+              }}
+            >
+              <H2>
+                {" "}
+                <FormattedMessage id="scale-button" />{" "}
+              </H2>
+            </Interactor>
+            <TooltipContent>
+              <H3>
+                {" "}
+                <FormattedMessage id="tooltip-scale-button" />{" "}
+              </H3>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <Interactor
+              isDisabled={!ruler.scaleSet}
+              style={{ margin: "auto", width: "100%" }}
+              activated={ruler.measuring}
+              isButton
+              onClick={() => {
+                if (!ruler.scaling) {
+                  setRuler({
+                    ...ruler,
+                    measuring: !ruler.measuring,
+                  });
+                }
+              }}
+            >
+              <H2>
+                {" "}
+                <FormattedMessage id="measure-button" />{" "}
+              </H2>
+            </Interactor>
+            <TooltipContent>
+              <H3>
+                <FormattedMessage
+                  id={
+                    ruler.scaleSet
+                      ? "tooltip-measure-button"
+                      : "tooltip-scale-needed"
+                  }
+                />
+              </H3>
+            </TooltipContent>
+          </Tooltip>
+          <H3 style={{ margin: "auto", marginTop: 10 }}>
+            <FormattedMessage id="current-measure" />
+          </H3>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              margin: "auto",
+              marginBottom: 10,
+            }}
+          >
+            <InputResolution
+              style={{ margin: "auto" }}
+              value={
+                ruler.measure ? (misc.scale * ruler.measure).toFixed(3) : 0
+              }
+              readOnly
+            />
+            <H3> cm </H3>
+          </div>
+        </div>
+      </ToolButton>
+      <ToolButton
+        toolsList={useMisc()}
+        tool={tools.misc.snapshot}
+        icon={
+          <SnapIcon isActivated={misc.activeTool === tools.misc.snapshot} />
+        }
+        interactor={{
+          isButton: true,
+        }}
+        tooltipId="tooltip-snapshot"
+      >
+        <div
+          style={{
+            minWidth: 200,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignContent: "center",
+          }}
+          data-testid="snapshot-menu"
+        >
+          <Tooltip
+            style={{
+              padding: 0,
+              margin: "auto",
+              width: 40,
+            }}
+          >
+            <ResetButton
+              onClick={() => {
+                setSnapWidth(snapshot.trueResolution.width);
+                setSnapHeight(snapshot.trueResolution.height);
+              }}
+            />
+            <TooltipContent>
+              <H3>
+                {" "}
+                <FormattedMessage id="tooltip-reset-resolution" />{" "}
+              </H3>
+            </TooltipContent>
+          </Tooltip>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              margin: "auto",
+            }}
+          >
+            <InputResolution
+              type="number"
+              min="0"
+              max="4096"
+              step="10"
+              placeholder="X"
+              onChange={(e) => {
+                setSnapWidth(
+                  parseInt(Math.min(Math.max(e.target.value, 0), 4096))
+                );
+              }}
+              value={
+                snapWidth ||
+                (snapshot.trueResolution ? snapshot.trueResolution.width : 0)
+              }
+            />{" "}
+            <H3> X </H3>
+            <InputResolution
+              type="number"
+              min="0"
+              max="2160"
+              step="10"
+              placeholder="Y"
+              onChange={(e) => {
+                setSnapHeight(
+                  parseInt(Math.min(Math.max(e.target.value, 0), 2160))
+                );
+              }}
+              value={
+                snapHeight ||
+                (snapshot.trueResolution ? snapshot.trueResolution.height : 0)
               }
             />
           </div>
-          : null
-        }
-        <GenerateDownloadButton
-          image={snapshot.image}
-          onGenerateClick={
-            () => {
+          {snapshot.image ? (
+            <div>
+              <H3 style={{ textAlign: "center" }}>
+                <FormattedMessage id="snapshot-preview" />
+              </H3>
+              <ImagePreview
+                image={snapshot.image}
+                onClick={() => {
+                  setSnapshot({
+                    ...snapshot,
+                    image: null,
+                  });
+                }}
+              />
+            </div>
+          ) : null}
+          <GenerateDownloadButton
+            image={snapshot.image}
+            onGenerateClick={() => {
               setSnapshot({
                 ...snapshot,
-                snapResolution: { width: snapWidth, height: snapHeight }
-              })
-            }
-          } />
-      </div>
-    </ToolButton>
-    <ToolButton
-      toolsList={useMisc()}
-      tool={tools.misc.photoSets}
-      icon={<PhotoSetIcon
-        isActivated={misc.activeTool === tools.misc.photoSets} />}
-      interactor={{
-        isButton: true
-      }}
-      tooltipId='tooltip-photoset'
-    >
-      <div data-testid='photoset-menu'>
-        <ChooserContainer>
-          <PhotoSetButton set='images' />
-          <PhotoSetButton set='undistorted' />
-          <PhotoSetButton set='masks' />
-        </ChooserContainer>
-      </div>
-    </ToolButton>
-  </MiscContainer>
+                snapResolution: { width: snapWidth, height: snapHeight },
+              });
+            }}
+          />
+        </div>
+      </ToolButton>
+      <ToolButton
+        toolsList={useMisc()}
+        tool={tools.misc.photoSets}
+        icon={
+          <PhotoSetIcon
+            isActivated={misc.activeTool === tools.misc.photoSets}
+          />
+        }
+        interactor={{
+          isButton: true,
+        }}
+        tooltipId="tooltip-photoset"
+      >
+        <div data-testid="photoset-menu">
+          <ChooserContainer>
+            <PhotoSetButton set="images" />
+            <PhotoSetButton set="undistorted" />
+            <PhotoSetButton set="masks" />
+          </ChooserContainer>
+        </div>
+      </ToolButton>
+    </MiscContainer>
+  );
 }

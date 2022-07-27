@@ -37,9 +37,8 @@ const ColorInput = (props) => {
     props.onSettingChanged({path:props.path, value:color})
   }, [color])
 
-  //useEffect(() => console.log(`${props.path} changed : ${props.lastSettings} current ${color}`), [props.lastSettings])
-
   useEffect(() => setColor(props.lastSettings), [props.lastSettings])
+  
   return (
     <div style={{display:"inline-block"}}>
       <button
