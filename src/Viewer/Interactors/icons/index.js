@@ -48,6 +48,7 @@ import backgroundColorRaw from 'common/assets/ico.background_color.21x21.svg'
 import zoomInRaw from 'common/assets/ico.zoom-in.14x14.svg'
 import zoomOutRaw from 'common/assets/ico.zoom-out.14x14.svg'
 import boundingBoxRaw from 'common/assets/ico.bounding_box.21x21.svg'
+import cropRaw from 'common/assets/ico.crop.21x21.svg'
 
 const rules = (props) => ({
   default: {
@@ -215,5 +216,14 @@ export const BoundingBoxIcon = IconHOC((props) => {
     rules={rules(props)}
     raw={boundingBoxRaw}
     alt='bounding box icon'
+  />
+})
+
+export const CropIcon = IconHOC((props) => {
+  return <Icon
+    {...props}
+    rules={rules(props)}
+    raw={cropRaw}
+    alt='crop icon'
   />
 })

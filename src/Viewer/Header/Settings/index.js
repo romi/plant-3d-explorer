@@ -5,23 +5,43 @@
  * To add a field type, see ./FieldTypes. Don't forget to edit the index.js for the typeReducer function.
  */
 
-import { isEqual, omit, set } from "lodash";
+import { isEqual, omit, set, get } from "lodash";
 import React, { useState, useEffect, Children } from "react";
 import cogIcon from "common/assets/ico.settings.21x21.svg";
 import { H2, H3 } from "common/styles/UI/Text/titles";
 import { typeReducer } from "./FieldTypes";
 import { useLocalStorage } from "react-use";
-import { useUserPrefs } from "flow/settings/accessors";
+import { useResetUserPrefs, useUserPrefs } from "flow/settings/accessors";
+import "./index.css";
+import styled from '@emotion/styled'
+
+const Button = styled.div`
+  display: block;
+  box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);
+  cursor: pointer;
+  vertical-align: middle;
+  padding: 5px;
+  text-align: center;
+  overflow: none;
+  font-weight: lighter;
+  &:hover : {
+    font-weight: bolder;
+    background: lightgray;
+  }
+`
+
 
 const Navigation = (props) => {
   return (
     <div
       style={{
-        display: "grid",
+        display: "inline-grid",
         gridTemplateColumns: "25px",
-        gridTemplateRows: ` 25px repeat(max(0, ${Children.count(props.children) -
-          1}), minmax(100px,1fr))`,
-        width: "25px"
+        gridTemplateRows: ` 25px repeat(max(0, ${Children.count(
+          props.children
+        ) - 1}), minmax(100px,1fr))`,
+        height:"100%",
+        verticalAlign:"top"
       }}
       {...omit(props, ["children"])}
     >
@@ -35,35 +55,28 @@ const Actions = (props) => {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: `auto 100px 100px 100px auto`,
+        gridTemplateColumns: "auto 100px 100px 100px auto",
         gridTemplateRows: "25px",
-        gridGap: "5px",
+        gridGap: "10px",
       }}
     >
       <input
+        style={{ gridColumn: "2 / 3" }}
         type="button"
-        style={{
-          gridColumn: "2 / 3",
-
-        }}
         value="Restore defaults"
-        onClick={() => props.restore(true)}
+        onClick={() => props.restore()}
       />
       <input
+        style={{ gridColumn: "3 / 4" }}
         type="button"
-        style={{
-          gridColumn: "3 / 4",
-        }}
         value="Reset"
-        onClick={() => props.reset(true)}
+        onClick={() => props.reset()}
       />
       <input
+        style={{ gridColumn: "4 / 5" }}
         type="button"
-        style={{
-          gridColumn: "4 / 5",
-        }}
         value="Confirm"
-        onClick={() => props.confirm(true)}
+        onClick={() => props.confirm()}
       />
     </div>
   );
@@ -85,20 +98,22 @@ const Background = (props) => {
         bottom: 0,
 
         zIndex: 10000,
-        backfaceVisibility:false,
-        backgroundColor:'rgba(192,192,192,0.2)',
-        pointerEvents:"none"
+        backfaceVisibility: false,
+        backgroundColor: "rgba(192,192,192,0.2)",
+        pointerEvents: "none",
       }}
     >
       <div
         style={{
-          position: "relative",
+          position: "fixed",
           backgroundColor: "white",
-          top:"100px",
-          bottom:"100px",
+          padding: 0,
+          margin: 0,
+          top: "100px",
+          bottom: "100px",
           right: "10px",
-          left:"66%",
-          pointerEvents:"auto"
+          left: "66%",
+          pointerEvents: "all",
         }}
       >
         {props.children}
@@ -110,8 +125,19 @@ const Background = (props) => {
 const NavigationItem = (props) => {
   const action = props.action;
   const name = props.name;
-  return <input style={{overflow:"hidden", textOverflow:"ellipsis", textOrientation: "upright",
-  textCombineUpright: "all",}} type="button" value={name} onClick={action} />;
+  return (
+      <Button onClick={action} active={props.active}>
+        <div style={{
+          writingMode:"vertical-lr",
+          justifyContent: 'center',
+          fontSize:'1rem',
+          marginTop:"auto",
+          marginBottom:"auto",
+        }}>
+          {name}
+        </div>
+      </Button>
+  );
 };
 
 const SettingsItem = (props) => {
@@ -150,7 +176,6 @@ const SettingsCategory = (props) => {
     <div style={{ padding: "25px" }}>
       <H3>{props.title}</H3>
       {fields.map((el, i) => {
-
         if (el.type) {
           const Element = el.type;
           return (
@@ -158,10 +183,11 @@ const SettingsCategory = (props) => {
               <Element
                 lastSettings={props.lastSettings[el.id]}
                 default={el.default}
-                reset={props.reset.settingsShouldReset}
-                restore={props.restore.settingsShouldRestore}
-                confirm={props.confirm}
-                onChangeSettings={props.onChangeSettings}
+                // reset={props.reset.settingsShouldReset}
+                // restore={props.restore.settingsShouldRestore}
+                // confirm={props.confirm}
+                onSettingChanged={props.onSettingChanged}
+                registerMenuElement={props.registerMenuElement}
                 path={[...props.path, el.id]}
               />
             </SettingsItem>
@@ -178,9 +204,9 @@ const SettingsLayer = (props) => {
     <div
       style={{
         padding: "10px",
-        height: "content", // calc the total height of the container - the height of the nav - height of footer,
-        width: "calc(100% - 25px)",
+        height: "calc(100% - 25px)", // calc the total height of the container - the height of the nav - height of footer,
         display: props.isEnabled ? "block" : "none",
+        verticalAlign:"top",
         margin: 0,
       }}
     >
@@ -194,10 +220,11 @@ const SettingsLayer = (props) => {
               <Element
                 default={el.default}
                 lastSettings={props.lastSettings[el.id]}
-                reset={props.reset.settingsShouldReset}
-                restore={props.restore.settingsShouldRestore}
-                confirm={props.confirm}
-                onChangeSettings={props.onChangeSettings}
+                // reset={props.reset.settingsShouldReset}
+                // restore={props.restore.settingsShouldRestore}
+                // confirm={props.confirm}
+                onSettingChanged={props.onSettingChanged}
+                registerMenuElement={props.registerMenuElement}
                 path={[...props.path, el.id]}
                 {...el.props}
               />
@@ -211,10 +238,11 @@ const SettingsLayer = (props) => {
               title={el.name}
               fields={el.fields}
               lastSettings={props.lastSettings[el.id]}
-              reset={props.reset}
-              restore={props.restore}
-              confirm={props.confirm}
-              onChangeSettings={props.onChangeSettings}
+              // reset={props.reset}
+              // restore={props.restore}
+              // confirm={props.confirm}
+              onSettingChanged={props.onSettingChanged}
+              registerMenuElement={props.registerMenuElement}
               path={[...props.path, el.id]}
             />
           );
@@ -227,12 +255,11 @@ const SettingsLayer = (props) => {
 
 function Panel(props) {
   const [activated, setActivated] = useState();
-  
+  useEffect(() => console.log(activated), [activated])
   const panel = (
     <Background>
-      <div style={{display:"inline-block", width:"25px"}}>
         <Navigation>
-            <input
+          <input
             type="button"
             style={{
               backgroundColor: "black",
@@ -246,37 +273,42 @@ function Panel(props) {
                 id={el.id}
                 name={el.name}
                 action={() => setActivated(el.id)}
+                active={activated === el.id}
               />
             );
           })}
         </Navigation>
-      </div>
-      <div style={{display:"inline-block"}}>
-        {props.items.map((el, i) => {
-          return (
-            <SettingsLayer
-              key={i}
-              id={el.id}
-              name={el.name}
-              isEnabled={activated === el.id}
-              fields={el.fields}
-              lastSettings={props.lastSettings[el.id]}
-              reset={props.reset}
-              restore={props.restore}
-              confirm={props.confirm}
-              onChangeSettings={props.onChangeSettings}
-              path={[...props.path, el.id]}
-            />
-          );
-        })}
-        {activated && (
-          <Actions
-            reset={props.reset.setSettingsShouldReset}
-            restore={props.restore.setSettingsShouldRestore}
-            confirm={props.confirm.setSettingsShouldConfirm}
-          />
-        )}
-      </div>
+        <div style={{
+          display:"inline-block",
+          width: "calc(100% - 25px)",
+          height: "100%",
+        }}>
+          {props.items.map((el, i) => {
+            return (
+              <SettingsLayer
+                key={i}
+                id={el.id}
+                name={el.name}
+                isEnabled={activated === el.id}
+                fields={el.fields}
+                lastSettings={props.lastSettings[el.id]}
+                //reset={props.reset}
+                //restore={props.restore}
+                //confirm={props.confirm}
+                onSettingChanged={props.onSettingChanged}
+                registerMenuElement={props.registerMenuElement}
+                path={[...props.path, el.id]}
+              />
+            );
+          })}
+          {activated && (
+              <Actions
+                reset={props.reset}
+                restore={props.restore}
+                confirm={props.confirm}
+              />
+          )}
+        </div>
     </Background>
   );
 
@@ -284,96 +316,84 @@ function Panel(props) {
 }
 
 function Settings(props) {
-  // Constant variables 
+  // Constant variables
   const id = props.menu.id;
   const menuItems = props.menu.settings;
 
   // Context and states
   // Here we manage 2 parallel state. This is super error prone, but I don't think there is a better solution.
   // Each time settings are confirmed, the Context.Provider is updated with the localStorage
-  
+
   // This line should always be the default values because first context is always default
-  const [localStorage, setLocalStorage] = useLocalStorage(id)
   const [openSettings, setOpenSettings] = useState(false);
-  const [settingsShouldReset, setSettingsShouldReset] = useState(false);
-  const [settingsShouldRestore, setSettingsShouldRestore] = useState(false);
-  const [settingsShouldConfirm, setSettingsShouldConfirm] = useState(false);
-  const [acc, setAcc] = useState([])
+  const [localStorage, setLocalStorage] = useLocalStorage(id);
+  const [menuElements, setMenuElements] = useState([]);
 
-  const [settings, setSettings] = useUserPrefs()
-  // Functions for ease of access (and readability)
-  const onChangeSettings = (settingUpdate) => {
-    setAcc(last => {
-      let index = -1;
-      const exist = last.some((element, i) => {
-        if(isEqual(element.path, settingUpdate.path))
-        {
-          index = i;
-          return true
+  const [settings, setSettings] = useUserPrefs();
+  const [restoreDefaultSettings] = useResetUserPrefs();
+
+  const registerMenuElement = (o) => {
+    setMenuElements((previous) => [...previous, o]);
+  };
+
+  const onSettingChanged = ({ path, value }) => {
+    setMenuElements((previous) => {
+      previous.forEach((element) => {
+        if (isEqual(element.path, path)) {
+          console.log(`Updating ${element.value} with ${value}`);
+          element.needsUpdate = !isEqual(value, element.needsUpdate);
+          element.value = value;
         }
-        return false;
-      })
+      });
+      return [...previous];
+    });
+  };
 
-      if(exist)
-      {
-        last.splice(index, 1)
-        return [...last, settingUpdate]
+  const onConfirmSettings = () => {
+    let object = {};
+    menuElements.forEach((element) => {
+      if (element.needsUpdate) {
+        set(object, element.path, element.value);
       }
-      
-      return [...last, settingUpdate]
-    })
-  }
+    });
+    console.log(object);
+    setSettings(Object.assign({}, settings, object));
+    setMenuElements((previous) => {
+      previous.forEach((element) => {
+        element.needsUpdate = false;
+      });
+      return [...previous];
+    });
+  };
 
-  const resetObject = { settingsShouldReset, setSettingsShouldReset }
-  const confirmObject = { settingsShouldConfirm, setSettingsShouldConfirm }
-  const restoreObject = { settingsShouldRestore, setSettingsShouldRestore }
+  const onRestoreDefaultSettings = () => {
+    menuElements.forEach((element) => {
+      element.valueSetter(element.default);
+    });
+    restoreDefaultSettings();
+  };
+
+  const onResetDefaultSettings = () => {
+    menuElements.forEach((element) => {
+      element.valueSetter(get(settings, element.path));
+    });
+  };
 
   // Prepare effect
   useEffect(() => {
-    const fn = (items) => items.forEach((val, id) => {
-      if('type' in val)
-        val.type = typeReducer(val.type)
-      else if ('fields' in val)
-        fn(val.fields);
-    });
+    const fn = (items) =>
+      items.forEach((val, id) => {
+        if ("type" in val) val.type = typeReducer(val.type);
+        else if ("fields" in val) fn(val.fields);
+      });
     fn(menuItems);
 
-    if(localStorage)
-      setSettings(Object.assign({}, settings, localStorage));
-
+    if (localStorage) setSettings(Object.assign({}, settings, localStorage));
   }, []); // Empty brackets means "runs only once". Should be executed first
 
   useEffect(() => {
-    if(settingsShouldConfirm)
-    {
-      let object = {}
-      acc.forEach((val) => {
-          set(object, val.path, val.value)
-      })
-      setSettings(object);
-      return () => {
-        setSettingsShouldConfirm(false);
-      }
-    }
-  }, [acc])
-
-  useEffect(() => {
-    return () => {
-      if (settingsShouldReset)
-        setSettingsShouldReset(false)
-    }
-  })
-
-  useEffect(() => {
-    return () => {
-      if (settingsShouldRestore)
-        setSettingsShouldRestore(false)
-    }
-  })
-
-  useEffect(() => {
-    setLocalStorage(settings)
-  }, [settings])
+    setLocalStorage(Object.assign({}, localStorage, settings));
+  }, [settings]);
 
   return (
     <div>
@@ -381,17 +401,18 @@ function Settings(props) {
         type="image"
         src={cogIcon}
         alt=""
-        onClick={() => setOpenSettings(true)}
+        onClick={() => setOpenSettings(!openSettings)}
       ></input>
       {openSettings && (
         <Panel
           close={() => setOpenSettings(false)}
           items={menuItems}
-          reset={resetObject}
-          restore={restoreObject}
-          confirm={confirmObject}
+          reset={onResetDefaultSettings}
+          restore={onRestoreDefaultSettings}
+          confirm={onConfirmSettings}
           lastSettings={settings}
-          onChangeSettings={onChangeSettings}
+          registerMenuElement={registerMenuElement}
+          onSettingChanged={onSettingChanged}
           path={[]}
         />
       )}

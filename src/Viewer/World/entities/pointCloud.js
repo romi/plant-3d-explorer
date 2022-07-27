@@ -40,8 +40,7 @@ const vertexShader = `
   varying vec3 vColor;
 
   void main() {
-    vColor = color;
-    vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+    objectvec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
     gl_PointSize = ratio * zoom * clamp(1.0 * ( 200.0 / -mvPosition.z ), 0.8, 500.0);
     gl_Position = projectionMatrix * mvPosition ;
   }
@@ -162,7 +161,7 @@ export default class PointCloud extends Object3DBase {
         color.toArray(this.geometry.attributes.color.array, pt * 3);
       this.geometry.attributes.color.needsUpdate = true
     }
-    if (!(this.labelNumbers && this.uniqueLabels) && !isEqual(this.settings.colors, settings.colors))
+    else if (this.labelNumbers && this.uniqueLabels && !isEqual(this.settings.colors, settings.colors))
       this.setColor(settings.colors)
     if(this.settings.opacity !== settings.opacity)
       this.material.uniforms.opacity.value = settings.opacity;
@@ -190,12 +189,12 @@ export default class PointCloud extends Object3DBase {
   refreshColors()
   {
     let color = new THREE.Color(0xffffff)
-    let c = this.geometry.color.array
-    this.colorsArray = new Float32Array(this.labelNumbers.length * 3)
-    this.labelNumbers.forEach((elem, i) => {
-      color.set(this.colors[elem])
-      color.toArray(c, i * 3)
-    })
+    for(let i = 0; i < this.labelNumbers.length; i++)
+    {
+      color.set(this.colors[this.labelNumbers[i]])
+      color.toArray(this.object.geometry.attributes.color.array, i*3)
+    }
+    this.object.geometry.attributes.color.needsUpdate = true;
   }
 
   setPosition(x = 0, y = 0, z = 0) {
@@ -345,5 +344,26 @@ export default class PointCloud extends Object3DBase {
       this.selectionColor.toArray(this.colorsArray, d * 3)
     })
     this.geometry.attributes.color.needsUpdate = true;
+  }
+
+  // This uses the Chamfer distance (https://pdal.io/apps/chamfer.html)
+  // This is TREMENDOUSLY slow in the current implementation. 
+  setColorScaleWithDistance(other) // Cloud
+  {
+    // Computes an array containing the min distances between this and other
+    let dists = this.vertices.reduce((acc, x) => {
+      let dist = other.vertices.reduce((prev, y, i) => {
+        let l2dist2 = x.distanceToSquared(y); // This computes (x.x + y.x)^2 + (x.y + y.y)^2 + (x.z + y.z)^2
+        if(l2dist2 < prev)
+          return {dst:l2dist2, index : i};
+        return prev
+      },{dst: +Infinity, index : -1})
+
+      acc.push(dist)
+      return acc
+    }, [])
+
+    dists.sort((a, b) => a.dst < b.dst ? -1 : (a.dst > b.dst) ? 1 : 0)
+    
   }
 }

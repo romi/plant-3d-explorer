@@ -1,31 +1,28 @@
 import React, { useState, useEffect } from "react";
 import ReactSlider from "react-slider";
-import { isEqual } from "lodash";
 
 import "./Slider.css";
 
 const Slider = (props) => {
   const [value, setValue] = useState(parseFloat(props.default));
   useEffect(() => {
-    if (props.settingsShouldReset) setValue(parseFloat(props.default));
-  }, [props.reset]);
+    props.registerMenuElement({
+      path: props.path, 
+      defaultValue: props.default,
+      needsUpdate: false,
+      valueSetter: setValue,
+      value: props.default
+    })
+  }, [])
 
   useEffect(() => {
-    if (props.settingsShouldRestore) setValue(parseFloat(props.lastSettings));
-  }, [props.restore]);
+    props.onSettingChanged({path:props.path, value:value})
+  }, [value])
 
   useEffect(() => {
-    if (
-      !isEqual(parseFloat(props.lastValue), value) &&
-      props.confirm.settingsShouldConfirm
-    ) {
-      props.onChangeSettings({
-        path: props.path,
-        value: value,
-      });
-    }
-  }, [props.confirm.settingsShouldConfirm]);
-
+    setValue(props.lastSettings)
+  }, [props.lastSettings])
+  
   return (
     <div style={{ display: "inline-block", position: "relative" }}>
       <ReactSlider

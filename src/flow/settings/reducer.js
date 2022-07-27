@@ -110,9 +110,9 @@ export default function settingsReducer(state = initialState, action) {
 
       return {
         ...state,
-        userPrefs: Object.assign(state.userPrefs, object)
+        userPrefs: Object.assign({}, state.userPrefs, object)
       };
-    case "RESET_USERPREFS":
+    case 'RESET_USERPREFS':
       return {
         ...state,
         userPrefs: initialState.userPrefs,

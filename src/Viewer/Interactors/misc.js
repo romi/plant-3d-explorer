@@ -8,7 +8,7 @@ import { useSnapshot, useRuler, useAxisAlignedBoundingBox }
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 import { H3, H2 } from 'common/styles/UI/Text/titles'
 
-import { SnapIcon, PhotoSetIcon, RulerIcon } from 'Viewer/Interactors/icons'
+import { SnapIcon, PhotoSetIcon, RulerIcon, CropIcon } from 'Viewer/Interactors/icons'
 import { Interactor } from 'Viewer/Interactors'
 
 import snapButton from 'common/assets/ico.snap.24x24.svg'
@@ -260,7 +260,7 @@ export default function () {
       <ToolButton toolsList={useMisc()}
         tool={tools.misc.aabb}
         tooltipId='tooltip-tool-aabb'
-        icon={<RulerIcon
+        icon={<CropIcon
           isActivated={misc.activeTool === tools.misc.aabb} />} >
         <H3 style={{ padding: 7.5, margin: 0 }}>
           <FormattedMessage id="bbox-min"></FormattedMessage>

@@ -24,27 +24,22 @@ const ColorInput = (props) => {
   const [picking, setPicking] = useState(false);
 
   useEffect(() => {
-    if(props.reset)
-      setColor(props.default)
-  }, [props.reset]);
+    props.registerMenuElement({
+      path: props.path, 
+      defaultValue: props.default,
+      needsUpdate: false,
+      valueSetter: setColor,
+      value : props.default
+    })
+  }, [])
 
   useEffect(() => {
-    if(props.restore)
-      setColor(props.lastSettings)
-  }, [props.restore])
+    props.onSettingChanged({path:props.path, value:color})
+  }, [color])
 
-  useEffect(() => {
-    if(!(isEqual(props.lastValue, color)) && props.confirm.settingsShouldConfirm)
-    {
-      props.onChangeSettings({
-        path: props.path,
-        value: color
-      })
-    }
-  }, [props.confirm.settingsShouldConfirm])
+  //useEffect(() => console.log(`${props.path} changed : ${props.lastSettings} current ${color}`), [props.lastSettings])
 
   useEffect(() => setColor(props.lastSettings), [props.lastSettings])
-
   return (
     <div style={{display:"inline-block"}}>
       <button

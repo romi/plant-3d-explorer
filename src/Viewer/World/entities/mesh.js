@@ -61,18 +61,13 @@ export default class Mesh extends Object3DBase {
     this.object.visible = boolean
   }
 
-  setColor (color) {
-    if (color) {
-      this.object.material.color = new THREE.Color(color.rgb)
-      this.object.material.opacity = color.a
-    }
-  }
-
   setSettings(settings) {
 
     if(this.settings.color !== settings.color || this.settings.opacity !== settings.opacity)
-      this.setColor({rgb: settings.color, a: settings.opacity})
-
+    {
+      this.object.material.color = new THREE.Color(settings.color)
+      this.object.material.opacity = settings.opacity
+    }
     this.settings = settings
   }
 }

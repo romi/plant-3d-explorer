@@ -33,7 +33,7 @@
       },
       {
         "id": "pcd",
-        "name": "PointCloud",
+        "name": "PCD",
         "fields": [
           {
             "id": "color",
@@ -68,7 +68,7 @@
       },
       {
         "id": "segmentedPcd",
-        "name": "Segmented Point Cloud",
+        "name": "Segmented PCD",
         "fields": [
           {
             "id": "colors",
@@ -133,7 +133,7 @@
       },
       {
         "id": "groundTruthPcd",
-        "name": "Point Cloud ground truth",
+        "name": "PCD ground truth",
         "fields": [
           {
             "id": "color",

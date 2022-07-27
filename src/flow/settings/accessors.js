@@ -132,3 +132,13 @@ export const useUserPrefs = useAccessor(
       (value) => ({type: 'SET_USERPREFS', value})
     ]
   )
+  
+  export const useResetUserPrefs = useAccessor(
+    [],
+    [
+      (value) => ({
+        type: 'RESET_USERPREFS',
+        value
+      })
+    ]
+  )

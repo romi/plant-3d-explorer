@@ -396,6 +396,11 @@ export default class World {
     }
   }
 
+  computeGroundTruthToReconstructedDistance()
+  {
+    console.log(this.pointCloudGroundTruth.setColorScaleWithDistance(this.pointCloud));
+  }
+
   setAxisAlignedBoundingBoxFromPointCloud(color)
   {
     this.aabb = new AABB(this.viewerObjects, this.pointCloud.geometry.boundingBox, color)
@@ -450,12 +455,13 @@ export default class World {
     this.segmentedPointCloud.setLabels(labels, points)
   }
 
-  setSkeletonPoints (skeleton) {
-    this.skeleton = new Skeleton(skeleton, this.viewerObjects)
+  setSkeletonPoints (skeleton, settings) {
+    this.skeleton = new Skeleton(skeleton, this.viewerObjects, settings)
   }
 
   setSkeletonSettings (settings) {
-    this.skeleton.setSettings(settings)
+    if(this.skeleton)
+      this.skeleton.setSettings(settings)
   }
 
   setAnglesPoints (angles) {
@@ -466,15 +472,8 @@ export default class World {
     if (color) this.scene.background = new THREE.Color(color)
   }
 
-
-  setPointCloudSize(sampleSize)
-  {
-      this.pointCloud.setCloudResolution(sampleSize)
-  }
-
   setSegmentedPointCloudSize(sampleSize)
   {
-
       this.segmentedPointCloud.setCloudResolution(sampleSize)
   }
 

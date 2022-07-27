@@ -63,9 +63,6 @@ export default class SegmentedPointCloud extends PointCloud {
     }
   }
 
-  setCloudResolution(sampleSize) {
-  }
-
   colorSelectedPoints (selection) {
     selection.forEach((d) => {
       this.selectionColor.toArray(this.colorsArray, d * 3)

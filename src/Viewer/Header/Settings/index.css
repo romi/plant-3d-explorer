@@ -1,0 +1,50 @@
+/* Settings Panel */
+/* This one ain't working for some reason. */
+.settingsBackground {
+    position: "fixed";
+    padding: 0;
+    margin: 0;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    z-index: 100001;
+    backface-visibility:false;
+    background-color:'rgba(192,192,192,0.2)';
+    pointer-events: "none";
+}
+
+
+
+/* Navigation */
+.navigationItem {
+    writing-mode: vertical-rl;
+    text-combine-upright: none;
+    overflow: none;
+    text-overflow: ellipsis;
+    text-align: center;
+    border-color: green;
+    border-radius: 2px;
+}
+
+/* Action and buttons */
+.actionWrapper {
+    display: "grid";
+    grid-template-columns: "auto 100px 100px 100px auto";
+    grid-template-rows: "25px";
+    grid-gap: "10px";
+}
+
+.restore {
+    grid-column: "2 / 3";
+}
+
+.reset {
+    grid-column: "3 / 4";
+}
+
+.confirm {
+    grid-column: "4 / 5";
+}

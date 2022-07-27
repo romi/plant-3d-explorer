@@ -396,7 +396,7 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
-      if (world) {
+      if (world && meshGeometry) {
         world.setMeshSettings(settings.mesh)
       }
     },
@@ -466,7 +466,7 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world && scan && scan.data.skeleton) {
-        world.setSkeletonPoints(scan.data.skeleton)
+        world.setSkeletonPoints(scan.data.skeleton, settings.skeleton)
         world.setLayers(layers)
       }
     },
@@ -476,10 +476,10 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world && scan && scan.data.skeleton) {
-        world.setSkeletonColor({rgb : settings.skeleton.color, a: settings.skeleton.opacity})
+        world.setSkeletonSettings(settings.skeleton)
       }
     },
-    [settings.skeleton.color, settings.skeleton.opacity]
+    [settings.skeleton]
   )
 
   useEffect(
