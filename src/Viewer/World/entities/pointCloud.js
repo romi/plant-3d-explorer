@@ -29,7 +29,7 @@ License along with this program.  If not, see
 import { isEqual } from "lodash";
 import * as THREE from "three";
 import Object3DBase from "./Object3DBase";
-import { octree } from "d3-octree";
+// import { octree } from "d3-octree";
 const vertexShader = `
   uniform float zoom;
   uniform float ratio;
@@ -105,6 +105,7 @@ export default class PointCloud extends Object3DBase {
     const attr = new THREE.BufferAttribute(this.colorsArray, 3)
     this.geometry.setAttribute('color', attr)
 
+    //this.octree = new octree()
     // This is kinda ugly but it aims to be explicit. 
     //
     let pos = this.geometry.getAttribute('position');
@@ -142,6 +143,8 @@ export default class PointCloud extends Object3DBase {
       }
     }
     this.vertices = this.bufferToVector3(pos);
+
+    //this.octree.addAll()
     this.colorVectors = this.bufferToVector3(col);
     this.geometry.computeVertexNormals();
 
@@ -155,6 +158,7 @@ export default class PointCloud extends Object3DBase {
 
   setSettings(settings)
   {
+    console.log(settings)
     if(!(this.labelNumbers && this.uniqueLabels) && this.settings.color !== settings.color)
     {
       let color = new THREE.Color(settings.color)

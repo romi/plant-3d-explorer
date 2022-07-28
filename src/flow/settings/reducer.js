@@ -29,7 +29,7 @@ License along with this program.  If not, see
 
 import MenuDescription from "Viewer/Header/Settings/MenuDescription.json";
 import prepareSettings from "Viewer/Header/Settings/prepareSettings";
-import { set } from "lodash";
+
 export const initialState = {
   layers: {
     mesh: false,
@@ -102,16 +102,11 @@ export default function settingsReducer(state = initialState, action) {
       };
     // This reducer support passing an object representing the settings to update 
     case "SET_USERPREFS":
-      let object = {}
-      if("value" in action.value && "path" in action.value)
-        set(object, action.value.path, action.value.value);
-      else
-        object = action.value
 
       return {
         ...state,
-        userPrefs: Object.assign({}, state.userPrefs, object)
-      };
+        userPrefs: action.value
+      }
     case 'RESET_USERPREFS':
       return {
         ...state,

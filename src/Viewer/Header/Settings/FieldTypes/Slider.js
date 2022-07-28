@@ -5,12 +5,14 @@ import "./Slider.css";
 
 const Slider = (props) => {
   const [value, setValue] = useState(parseFloat(props.default));
+  const onValueChanged = (value) => isFinite(value) ? setValue(value) : setValue(props.default)
+  
   useEffect(() => {
     props.registerMenuElement({
       path: props.path, 
       defaultValue: props.default,
       needsUpdate: false,
-      valueSetter: setValue,
+      valueSetter: onValueChanged,
       value: props.default
     })
   }, [])
@@ -20,7 +22,7 @@ const Slider = (props) => {
   }, [value])
 
   useEffect(() => {
-    setValue(props.lastSettings)
+    setValue(parseFloat(props.lastSettings))
   }, [props.lastSettings])
   
   return (

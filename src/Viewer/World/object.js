@@ -34,7 +34,6 @@ import { green } from 'common/styles/colors'
 
 import Mesh from './entities/mesh'
 import PointCloud from './entities/pointCloud'
-import SegmentedPointCloud from './entities/segmentedPointCloud'
 import Skeleton from './entities/skeleton'
 import Angles from './entities/angles'
 import Workspace from './entities/workspace'

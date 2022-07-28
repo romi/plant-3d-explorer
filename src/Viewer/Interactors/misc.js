@@ -255,7 +255,6 @@ export default function () {
   const [misc, setMisc] = useMisc()
   const [ruler, setRuler] = useRuler()
   const [aabb, setAABB] = useAxisAlignedBoundingBox()
-  const [doShowAABB, setDoShowAABB] = useState(false)
 
   useEffect(() => {
     if (misc.activeTool === null) {

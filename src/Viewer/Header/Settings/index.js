@@ -5,7 +5,7 @@
  * To add a field type, see ./FieldTypes. Don't forget to edit the index.js for the typeReducer function.
  */
 
-import { isEqual, omit, set, get } from "lodash";
+import { isEqual, omit, set, get, cloneDeep } from "lodash";
 import React, { useState, useEffect, Children } from "react";
 import cogIcon from "common/assets/ico.settings.21x21.svg";
 import { H2, H3 } from "common/styles/UI/Text/titles";
@@ -182,9 +182,6 @@ const SettingsCategory = (props) => {
               <Element
                 lastSettings={props.lastSettings[el.id]}
                 default={el.default}
-                // reset={props.reset.settingsShouldReset}
-                // restore={props.restore.settingsShouldRestore}
-                // confirm={props.confirm}
                 onSettingChanged={props.onSettingChanged}
                 registerMenuElement={props.registerMenuElement}
                 path={[...props.path, el.id]}
@@ -339,7 +336,7 @@ function Settings(props) {
     setMenuElements((previous) => {
       previous.forEach((element) => {
         if (isEqual(element.path, path)) {
-          element.needsUpdate = !isEqual(value, element.needsUpdate);
+          element.needsUpdate = !isEqual(value, element.value);
           element.value = value;
         }
       });
@@ -348,13 +345,13 @@ function Settings(props) {
   };
 
   const onConfirmSettings = () => {
-    let object = {};
     menuElements.forEach((element) => {
       if (element.needsUpdate) {
-        set(object, element.path, element.value);
+        set(settings, element.path, element.value)
       }
     });
-    setSettings(Object.assign({}, settings, object));
+    // Deep copy to be sure the reference is different
+    setSettings(cloneDeep(settings));
     setMenuElements((previous) => {
       previous.forEach((element) => {
         element.needsUpdate = false;
@@ -362,6 +359,7 @@ function Settings(props) {
       return [...previous];
     });
   };
+
 
   const onRestoreDefaultSettings = () => {
     menuElements.forEach((element) => {
@@ -389,7 +387,7 @@ function Settings(props) {
   }, []); // Empty brackets means "runs only once". Should be executed first
 
   useEffect(() => {
-    setLocalStorage(Object.assign({}, localStorage, settings));
+    setLocalStorage(settings);
   }, [settings]);
 
   return (

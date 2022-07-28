@@ -2,8 +2,6 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { SketchPicker } from "react-color";
 
-import { isEqual } from "lodash";
-
 // eslint-disable-next-line
 const hex2rgb = (hex) => {
   return {
