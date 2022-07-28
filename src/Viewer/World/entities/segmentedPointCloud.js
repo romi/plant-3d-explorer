@@ -20,8 +20,8 @@ const vertexShader = `
 `
 
 export default class SegmentedPointCloud extends PointCloud {
-  constructor (geometry, parent, segmentation = null, uniqueLabels = null) {
-    super(geometry, parent)
+  constructor (geometry, parent, settings, segmentation = null, uniqueLabels = null) {
+    super(geometry, parent, settings)
 
     const labelNumbers = segmentation.labels.map((d) => {
       return uniqueLabels.indexOf(d)
@@ -29,26 +29,7 @@ export default class SegmentedPointCloud extends PointCloud {
     this.labelNumbers = labelNumbers
     this.uniqueLabels = uniqueLabels
 
-    function hslToHex (h, s, l) {
-      l /= 100
-      const a = s * Math.min(l, 1 - l) / 100
-      const f = n => {
-        const k = (n + h / 30) % 12
-        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
-        return Math.round(255 * color).toString(16).padStart(2, '0') // convert to Hex and prefix "0" if needed
-      }
-      return `#${f(0)}${f(8)}${f(4)}`
-    }
-
-    // Set default colors
-    var col = JSON.parse(window.localStorage.getItem('defaultSegmentedColors'))
-    const defaultColors = uniqueLabels.map((_, i) => {
-      if (col != null && col[i] != null) {
-        return col[i]
-      } else {
-        return hslToHex(Math.round((360 / uniqueLabels.length) * i), 100, 50)
-      }
-    })
+    const defaultColors = uniqueLabels.map((val) => this.settings.colors[val])
     this.selectionColor = new THREE.Color(0.7, 0.7, 1)
     this.colors = defaultColors
 
@@ -60,18 +41,26 @@ export default class SegmentedPointCloud extends PointCloud {
     })
 
     // Change material to use customColor
-    this.object.material.setValues({ vertexShader: vertexShader })
     const attr = new THREE.BufferAttribute(this.colorsArray, 3)
     this.geometry.setAttribute('customColor', attr)
     this.colorVectors = this.bufferToVector3(attr);
 
-    this.colorVectors = this.bufferToVector3(this.geometry.getAttribute('customColor'))
-
+    this.object.material.setValues({ vertexShader: vertexShader })
   }
 
-  setCloudResolution(sampleSize) {
-    super.setCloudResolution(sampleSize)
-    this.object.material.setValues({ vertexShader: vertexShader })
+  setSettings(settings, force = false)
+  {
+    if(this.settings.color !== settings.color && !force)
+      this.material.uniforms.color.value = new THREE.Color(settings.color);
+    if(this.settings.opacity !== settings.opacity && !force)
+      this.material.uniforms.opacity.value = settings.opacity;
+    if(this.settings.zoom !== settings.zoom && !force)
+      this.material.uniforms.zoom.value = settings.zoom
+    if(this.settings.density !== settings.density && !force)
+    {
+      super.setCloudResolution(settings.density)
+      this.object.material.setValues({ vertexShader: vertexShader })
+    }
   }
 
   colorSelectedPoints (selection) {
@@ -89,6 +78,7 @@ export default class SegmentedPointCloud extends PointCloud {
 
   setColor (colors) {
     window.clearTimeout(this.timeoutFunction)
+    colors = Object.keys(colors).reduce((acc, val) => {acc.push(colors[val]); return acc;}, [])
     if (colors && colors.length === this.colors.length) {
       this.colors = colors
       this.timeoutFunction = setTimeout(() => { this.refreshColors() }, 500)
@@ -188,7 +178,7 @@ export default class SegmentedPointCloud extends PointCloud {
       color.toArray(this.colorsArray, i * 3)
     })
     this.geometry.removeAttribute('customColor')
-    this.geometry.addAttribute('customColor',
+    this.geometry.setAttribute('customColor',
       new THREE.BufferAttribute(this.colorsArray, 3))
-  }1
+  }
 }

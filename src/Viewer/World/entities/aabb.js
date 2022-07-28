@@ -5,15 +5,32 @@
 
 import { Vector3, Box3, Box3Helper } from "three";
 export default class AABB {
-  constructor(parent, box) {
+  constructor(parent, box, color) {
+    this.color = color
     this.ogBox = new Box3(
       new Vector3(parseFloat(box.min.x), parseFloat(box.min.y), parseFloat(box.min.z)), 
       new Vector3(parseFloat(box.max.x), parseFloat(box.max.y), parseFloat(box.max.z))
     )
     
-    this.object = new Box3Helper(this.ogBox, 0xffffff);
+    this.object = new Box3Helper(this.ogBox, this.color);
     this.object.renderOrder = -1;
     if(parent) parent.add(this.object);
+  }
+
+  setBBFromSelfBox()
+  {
+    let oldObj = this.object
+    const newObj = new Box3Helper(this.box, this.color);
+    newObj.visible = oldObj.visible
+    oldObj.parent.add(newObj)
+    newObj.parent.remove(oldObj)
+    this.object = newObj
+  }
+
+  setColor(color)
+  {
+    this.color = color
+    this.setBBFromSelfBox()
   }
 
   setVisible(boolean)
@@ -29,13 +46,7 @@ export default class AABB {
       new Vector3(parseFloat(aabb.max.x), parseFloat(aabb.max.y), parseFloat(aabb.max.z))
     )
     
-    let oldObj = this.object
-    const newObj = new Box3Helper(this.box, 0xffffff);
-    newObj.visible = oldObj.visible
-    //oldObj.visible = false
-    oldObj.parent.add(newObj)
-    newObj.parent.remove(oldObj)
-    this.object = newObj
+    this.setBBFromSelfBox()
     
   }
 

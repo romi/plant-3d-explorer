@@ -27,6 +27,9 @@ License along with this program.  If not, see
 
 */
 
+import MenuDescription from "Viewer/Header/Settings/MenuDescription.json";
+import prepareSettings from "Viewer/Header/Settings/prepareSettings";
+
 export const initialState = {
   layers: {
     mesh: false,
@@ -36,67 +39,80 @@ export const initialState = {
     angles: false,
     cameras: false,
     segmentedPointCloud: false,
-    axisAlignedBoundingBox : false,
+    axisAlignedBoundingBox: false,
   },
   panels: {
-    'panels-angles': false,
-    'panels-distances': false,
-    'panels-evaluation': false
+    "panels-angles": false,
+    "panels-distances": false,
+    "panels-evaluation": false,
   },
   evaluation: {
-    activeEvaluation: 'segmentation2D',
-    data: 'precision'
+    activeEvaluation: "segmentation2D",
+    data: "precision",
   },
   layerTools: {
-    activeTool: null
+    activeTool: null,
   },
   misc: {
     activeTool: null,
-    scale: 1
+    scale: 1,
   },
   carousel: {
-    photoSet: 'images'
-  }
-}
+    photoSet: "images",
+  },
+  userPrefs: prepareSettings(MenuDescription.settings),
+};
 
-export default function settingsReducer (state = initialState, action) {
+export default function settingsReducer(state = initialState, action) {
   switch (action.type) {
-    case 'RESET_SETTINGS':
+    case "RESET_SETTINGS":
       return {
         ...state,
-        ...initialState
-      }
-    case 'SET_LAYERS':
+        ...initialState,
+      };
+    case "SET_LAYERS":
       return {
         ...state,
-        layers: action.value
-      }
-    case 'SET_PANELS':
+        layers: action.value,
+      };
+    case "SET_PANELS":
       return {
         ...state,
-        panels: action.value
-      }
-    case 'SET_EVALUATION':
+        panels: action.value,
+      };
+    case "SET_EVALUATION":
       return {
         ...state,
-        evaluation: action.value
-      }
-    case 'SET_LAYER_TOOLS':
+        evaluation: action.value,
+      };
+    case "SET_LAYER_TOOLS":
       return {
         ...state,
-        layerTools: action.value
-      }
-    case 'SET_MISC':
+        layerTools: action.value,
+      };
+    case "SET_MISC":
       return {
         ...state,
-        misc: action.value
-      }
-    case 'SET_CAROUSEL':
+        misc: action.value,
+      };
+    case "SET_CAROUSEL":
       return {
         ...state,
-        carousel: action.value
+        carousel: action.value,
+      };
+    // This reducer support passing an object representing the settings to update 
+    case "SET_USERPREFS":
+
+      return {
+        ...state,
+        userPrefs: action.value
       }
+    case 'RESET_USERPREFS':
+      return {
+        ...state,
+        userPrefs: initialState.userPrefs,
+      };
     default:
-      return state
+      return state;
   }
 }

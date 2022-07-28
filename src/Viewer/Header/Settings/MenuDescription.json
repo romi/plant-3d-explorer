@@ -1,0 +1,242 @@
+{
+    "id": "user-settings",
+    "settings": [
+      {
+        "id": "general",
+        "name": "General",
+        "fields": [
+          {
+            "id": "backgroundColor",
+            "name": "Background Color",
+            "type": "colorpicker",
+            "default": "#ECF3F0"
+          }
+        ]
+      },
+      {
+        "id": "mesh",
+        "name": "Mesh",
+        "fields": [
+          {
+            "id": "color",
+            "name": "Color",
+            "type": "colorpicker",
+            "default": "#96C0A7"
+          },
+          {
+            "id": "opacity",
+            "name": "Mesh opacity",
+            "type": "slider",
+            "default": "1"
+          }
+        ]
+      },
+      {
+        "id": "pcd",
+        "name": "PCD",
+        "fields": [
+          {
+            "id": "color",
+            "name": "Color",
+            "type": "colorpicker",
+            "default": "#F8DE96"
+          },
+          {
+            "id": "density",
+            "name": "Cloud density",
+            "type": "slider",
+            "default": 0.75
+          },
+          {
+            "id": "opacity",
+            "name": "Cloud opacity",
+            "type": "slider",
+            "default": 1
+          },
+          {
+            "id": "zoom",
+            "name": "Point size",
+            "type": "slider",
+            "default": 2,
+            "props" : {
+              "min": 1,
+              "max": 4,
+              "step": 1
+            }
+          }
+        ]
+      },
+      {
+        "id": "segmentedPcd",
+        "name": "Segmented PCD",
+        "fields": [
+          {
+            "id": "colors",
+            "name": "Colors",
+            "fields": [
+              {
+                "id": "fruit",
+                "name": "Fruit",
+                "type": "colorpicker",
+                "default" : "#FFB300"
+              },
+              {
+                "id": "pedicel",
+                "name": "Pedicel",
+                "type": "colorpicker",
+                "default": "#803E75"
+              },
+              {
+                "id": "stem",
+                "name": "Stem",
+                "type": "colorpicker",
+                "default": "#FF6800"
+              },
+              {
+                "id": "flower",
+                "name": "Flower",
+                "type": "colorpicker",
+                "default":"#A6BDD7"
+              },
+              {
+                "id": "leaf",
+                "name": "Leaf",
+                "type": "colorpicker",
+                "default": "#C10020"
+              }
+            ]
+          },
+          {
+            "id": "density",
+            "name": "Cloud density",
+            "type": "slider",
+            "default": 0.75
+          },
+          {
+            "id": "opacity",
+            "name": "Cloud opacity",
+            "type": "slider",
+            "default": 1
+          },
+          {
+            "id": "zoom",
+            "name": "Point size",
+            "type": "slider",
+            "default": 2,
+            "props" : {
+              "min": 1,
+              "max": 4,
+              "step": 1
+            }
+          }
+        ]
+      },
+      {
+        "id": "groundTruthPcd",
+        "name": "PCD ground truth",
+        "fields": [
+          {
+            "id": "color",
+            "name": "Color",
+            "type": "colorpicker",
+            "default": "#F8DE96"
+          },
+          {
+            "id": "density",
+            "name": "Cloud density",
+            "type": "slider",
+            "default": 0.75
+          },
+          {
+            "id": "opacity",
+            "name": "Cloud opacity",
+            "type": "slider",
+            "default": 1
+          },
+          {
+            "id": "zoom",
+            "name": "Point size",
+            "type": "slider",
+            "default": 2,
+            "props" : {
+              "min": 1,
+              "max": 4,
+              "step": 1
+            }
+          }
+        ]
+      },
+      {
+        "id": "skeleton",
+        "name": "Skeleton",
+        "fields": [
+          {
+            "id": "color",
+            "name": "Color",
+            "type": "colorpicker",
+            "default": "#D0021B"
+          },
+          {
+            "id": "opacity",
+            "name": "Cloud opacity",
+            "type": "slider",
+            "default": 0.7
+          }
+        ]
+      },
+      {
+        "id": "organs",
+        "name": "Organs",
+        "fields": [
+          {
+            "id" : "organ1",
+            "name" : "Organ 1",
+            "fields" : [
+              {
+                "id": "color",
+                "name": "Color",
+                "type": "colorpicker",
+                "default": "#BD10E0"
+              },          
+              {
+                "id": "opacity",
+                "name": "Opacity",
+                "type": "slider",
+                "default": 0.5
+              }
+            ]
+          },
+          {
+            "id" : "organ2",
+            "name" : "Organ 2",
+            "fields" : [
+              {
+                "id": "color",
+                "name": "Color",
+                "type": "colorpicker",
+                "default": "#E691F7"
+              },          
+              {
+                "id": "opacity",
+                "name": "Opacity",
+                "type": "slider",
+                "default": 0.5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "aabb",
+        "name": "Bounding box",
+        "fields": [
+          {
+            "id": "color",
+            "name": "Color",
+            "type": "colorpicker",
+            "default": "#D0021B"
+          }
+        ]
+      }
+    ]
+  }

@@ -37,22 +37,25 @@ import ReduxProvider from 'common/redux'
 
 import App from './App'
 import * as serviceWorker from './serviceWorker'
-
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister()
 
-const render = (Component) => {
-  return ReactDOM.render(
-    <div>
+const Main = () => {
+  return <div>
       <GlobalStyles />
       <ReduxProvider>
         <IntlProvider messages={messages}>
           <App />
         </IntlProvider>
       </ReduxProvider>
-    </div>,
+  </div>
+
+}
+
+const render = (Component) => {
+  return ReactDOM.render( <Main/>,
     document.getElementById('root')
   )
 }

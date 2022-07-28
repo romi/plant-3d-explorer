@@ -34,7 +34,6 @@ import { green } from 'common/styles/colors'
 
 import Mesh from './entities/mesh'
 import PointCloud from './entities/pointCloud'
-import SegmentedPointCloud from './entities/segmentedPointCloud'
 import Skeleton from './entities/skeleton'
 import Angles from './entities/angles'
 import Workspace from './entities/workspace'
@@ -43,13 +42,12 @@ import AABB from './entities/aabb'
 const clock = new THREE.Clock()
 
 export default class World {
-  constructor (width, height, elem) {
+  constructor (width, height, elem, color) {
     this.width = width
     this.height = height
     this.elem = elem
     this.scene = new THREE.Scene()
-    var color = window.localStorage.getItem('defaultBgroundColor')
-    this.scene.background = (color != null) ? new THREE.Color(color) : '#ECF3F0'
+    this.scene.background = new THREE.Color(color)
     // this.originalBackground = new THREE.Color(0xECF3F0)
     // this.blackBackground = new THREE.Color(0x232122)
     this.raycaster = new THREE.Raycaster()
@@ -89,6 +87,7 @@ export default class World {
     this.setSize(width, height)
 
     this.viewerObjects.add(this.cameraGroup)
+    //this.viewerObjects.scale.multiply(new THREE.Vector3(1, 1, -1))
 
     const animate = () => {
       this.render()
@@ -192,13 +191,13 @@ export default class World {
     this.workspace = workspace
     this.setWorkSpaceBox(workspace)
 
-    this.viewerObjects.position.x = -(workspace.x[1] - workspace.x[0])
-    this.viewerObjects.position.y = -(workspace.y[1] - workspace.y[0])
-    this.viewerObjects.position.z = -(workspace.z[1] - workspace.z[0])
+    //this.viewerObjects.position.x = -(workspace.x[1] - workspace.x[0])
+    //this.viewerObjects.position.y = -(workspace.y[1] - workspace.y[0])
+    //this.viewerObjects.position.z = -(workspace.z[1] - workspace.z[0])
 
-    this.viewerObjects.position.x = -(workspace.x[1] - workspace.x[0])
-    this.viewerObjects.position.y = -(workspace.y[1] - workspace.y[0])
-    this.viewerObjects.position.z = workspace.z[1] - (workspace.z[1] - workspace.z[0])
+    //this.viewerObjects.position.x = -(workspace.x[1] - workspace.x[0])
+    //this.viewerObjects.position.y = -(workspace.y[1] - workspace.y[0])
+    //this.viewerObjects.position.z = workspace.z[1] - (workspace.z[1] - workspace.z[0])
   }
 
   setCamera (camera) {
@@ -361,12 +360,7 @@ export default class World {
 
   setOrganColors (organColors) {
     if (!this.anlesPoints) return
-    this.anlesPoints.setCustomColors(organColors)
-  }
-
-  setGlobalOrganColors (globalOrganColors) {
-    if (!this.anlesPoints) return
-    this.anlesPoints.setGlobalColors(globalOrganColors)
+    this.anlesPoints.setGlobalColors(organColors)
   }
 
   setHighlightedAngle (indexes) {
@@ -374,24 +368,41 @@ export default class World {
     this.anlesPoints.setHighlighted(indexes)
   }
 
-  setMeshGeometry (geometry) {
-    this.mesh = new Mesh(geometry, this.viewerObjects)
+  setMeshGeometry (geometry, settings) {
+    this.mesh = new Mesh(geometry, this.viewerObjects, settings)
   }
 
-  setMeshColor (color) {
+  setMeshSettings (settings) {
     if (this.mesh) {
-      this.mesh.setColor(color)
+      this.mesh.setSettings(settings)
     }
   }
 
-  setPointcloudGeometry (geometry) {
+  setPointCloudGeometry (geometry, settings) {
     geometry.computeBoundingBox()
-    this.pointCloud = new PointCloud(geometry, this.viewerObjects)
+    this.pointCloud = new PointCloud(geometry, this.viewerObjects, settings)
   }
 
-  setAxisAlignedBoundingBoxFromPointCloud()
+  setPointCloudSettings(settings)
   {
-    this.aabb = new AABB(this.viewerObjects, this.pointCloud.geometry.boundingBox)
+    if(this.pointCloud)
+    this.pointCloud.setSettings(settings);
+  }
+
+  setPointCloudGroundTruthZoom(zoomLevel) {
+    if (this.pointCloudGroundTruth) {
+      this.pointCloudGroundTruth.setZoomLevel(zoomLevel)
+    }
+  }
+
+  computeGroundTruthToReconstructedDistance()
+  {
+    console.log(this.pointCloudGroundTruth.setColorScaleWithDistance(this.pointCloud));
+  }
+
+  setAxisAlignedBoundingBoxFromPointCloud(color)
+  {
+    this.aabb = new AABB(this.viewerObjects, this.pointCloud.geometry.boundingBox, color)
   }
 
   setAxisAlignedBoundingBox(aabb)
@@ -405,44 +416,51 @@ export default class World {
     return this.aabb.getBoundingBox()
   }
 
+  setAxisAlignedBoundingBoxColor(color)
+  {
+    this.aabb.setColor(color)
+  }
+
   resetAxisAlignedBoundingBox()
   {
     this.aabb.resetBoundingBox()
   }
 
-  setPointcloudGroundTruthGeometry (geometry) {
+  setPointCloudGroundTruthGeometry (geometry, opacity, color) {
     geometry.computeBoundingBox()
-    this.pointCloudGroundTruth = new PointCloud(geometry, this.viewerObjects)
+    this.pointCloudGroundTruth = new PointCloud(geometry, this.viewerObjects, opacity, color)
   }
 
-  setSegmentedPointCloudGeometry (geometry, segmentation, uniqueLabels) {
+  setSegmentedPointCloudGeometry (geometry, segmentation, uniqueLabels, settings) {
     geometry.computeBoundingBox()
-    this.segmentedPointCloud = new SegmentedPointCloud(geometry,this.viewerObjects,
+    this.segmentedPointCloud = new PointCloud(geometry,this.viewerObjects, settings,
       segmentation, uniqueLabels)
+  }
+
+  setSegmentedPointCloudSettings(settings)
+  {
+    this.segmentedPointCloud.setSettings(settings)
   }
 
   getSegementedPointCloudColors () {
     return this.segmentedPointCloud.getColors()
   }
 
-  setSegmentedPointCloudColor (color) {
-    this.segmentedPointCloud.setColor(color)
+  setSegmentedPointCloudColors(colors) {
+    this.segmentedPointCloud.setColor(colors)
   }
 
   setSegmentedPointCloudLabels (labels, points) {
     this.segmentedPointCloud.setLabels(labels, points)
   }
 
-  setPointCloudColor (color) {
-    this.pointCloud.setColor(color)
+  setSkeletonPoints (skeleton, settings) {
+    this.skeleton = new Skeleton(skeleton, this.viewerObjects, settings)
   }
 
-  setSkeletonPoints (skeleton) {
-    this.skeleton = new Skeleton(skeleton, this.viewerObjects)
-  }
-
-  setSkeletonColor (color) {
-    this.skeleton.setColor(color)
+  setSkeletonSettings (settings) {
+    if(this.skeleton)
+      this.skeleton.setSettings(settings)
   }
 
   setAnglesPoints (angles) {
@@ -453,34 +471,19 @@ export default class World {
     if (color) this.scene.background = new THREE.Color(color)
   }
 
-  setPointCloudZoom (zoomLevel) {
-    if (this.pointCloud) {
-      this.pointCloud.setZoomLevel(zoomLevel)
-    }
-    if (this.segmentedPointCloud) {
-      this.segmentedPointCloud.setZoomLevel(zoomLevel)
-    }
-    if (this.pointCloudGroundTruth) {
-      this.pointCloudGroundTruth.setZoomLevel(zoomLevel)
-    }
+  setSegmentedPointCloudSize(sampleSize)
+  {
+      this.segmentedPointCloud.setCloudResolution(sampleSize)
   }
 
-  setPointCloudSize(sampleSize)
+  setPointCloudGroundTruthColor(color)
   {
-    if(this.pointCloud)
-    {
-      this.pointCloud.setCloudResolution(sampleSize)
-    }
+      this.pointCloudGroundTruth.setColor(color)
+  }
 
-    if(this.segmentedPointCloud)
-    {
-      this.segmentedPointCloud.setCloudResolution(sampleSize)
-    }
-  
-    if (this.pointCloudGroundTruth) 
-    {
+  setPointCloudGroundTruthSize(sampleSize)
+  {
       this.pointCloudGroundTruth.setCloudResolution(sampleSize)
-    }
   }
 
   setLayers (layers) {

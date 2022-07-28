@@ -32,9 +32,9 @@ import styled from '@emotion/styled'
 
 import { useElementMouse } from 'rd/tools/hooks/mouse'
 
-import { useLayers } from 'flow/settings/accessors'
+import { useLayers, useUserPrefs } from 'flow/settings/accessors'
 import { useSelectedcamera, useHoveredCamera, useReset3dView, useReset2dView, useHoveredAngle, useSelectedAngle, useColor, useClickedPoint, useLabels,
-  useSnapshot, useOrganInfo, useSelectedPoints, useSelectedLabel, useSelectionMethod, useRuler, usePointCloudZoom, usePointCloudSize, useAxisAlignedBoundingBox } from 'flow/interactions/accessors'
+  useSnapshot, useOrganInfo, useSelectedPoints, useSelectedLabel, useSelectionMethod, useRuler, useAxisAlignedBoundingBox } from 'flow/interactions/accessors'
 import { useScanFiles, useScan,
   useSegmentedPointCloud } from 'flow/scans/accessors'
 
@@ -44,6 +44,7 @@ import useViewport2d from './behaviors/viewport2d'
 import { headerHeight } from 'Viewer/Header'
 import { moduleHeight as carouselHeight } from 'Viewer/Carousel'
 import useViewport3d from './behaviors/viewport3d'
+import useDeepCompareEffect from './useDeepCompareEffect'
 
 const Container = styled.div({
   position: 'relative',
@@ -102,9 +103,9 @@ export default function WorldComponent (props) {
     ? event2dFns
     : event3dFns
 
-  const [pointCloudZoom] = usePointCloudZoom()
-  const [pointCloudSize] = usePointCloudSize()
   const [aabb, setAABB] = useAxisAlignedBoundingBox()
+  // const [localStorage, setLocalStorage] = useLocalStorage()
+  const [settings,] = useUserPrefs()
 
   useEffect(
     () => {
@@ -112,7 +113,8 @@ export default function WorldComponent (props) {
         const world = new WorldObject(
           bounds.width,
           bounds.height,
-          canvasRef.current
+          canvasRef.current,
+          settings.general.backgroundColor
         )
         world.onHover((data) => setHoveredCamera(data))
         setWorld(world)
@@ -252,13 +254,22 @@ export default function WorldComponent (props) {
     [world, hoveredAngle, selectedAngle, layers, viewport]
   )
 
-  useEffect(
+
+  useDeepCompareEffect(
     () => {
       if (world) {
-        world.setOrganColors(colors.organs)
+        let organ1 = {
+          rgb: settings.organs.organ1.color,
+          a: settings.organs.organ1.opacity
+        }
+        let organ2 = {
+          rgb: settings.organs.organ2.color,
+          a : settings.organs.organ2.opacity
+        }
+        world.setOrganColors([organ1, organ2])
       }
     },
-    [colors.organs]
+    [settings.organs]
   )
 
   useEffect(
@@ -375,17 +386,8 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
-      if (world) {
-        world.setGlobalOrganColors(colors.globalOrganColors)
-      }
-    },
-    [colors.globalOrganColors]
-  )
-
-  useEffect(
-    () => {
       if (world && meshGeometry) {
-        world.setMeshGeometry(meshGeometry)
+        world.setMeshGeometry(meshGeometry, settings.mesh)
         world.setLayers(layers)
       }
     },
@@ -394,18 +396,18 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
-      if (world) {
-        world.setMeshColor(colors.mesh)
+      if (world && meshGeometry) {
+        world.setMeshSettings(settings.mesh)
       }
     },
-    [colors.mesh]
+    [settings.mesh]
   )
 
   useEffect(
     () => {
       if (world && pointCloudGeometry) {
-        world.setPointcloudGeometry(pointCloudGeometry)
-        world.setAxisAlignedBoundingBoxFromPointCloud()
+        world.setPointCloudGeometry(pointCloudGeometry, settings.pcd)
+        world.setAxisAlignedBoundingBoxFromPointCloud(settings.aabb.color)
         setAABB(world.getAxisAlignedBoundingBox())
         world.setLayers(layers)
       }
@@ -435,7 +437,7 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world && pointCloudGroundTruthGeometry) {
-        world.setPointcloudGroundTruthGeometry(pointCloudGroundTruthGeometry)
+        world.setPointCloudGroundTruthGeometry(pointCloudGroundTruthGeometry, settings.groundTruthPcd)
         world.setLayers(layers)
       }
     },
@@ -449,7 +451,7 @@ export default function WorldComponent (props) {
           (value, index, self) => self.indexOf(value) === index
         )
         world.setSegmentedPointCloudGeometry(segmentedPointCloud,
-          segmentation, uniqueLabels)
+          segmentation, uniqueLabels, settings.segmentedPcd)
         world.setLayers(layers)
         setColors({
           ...colors,
@@ -463,26 +465,8 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
-      if (world && segmentedPointCloud && segmentation) {
-        world.setSegmentedPointCloudColor(colors.segmentedPointCloud)
-      }
-    },
-    [colors.segmentedPointCloud]
-  )
-
-  useEffect(
-    () => {
-      if (world && pointCloudGeometry) {
-        world.setPointCloudColor(colors.pointCloud)
-      }
-    },
-    [colors.pointCloud]
-  )
-
-  useEffect(
-    () => {
       if (world && scan && scan.data.skeleton) {
-        world.setSkeletonPoints(scan.data.skeleton)
+        world.setSkeletonPoints(scan.data.skeleton, settings.skeleton)
         world.setLayers(layers)
       }
     },
@@ -492,10 +476,10 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world && scan && scan.data.skeleton) {
-        world.setSkeletonColor(colors.skeleton)
+        world.setSkeletonSettings(settings.skeleton)
       }
     },
-    [colors.skeleton]
+    [settings.skeleton]
   )
 
   useEffect(
@@ -506,15 +490,7 @@ export default function WorldComponent (props) {
       }
     },
     [world, scan]
-  )
-
-  useEffect(
-    () => {
-      if (world) {
-        world.setBackgroundColor(colors.background)
-      }
-    }, [colors.background]
-  )
+  ) 
 
   useEffect(
     () => {
@@ -523,28 +499,42 @@ export default function WorldComponent (props) {
     [world, mouse]
   )
 
-  useEffect(
+  useDeepCompareEffect(() => {
+    if (world)
+      world.setPointCloudSettings(settings.pcd)
+  }, [settings.pcd])
+
+  useDeepCompareEffect(() => {
+      if (world && segmentedPointCloud && segmentation) {
+        world.setSegmentedPointCloudSettings(settings.segmentedPcd)
+      }
+  }, [settings.segmentedPcd])
+
+  useDeepCompareEffect(
     () => {
-      if (world) {
-        world.setPointCloudZoom(pointCloudZoom.level)
+      if (world && pointCloudGroundTruthGeometry) {
+        //world.setPointCloudGroundTruthZoom(settings.groundTruthPcd.zoom)
       }
     },
-    [pointCloudZoom.level]
-  )
-  useEffect(
-    () => {
-      if (world) {
-        world.setPointCloudSize(pointCloudSize.sampleSize)
-      }
-    },
-    [pointCloudSize.sampleSize]
+    [settings.groundTruthPcd]
   )
 
   useEffect(
     () => {
-
+      if (world && pointCloudGeometry) {
+        world.setAxisAlignedBoundingBoxColor(settings.aabb.color)
+      }
     },
-    [aabb]
+    [settings.aabb.color]
+  )
+
+  useEffect(
+    () => {
+      if (world) {
+        world.setBackgroundColor(settings.general.backgroundColor)
+      }
+    },
+    [settings.general.backgroundColor]
   )
 
   return <Container ref={containerRef}>

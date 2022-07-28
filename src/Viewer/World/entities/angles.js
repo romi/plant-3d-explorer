@@ -47,7 +47,7 @@ EnhancedTHREE = setLineSegements2(EnhancedTHREE)
 EnhancedTHREE = setLine2(EnhancedTHREE)
 
 export default class Angles {
-  constructor (angles, parent) {
+  constructor (angles, parent, colors) {
     var op = window.localStorage.getItem('defaultOrganOpacity')
     var col1 = window.localStorage.getItem('defaultOrgan1Color')
     var col2 = window.localStorage.getItem('defaultOrgan2Color')

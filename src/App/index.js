@@ -26,7 +26,7 @@ License along with this program.  If not, see
 <https://www.gnu.org/licenses/>.
 
 */
-import React, { Component, Suspense } from 'react'
+import React, { Suspense } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { FormattedMessage } from 'react-intl'
 
@@ -56,8 +56,7 @@ function NotFound () {
   </div>
 }
 
-class App extends Component {
-  render () {
+function App() {
     return <div className='App'>
       <Router basename={basename}>
         <Suspense fallback={<Loading />}>
@@ -69,7 +68,6 @@ class App extends Component {
         </Suspense>
       </Router>
     </div>
-  }
 }
 
 export default App

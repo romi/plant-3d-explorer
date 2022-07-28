@@ -34,6 +34,7 @@ import setLineMaterial from 'common/thiers/LineMaterial'
 import setWireframe2 from 'common/thiers/WireframeGeometry2'
 import setLineSegements2 from 'common/thiers/LineSegement2'
 import setLine2 from 'common/thiers/Line2'
+import Object3DBase from './Object3DBase'
 
 let EnhancedTHREE
 EnhancedTHREE = setLineSegmentsGeometry(THREE)
@@ -43,8 +44,9 @@ EnhancedTHREE = setWireframe2(EnhancedTHREE)
 EnhancedTHREE = setLineSegements2(EnhancedTHREE)
 EnhancedTHREE = setLine2(EnhancedTHREE)
 
-export default class Skeleton {
-  constructor (skeleton, parent) {
+export default class Skeleton extends Object3DBase {
+  constructor (skeleton, parent, settings) {
+    super(parent, skeleton, settings)
     this.group = new THREE.Object3D()
 
     skeleton.lines.forEach(([startIndex, endIndex]) => {
@@ -60,15 +62,13 @@ export default class Skeleton {
       geometry.setPositions(positions)
       geometry.setColors(colors)
 
-      var op = window.localStorage.getItem('defaultSkeletonOpacity')
-      var col = window.localStorage.getItem('defaultSkeletonColor')
       const obj = new EnhancedTHREE.Line2(
         geometry,
         new EnhancedTHREE.LineMaterial({
           linewidth: 4,
-          color: (col != null) ? col : '#D0021B',
+          color: this.settings.color,
           transparent: true,
-          opacity: (op != null) ? parseFloat(op) : 1,
+          opacity: this.settings.opacity,
           dashed: true,
           resolution: { x: window.innerWidth, y: window.innerHeight }
         })
@@ -91,6 +91,13 @@ export default class Skeleton {
     this.group.children.forEach((child) => {
       child.visible = boolean
     })
+  }
+  
+  setSettings(settings) {
+    if(this.settings.color !== settings.color || this.settings.opacity !== settings.opacity)
+      this.setColor({rgb: settings.color, a: settings.opacity})
+
+    this.settings = settings
   }
 
   setColor (color) {

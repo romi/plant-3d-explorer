@@ -121,3 +121,24 @@ export const useCarousel = useAccessor(
     })
   ]
 )
+
+export const useUserPrefs = useAccessor(
+    [
+      (state) => {
+        return state.settings.userPrefs
+      }
+    ],
+    [
+      (value) => ({type: 'SET_USERPREFS', value})
+    ]
+  )
+  
+  export const useResetUserPrefs = useAccessor(
+    [],
+    [
+      (value) => ({
+        type: 'RESET_USERPREFS',
+        value
+      })
+    ]
+  )
