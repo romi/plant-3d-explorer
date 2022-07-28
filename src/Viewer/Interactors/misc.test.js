@@ -1,3 +1,4 @@
+/*
 import React from 'react'
 import { queryByPlaceholderText,
   render, fireEvent, screen } from 'rd/tools/test-utils'
@@ -122,3 +123,4 @@ describe('photoset', () => {
     expect(screen.queryByTestId(/photoset-menu/i)).toBeTruthy()
   })
 })
+*/
