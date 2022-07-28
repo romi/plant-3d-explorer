@@ -29,7 +29,7 @@ License along with this program.  If not, see
 import { isEqual } from "lodash";
 import * as THREE from "three";
 import Object3DBase from "./Object3DBase";
-
+import { octree } from "d3-octree";
 const vertexShader = `
   uniform float zoom;
   uniform float ratio;
