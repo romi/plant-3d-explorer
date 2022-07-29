@@ -8,8 +8,7 @@ import {
   useColor,
   useDefaultColors,
   usePointCloudZoom,
-  usePointCloudSize,
-  useAxisAlignedBoundingBox,
+  usePointCloudSize
 } from "flow/interactions/accessors";
 import { useLayerTools, useLayers, } from "flow/settings/accessors";
 import { useSegmentedPointCloud } from "flow/scans/accessors";
