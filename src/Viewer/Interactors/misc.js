@@ -577,14 +577,12 @@ export default function () {
             (color) => {
               setColors({
                 ...colors,
-                background: color.hex
+                background: {rgb: color.hex, a: 1.0}
               })
               window.localStorage.setItem('defaultBgroundColor', color.hex)
             }
           }
-          // color={colors.background}
-          // {...window.alert(localStorage.getItem("defaultBgroundColor"))}
-          color={window.localStorage.getItem('defaultBgroundColor')}
+          color={colors.background.rgb}
         />
       </div>
       <ResetButton
