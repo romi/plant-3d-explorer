@@ -3,12 +3,12 @@ import { FormattedMessage } from 'react-intl'
 import styled from '@emotion/styled'
 
 import { useMisc, useCarousel } from 'flow/settings/accessors'
-import { useSnapshot, useRuler, useAxisAlignedBoundingBox }
+import { useSnapshot, useRuler, useAxisAlignedBoundingBox, useDefaultColors, useColor  }
   from 'flow/interactions/accessors'
 import ToolButton, { tools } from 'Viewer/Interactors/Tools'
 import { H3, H2 } from 'common/styles/UI/Text/titles'
 
-import { SnapIcon, PhotoSetIcon, RulerIcon, CropIcon } from 'Viewer/Interactors/icons'
+import { SnapIcon, PhotoSetIcon, RulerIcon, CropIcon, BackgroundColorIcon } from 'Viewer/Interactors/icons'
 import { Interactor } from 'Viewer/Interactors'
 
 import snapButton from 'common/assets/ico.snap.24x24.svg'
@@ -17,6 +17,9 @@ import downloadButton from 'common/assets/ico.download.24x24.svg'
 import { ResetButton } from 'rd/UI/Buttons'
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { SketchPicker } from 'react-color'
+
+var bgroundColor = '#000000'
 
 export const Container = styled.div({
   position: 'absolute',
@@ -255,6 +258,8 @@ export default function () {
   const [misc, setMisc] = useMisc()
   const [ruler, setRuler] = useRuler()
   const [aabb, setAABB] = useAxisAlignedBoundingBox()
+  const [resetDefaultColor] = useDefaultColors()
+  const [colors, setColors] = useColor()
 
   useEffect(() => {
     if (misc.activeTool === null) {
@@ -555,6 +560,42 @@ export default function () {
           </ChooserContainer>
         </div>
       </ToolButton>
+      <ToolButton data-testid='background'
+      toolsList={useMisc()}
+      tool={tools.colorPickers.background}
+      interactor={{
+        isButton: true
+      }}
+      tooltipId='tooltip-background-color-picker'
+      icon={<BackgroundColorIcon
+        isActivated={misc.activeTool === tools.colorPickers.background} />}
+    >
+      <div data-testid='background-color'>
+        <SketchPicker disableAlpha
+          // color={localStorage.getItem("defaultBgroundColor")}
+          onChange={
+            (color) => {
+              setColors({
+                ...colors,
+                background: color.hex
+              })
+              window.localStorage.setItem('defaultBgroundColor', color.hex)
+            }
+          }
+          // color={colors.background}
+          // {...window.alert(localStorage.getItem("defaultBgroundColor"))}
+          color={window.localStorage.getItem('defaultBgroundColor')}
+        />
+      </div>
+      <ResetButton
+        onClick={
+          () => {
+            window.localStorage.setItem('defaultBgroundColor', bgroundColor)
+            resetDefaultColor('background')
+          }
+        }
+      />
+    </ToolButton>
     </MiscContainer>
   );
 }

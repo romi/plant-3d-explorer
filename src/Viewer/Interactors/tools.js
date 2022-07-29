@@ -83,62 +83,6 @@ for (let key in defaults) {
   }
 }
 
-function Point3D (props)
-{
-  const [aabb, setAABB] = useAxisAlignedBoundingBox()
-  const [id, ] = useState(props.id)
-
-  return <div style={{
-    display: 'flex', 
-    flexDirection:'row',
-    justifyContent:'center',
-    alignItems:'center',
-    backgroundColor: 'white',
-    paddingLeft: "10px",
-    paddingRight: "10px"
-    }}>
-    <div style={{flex:"1 1 5px", padding:"10px",justifyContent:"center"}}>X</div>
-    <input style={{
-      width: '20%',
-      height: '50%',
-      flex: '3 3 100px',
-      margin: '2%',
-    }} 
-      type="number" 
-      onChange={(event) => {
-        setAABB({...aabb, [id] : {...aabb[id], x: isNaN(event.target.value) ? 0 : event.target.value}})
-      }}
-      value={aabb[id].x}
-    />
-    <div style={{flex:"1 1 5px", padding:"10px",justifyContent:"center"}}>Y</div>
-    <input style={{
-      width: '20%',
-      height: '50%',
-      flex: '3 3 100px',
-      margin: '2%',
-    }}
-      type="number" 
-      onChange={(event) => {
-        setAABB({...aabb, [id] : {...aabb[id], y: isNaN(event.target.value) ? 0 : event.target.value}})
-      }}
-      value={aabb[id].y}
-    />
-    <div style={{flex:"1 1 5px", padding:"10px",justifyContent:"center"}}>Z</div>
-    <input style={{
-      width: '20%',
-      height: '50%',
-      flex: '3 3 100px',
-      margin: '0.5em'
-    }}
-      type="number" 
-      onChange={(event) => {
-        setAABB({...aabb, [id] : {...aabb[id], z: isNaN(event.target.value) ? 0 : event.target.value}})
-      }}
-      value={aabb[id].z}
-    />  
-  </div>
-}
-
 export default function MiscInteractors() {
   const [selectedAngle] = useSelectedAngle();
   const [colors, setColors] = useColor();
@@ -150,7 +94,6 @@ export default function MiscInteractors() {
   const [legendPicker, setLegendPicker] = useState();
   const [pointCloudZoom, setPointCloudZoom] = usePointCloudZoom();
   const [pointCloudSize, setPointCloudSize] = usePointCloudSize();
-  const [aabb, setAABB] = useAxisAlignedBoundingBox()
 
   useEffect(() => {
     if (segmentation && segmentation.labels) {
@@ -490,29 +433,6 @@ export default function MiscInteractors() {
             }}
           />
         </ToolButton>
-      </ColumnContainer>
-      
-      <ColumnContainer displayed={layers.axisAlignedBoundingBox} style={{backgroundColor: "white", alignItems:"center"}}>
-          <H3 style={{  padding: 7.5, margin:0 }}>
-            <FormattedMessage id="bbox-min"></FormattedMessage>
-          </H3>
-          <Point3D id="min"/>
-          <H3 style={{ backgroundColor: "white", padding: 7.5, margin:0}}>
-            <FormattedMessage id="bbox-max"></FormattedMessage>
-          </H3>
-
-          <Point3D id="max"/>
-          <ResetButton style={{marginBottom:"10px"}} onClick={() => setAABB({...aabb, enforceReset : true})}/>
-          <input style={{marginBottom:"10px"}} type="button" value="Dump bounding box to console." onClick={()=> {
-            var str = JSON.stringify({
-              bounding_box: {
-                x: [aabb.min.x, aabb.max.x],
-                y: [aabb.min.y, aabb.max.y],
-                z: [aabb.min.z, aabb.max.z],
-              },
-            }, null, 2);
-            console.info(str);
-          }}/>
       </ColumnContainer>
 
       <ColumnContainer
