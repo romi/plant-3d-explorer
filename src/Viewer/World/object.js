@@ -450,7 +450,7 @@ export default class World {
   }
 
   setBackgroundColor (color) {
-    if (color) this.scene.background = new THREE.Color(color)
+    if (color) this.scene.background = new THREE.Color(color.rgb)
   }
 
   setPointCloudZoom (zoomLevel) {

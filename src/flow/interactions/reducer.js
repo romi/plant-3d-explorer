@@ -53,7 +53,7 @@ export const initialState = {
       { rgb: "#BD10E0", a: 0.5 },
       { rgb: "#E691F7", a: 0.5 },
     ], // [{ rgb: '#3a4d45', a: 0.2 }, { rgb: '#00a960', a: 0.2 }],
-    background: "#ecf3f0",
+    background: {rgb: "#000000", a:1.0},
   },
 
   pointCloudZoom: {

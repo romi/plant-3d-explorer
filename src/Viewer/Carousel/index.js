@@ -232,7 +232,7 @@ export default function Carousel() {
         );
         if(!d.item.isMatched)
         {
-          context.fillStyle = "rgba(255, 85, 95, 0.2)";
+          context.fillStyle = "rgba(255, 85, 95, 0.4)";
           context.fillRect(d.x, 0, d.width, imgHeight);
         }
       } else {
