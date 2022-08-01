@@ -18,6 +18,7 @@ import { ResetButton } from 'rd/UI/Buttons'
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { SketchPicker } from 'react-color'
+import { isNumber } from 'lodash'
 
 var bgroundColor = '#000000'
 
@@ -305,7 +306,12 @@ export default function () {
                       z: [aabb.min.z, aabb.max.z],
                     },
                   },
-                  null,
+                  (key, val) => {
+                    if(!isNaN(val))
+                      return parseFloat(val);
+
+                    return val;
+                  },
                   2
                 )}>
               <button style={{gridColumn:"2/3"}}>Copy to clipboard</button>
