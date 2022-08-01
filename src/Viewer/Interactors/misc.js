@@ -18,7 +18,6 @@ import { ResetButton } from 'rd/UI/Buttons'
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { SketchPicker } from 'react-color'
-import { isNumber } from 'lodash'
 
 var bgroundColor = '#000000'
 
