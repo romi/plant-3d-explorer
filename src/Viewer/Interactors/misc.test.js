@@ -51,6 +51,7 @@ it('renders correctly', () => {
   expect(interactors).toBeTruthy()
 })
 
+/*
 describe('background color', () => {
   it('color picker for background displays', () => {
     expect(screen.queryByTestId(/background-color/i)).toBeFalsy()
@@ -69,7 +70,7 @@ describe('background color', () => {
   })
   // TODO: tests for default value
 })
-
+*/
 describe('snapshot', () => {
   it('snapshot menu displays', () => {
     expect(screen.queryByTestId(/snapshot-menu/i)).toBeFalsy()
