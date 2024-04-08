@@ -99,7 +99,7 @@ const Name = styled.div({
   lineHeight: '18px',
   fontWeight: 700,
   padding: 5,
-  justifyContent:'centered'
+  justifyContent: 'centered'
 })
 
 const Options = styled.div({
@@ -177,7 +177,7 @@ const Actions = styled.div({
   marginLeft: '42px'
 })
 
-const OpenButton = styled((props) => <Link {...omit(props, "isActiveLink")} />)({
+const OpenButton = styled((props) => <Link {...omit(props, 'isActiveLink')} />)({
   display: 'inline-block',
   padding: '9px 38px',
   fontSize: 15,
@@ -188,7 +188,7 @@ const OpenButton = styled((props) => <Link {...omit(props, "isActiveLink")} />)(
   outline: 'none',
   cursor: 'pointer',
   textDecoration: 'none',
-  background:green,
+  background: green,
 
   '&:focus, &:hover': {
     textDecoration: 'underline',
@@ -199,11 +199,12 @@ const OpenButton = styled((props) => <Link {...omit(props, "isActiveLink")} />)(
     background: darkGreen
   }
 }, (props) => {
-  if(props.isActiveLink)
+  if (props.isActiveLink) {
     return {
       pointerEvents: 'none',
-      background:red
+      background: red
     }
+  }
 })
 
 const Links = styled.div({
@@ -236,16 +237,15 @@ export const DocLink = styled.a({
 })
 
 export const Item = memo(({ item }) => {
-
-  const docLinkArchive = item.error ? void(0) : item.metadata.files.archive
-  const docLinkMeta = item.error ? void(0) : item.metadata.files.metadatas
-  const ThumbnailUri = item.error ? DatasetErrorIcon : item.thumbnailUri; // in a React component means ReactDOM will ignore such attribute
+  const docLinkArchive = item.error ? void (0) : item.metadata.files.archive
+  const docLinkMeta = item.error ? void (0) : item.metadata.files.metadatas
+  const ThumbnailUri = item.error ? DatasetErrorIcon : item.thumbnailUri // in a React component means ReactDOM will ignore such attribute
 
   return <Block data-testid='item'>
     <Thumbail uri={ThumbnailUri} data-testid='thumbnail' />
     <Name data-testid='name'>
-      <div style={{overflowWrap: "anywhere"}}>{item.metadata.plant}</div>
-      <DatasetName>{item.id}</DatasetName>    
+      <div style={{ overflowWrap: 'anywhere' }}>{item.metadata.plant}</div>
+      <DatasetName>{item.id}</DatasetName>
     </Name>
     <Options data-testid='species'>{item.metadata.species}</Options>
     <Options data-testid='env'>{item.metadata.environment}</Options>
@@ -328,7 +328,7 @@ export const Item = memo(({ item }) => {
           <FormattedMessage id='scanlist-link-metadata' />
         </DocLink>
       </Links>
-      <OpenButton to={`/viewer/${item.id}`} isActiveLink={ item.error }>
+      <OpenButton to={`/viewer/${item.id}`} isActiveLink={item.error}>
         <FormattedMessage id='scanlist-cta' />
       </OpenButton>
     </Actions>

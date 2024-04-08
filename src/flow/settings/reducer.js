@@ -36,7 +36,7 @@ export const initialState = {
     angles: false,
     cameras: false,
     segmentedPointCloud: false,
-    axisAlignedBoundingBox : false,
+    axisAlignedBoundingBox: false
   },
   panels: {
     'panels-angles': false,

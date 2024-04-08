@@ -43,164 +43,164 @@ export const initialState = {
 
   colors: {
     // Previous color values are left in comments
-    mesh: { rgb: "#96c0a7", a: 0.5 }, // a: 1
-    pointCloud: { rgb: "#f8de96", a: 1 },
-    pointCloudGroundTruth: { rgb: "#f8de96", a: 1 },
+    mesh: { rgb: '#96c0a7', a: 0.5 }, // a: 1
+    pointCloud: { rgb: '#f8de96', a: 1 },
+    pointCloudGroundTruth: { rgb: '#f8de96', a: 1 },
     segmentedPointCloud: [],
-    skeleton: { rgb: "#D0021B", a: 0.7 }, // { rgb: '#5ca001', a: 1 },
+    skeleton: { rgb: '#D0021B', a: 0.7 }, // { rgb: '#5ca001', a: 1 },
     organs: [],
     globalOrganColors: [
-      { rgb: "#BD10E0", a: 0.5 },
-      { rgb: "#E691F7", a: 0.5 },
+      { rgb: '#BD10E0', a: 0.5 },
+      { rgb: '#E691F7', a: 0.5 }
     ], // [{ rgb: '#3a4d45', a: 0.2 }, { rgb: '#00a960', a: 0.2 }],
-    background: {rgb: "#000000", a:1.0},
+    background: { rgb: '#000000', a: 1.0 }
   },
 
   pointCloudZoom: {
-    level: 2,
+    level: 2
   },
 
   pointCloudSize: {
-    sampleSize: 1000,
+    sampleSize: 1000
   },
 
   snapshot: {
     snapResolution: null,
     trueResolution: null,
-    image: null,
+    image: null
   },
 
   ruler: {
     scaling: false,
     measuring: false,
     measure: 0,
-    scaleSet: false,
+    scaleSet: false
   },
 
   aabb: {
     min: {
       x: 0,
       y: 0,
-      z: 0,
+      z: 0
     },
     max: {
       x: 0,
       y: 0,
-      z: 0,
+      z: 0
     },
-    enforceReset: false,
+    enforceReset: false
   },
   reset3dViewFn: null,
-  reset2dViewFn: null,
-};
+  reset2dViewFn: null
+}
 
-export default function settingsReducer(state = initialState, action) {
+export default function settingsReducer (state = initialState, action) {
   switch (action.type) {
-    case "RESET_INTERACTIONS":
+    case 'RESET_INTERACTIONS':
       return {
         ...state,
-        ...initialState,
-      };
-    case "HOVER_CAMERA":
+        ...initialState
+      }
+    case 'HOVER_CAMERA':
       return {
         ...state,
-        hoveredCamera: action.value,
-      };
-    case "SELECT_CAMERA":
+        hoveredCamera: action.value
+      }
+    case 'SELECT_CAMERA':
       return {
         ...state,
-        selectedCamera: action.value,
-      };
-    case "HOVER_ANGLE":
+        selectedCamera: action.value
+      }
+    case 'HOVER_ANGLE':
       return {
         ...state,
-        hoveredAngle: action.value,
-      };
-    case "SELECT_ANGLE":
+        hoveredAngle: action.value
+      }
+    case 'SELECT_ANGLE':
       return {
         ...state,
         selectedAngle: action.value,
-        selectedColor: null,
-      };
-    case "SET_RESET_2D_VIEW":
+        selectedColor: null
+      }
+    case 'SET_RESET_2D_VIEW':
       return {
         ...state,
-        reset2dViewFn: action.value,
-      };
-    case "SET_RESET_3D_VIEW":
+        reset2dViewFn: action.value
+      }
+    case 'SET_RESET_3D_VIEW':
       return {
         ...state,
-        reset3dViewFn: action.value,
-      };
-    case "SET_COLORS":
+        reset3dViewFn: action.value
+      }
+    case 'SET_COLORS':
       return {
         ...state,
-        colors: action.value,
-      };
-    case "RESTORE_DEFAULT_COLOR":
+        colors: action.value
+      }
+    case 'RESTORE_DEFAULT_COLOR':
       return {
         ...state,
         colors: {
           ...state.colors,
-          [action.value]: initialState.colors[action.value],
-        },
-      };
-    case "SET_SNAPSHOT":
+          [action.value]: initialState.colors[action.value]
+        }
+      }
+    case 'SET_SNAPSHOT':
       return {
         ...state,
-        snapshot: action.value,
-      };
-    case "SET_ORGAN_INFO":
+        snapshot: action.value
+      }
+    case 'SET_ORGAN_INFO':
       return {
         ...state,
-        organInfo: action.value,
-      };
-    case "SET_SELECTED_POINTS":
+        organInfo: action.value
+      }
+    case 'SET_SELECTED_POINTS':
       return {
         ...state,
-        selectedPoints: action.value,
-      };
-    case "SET_CLICKED_POINT":
+        selectedPoints: action.value
+      }
+    case 'SET_CLICKED_POINT':
       return {
         ...state,
-        clickedPoint: action.value,
-      };
-    case "SET_LABELS":
+        clickedPoint: action.value
+      }
+    case 'SET_LABELS':
       return {
         ...state,
-        labels: action.value,
-      };
-    case "SET_SELECTED_LABEL":
+        labels: action.value
+      }
+    case 'SET_SELECTED_LABEL':
       return {
         ...state,
-        selectedLabel: action.value,
-      };
-    case "SET_SELECTION_METHOD":
+        selectedLabel: action.value
+      }
+    case 'SET_SELECTION_METHOD':
       return {
         ...state,
-        selectionMethod: action.value,
-      };
-    case "SET_RULER":
+        selectionMethod: action.value
+      }
+    case 'SET_RULER':
       return {
         ...state,
-        ruler: action.value,
-      };
-    case "SET_POINT_CLOUD_ZOOM":
+        ruler: action.value
+      }
+    case 'SET_POINT_CLOUD_ZOOM':
       return {
         ...state,
-        pointCloudZoom: action.value,
-      };
-    case "SET_POINT_CLOUD_SIZE":
+        pointCloudZoom: action.value
+      }
+    case 'SET_POINT_CLOUD_SIZE':
       return {
         ...state,
-        pointCloudSize: action.value,
-      };
-    case "SET_AABB":
+        pointCloudSize: action.value
+      }
+    case 'SET_AABB':
       return {
         ...state,
-        aabb: action.value,
-      };
+        aabb: action.value
+      }
     default:
-      return state;
+      return state
   }
 }

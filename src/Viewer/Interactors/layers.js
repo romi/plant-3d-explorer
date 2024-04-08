@@ -175,7 +175,7 @@ export default function LayersInteractors () {
       <Interactor
         isDisabled={!pointCloudGeometry}
         activated={layers.axisAlignedBoundingBox}
-        onClick={() => setLayers({ ...layers, axisAlignedBoundingBox: !layers.axisAlignedBoundingBox})}
+        onClick={() => setLayers({ ...layers, axisAlignedBoundingBox: !layers.axisAlignedBoundingBox })}
       >
         <IconStateCatcher style={{
           display: 'flex',
