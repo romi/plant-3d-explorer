@@ -21,7 +21,7 @@ usage() {
     Docker image tag to use, default to '$vtag'."
   echo "  --api_url
     REACT API URL to use to retrieve dataset, default is '$api_url'.
-    Set it to 'localhost:5000' if you have a local plantdb instance running."
+    Set it to '127.0.0.0:5000' if you have a local plantdb instance running."
   echo "  -c, --cmd
     Defines the command to run at container startup.
     By default it starts the Plant 3D Explorer listening to the given API URL."

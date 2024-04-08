@@ -24,6 +24,8 @@ usage() {
     Do not use cache when building the image, (re)start from scratch."
   echo "  --pull
     Always attempt to pull a newer version of the parent image."
+  echo "  --plain
+    Plain output during docker build."
   # General options:
   echo "  -h, --help
     Output a usage message and exit."
@@ -46,6 +48,9 @@ while [ "$1" != "" ]; do
   --pull)
     shift
     docker_opts="$docker_opts --pull"
+    ;;
+  --plain)
+    docker_opts="${docker_opts} --progress=plain"
     ;;
   -h | --help)
     usage
