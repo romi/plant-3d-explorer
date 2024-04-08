@@ -1,7 +1,9 @@
 version: '3'
 services:
   plantdb:
-    image: "roboticsmicrofarms/plantdb"
+    image: "roboticsmicrofarms/plantdb:latest"
+    command: "fsdb_rest_api --port 5000"
+    user: "${UID}:${GID}"
     volumes:
       - ${ROMI_DB}:/myapp/db
     ports:
@@ -9,7 +11,7 @@ services:
     healthcheck:
       test: "exit 0"
   plant-3d-explorer:
-    image: "roboticsmicrofarms/plant-3d-explorer"
+    image: "roboticsmicrofarms/plant-3d-explorer:latest"
     depends_on:
       - plantdb
     environment:
