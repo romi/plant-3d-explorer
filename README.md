@@ -24,7 +24,7 @@ sudo apt-get install -y nodejs
 
 For other distro look [here](https://github.com/nodesource/distributions/blob/master/README.md)
 or [here](https://nodejs.org/en/download/) for non linux distro.
-To make sure everything works fine, your version of nodejs must be >= 10, and your version of npm must be >= 6.
+To make sure everything works fine, your version of Node.js must be >= 10, and your version of npm must be >= 6.
 To test it:
 
 ```shell
@@ -198,17 +198,17 @@ To use local builds for development or debugging purposes:
 
 ## Technical documentation
 
-### view
+### View
 
 https://romi.github.io/plant-3d-explorer/
 
-### contribute
+### Contribute
 
-The documentation of this package is done by [docz](https://www.docz.site/).
+The documentation of this package is done by [docz](https://docz-v1.surge.sh/).
 To install it, and its dependencies, do:
 
 ```bash
-npm install docz react react-dom
+npm install docz@1.3.2 docz-theme-default
 ```
 
 Then:
@@ -217,4 +217,10 @@ Then:
 npm run docz:dev
 ```
 
-If you experience any difficulty with `docz`, head over [here](https://www.docz.site/docs/getting-started).
+To build it within a container:
+```shell
+./docker/run.sh -v $(pwd)/.docz:/app/.docz \
+  -c "umask 0002 && npm install docz@1.3.2 docz-theme-default && npm run docz:build"
+```
+
+If you experience any difficulty with `docz`, head over [here](https://docz-v1.surge.sh/).

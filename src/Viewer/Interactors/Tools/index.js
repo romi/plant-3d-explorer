@@ -20,7 +20,7 @@ export const tools = {
   },
   misc: {
     ruler: 6,
-    aabb:7,
+    aabb: 7,
     snapshot: 8,
     photoSets: 9
   }

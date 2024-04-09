@@ -181,7 +181,7 @@ export const RulerIcon = IconHOC((props) => {
     raw={rulerRaw}
     alt='ruler icon'
   />
-}) 
+})
 
 export const BackgroundColorIcon = IconHOC((props) => {
   return <Icon

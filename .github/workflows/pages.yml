@@ -9,12 +9,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
       with:
         persist-credentials: false
 
     - name: Build
-      run: npm ci && npm run docz:build
+      uses: actions/setup-node@v4
+      with:
+        node-version: '10.x'
+    - run: npm ci
+    - run: npm run docz:build
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3

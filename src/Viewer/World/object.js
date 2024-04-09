@@ -389,24 +389,20 @@ export default class World {
     this.pointCloud = new PointCloud(geometry, this.viewerObjects)
   }
 
-  setAxisAlignedBoundingBoxFromPointCloud()
-  {
+  setAxisAlignedBoundingBoxFromPointCloud () {
     this.aabb = new AABB(this.viewerObjects, this.pointCloud.geometry.boundingBox)
   }
 
-  setAxisAlignedBoundingBox(aabb)
-  {
-    if(!this.aabb) return;
+  setAxisAlignedBoundingBox (aabb) {
+    if (!this.aabb) return
     this.aabb.setBoundingBox(aabb)
   }
 
-  getAxisAlignedBoundingBox()
-  {
+  getAxisAlignedBoundingBox () {
     return this.aabb.getBoundingBox()
   }
 
-  resetAxisAlignedBoundingBox()
-  {
+  resetAxisAlignedBoundingBox () {
     this.aabb.resetBoundingBox()
   }
 
@@ -417,7 +413,7 @@ export default class World {
 
   setSegmentedPointCloudGeometry (geometry, segmentation, uniqueLabels) {
     geometry.computeBoundingBox()
-    this.segmentedPointCloud = new SegmentedPointCloud(geometry,this.viewerObjects,
+    this.segmentedPointCloud = new SegmentedPointCloud(geometry, this.viewerObjects,
       segmentation, uniqueLabels)
   }
 
@@ -465,20 +461,16 @@ export default class World {
     }
   }
 
-  setPointCloudSize(sampleSize)
-  {
-    if(this.pointCloud)
-    {
+  setPointCloudSize (sampleSize) {
+    if (this.pointCloud) {
       this.pointCloud.setCloudResolution(sampleSize)
     }
 
-    if(this.segmentedPointCloud)
-    {
+    if (this.segmentedPointCloud) {
       this.segmentedPointCloud.setCloudResolution(sampleSize)
     }
-  
-    if (this.pointCloudGroundTruth) 
-    {
+
+    if (this.pointCloudGroundTruth) {
       this.pointCloudGroundTruth.setCloudResolution(sampleSize)
     }
   }

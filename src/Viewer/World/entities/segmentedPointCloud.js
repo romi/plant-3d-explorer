@@ -63,13 +63,12 @@ export default class SegmentedPointCloud extends PointCloud {
     this.object.material.setValues({ vertexShader: vertexShader })
     const attr = new THREE.BufferAttribute(this.colorsArray, 3)
     this.geometry.setAttribute('customColor', attr)
-    this.colorVectors = this.bufferToVector3(attr);
+    this.colorVectors = this.bufferToVector3(attr)
 
     this.colorVectors = this.bufferToVector3(this.geometry.getAttribute('customColor'))
-
   }
 
-  setCloudResolution(sampleSize) {
+  setCloudResolution (sampleSize) {
     super.setCloudResolution(sampleSize)
     this.object.material.setValues({ vertexShader: vertexShader })
   }
@@ -190,5 +189,5 @@ export default class SegmentedPointCloud extends PointCloud {
     this.geometry.removeAttribute('customColor')
     this.geometry.addAttribute('customColor',
       new THREE.BufferAttribute(this.colorsArray, 3))
-  }1
+  }
 }

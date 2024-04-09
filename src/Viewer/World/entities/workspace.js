@@ -232,12 +232,11 @@ export default class Workspace {
       this.group
     )
 
-    
     this.group.position.x = (workspace.x[1] + workspace.x[0]) / 2
     this.group.position.y = (workspace.y[1] + workspace.y[0]) / 2
     this.group.position.z = (workspace.z[1] + workspace.z[0]) / 2 + sizes.depth * 0.5
-    
-    this.group.add(new THREE.AxesHelper(Math.min(sizes.width,sizes.height, sizes.width)/2))
+
+    this.group.add(new THREE.AxesHelper(Math.min(sizes.width, sizes.height, sizes.width) / 2))
     if (parent) parent.add(this.group)
   }
 }

@@ -311,7 +311,7 @@ export default function WorldComponent (props) {
     },
     [mouse, world, measureClick]
   )
-  
+
   useEffect(
     () => {
       if (world) {
@@ -416,17 +416,14 @@ export default function WorldComponent (props) {
   useEffect(
     () => {
       if (world && pointCloudGeometry) {
-        if(aabb.enforceReset)
-        {
+        if (aabb.enforceReset) {
           world.resetAxisAlignedBoundingBox(aabb)
           const bb = world.getAxisAlignedBoundingBox()
-          const merge = (...objects) => objects.reduce((acc, cur) => ({ ...acc, ...cur }));
-          setAABB(merge(aabb, bb, { enforceReset:false }));
-        } else
-        {
+          const merge = (...objects) => objects.reduce((acc, cur) => ({ ...acc, ...cur }))
+          setAABB(merge(aabb, bb, { enforceReset: false }))
+        } else {
           world.setAxisAlignedBoundingBox(aabb)
         }
-
       }
     },
     [aabb]
