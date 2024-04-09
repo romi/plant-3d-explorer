@@ -12,25 +12,25 @@ For a general documentation on the whole ROMI project, head over [here](https://
 ## Requirements
 
 You will need `npm` to use this package.
-It comes with `nodejs`, as per the
-official [instruction](https://github.com/nodesource/distributions/blob/master/README.md).
-To install v16.X, for ubuntu:
+It comes with `nodejs`, as per the official [instruction](https://github.com/nodesource/distributions).
 
+We highly recommend to use `nvm`, a version manager for `node.js`, designed to be installed per-user, and invoked per-shell.
+
+To install `nvm` and Node.js 10, for Ubuntu:
 ```shell
-# Using Ubuntu
-curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-sudo apt-get install -y nodejs
+# installs NVM (Node Version Manager)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+# download and install Node.js
+nvm install 10
+# verifies the right Node.js version is in the environment
+node -v # should print `v10.24.1`
+# verifies the right NPM version is in the environment
+npm -v # should print `6.14.12`
 ```
 
-For other distro look [here](https://github.com/nodesource/distributions/blob/master/README.md)
-or [here](https://nodejs.org/en/download/) for non linux distro.
-To make sure everything works fine, your version of Node.js must be >= 10, and your version of npm must be >= 6.
-To test it:
+For other distro look [here](https://github.com/nvm-sh/nvm).
+To make sure everything works fine, your version of `Node.js` must be >= 10, and your version of `npm` must be >= 6.
 
-```shell
-node -v
-npm -v
-```
 
 ## Installation
 
@@ -220,7 +220,7 @@ npm run docz:dev
 To build it within a container:
 ```shell
 ./docker/run.sh -v $(pwd)/.docz:/app/.docz \
-  -c "umask 0002 && npm install docz@1.3.2 docz-theme-default && npm run docz:build"
+  -c "umask 0002 && npm install docz@1.3.2 docz-theme-default --dev && npm run docz:build"
 ```
 
 If you experience any difficulty with `docz`, head over [here](https://docz-v1.surge.sh/).
