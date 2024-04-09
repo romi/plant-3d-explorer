@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This icon was created by Morgane Schieber (schieber.morgane@gmail.com) -->
+<svg width="24" height="24" version="1.1" viewBox="0 0 5.5562 5.5563" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <g fill="#00a960">
+  <path d="m-47.851-28.552 113.94-3.9656" stroke-width=".26458"/>
+  <rect x="2.5216" y=".24349" width=".73275" height="3.0946" stroke-width=".3189"/>
+  <path d="m1.5032 3.1142 2.7671-0.012529-1.4 1.4784z"/>
+  <rect x=".48862" y="4.7204" width="4.7062" height=".53504" stroke-width=".26458"/>
+ </g>
+</svg>
