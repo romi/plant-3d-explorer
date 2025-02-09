@@ -55,14 +55,14 @@ export const mockItem = {
     date: new Date('2020-01-01T00:00:02').toString(),
     files: {
       archive: 'archive-link',
-      metadatas: 'metadatas-link'
+      metadata: 'metadata-link'
     }
   },
-  hasMesh: true,
+  hasTriangleMesh: true,
   hasPointCloud: false,
   hasSegmentedPointCloud: false,
-  hasSkeleton: true,
-  hasAngleData: false,
+  hasCurveSkeleton: true,
+  hasAnglesAndInternodes: false,
   hasManualMeasures: false,
   hasAutomatedMeasures: true
 }
