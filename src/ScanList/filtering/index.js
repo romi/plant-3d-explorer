@@ -68,11 +68,11 @@ export default function (props) {
 
   useEffect(() => {
     setFiltering({
-      hasMesh: false,
+      hasTriangleMesh: false,
       hasPointCloud: false,
       hasSegmentedPointCloud: false,
-      hasSkeleton: false,
-      hasAngleData: false,
+      hasCurveSkeleton: false,
+      hasAnglesAndInternodes: false,
       hasManualMeasures: false,
       hasAutomatedMeasures: false
     })
@@ -90,7 +90,7 @@ export default function (props) {
       </Tooltip>
       <RowContainer>
         <Filter icon={meshIcon}
-          field={'hasMesh'}
+          field={'hasTriangleMesh'}
         />
         <Filter icon={pointCloudIcon}
           field={'hasPointCloud'}
@@ -99,10 +99,10 @@ export default function (props) {
           field={'hasSegmentedPointCloud'}
         />
         <Filter icon={skeletonIcon}
-          field={'hasSkeleton'}
+          field={'hasCurveSkeleton'}
         />
         <Filter icon={nodeIcon}
-          field={'hasAngleData'}
+          field={'hasAnglesAndInternodes'}
         />
       </RowContainer>
     </ColumTitle>

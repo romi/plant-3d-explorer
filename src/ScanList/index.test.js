@@ -16,10 +16,10 @@ const mockItem = {
       metadatas: 'metadatas-link'
     }
   },
-  hasMesh: true,
+  hasTriangleMesh: true,
   hasPointCloud: false,
-  hasSkeleton: true,
-  hasAngleData: false,
+  hasCurveSkeleton: true,
+  hasAnglesAndInternodes: false,
   hasManualMeasures: false,
   hasAutomatedMeasures: true
 }
