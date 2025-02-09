@@ -13,7 +13,7 @@ const mockItem = {
     date: new Date('2020-01-01T00:00:02').toString(),
     files: {
       archive: 'archive-link',
-      metadatas: 'metadatas-link'
+      metadata: 'metadata-link'
     }
   },
   hasTriangleMesh: true,

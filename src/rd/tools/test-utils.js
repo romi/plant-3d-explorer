@@ -41,8 +41,6 @@ const AllProviders = ({ children }) => {
 const renderWithAll = (ui, options) =>
   render(ui, { wrapper: AllProviders, ...options })
 
-export * from '@testing-library/react'
-
 export { renderWithAll as render }
 
 export const mockItem = {

@@ -33,9 +33,41 @@ import { FormattedMessage } from 'react-intl'
 import { lazy } from 'rd/tools/routing'
 import { basename, landingUrl, viewerUrl } from 'common/routing'
 
+/**
+ * Lazy loads the LandingPage component.
+ *
+ * The `LandingPage` variable utilizes React's `lazy` function to defer the loading of
+ * the `ScanList` component until it is rendered. This helps in enhancing performance
+ * by reducing the initial loading time of the application.
+ *
+ * The `ScanList` component will be dynamically imported when required.
+ */
 const LandingPage = lazy(() => import('ScanList'))
+
+/**
+ * ViewerPage is a dynamically loaded component using React's lazy function.
+ * It asynchronously imports the "Viewer" component, enabling code-splitting
+ * and on-demand loading of the Viewer module.
+ *
+ * This variable is intended for use in a React application to optimize
+ * application performance by deferring the loading of the Viewer component
+ * until it is required for rendering.
+ *
+ * The ViewerPage variable must be used in conjunction with a fallback UI,
+ * typically provided using React's Suspense component, to handle the loading
+ * state while the Viewer module is being fetched.
+ *
+ * The imported Viewer module is expected to be the default export of the
+ * file located at the specified path.
+ */
 const ViewerPage = lazy(() => import('Viewer'))
 
+/**
+ * A React functional component that renders a loading placeholder
+ * with styled text and a translatable "loading" message.
+ *
+ * @return {JSX.Element} A JSX element representing the styled loading message.
+ */
 function Loading () {
   return <div style={{
     fontSize: '10rem',
@@ -45,17 +77,33 @@ function Loading () {
     lineHeight: '77%',
     textAlign: 'left',
     padding: 100
-  }} >
+  }}>
     <FormattedMessage id='misc-loading' />
   </div>
 }
 
+/**
+ * A functional React component that renders a 404 Not Found message.
+ *
+ * @return {JSX.Element} A JSX element containing the Not Found message.
+ */
 function NotFound () {
   return <div>
     404
   </div>
 }
 
+/**
+ * The App class is a React component that serves as the main application container.
+ * It utilizes React Router for routing and includes support for lazy loading components using React Suspense.
+ *
+ * The component manages different routes for the application:
+ * - `LandingPage` at the `landingUrl` path
+ * - `ViewerPage` at the `viewerUrl` path
+ * - A fallback `NotFound` component for undefined routes
+ *
+ * The application also displays a loading indicator while lazy-loaded components are being fetched.
+ */
 class App extends Component {
   render () {
     return <div className='App'>

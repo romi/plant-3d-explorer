@@ -26,26 +26,32 @@ License along with this program.  If not, see
 <https://www.gnu.org/licenses/>.
 
 */
-import { useState, useEffect } from 'react'
-import { get, CancelToken } from 'axios'
+
+import { useEffect, useState } from 'react'
+import { CancelToken, get } from 'axios'
 
 import { MakeQuerablePromise } from 'rd/tools/promise'
 
+// Cache object to store fetch results and avoid redundant network requests
 const cache = {}
 
-function forgeFetchResource (url, source, options) {
+// Creates a queryable fetch request for a given URL
+function forgeFetchResource (url) {
   return {
-    data: null,
-    query: MakeQuerablePromise(
-      get(url)
-    )
+    data: null, // Initial data state
+    query: MakeQuerablePromise(get(url)) // Wraps axios get request in queryable promise
   }
 }
 
 const useFetch = (url, cached = true, options = {}) => {
+  // Check if data exists in cache for the given URL
   const cachedData = (cached && cache[url])
+
+  // State management for error, loading status, and fetch results
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(!!cachedData || true)
+
+  // Initialize data state based on cache availability
   const [data, setData] = useState(
     cache[url]
       ? cache[url].query.isFulfilled
@@ -55,14 +61,18 @@ const useFetch = (url, cached = true, options = {}) => {
   )
 
   useEffect(() => {
-    let source
-    let unmounted = false
+    let source // For request cancellation
+    let unmounted = false // Track component unmount state
+
     if (url) {
+      // Handle cached data scenario
       if (cached && cache[url]) {
         if (cache[url].data) {
+          // Use cached data if available
           setLoading(false)
           setData(cache[url].data)
         } else {
+          // Wait for pending cached request to complete
           cache[url].query
             .then((response) => {
               setLoading(false)
@@ -70,13 +80,16 @@ const useFetch = (url, cached = true, options = {}) => {
             })
         }
       } else {
+        // Handle new fetch request
         setData(null)
         setLoading(true)
         source = CancelToken.source()
+
+        // Create new fetch resource
         const fetchResource = forgeFetchResource(url, source, options)
+        if (cached) cache[url] = fetchResource // Store in cache if caching enabled
 
-        if (cached) cache[url] = fetchResource
-
+        // Execute fetch request
         fetchResource.query
           .then((response) => {
             if (!unmounted) {
@@ -87,20 +100,22 @@ const useFetch = (url, cached = true, options = {}) => {
           })
           .catch((error) => {
             if (!unmounted) {
-              console.log(error) // DEV
+              console.log(error)
               setError(new Error(error))
               setLoading(false)
             }
           })
       }
     }
+
+    // Cleanup function to prevent memory leaks and cancel pending requests
     return () => {
       unmounted = true
       if (source) source.cancel('Cancelling in cleanup')
     }
-  }, [url])
+  }, [url]) // Effect depends on URL changes
 
-  return [ data, loading, error ]
+  return [data, loading, error]
 }
 
 export default useFetch

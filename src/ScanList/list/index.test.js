@@ -56,7 +56,7 @@ describe('Item component', () => {
     elem.auto = queryByTestId('auto')
     elem.man = queryByTestId('man')
     elem.archive = queryByText(/scanlist-link-download/i).parentNode
-    elem.metadatas = queryByText(/scanlist-link-metadata/i).parentNode
+    elem.metadata = queryByText(/scanlist-link-metadata/i).parentNode
     elem.id = queryByText(/scanlist-cta/i).parentNode
   })
 
@@ -102,7 +102,7 @@ describe('Item component', () => {
     expect(elem.date).toHaveTextContent(format(mockItem.metadata.date,
       'MMM DD YYYY HH:mm:ss'))
     expect(elem.archive.href).toMatch(mockItem.metadata.files.archive)
-    expect(elem.metadatas.href).toMatch(mockItem.metadata.files.metadatas)
+    expect(elem.metadata.href).toMatch(mockItem.metadata.files.metadata)
     expect(elem.id.href).toMatch(mockItem.id)
     expect(elem.auto).toHaveTextContent('angles-legend-automated')
     expect(elem.man).toHaveTextContent('angles-legend-manuel')

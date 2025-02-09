@@ -31,8 +31,7 @@ import React from 'react'
 import styled from '@emotion/styled'
 import { FormattedMessage } from 'react-intl'
 import { useLayers } from 'flow/settings/accessors'
-import { useScan, useScanFiles,
-  useSegmentedPointCloud } from 'flow/scans/accessors'
+import { useScan, useScanFiles, useSegmentedPointCloud } from 'flow/scans/accessors'
 
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
 import { IconStateCatcher } from 'rd/UI/Icon'
@@ -40,8 +39,14 @@ import { IconStateCatcher } from 'rd/UI/Icon'
 import { H3 } from 'common/styles/UI/Text/titles'
 
 import { Interactor } from './index'
-import { MeshIcon, PointCloudIcon, SegmentedPointCloudIcon,
-  SkeletonIcon, InternodesIcon, BoundingBoxIcon } from './icons'
+import {
+  BoundingBoxIcon,
+  InternodesIcon,
+  MeshIcon,
+  PointCloudIcon,
+  SegmentedPointCloudIcon,
+  SkeletonIcon
+} from './icons'
 
 export const Container = styled.div({
   position: 'absolute',
@@ -61,7 +66,7 @@ export const Container = styled.div({
 export default function LayersInteractors () {
   const [layers, setLayers] = useLayers()
   const [scan] = useScan()
-  const [[meshGeometry], [pointCloudGeometry]] = useScanFiles(scan)
+  const [[meshGeometry], [pointCloudGeometry], [skeletonGeometry], [anglesData]] = useScanFiles(scan)
   const [segmentedPointCloud] = useSegmentedPointCloud()
 
   return <Container>
@@ -75,7 +80,7 @@ export default function LayersInteractors () {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center'
-        }} >
+        }}>
           <MeshIcon isActivated={layers.mesh} />
         </IconStateCatcher>
       </Interactor>
@@ -96,7 +101,7 @@ export default function LayersInteractors () {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center'
-        }} >
+        }}>
           <PointCloudIcon isActivated={layers.pointCloud} />
         </IconStateCatcher>
       </Interactor>
@@ -114,12 +119,12 @@ export default function LayersInteractors () {
         onClick={() => setLayers({
           ...layers,
           segmentedPointCloud: !layers.segmentedPointCloud
-        })} >
+        })}>
         <IconStateCatcher style={{
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center'
-        }} >
+        }}>
           <SegmentedPointCloudIcon isActivated={layers.segmentedPointCloud} />
         </IconStateCatcher>
       </Interactor>
@@ -132,15 +137,17 @@ export default function LayersInteractors () {
 
     <Tooltip>
       <Interactor
-        isDisabled={!(scan && scan.data.skeleton)}
+        isDisabled={!skeletonGeometry}
         activated={layers.skeleton}
-        onClick={() => setLayers({ ...layers, skeleton: !layers.skeleton })}
-      >
+        onClick={() => setLayers({
+          ...layers,
+          skeleton: !layers.skeleton
+        })}>
         <IconStateCatcher style={{
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center'
-        }} >
+        }}>
           <SkeletonIcon isActivated={layers.skeleton} />
         </IconStateCatcher>
       </Interactor>
@@ -153,15 +160,17 @@ export default function LayersInteractors () {
 
     <Tooltip>
       <Interactor
-        isDisabled={!(scan && scan.data.angles)}
+        isDisabled={!anglesData}
         activated={layers.angles}
-        onClick={() => setLayers({ ...layers, angles: !layers.angles })}
-      >
+        onClick={() => setLayers({
+          ...layers,
+          angles: !layers.angles
+        })}>
         <IconStateCatcher style={{
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center'
-        }} >
+        }}>
           <InternodesIcon isActivated={layers.angles} />
         </IconStateCatcher>
       </Interactor>
@@ -175,13 +184,15 @@ export default function LayersInteractors () {
       <Interactor
         isDisabled={!pointCloudGeometry}
         activated={layers.axisAlignedBoundingBox}
-        onClick={() => setLayers({ ...layers, axisAlignedBoundingBox: !layers.axisAlignedBoundingBox })}
-      >
+        onClick={() => setLayers({
+          ...layers,
+          axisAlignedBoundingBox: !layers.axisAlignedBoundingBox
+        })}>
         <IconStateCatcher style={{
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center'
-        }} >
+        }}>
           <BoundingBoxIcon isActivated={layers.axisAlignedBoundingBox} />
         </IconStateCatcher>
       </Interactor>

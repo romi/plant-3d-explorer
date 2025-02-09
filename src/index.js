@@ -43,25 +43,36 @@ import * as serviceWorker from './serviceWorker'
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister()
 
+// Renders the React component tree into the 'root' DOM element
 const render = (Component) => {
   return ReactDOM.render(
     <div>
+      {/* Applies global styles across the app */}
       <GlobalStyles />
+
+      {/* Provides the Redux store to the React component tree */}
       <ReduxProvider>
+        {/* Provides internationalization (i18n) support with localized messages */}
         <IntlProvider messages={messages}>
+          {/* The root app component */}
           <App />
         </IntlProvider>
       </ReduxProvider>
     </div>,
+    // Mounts the React application to the DOM element with the ID 'root'
     document.getElementById('root')
   )
 }
 
+// Initial call to render the main `App` component
 render(App)
 
+// Enables Hot Module Replacement (HMR) if the module is hot-reloadable
 if (module.hot) {
   module.hot.accept('./App', () => {
+    // Dynamically require the updated version of the `App` component
     const NextApp = require('./App').default
+    // Re-render the updated component tree
     render(NextApp)
   })
 }

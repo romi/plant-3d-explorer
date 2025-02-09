@@ -38,6 +38,13 @@ License along with this program.  If not, see
 // To learn more about the benefits of this model and instructions on how to
 // opt-in, read http://bit.ly/CRA-PWA
 
+/**
+ * A boolean variable that determines if the current environment is running on localhost.
+ * It evaluates the window's hostname to check if it matches common localhost patterns:
+ * - `localhost` for standard localhost usage
+ * - `[::1]` for IPv6 localhost
+ * - `127.x.x.x` for IPv4 localhost within the 127/8 range
+ */
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
     // [::1] is the IPv6 localhost address.
@@ -48,6 +55,12 @@ const isLocalhost = Boolean(
     )
 )
 
+/**
+ * Registers a service worker to enable Progressive Web App (PWA) features, such as offline functionality and improved performance.
+ *
+ * @param {Object} config - Configuration object for customizing the service worker's behavior. This may include callbacks like `onSuccess` and `onUpdate` to handle service worker lifecycle events.
+ * @return {void} This function does not return any value.
+ */
 export function register (config) {
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
@@ -82,6 +95,15 @@ export function register (config) {
   }
 }
 
+/**
+ * Registers a valid service worker and handles updates and success events.
+ *
+ * @param {string} swUrl - The URL of the service worker file to register.
+ * @param {Object} [config] - Optional configuration object containing callbacks for update and success events.
+ * @param {Function} [config.onUpdate] - Callback function invoked when the service worker detects an update.
+ * @param {Function} [config.onSuccess] - Callback function invoked when the service worker is successfully registered and cached.
+ * @return {void} This function does not return a value.
+ */
 function registerValidSW (swUrl, config) {
   navigator.serviceWorker
     .register(swUrl)
@@ -126,6 +148,15 @@ function registerValidSW (swUrl, config) {
     })
 }
 
+/**
+ * Checks the validity of the provided service worker URL and handles scenarios
+ * where the service worker is not found or invalid. If the service worker is valid,
+ * it proceeds to register it. Otherwise, it handles app reload or logs offline mode status.
+ *
+ * @param {string} swUrl The URL of the service worker to check.
+ * @param {Object} config Configuration object with optional callbacks related to the service worker events.
+ * @return {void} Does not return any value. Handles service worker validation and registration or reloads the app as appropriate.
+ */
 function checkValidServiceWorker (swUrl, config) {
   // Check if the service worker can be found. If it can't reload the page.
   window.fetch(swUrl)
@@ -154,6 +185,13 @@ function checkValidServiceWorker (swUrl, config) {
     })
 }
 
+/**
+ * Unregisters the active service worker if one exists.
+ * This function checks for support of the Service Worker API in the current browser,
+ * and if supported, it attempts to unregister the service worker through the ServiceWorkerRegistration object.
+ *
+ * @return {void} This function does not return a value.
+ */
 export function unregister () {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready.then(registration => {
