@@ -28,6 +28,31 @@ License along with this program.  If not, see
 */
 import * as THREE from 'three'
 
+/**
+ * The GLSL shader code for the vertex shader used in a WebGL or Three.js rendering pipeline.
+ *
+ * This shader defines various uniform and attribute variables that control the appearance and behavior
+ * of rendering points in 3D space. It computes the size and position of the point primitives rendered
+ * on the screen, while also passing color information to the fragment shader for further processing.
+ *
+ * Uniforms:
+ * - color: A vec3 representing the base color to be used for rendering.
+ * - zoom: A float representing the zoom factor to scale the size of points.
+ * - ratio: A float that defines the ratio to scale the point size.
+ *
+ * Attributes:
+ * - value: A float attribute representing a custom value assigned to each vertex (not used directly in this shader).
+ * - customColor: A vec3 attribute representing custom color values for each vertex (not used directly in this shader).
+ *
+ * Varyings:
+ * - vColor: A vec3 passed to the fragment shader, initialized with the uniform base color.
+ *
+ * Main Function:
+ * - Computes vColor using the uniform color.
+ * - Calculates mvPosition as the model-view transformation of the vertex position.
+ * - Computes gl_PointSize based on zoom, ratio, and a clamped distance factor.
+ * - Determines gl_Position as the projection of the transformed model-view position.
+ */
 const vertexShader = `
   uniform vec3 color;
   uniform float zoom;
@@ -46,6 +71,23 @@ const vertexShader = `
   }
 `
 
+/**
+ * GLSL fragment shader code as a template literal string.
+ *
+ * This fragment shader is used to render point sprites with a circular appearance
+ * by discarding fragments outside a circular shape. It also applies a color and
+ * opacity to the sprites.
+ *
+ * Variables:
+ * - `vColor`: A varying vector passed from the vertex shader representing the color
+ *    of the fragment.
+ * - `opacity`: A uniform float value representing the transparency level of the sprite.
+ *
+ * The `main` function:
+ * - Discards fragments outside the circular area by checking the distance from
+ *   the center of the point (gl_PointCoord) to the edges.
+ * - Sets the fragment color using the `vColor` and `opacity` values.
+ */
 const fragmentShader = `
   varying vec3 vColor;
   uniform float opacity;
@@ -56,6 +98,11 @@ const fragmentShader = `
   }
 `
 
+/**
+ * The PointCloud class is used to generate and manipulate a point cloud
+ * geometry, including rendering options, positions, visibility, and other
+ * configurable properties using Three.js.
+ */
 export default class PointCloud {
   constructor (geometry, parent) {
     this.geometry = geometry

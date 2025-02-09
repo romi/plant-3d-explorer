@@ -86,7 +86,7 @@ export default function WorldComponent (props) {
 
   const [scan] = useScan()
 
-  const [[meshGeometry], [pointCloudGeometry], [pointCloudGroundTruthGeometry]] = useScanFiles(scan)
+  const [[meshGeometry], [pointCloudGeometry], [skeletonGeometry], [anglesData], [pointCloudGroundTruthGeometry]] = useScanFiles(scan)
   const [segmentedPointCloud, segmentation] = useSegmentedPointCloud()
   const [viewport, event2dFns, resetViewport2d, clicked2d] = useViewport2d(
     bounds.width || getSize().width,
@@ -197,7 +197,7 @@ export default function WorldComponent (props) {
         world.setCamera(scan.camera)
       }
     },
-    [world, scan, meshGeometry, pointCloudGeometry, pointCloudGroundTruthGeometry]
+    [world, scan, meshGeometry, pointCloudGeometry, skeletonGeometry, anglesData, pointCloudGroundTruthGeometry]
   )
 
   useEffect(
@@ -478,17 +478,17 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
-      if (world && scan && scan.data.skeleton) {
-        world.setSkeletonPoints(scan.data.skeleton)
+      if (world && skeletonGeometry) {
+        world.setSkeletonPoints(skeletonGeometry)
         world.setLayers(layers)
       }
     },
-    [world, scan]
+    [world, skeletonGeometry, scan]
   )
 
   useEffect(
     () => {
-      if (world && scan && scan.data.skeleton) {
+      if (world && skeletonGeometry) {
         world.setSkeletonColor(colors.skeleton)
       }
     },
@@ -497,12 +497,12 @@ export default function WorldComponent (props) {
 
   useEffect(
     () => {
-      if (world && scan && scan.data.angles) {
-        world.setAnglesPoints(scan.data.angles)
+      if (world && anglesData) {
+        world.setAnglesPoints(anglesData)
         world.setLayers(layers)
       }
     },
-    [world, scan]
+    [world, anglesData, scan]
   )
 
   useEffect(
