@@ -148,7 +148,7 @@ THREE.OrbitControls = function (object, domElement, changeFn) {
 
     // so camera.up is the orbit axis
     var quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, -1), object.up)
-    var quatInverse = quat.clone().inverse()
+    var quatInverse = quat.clone().invert()
 
     var lastPosition = new THREE.Vector3()
     var lastQuaternion = new THREE.Quaternion()
