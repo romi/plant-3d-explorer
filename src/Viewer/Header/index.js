@@ -136,7 +136,7 @@ export default function () {
         </AllScans>
         <Chevron src={chevronIco} />
         <H2>
-          {scan && scan.metadata.plant}
+          {scan && scan.id}
         </H2>
       </InlineElement>
     </Column>
@@ -187,7 +187,7 @@ export default function () {
           </MarginedDocLink>
         }
         {
-          scan && <MarginedDocLink href={scan.metadata.files.metadatas} target='_blank'>
+          scan && <MarginedDocLink href={scan.metadata.files.metadata} target='_blank'>
             <FormattedMessage id='scanlist-link-metadata' />
           </MarginedDocLink>
         }
