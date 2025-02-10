@@ -1,6 +1,6 @@
 services:
   plantdb:
-    image: "roboticsmicrofarms/plantdb:latest"
+    image: "roboticsmicrofarms/plantdb:0.13.3"
     command: "fsdb_rest_api --port 5000"
     user: "${UID}:${GID}"
     volumes:
