@@ -1,8 +1,8 @@
 {
   "name": "plant-3d-explorer",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "private": true,
-  "homepage": "https://db.romi-project.eu/viz/",
+  "homepage": "https://mellitus.biologie.ens-lyon.fr/p3dx/",
   "dependencies": {
     "@d3fc/d3fc-extent": "^3.1.2",
     "@emotion/core": "^10.0.9",
@@ -41,7 +41,7 @@
   },
   "scripts": {
     "start": "NODE_ENV=development react-scripts start",
-    "build": "NODE_ENV=production react-scripts build",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "./node_modules/.bin/standard",
