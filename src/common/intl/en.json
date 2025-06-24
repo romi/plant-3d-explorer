@@ -9,7 +9,7 @@
   "filter-placeholder": "Type a keyword",
   "filter-submit": "Search",
 
-  "scanlist-title": "{NB_SCANS} {NB_SCANS, plural, =1 {dataset} other {datasets}}",
+  "scanlist-title": "{NB_SCANS} {NB_SCANS, plural, =1 {dataset} other {datasets}}",
   "scanlist-title-link": " for ",
   "scanlist-title-search-value": "‘‘{SEARCH}’’",
   "scanlist-sort-name": "Name",
@@ -29,8 +29,8 @@
   "header-back": "All datasets",
 
   "tooltip-mesh": "Mesh",
-  "tooltip-pointcloud": "Point cloud",
-  "tooltip-segmentedpointcloud": "Segmented point cloud",
+  "tooltip-pointcloud": "Point cloud",
+  "tooltip-segmentedpointcloud": "Segmented point cloud",
   "tooltip-skeleton": "Skeleton",
   "tooltip-organs": "Organs",
   "tooltip-pcd-ground-truth": "Point cloud ground truth",
@@ -39,9 +39,9 @@
   "pointcloud-size": "Point Cloud displayed vertices",
 
 
-  "tooltip-cameras-hide": "Hide cameras",
-  "tooltip-cameras-show": "Show cameras",
-  "tooltip-reset": "Reset view",
+  "tooltip-cameras-hide": "Hide cameras",
+  "tooltip-cameras-show": "Show cameras",
+  "tooltip-reset": "Reset view",
   
   "tooltip-mesh-color-picker": "Change the color of the mesh",
   "tooltip-point-cloud-color-picker": "Change the color of the point cloud",
@@ -102,11 +102,12 @@
   "angles-axis-y": "Intervals",
 
   "panels-add": "Add panel",
-  "panels-angles": "Divergence angles",
-  "panels-distances": "Internode distances",
+  "panels-angles": "Divergence angles",
+  "panels-distances": "Internode distances",
   "panels-evaluation": "Plant Evaluation",
 
   "segmentation2D": "Segmentation 2D Evaluation",
-  "segmentedPC": "Segmented Point Cloud Evaluation"
+  "segmentedPC": "Segmented Point Cloud Evaluation",
 
+  "api-unavailable": "REST API server is not available. Please check that the server at {serverUrl} is running."
 }

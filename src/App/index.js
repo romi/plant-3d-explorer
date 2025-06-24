@@ -28,10 +28,11 @@ License along with this program.  If not, see
 */
 import React, { Component, Suspense } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import { FormattedMessage } from 'react-intl'
 
 import { lazy } from 'rd/tools/routing'
 import { basename, landingUrl, viewerUrl } from 'common/routing'
+import APIStatusCheck from '../common/components/APIStatusCheck'
+import Loading from '../common/components/Loading'
 
 /**
  * Lazy loads the LandingPage component.
@@ -63,26 +64,6 @@ const LandingPage = lazy(() => import('ScanList'))
 const ViewerPage = lazy(() => import('Viewer'))
 
 /**
- * A React functional component that renders a loading placeholder
- * with styled text and a translatable "loading" message.
- *
- * @return {JSX.Element} A JSX element representing the styled loading message.
- */
-function Loading () {
-  return <div style={{
-    fontSize: '10rem',
-    fontWeight: 500,
-    width: '100vw',
-    overflowWrap: 'break-word',
-    lineHeight: '77%',
-    textAlign: 'left',
-    padding: 100
-  }}>
-    <FormattedMessage id='misc-loading' />
-  </div>
-}
-
-/**
  * A functional React component that renders a 404 Not Found message.
  *
  * @return {JSX.Element} A JSX element containing the Not Found message.
@@ -107,15 +88,17 @@ function NotFound () {
 class App extends Component {
   render () {
     return <div className='App'>
-      <Router basename={basename}>
-        <Suspense fallback={<Loading />}>
-          <Switch>
-            <Route exact path={landingUrl} component={LandingPage} />
-            <Route exact path={viewerUrl} component={ViewerPage} />
-            <Route path='*' component={NotFound} />
-          </Switch>
-        </Suspense>
-      </Router>
+      <APIStatusCheck fallback={<Loading message='Checking API availability...' />}>
+        <Router basename={basename}>
+          <Suspense fallback={<Loading />}>
+            <Switch>
+              <Route exact path={landingUrl} component={LandingPage} />
+              <Route exact path={viewerUrl} component={ViewerPage} />
+              <Route path='*' component={NotFound} />
+            </Switch>
+          </Suspense>
+        </Router>
+      </APIStatusCheck>
     </div>
   }
 }
