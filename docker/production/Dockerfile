@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM node:10 as build
+FROM node:10 AS build
 LABEL maintainer="Jonathan LEGRAND <jonathan.legrand@ens-lyon.fr>"
 
 ARG API_URL='https://db.romi-project.eu'
