@@ -1,6 +1,7 @@
 services:
   plantdb:
-    image: "roboticsmicrofarms/plantdb:0.13.3"
+    image: roboticsmicrofarms/plantdb:0.14.4
+    container_name: plantdb
     command: "fsdb_rest_api --port 5000"
     user: "${UID}:${GID}"
     volumes:
@@ -10,10 +11,11 @@ services:
     healthcheck:
       test: "exit 0"
   plant-3d-explorer:
-    image: "roboticsmicrofarms/plant-3d-explorer:latest"
+    image: "roboticsmicrofarms/plant-3d-explorer:0.1.2"
+    container_name: p3dx
     depends_on:
       - plantdb
     environment:
-        REACT_APP_API_URL: http://localhost:5000
+      REACT_APP_API_URL: http://localhost:5000
     ports:
       - "3000:3000"
