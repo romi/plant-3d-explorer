@@ -38,9 +38,12 @@ const APIStatusCheck = ({ children, fallback }) => {
       right: 0,
       backgroundColor: '#f44336',
       color: 'white',
-      padding: '16px',
+      padding: '24px',
       textAlign: 'center',
-      zIndex: 9999
+      zIndex: 9999,
+      fontSize: '2rem',
+      fontWeight: 'bold',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
     }}>
       <FormattedMessage
         id='api-unavailable'
