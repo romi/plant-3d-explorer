@@ -66,7 +66,7 @@ const ViewerPage = lazy(() => import('Viewer'))
 /**
  * A functional React component that renders a 404 Not Found message.
  *
- * @return {JSX.Element} A JSX element containing the Not Found message.
+ * @return A JSX element containing the Not Found message.
  */
 function NotFound () {
   return <div>
@@ -75,15 +75,20 @@ function NotFound () {
 }
 
 /**
- * The App class is a React component that serves as the main application container.
- * It utilizes React Router for routing and includes support for lazy loading components using React Suspense.
+ * App is the main component of the application which extends the React Component class.
+ * It serves as the entry point for rendering the application and sets up the routing
+ * structure for the various pages of the app.
  *
- * The component manages different routes for the application:
- * - `LandingPage` at the `landingUrl` path
- * - `ViewerPage` at the `viewerUrl` path
- * - A fallback `NotFound` component for undefined routes
+ * The component utilizes several sub-components to orchestrate its functionality:
+ * - APIStatusCheck: A wrapper component to verify API availability before rendering the main application.
+ * - Router: Provides navigation functionality for the application.
+ * - Suspense: Handles loading states for components that are dynamically loaded.
+ * - Switch and Route: Define the application's routing and render specific components for different routes.
  *
- * The application also displays a loading indicator while lazy-loaded components are being fetched.
+ * Routes:
+ * - landingUrl: Maps to the LandingPage component, which is the main entry page for users.
+ * - viewerUrl: Maps to the ViewerPage component, responsible for displaying a specific viewer-based functionality.
+ * - Default (path='*'): Displays the NotFound component for all undefined routes.
  */
 class App extends Component {
   render () {
