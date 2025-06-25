@@ -1,7 +1,6 @@
 /*
 
-Plant 3D Explorer: An browser application for 3D scanned
-plants.
+Plant 3D Explorer: A browser application for 3D scanned plants.
 
 Copyright (C) 2019-2020 Sony Computer Science Laboratories
               & Centre national de la recherche scientifique (CNRS)
