@@ -2,7 +2,7 @@ import React from 'react'
 import GlobalStyles from 'common/styles'
 import ReduxProvider from 'common/redux'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { basename } from 'common/routing'
+import { BASE_PATH } from 'common/routing'
 import IntlProvider from 'rd/tools/intl'
 
 import { render } from '@testing-library/react'
@@ -22,7 +22,7 @@ export const compareStyles = (e, f, except = []) => {
 const AllProviders = ({ children }) => {
   return (
     <div>
-      <Router basename={basename}>
+      <Router BASE_PATH={BASE_PATH}>
         <GlobalStyles />
         <ReduxProvider>
           <IntlProvider onError={() => {}}>

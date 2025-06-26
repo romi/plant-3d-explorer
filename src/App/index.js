@@ -29,7 +29,7 @@ import React, { Component, Suspense } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 import { lazy } from 'rd/tools/routing'
-import { basename, landingUrl, viewerUrl } from 'common/routing'
+import { BASE_PATH, LANDING_URL, VIEWER_URL } from 'common/routing'
 import APIStatusCheck from '../common/components/APIStatusCheck'
 import Loading from '../common/components/Loading'
 
@@ -85,19 +85,19 @@ function NotFound () {
  * - Switch and Route: Define the application's routing and render specific components for different routes.
  *
  * Routes:
- * - landingUrl: Maps to the LandingPage component, which is the main entry page for users.
- * - viewerUrl: Maps to the ViewerPage component, responsible for displaying a specific viewer-based functionality.
+ * - LANDING_URL: Maps to the LandingPage component, which is the main entry page for users.
+ * - VIEWER_URL: Maps to the ViewerPage component, responsible for displaying a specific viewer-based functionality.
  * - Default (path='*'): Displays the NotFound component for all undefined routes.
  */
 class App extends Component {
   render () {
     return <div className='App'>
       <APIStatusCheck fallback={<Loading message='Checking API availability...' />}>
-        <Router basename={basename}>
+        <Router BASE_PATH={BASE_PATH}>
           <Suspense fallback={<Loading />}>
             <Switch>
-              <Route exact path={landingUrl} component={LandingPage} />
-              <Route exact path={viewerUrl} component={ViewerPage} />
+              <Route exact path={LANDING_URL} component={LandingPage} />
+              <Route exact path={VIEWER_URL} component={ViewerPage} />
               <Route path='*' component={NotFound} />
             </Switch>
           </Suspense>
