@@ -13,7 +13,7 @@ ENV REACT_APP_BASENAME="$BASENAME"
 
 # Update the PATH to include node_modules/.bin
 ENV PATH="/app/node_modules/.bin:$PATH"
- Set the NODE_PATH to point to the source directory
+# Set the NODE_PATH to point to the source directory
 ENV NODE_PATH="src/"
 # Set the working directory to /app
 WORKDIR /app
