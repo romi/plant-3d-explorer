@@ -25,7 +25,39 @@ License along with this program.  If not, see
 <https://www.gnu.org/licenses/>.
 
 */
-export const landingUrl = '/'
-export const viewerUrl = '/viewer/:scanId'
 
-export const basename = process.env.NODE_ENV === 'production' ? '/viz/' : '/'
+/**
+ * Application routing and URL configuration constants.
+ * These define the core navigation structure of the application.
+ */
+
+/**
+ * The root path of the application where users land by default.
+ * Used for directing users to the home/landing page.
+ *
+ * @const {string}
+ */
+export const LANDING_URL = '/'
+
+/**
+ * URL pattern for the scan viewer page with a dynamic scan ID parameter.
+ * Used for routing to specific scan views.
+ *
+ * Example usage:
+ * - Raw: '/viewer/:scanId'
+ * - With parameter: '/viewer/123456'
+ *
+ * @const {string}
+ */
+export const VIEWER_URL = '/viewer/:scanId'
+
+/**
+ * Base path prefix for the application, typically used in deployment scenarios
+ * where the app doesn't sit at the root of the domain.
+ *
+ * This value is taken from the environment variable `BASE_PATH`.
+ * If the environment variable is not set, it defaults to the root path '/'.
+ *
+ * @const {string}
+ */
+export const BASE_PATH = process.env.BASE_PATH || '/'

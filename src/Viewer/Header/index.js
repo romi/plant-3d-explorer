@@ -33,7 +33,7 @@ import { format } from 'date-fns'
 
 import { H2, H3 } from 'common/styles/UI/Text/titles'
 import { green, darkGreen } from 'common/styles/colors'
-import { landingUrl } from 'common/routing'
+import { LANDING_URL } from 'common/routing'
 
 import { useScan } from 'flow/scans/accessors'
 
@@ -123,7 +123,7 @@ export default function () {
       </InlineElement>
       <InlineElement>
         <AllScans
-          to={landingUrl}
+          to={LANDING_URL}
           onClick={() => {
             resetSettings()
             resetInteractions()
