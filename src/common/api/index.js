@@ -27,62 +27,98 @@ License along with this program.  If not, see
 */
 
 /**
- * The `serverURL` variable is used to determine the base URL for the server API.
- *
- * - In a production environment (when `NODE_ENV` is set to 'production'), the `serverURL` is set to an empty string.
- * - In a non-production environment, it attempts to use the `REACT_APP_API_URL` environment variable.
- * - If `REACT_APP_API_URL` is not defined, it defaults to 'http://localhost:5000'.
- *
- * This variable is helpful in differentiating between development and production environments.
+ * API endpoints and utility functions for interacting with the PlantDB REST API.
+ * This module provides:
+ * - Base URL configuration
+ * - API endpoint constants
+ * - URL construction utilities
+ * - Functions to generate specific endpoint URLs for various resources (scans, images, etc.)
  */
-export const serverURL = process.env.NODE_ENV === 'production'
-  ? ''
-  : (process.env.REACT_APP_API_URL || 'http://localhost:5000')
 
 /**
- * Constructs and returns a full URI by appending the provided relative path to the server's base URL.
+ * The URL of the PlantDB REST API that the application will interact with for API calls.
+ * This value is taken from the environment variable `REACT_APP_API_URL`.
+ * If the environment variable is not set, it defaults to `http://localhost:5000`.
+ *
+ * Example scenarios:
+ * - In a development environment, the URL will default to `http://localhost:5000`.
+ * - In a production environment, this should be set to the respective API URL using `REACT_APP_API_URL`.
+ */
+export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000'
+
+// Path segment constants to avoid repetition and improve maintainability
+const API_PATHS = {
+  SCANS: '/scans',
+  SCANS_INFO: '/scans_info',
+  FILES: '/files',
+  IMAGE: '/image',
+  POINTCLOUD: '/pointcloud',
+  MESH: '/mesh',
+  SKELETON: '/skeleton',
+  SEQUENCE: '/sequence',
+  ARCHIVE: '/archive',
+  REFRESH: '/refresh'
+}
+
+/**
+ * Safely joins URL segments, ensuring there are no duplicate or missing slashes.
+ *
+ * @param {string} base - The base URL.
+ * @param {string} path - The path to append (with or without leading slash).
+ * @returns {string} Properly joined URL.
+ */
+const joinUrlPaths = (base, path) => {
+  // Remove trailing slash from base if present
+  const cleanBase = base.endsWith('/') ? base.slice(0, -1) : base
+  // Ensure path starts with slash
+  const cleanPath = path.startsWith('/') ? path : `/${path}`
+  return `${cleanBase}${cleanPath}`
+}
+
+/**
+ * Constructs and returns a full URI by appending the provided relative path to the API base URL.
  *
  * @param {string} path - The relative path to the resource.
  * @returns {string} The full URI to access the resource.
  */
-export const getFullURI = (path) => serverURL + path
+export const getFullURI = (path) => joinUrlPaths(API_BASE_URL, path)
 
 /**
  * A string representing the URI endpoint for accessing scan-related operations on the server.
- * The endpoint is constructed by concatenating the base server URL with the '/scans_info' path.
  *
  * @const {string}
  */
-export const scansURI = serverURL + '/scans_info'
+export const scansURI = getFullURI(API_PATHS.SCANS_INFO)
 
 /**
  * Constructs a URI query string for scans based on the provided search and fuzzy parameters.
  *
- * @param {string} [search] - The search term to filter the results. If provided, it will be added as a query parameter `filterQuery` in the URI.
- * @param {boolean} [fuzzy] - Determines if fuzzy search should be applied. If true, it will append `&fuzzy=true` to the URI.
+ * @param {string} [searchTerm] - The search term to filter the results. If provided, it will be added as a query parameter `filterQuery` in the URI.
+ * @param {boolean} [useFuzzySearch] - Determines if fuzzy search should be applied. If true, it will append `&fuzzy=true` to the URI.
  * @returns {string} The constructed URI query string with the optional search and fuzzy parameters.
  */
-export const scansURIQuery = (search, fuzzy) =>
-  `${getFullURI('/scans_info')}${search ? `?filterQuery=${search}` : ''}${fuzzy ? `&fuzzy=${fuzzy}` : ''}`
+export const scansURIQuery = (searchTerm, useFuzzySearch) =>
+  `${getFullURI(API_PATHS.SCANS_INFO)}${searchTerm ? `?filterQuery=${searchTerm}` : ''}${useFuzzySearch ? `&fuzzy=${useFuzzySearch}` : ''}`
 
+// File and scan access functions
 /**
  * Concatenates and constructs a URL to retrieve a specific scan file.
  *
- * @param {string} scanId - The identifier for the desired file.
- * @param {string} path - The path or subdirectory where the file is located.
+ * @param {string} scanId - The identifier for the desired scan.
+ * @param {string} filePath - The path or subdirectory where the file is located.
  * @returns {string} The complete URL for accessing the scan file.
  */
-export const getScanFile = (scanId, path) =>
-  getFullURI(`/files/${scanId}/${path}`)
+export const getScanFile = (scanId, filePath) =>
+  getFullURI(`${API_PATHS.FILES}/${scanId}/${filePath}`)
 
 /**
- * Retrieves the full file URL by appending the specified file path to the server's base URL.
+ * Retrieves the full file URL by appending the specified file path to the API base URL.
  *
- * @param {string} path - The relative path of the file, starting from the root directory.
- * @returns {string} The full URL of the file combining the server's base URL and the file path.
+ * @param {string} filePath - The relative path of the file, starting from the root directory.
+ * @returns {string} The full URL of the file combining the API's base URL and the file path.
  */
-export const getFileURI = (path) =>
-  getFullURI(`/files/${path}`)
+export const getFileURI = (filePath) =>
+  getFullURI(`${API_PATHS.FILES}/${filePath}`)
 
 /**
  * Constructs the URI to access a specific scan based on the given ID.
@@ -91,7 +127,7 @@ export const getFileURI = (path) =>
  * @returns {string} The complete URI to access the scan.
  */
 export const getScanURI = (scanId) =>
-  getFullURI(`/scans/${scanId}`)
+  getFullURI(`${API_PATHS.SCANS}/${scanId}`)
 
 /**
  * Constructs the URL to retrieve metadata for a specific scan.
@@ -100,8 +136,9 @@ export const getScanURI = (scanId) =>
  * @returns {string} The fully constructed URL pointing to the metadata file of the specified scan.
  */
 export const getScanMetadataURI = (scanId) =>
-  getFullURI(`/files/${scanId}/metadata/metadata.json`)
+  getFullURI(`${API_PATHS.FILES}/${scanId}/metadata/metadata.json`)
 
+// Media-specific access functions
 /**
  * Constructs and returns a URL string to fetch an image with the specified parameters.
  *
@@ -112,7 +149,7 @@ export const getScanMetadataURI = (scanId) =>
  * @returns {string} A string representing the URL to access the specified image.
  */
 export const getScanImageURI = (scanId, filesetId, fileId, size = 'thumb') =>
-  getFullURI(`/image/${scanId}/${filesetId}/${fileId}?size=${size}`)
+  getFullURI(`${API_PATHS.IMAGE}/${scanId}/${filesetId}/${fileId}?size=${size}`)
 
 /**
  * Generates a URL to retrieve a point cloud file.
@@ -124,7 +161,7 @@ export const getScanImageURI = (scanId, filesetId, fileId, size = 'thumb') =>
  * @returns {string} The generated URL for the point cloud file.
  */
 export const getScanPointCloudURI = (scanId, filesetId, fileId, size = 'preview') =>
-  getFullURI(`/pointcloud/${scanId}/${filesetId}/${fileId}?size=${size}`)
+  getFullURI(`${API_PATHS.POINTCLOUD}/${scanId}/${filesetId}/${fileId}?size=${size}`)
 
 /**
  * Constructs a URL string to retrieve a 3D mesh file.
@@ -135,10 +172,16 @@ export const getScanPointCloudURI = (scanId, filesetId, fileId, size = 'preview'
  * @returns {string} A URL string pointing to the specified mesh file with the original size.
  */
 export const getScanMeshURI = (scanId, filesetId, fileId) =>
-  getFullURI(`/mesh/${scanId}/${filesetId}/${fileId}?size=orig`)
+  getFullURI(`${API_PATHS.MESH}/${scanId}/${filesetId}/${fileId}?size=orig`)
 
+/**
+ * Constructs a URL to retrieve the skeleton data for a specific scan.
+ *
+ * @param {string} scanId - The unique identifier for the scan whose skeleton data is requested.
+ * @returns {string} The complete URL to access the skeleton data for the specified scan.
+ */
 export const getScanSkeletonURI = (scanId) =>
-  getFullURI(`/skeleton/${scanId}`)
+  getFullURI(`${API_PATHS.SKELETON}/${scanId}`)
 
 /**
  * Constructs a URL for retrieving a sequence based on the given scan ID and type.
@@ -148,19 +191,16 @@ export const getScanSkeletonURI = (scanId) =>
  * @returns {string} The constructed URL for the sequence.
  */
 export const getScanSequenceURI = (scanId, type = 'all') =>
-  getFullURI(`/sequence/${scanId}?type=${type}`)
+  getFullURI(`${API_PATHS.SEQUENCE}/${scanId}?type=${type}`)
 
 /**
  * Generates a URL to download the archive for the specified scan.
- *
- * The function constructs a string by appending the given `scanId`
- * to the predefined `serverURL` path for archive downloads.
  *
  * @param {string} scanId - The unique identifier of the scan whose archive is to be downloaded.
  * @returns {string} The full URL for downloading the archive corresponding to the provided scan ID.
  */
 export const getScanArchiveURI = (scanId) =>
-  getFullURI(`/archive/${scanId}`)
+  getFullURI(`${API_PATHS.ARCHIVE}/${scanId}`)
 
 /**
  * Constructs a URL to refresh the database optionally with a specific scan ID.
@@ -169,4 +209,4 @@ export const getScanArchiveURI = (scanId) =>
  * @returns {string} A formatted URL to trigger the database refresh, including the scan ID if specified.
  */
 export const refreshDatabase = (scanId) =>
-  getFullURI(`/refresh${scanId ? `?scan_id=${scanId}` : ''}`)
+  getFullURI(`${API_PATHS.REFRESH}${scanId ? `?scan_id=${scanId}` : ''}`)

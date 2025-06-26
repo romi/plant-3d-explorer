@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { FormattedMessage } from 'react-intl'
-import { serverURL } from 'common/api'
+import { API_BASE_URL } from 'common/api'
 import Loading from './Loading'
 
 const APIStatusCheck = ({ children, fallback }) => {
@@ -12,7 +12,7 @@ const APIStatusCheck = ({ children, fallback }) => {
     const checkApiStatus = async () => {
       try {
         // Attempt to connect to the API server
-        await axios.get(`${serverURL}/scans_info`, { timeout: 5000 })
+        await axios.get(`${API_BASE_URL}/scans_info`, { timeout: 5000 })
         setApiAvailable(true)
       } catch (error) {
         console.error('API server is not available:', error)
@@ -48,7 +48,7 @@ const APIStatusCheck = ({ children, fallback }) => {
       <FormattedMessage
         id='api-unavailable'
         defaultMessage='REST API server is not available. Please check that the server at {serverUrl} is running.'
-        values={{ serverUrl: serverURL }}
+        values={{ serverUrl: API_BASE_URL }}
       />
     </div>)
   }
