@@ -1,5 +1,10 @@
+# This is a development setup with both 'plantdb' & 'plant-3d-explorer' services in development mode.
+# It requires an `.env` file defining values for: `UID`, `GID` & `ROMI_DB`.
+
 services:
+
   plantdb:
+    # PlantDB REST API service, in development mode, served at http://localhost:5000
     image: roboticsmicrofarms/plantdb:0.14.4
     container_name: plantdb
     command: "fsdb_rest_api --port 5000"
@@ -10,7 +15,9 @@ services:
       - "5000:5000"
     healthcheck:
       test: "exit 0"
+
   plant-3d-explorer:
+    # P3DX service, in development mode, served at http://localhost:3000
     image: "roboticsmicrofarms/plant-3d-explorer:0.1.2"
     container_name: p3dx
     depends_on:
