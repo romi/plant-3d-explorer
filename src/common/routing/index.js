@@ -55,9 +55,9 @@ export const VIEWER_URL = '/viewer/:scanId'
  * Base path prefix for the application, typically used in deployment scenarios
  * where the app doesn't sit at the root of the domain.
  *
- * This value is taken from the environment variable `BASE_PATH`.
+ * This value is taken from the environment variable `BASENAME`.
  * If the environment variable is not set, it defaults to the root path '/'.
  *
  * @const {string}
  */
-export const BASE_PATH = process.env.BASE_PATH || '/'
+export const BASE_PATH = process.env.BASENAME || '/'
