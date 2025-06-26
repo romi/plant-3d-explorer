@@ -2,7 +2,7 @@
   "name": "plant-3d-explorer",
   "version": "0.1.2",
   "private": true,
-  "homepage": "https://romi.github.io/plant-3d-explorer/",
+  "homepage": ".",
   "dependencies": {
     "@d3fc/d3fc-extent": "^3.1.2",
     "@emotion/core": "^10.0.9",
