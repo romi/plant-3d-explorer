@@ -44,7 +44,8 @@ License along with this program.  If not, see
  * - In a development environment, the URL will default to `http://localhost:5000`.
  * - In a production environment, this should be set to the respective API URL using `REACT_APP_API_URL`.
  */
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000'
+export const API_BASE_URL = process.env.REACT_APP_API_URL ||
+  (process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000')
 
 // Path segment constants to avoid repetition and improve maintainability
 const API_PATHS = {
