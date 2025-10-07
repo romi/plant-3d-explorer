@@ -93,7 +93,7 @@ class App extends Component {
   render () {
     return <div className='App'>
       <APIStatusCheck fallback={<Loading message='Checking API availability...' />}>
-        <Router BASE_PATH={BASE_PATH}>
+        <Router basename={BASE_PATH}>
           <Suspense fallback={<Loading />}>
             <Switch>
               <Route exact path={LANDING_URL} component={LandingPage} />

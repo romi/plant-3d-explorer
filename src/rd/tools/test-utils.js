@@ -22,7 +22,7 @@ export const compareStyles = (e, f, except = []) => {
 const AllProviders = ({ children }) => {
   return (
     <div>
-      <Router BASE_PATH={BASE_PATH}>
+      <Router basename={BASE_PATH}>
         <GlobalStyles />
         <ReduxProvider>
           <IntlProvider onError={() => {}}>
