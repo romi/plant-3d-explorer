@@ -25,21 +25,16 @@ License along with this program.  If not, see
 <https://www.gnu.org/licenses/>.
 
 */
-import React, { useState, useRef, useEffect, memo } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useWindowSize } from 'react-use'
 import styled from '@emotion/styled'
 
 import { scaleCanvas } from 'rd/tools/canvas'
-
-import { useScan, useImageSet } from 'flow/scans/accessors'
-
+import { useImageSet, useScan } from 'flow/scans/accessors'
 import { green, red } from 'common/styles/colors'
 import closeIco from 'common/assets/ico.deselect-white.20x20.svg'
 
-import {
-  useHoveredCamera,
-  useSelectedcamera
-} from 'flow/interactions/accessors'
+import { useHoveredCamera, useSelectedcamera } from 'flow/interactions/accessors'
 import { useCarousel } from 'flow/settings/accessors'
 import { useFormatMessage } from 'rd/tools/intl'
 
@@ -115,13 +110,14 @@ export default function Carousel () {
   const [hovered, setHovered] = useHoveredCamera()
   const [selected, setSelected] = useSelectedcamera()
   const large = moduleHeight * (6000 / 4000)
-  let sizes
   const [carousel] = useCarousel()
 
   const hoveredLayout = useRef(null)
   const selectedLayout = useRef(null)
 
   const imageSet = useImageSet(carousel.photoSet)
+
+  // Load URLs when the image set changes
   useEffect(() => {
     if (imageSet) {
       // Portion of code to get only 'rgb' images in dataset (doesn't work)
@@ -139,19 +135,21 @@ export default function Carousel () {
     }
   }, [imageSet])
 
+  // Initialize canvas context when component mounts or window size changes
   useEffect(() => {
-    const { width, height } = getSize(containerRef.current)
-    const context = canvasRef.current.getContext('2d')
-    scaleCanvas(canvasRef.current, context, width, height)
-    context.width = width
-    context.height = height
-    setContext(context)
-  }, [windowSider, containerRef.current, canvasRef.current])
-
-  useEffect(() => {
-    if (context) {
+    if (containerRef.current && canvasRef.current) {
       const { width, height } = getSize(containerRef.current)
-      sizes = {
+      const context = canvasRef.current.getContext('2d')
+      scaleCanvas(canvasRef.current, context, width, height)
+      setContext(context)
+    }
+  }, [windowSider])
+
+  // Update pictures layout when relevant dependencies change
+  useEffect(() => {
+    if (context && containerRef.current) {
+      const { width } = getSize(containerRef.current)
+      const newSizes = {
         width,
         large,
         normal: width / urlList.length,
@@ -161,98 +159,102 @@ export default function Carousel () {
       }
 
       let last = { x: 0, width: 0, normalX: 0, normalWidth: 0 }
-
       hoveredLayout.current = null
       selectedLayout.current = null
-      setPicturesLayout(
-        cameraPoses.map((d, i) => {
-          const isSelected = selected && d.id === selected.id
-          const isHovered = hovered && d.id === hovered.id
-          // e - 1 because Colmap image ids are [1; N] and dataset are from [0; N-1]
-          const x = last.x + last.width
-          const width = selected
-            ? isSelected
-              ? sizes.large
-              : sizes.block
-            : isHovered
-              ? sizes.large
-              : sizes.block
-          const normalX = last.normalX + last.normalWidth
 
-          const obj = {
-            item: {
-              ...d,
-              photoUri: imageSet ? imageSet[i].path : null,
-              texture: imageSet ? imageSet[i].texture : null
-            },
-            x,
-            normalX,
-            width,
-            normalWidth: sizes.normal,
-            height,
-            hovered: isHovered,
-            selected: isSelected
-          }
+      const newPicturesLayout = cameraPoses.map((d, i) => {
+        const isSelected = selected && d.id === selected.id
+        const isHovered = hovered && d.id === hovered.id
+        const x = last.x + last.width
+        const width = selected
+          ? isSelected
+            ? newSizes.large
+            : newSizes.block
+          : isHovered
+            ? newSizes.large
+            : newSizes.block
+        const normalX = last.normalX + last.normalWidth
 
-          last = obj
-
-          if (isHovered) hoveredLayout.current = obj
-          if (isSelected) selectedLayout.current = obj
-
-          return obj
-        })
-      )
-    }
-  }, [windowSider, context, hovered, selected, urlList, cameraPoses])
-
-  if (context) {
-    const { width, height } = getSize(containerRef.current)
-    context.clearRect(0, 0, width, height)
-    picturesLayout.forEach((d, i) => {
-      if (imgs[d.item.photoUri]) {
-        const imgWidth = imgs[d.item.photoUri].width
-        const imgHeight = imgs[d.item.photoUri].height
-        const ratio = imgWidth / large
-        const sx = imgWidth / 2 - d.width * ratio * 0.5
-        const sy = 0
-
-        context.globalAlpha = d.hovered || d.selected ? 1 : 0.5
-        context.drawImage(
-          imgs[d.item.photoUri],
-          sx,
-          sy,
-          d.width * ratio,
-          imgHeight,
-
-          d.x,
-          0,
-          d.width,
-          height
-        )
-        if (!d.item.isMatched) {
-          context.fillStyle = 'rgba(255, 85, 95, 0.4)'
-          context.fillRect(d.x, 0, d.width, imgHeight)
+        const obj = {
+          item: {
+            ...d,
+            photoUri: imageSet ? imageSet[i].path : null,
+            texture: imageSet ? imageSet[i].texture : null
+          },
+          x,
+          normalX,
+          width,
+          normalWidth: newSizes.normal,
+          height: moduleHeight,
+          hovered: isHovered,
+          selected: isSelected
         }
-      } else {
-        context.fillStyle = d.hovered ? 'white' : 'grey'
-        context.fillRect(d.x, 0, d.width, height)
-        context.fillStyle = 'black'
-      }
-    })
-  }
 
+        last = obj
+        if (isHovered) hoveredLayout.current = obj
+        if (isSelected) selectedLayout.current = obj
+
+        return obj
+      })
+
+      setPicturesLayout(newPicturesLayout)
+    }
+  }, [context, hovered, selected, urlList, cameraPoses, imageSet, large])
+
+  // Draw pictures on canvas when layout or images change
+  useEffect(() => {
+    if (context && containerRef.current && picturesLayout.length > 0) {
+      const { width } = getSize(containerRef.current)
+      context.clearRect(0, 0, width, moduleHeight)
+
+      picturesLayout.forEach((d, i) => {
+        if (imgs[d.item.photoUri]) {
+          const imgWidth = imgs[d.item.photoUri].width
+          const imgHeight = imgs[d.item.photoUri].height
+          const ratio = imgWidth / large
+          const sx = imgWidth / 2 - d.width * ratio * 0.5
+
+          context.globalAlpha = d.hovered || d.selected ? 1 : 0.5
+          context.drawImage(
+            imgs[d.item.photoUri],
+            sx,
+            0,
+            d.width * ratio,
+            imgHeight,
+            d.x,
+            0,
+            d.width,
+            moduleHeight
+          )
+
+          if (!d.item.isMatched) {
+            context.fillStyle = 'rgba(255, 85, 95, 0.4)'
+            context.fillRect(d.x, 0, d.width, imgHeight)
+          }
+        } else {
+          context.fillStyle = d.hovered ? 'white' : 'grey'
+          context.fillRect(d.x, 0, d.width, moduleHeight)
+          context.fillStyle = 'black'
+        }
+      })
+    }
+  }, [context, picturesLayout, imgs, large])
+
+  // Handle drag events
   useEffect(() => {
     const handler = (e) => {
       setDragging(false)
       document.body.style.cursor = null
     }
-    const moveHander = (e) => {
+
+    const moveHandler = (e) => {
       if (dragging && e.movementX !== 0) {
         const dX =
           e.movementX < 0
             ? e.clientX - (dragging.from - dragging.triggerLeft)
             : e.clientX -
-              (dragging.from - (dragging.triggerLeft + dragging.triggerWidth))
+            (dragging.from - (dragging.triggerLeft + dragging.triggerWidth))
+
         const pictureDragged = picturesLayout.find(
           (d) => d.x <= dX && d.x + d.width >= dX
         )
@@ -262,19 +264,20 @@ export default function Carousel () {
         }
       }
     }
+
     if (dragging) {
       window.addEventListener('mouseup', handler)
-      window.addEventListener('mousemove', moveHander)
+      window.addEventListener('mousemove', moveHandler)
     } else {
       window.removeEventListener('mouseup', handler)
-      window.removeEventListener('mousemove', moveHander)
+      window.removeEventListener('mousemove', moveHandler)
     }
 
     return () => {
       window.removeEventListener('mouseup', handler)
-      window.removeEventListener('mousemove', moveHander)
+      window.removeEventListener('mousemove', moveHandler)
     }
-  }, [dragging, picturesLayout, selectedLayout])
+  }, [dragging, picturesLayout])
 
   const eventsFn = {
     onMouseMove: (e) => {
@@ -282,10 +285,11 @@ export default function Carousel () {
         !selectedLayout.current && hoveredLayout.current
           ? e.movementX < 0
             ? e.clientX -
-              hoveredLayout.current.width * 0.5 +
-              hoveredLayout.current.normalWidth
+            hoveredLayout.current.width * 0.5 +
+            hoveredLayout.current.normalWidth
             : e.clientX + hoveredLayout.current.width * 0.5
           : e.clientX
+
       const pictureHovered = picturesLayout.find(
         (d) => d.x <= dX && d.x + d.width >= dX
       )
@@ -294,15 +298,14 @@ export default function Carousel () {
         setHovered(pictureHovered ? pictureHovered.item : null)
       }
     },
-    onMouseOut: (e) => {
-      setHovered(null)
-    },
+    onMouseOut: () => setHovered(null),
     onClick: () => {
       if (hovered) {
         setSelected(selected && selected.id === hovered.id ? null : hovered)
       }
     }
   }
+
   return (
     <Container ref={containerRef}>
       <SVGCartridge
@@ -313,7 +316,6 @@ export default function Carousel () {
       />
 
       <Canvas ref={canvasRef} />
-
       {selectedLayout.current && (
         <SvgDnG>
           <g transform={`translate(0, ${moduleHeight * 0.5})`}>
@@ -327,9 +329,7 @@ export default function Carousel () {
             />
             <g transform={`translate(${selectedLayout.current.x}, 0)`}>
               <rect
-                style={{
-                  cursor: !dragging && 'grab'
-                }}
+                style={{ cursor: !dragging && 'grab' }}
                 y={-15}
                 width={selectedLayout.current.width}
                 height={30}
@@ -355,7 +355,7 @@ export default function Carousel () {
   )
 }
 
-const SVGCartridge = memo(
+const SVGCartridge = React.memo(
   ({ hoveredLayout, selectedLayout, large, eventsFn }) => {
     const intl = useFormatMessage()
 
