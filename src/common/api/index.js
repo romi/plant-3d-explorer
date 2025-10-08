@@ -79,10 +79,12 @@ const joinUrlPaths = (base, path) => {
 /**
  * Constructs and returns a full URI by appending the provided relative path to the API base URL.
  *
- * @param {string} path - The relative path to the resource.
- * @returns {string} The full URI to access the resource.
+ * @param {string} [path] - The relative path to the resource. If undefined, returns an empty string.
+ * @returns {string} The full URI to access the resource or an empty string if no path is provided.
  */
-export const getFullURI = (path) => joinUrlPaths(API_BASE_URL, path)
+export const getFullURI = (path) => {
+  return path ? joinUrlPaths(API_BASE_URL, path) : ''
+}
 
 /**
  * A string representing the URI endpoint for accessing scan-related operations on the server.
