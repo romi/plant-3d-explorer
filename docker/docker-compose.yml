@@ -1,23 +1,26 @@
-# This is a development setup with both 'plantdb' & 'plant-3d-explorer' services in development mode.
-# It requires an `.env` file defining values for: `UID`, `GID` & `ROMI_DB`.
-
 services:
 
   plantdb:
     # PlantDB REST API service, in development mode, served at http://localhost:5000
+    build:
+      context: ${HOME}/Projects/plantdb
+      dockerfile: docker/Dockerfile
     image: roboticsmicrofarms/plantdb:0.14.4
     container_name: plantdb
     command: "fsdb_rest_api --port 5000"
-    user: "${UID}:${GID}"
+    user: "${UID:-2020}:${GID:-2020}"
     volumes:
-      - ${ROMI_DB}:/myapp/db
+      - ${ROMI_DB:-/data/ROMI/shared_fsdb}:/myapp/db
     ports:
       - "5000:5000"
-    healthcheck:
-      test: "exit 0"
 
-  plant-3d-explorer:
+  p3dx:
     # P3DX service, in development mode, served at http://localhost:3000
+    build:
+      context: /home/jonathan/Projects/plant-3d-explorer/  # Use the production Dockerfile
+      dockerfile: docker/Dockerfile
+      args:
+        API_URL: http://localhost:5000
     image: "roboticsmicrofarms/plant-3d-explorer:0.1.2"
     container_name: p3dx
     depends_on:
