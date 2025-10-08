@@ -264,7 +264,7 @@ export default function Carousel () {
       const { width } = getSize(containerRef.current)
       context.clearRect(0, 0, width, moduleHeight) // Clear previous drawing
 
-      picturesLayout.forEach((d, i) => {
+      picturesLayout.forEach((d) => {
         if (imgs[d.item.photoUri]) {
           const imgWidth = imgs[d.item.photoUri].width
           const imgHeight = imgs[d.item.photoUri].height
@@ -301,10 +301,8 @@ export default function Carousel () {
   useEffect(() => {
     /**
      * Handles the event to stop dragging and reset cursor style.
-     *
-     * @param {Event} e - The event object triggered by the action.
      */
-    const handler = (e) => {
+    const handler = () => {
       setDragging(false) // Stop dragging when mouse is released
       document.body.style.cursor = null // Reset cursor style
     }
