@@ -17,7 +17,7 @@ services:
   p3dx:
     # P3DX service, in development mode, served at http://localhost:3000
     build:
-      context: /home/jonathan/Projects/plant-3d-explorer/  # Use the production Dockerfile
+      context: ${HOME}/Projects/plant-3d-explorer/
       dockerfile: docker/Dockerfile
       args:
         API_URL: http://localhost:5000
