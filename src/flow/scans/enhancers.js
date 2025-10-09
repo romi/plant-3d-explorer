@@ -87,8 +87,7 @@ export const relativeScansPhotoURIEnhancer = (scans) => {
  * in the `files` field of the `metadata` object using the `getFullURI` function,
  * while keeping the rest of the scan's properties intact.
  *
- * @param {Array<Object>} scans - An array of scan objects to be processed. Each scan object
- * contains metadata and file properties that will be enhanced.
+ * @param {Array<Object>} scans - An array of scan objects to be processed.
  * @returns {Array<Object>} A new array of scan objects with enhanced file URIs.
  */
 export const relativeScansFilesURIEnhancer = (scans) => {
@@ -101,12 +100,10 @@ export const relativeScansFilesURIEnhancer = (scans) => {
     console.log('Original archive file:', files.archive || 'No archive file found.')
     console.log('Original metadata file:', files.metadata || 'No metadata file found.')
 
-    // Use getScanArchiveURI if getFullURI returns an empty string
-    const archiveURI = getFullURI(files.archive || '') || getScanArchiveURI(d.id)
+    const archiveURI = getScanArchiveURI(d.id)
     console.log('Resolved archive URI:', archiveURI)
 
-    // Use getScanMetadata if getFullURI returns an empty string
-    const metadataURI = getFullURI(files.metadata || '') || getScanMetadataURI(d.id)
+    const metadataURI = getScanMetadataURI(d.id)
     console.log('Resolved metadata URI:', metadataURI)
 
     return {
@@ -123,18 +120,10 @@ export const relativeScansFilesURIEnhancer = (scans) => {
 }
 
 /**
- * Enhances the URIs for files within a scan object by converting relative paths
- * to complete URIs for specific file properties (`archive` and `metadata`)
- * in the scan metadata.
+ * Enhances the URIs for files within a scan object.
  *
- * @function
- * @name relativeScanFilesURIEnhancer
  * @param {Object} scan - The scan object to be enhanced.
- * @param {Object} scan.metadata - The metadata associated with the scan.
- * @param {Object} scan.metadata.files - The files object within the metadata.
- * @param {string} scan.metadata.files.archive - The relative URI of the archive file.
- * @param {string} scan.metadata.files.metadata - The relative URI of the metadata file.
- * @returns {Object} A new scan object with updated URIs for the `archive` and `metadata` properties.
+ * @returns {Object} A new scan object with updated URIs.
  */
 export const relativeScanFilesURIEnhancer = (scan) => {
   return {
@@ -142,13 +131,19 @@ export const relativeScanFilesURIEnhancer = (scan) => {
     metadata: {
       ...scan.metadata,
       files: {
-        archive: getFullURI(scan.metadata.files.archive), // Generate URI for the archive file using the relative URI
-        metadata: getFullURI(scan.metadata.files.metadata) // Generate URI for the metadata file using the relative URI
+        archive: getScanArchiveURI(scan.id),
+        metadata: getScanMetadataURI(scan.id)
       }
     }
   }
 }
 
+/**
+ * Enhances the provided scan object by adding additional properties for data URIs.
+ *
+ * @param {Object} scan - The scan object to be enhanced.
+ * @returns {Object} An enhanced scan object containing the original properties and additional data properties.
+ */
 export const scanDataEnhancer = (scan) => {
   return {
     ...scan,
