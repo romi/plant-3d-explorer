@@ -34,7 +34,9 @@ import useAccessor from 'rd/tools/hooks/accessor'
 import useFetch3dObject from 'rd/tools/hooks/fetch3dObject'
 import { chain } from 'rd/tools/enhancers'
 
-import { getFullURI, getScanFile, getScanURI, scansURIQuery } from 'common/api'
+import {
+  getFullURI, getScanFile, getScanPointCloudURI, getScanSequenceURI, getScanSkeletonURI, getScanURI, scansURIQuery
+} from 'common/api'
 
 import { sortingMethods } from './reducer'
 
@@ -68,19 +70,11 @@ export function useScan () {
   const scanDataURI = getScanURI(selectedId)
   const [scanData] = useFetch(scanDataURI, true)
 
-  const enhancedScan = useMemo(
-    () => {
-      if (scanData) {
-        return chain([
-          relativeScanFilesURIEnhancer,
-          relativeScanPhotoURIEnhancer,
-          scanDataEnhancer,
-          forgeCameraPointsEnhancer
-        ], scanData)
-      }
-    },
-    [scanData]
-  )
+  const enhancedScan = useMemo(() => {
+    if (scanData) {
+      return chain([relativeScanFilesURIEnhancer, relativeScanPhotoURIEnhancer, scanDataEnhancer, forgeCameraPointsEnhancer], scanData)
+    }
+  }, [scanData])
 
   return [enhancedScan]
 }
@@ -124,29 +118,6 @@ export function useImageSet (imageFilesetId) {
  * @return {Array} An array where the first element is the result of the fetch operation (data or loading state) and the second element is the computed file path.
  */
 export function useFile (id, file = null, options = {}) {
-  /**
-   This hook allows loading any file from a scan.
-
-   - id: The id (string) of the fileset where the file is located. Check
-   out the doc of plantdb for more info on filesets. The
-   string doesn't need to been the exact name of the set, but it
-   should be at least a substring of the set id.
-   - file: id of the file to load (usually the file name without the
-   extension). The full file name can be written with the right options.
-   If no file is provided, the fileset in its entierety will be returned.
-   - options: Different options that modify the behavior of the hook.
-   possible options are:
-   <ul>
-   <li>
-   metadata: if true, instead of the fileset id, search for the file in the
-   metadata folder of the scan.
-   </li>
-   <li>
-   rawFileName: if true, the file name is a full file name (exact name with
-   extension).
-   </li>
-   </ul>
-   */
   const { match } = useReactRouter()
 
   const selectedId = match.params.scanId
@@ -157,10 +128,7 @@ export function useFile (id, file = null, options = {}) {
     if (!files) return
     const set = files.filesets.find((d) => d.id.match(id))
     if (file && set) {
-      return getScanFile(selectedId,
-        (options.metadata ? 'metadata/' : '') +
-        set.id + '/' +
-        (options.rawFileName ? file : set.files.find((d) => d.file.match(file)).file))
+      return getScanFile(selectedId, (options.metadata ? 'metadata/' : '') + set.id + '/' + (options.rawFileName ? file : set.files.find((d) => d.file.match(file)).file))
     }
     return set
   }, [id, file, files, selectedId, options])
@@ -175,8 +143,9 @@ export function useFile (id, file = null, options = {}) {
  */
 export function useSegmentedPointCloud () {
   const [[pointCloud]] = use3dFile('SegmentedPointCloud', 'SegmentedPointCloud')
-  const [[segmentation]] = useFile('SegmentedPointCloud',
-    'SegmentedPointCloud.json', { metadata: true, rawFileName: true })
+  const [[segmentation]] = useFile('SegmentedPointCloud', 'SegmentedPointCloud.json', {
+    metadata: true, rawFileName: true
+  })
   return [pointCloud, segmentation]
 }
 
@@ -230,17 +199,11 @@ export function useScanFiles (scan) {
 export function useScans (search) {
   const [scans] = useFetch(scansURIQuery(search), true)
 
-  const enhancedScans = useMemo(
-    () => {
-      if (scans) {
-        return chain([
-          relativeScansPhotoURIEnhancer,
-          relativeScansFilesURIEnhancer
-        ], scans)
-      }
-    },
-    [scans]
-  )
+  const enhancedScans = useMemo(() => {
+    if (scans) {
+      return chain([relativeScansPhotoURIEnhancer, relativeScansFilesURIEnhancer], scans)
+    }
+  }, [scans])
 
   return [enhancedScans]
 }
@@ -258,19 +221,11 @@ export function useScans (search) {
  *
  * This is typically used for querying data or filtering results within the application.
  */
-export const useSearchQuery = useAccessor(
-  [
-    (state) => {
-      return state.scans.searchQuery
-    }
-  ],
-  [
-    (value) => ({
-      type: 'SET_SEARCH_QUERY',
-      value
-    })
-  ]
-)
+export const useSearchQuery = useAccessor([(state) => {
+  return state.scans.searchQuery
+}], [(value) => ({
+  type: 'SET_SEARCH_QUERY', value
+})])
 
 /**
  * A hook-like variable that manages and updates sorting methods within the application state.
@@ -287,26 +242,13 @@ export const useSearchQuery = useAccessor(
  *
  * @type {Object} useSorting - Provides state and action management for sorting operations in the application.
  */
-export const useSorting = useAccessor(
-  [
-    (state) => {
-      return state.scans.sorting
-    },
-    (state) => [
-      ...sortingMethods.map((d) => {
-        return d.label !== state.scans.sorting.label
-          ? d
-          : state.scans.sorting
-      })
-    ]
-  ],
-  [
-    (value) => ({
-      type: 'SET_SORTING',
-      value
-    })
-  ]
-)
+export const useSorting = useAccessor([(state) => {
+  return state.scans.sorting
+}, (state) => [...sortingMethods.map((d) => {
+  return d.label !== state.scans.sorting.label ? d : state.scans.sorting
+})]], [(value) => ({
+  type: 'SET_SORTING', value
+})])
 
 /**
  * A variable that manages the sorting method used for a set of scans.
@@ -314,34 +256,18 @@ export const useSorting = useAccessor(
  * The getter retrieves the current sorting method from the state, defaulting to 'date' if no method is specified.
  * The setter creates an action with the type 'SET_SORTING' and the specified value to update the sorting method.
  */
-export const useSortingMethod = useAccessor(
-  [
-    (state) => {
-      return state.scans.sorting || 'date'
-    }
-  ],
-  [
-    (value) => ({
-      type: 'SET_SORTING',
-      value
-    })
-  ]
-)
+export const useSortingMethod = useAccessor([(state) => {
+  return state.scans.sorting || 'date'
+}], [(value) => ({
+  type: 'SET_SORTING', value
+})])
 
 /**
  * A state management accessor for handling the filtering state in the application.
  *
  * `useFiltering` provides a way to access and modify the `filtering` */
-export const useFiltering = useAccessor(
-  [
-    (state) => {
-      return state.scans.filtering
-    }
-  ],
-  [
-    (value) => ({
-      type: 'SET_FILTERING',
-      value
-    })
-  ]
-)
+export const useFiltering = useAccessor([(state) => {
+  return state.scans.filtering
+}], [(value) => ({
+  type: 'SET_FILTERING', value
+})])
