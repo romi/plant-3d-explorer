@@ -167,23 +167,35 @@ export function use3dFile (id, file = null, options = {}) {
   return [useFetch3dObject(path), path]
 }
 
+/**
+ * React hook to fetch various files related to a scan.
+ *
+ * @param {Object} scan - The scan object containing details required to fetch associated files.
+ * @param {string} scan.id - The unique identifier for the scan.
+ * @param {string} scan.filesetId - The ID of the fileset associated with the scan.
+ * @param {string} scan.fileId - The ID of the specific file within the fileset.
+ * @param {Object} scan.filesUri - An object containing URIs for specific files related to the scan.
+ * @param {string} scan.filesUri.pcdGroundTruth - URI for the ground truth point cloud file, if available.
+ * @return {Array} - An array of results from file-fetching hooks:
+ *                   [meshFile, pointCloudFile, skeletonFile, sequenceFile, groundTruthFile].
+ *                   Each result is the output of the respective `useFetch3dObject` or `useFetchObject` hook.
+ */
 export function useScanFiles (scan) {
-  return [
-    // Fetch the mesh file if scan exists, otherwise returns undefined
-    useFetch3dObject(scan && getFullURI(scan.filesUri.mesh), true),
+  // Always call hooks in the same order, even when scan is null
+  const meshUrl = scan ? getFullURI(scan.filesUri.mesh) : null
+  const pointCloudUrl = scan ? getFullURI(scan.filesUri.pointCloud) : null
+  const skeletonUrl = scan ? getScanSkeletonURI(scan.id) : null
+  const sequenceUrl = scan ? getScanSequenceURI(scan.id, 'all') : null
+  const groundTruthUrl = scan && scan.filesUri && scan.filesUri.pcdGroundTruth ? getScanPointCloudURI(scan.id, 'groundTruth', scan.filesUri.pcdGroundTruth) : null
 
-    // Fetch the point cloud file if scan exists
-    useFetch3dObject(scan && getFullURI(scan.filesUri.pointCloud), true),
+  // Always call the same number of hooks in the same order
+  const meshFile = useFetch3dObject(meshUrl, true)
+  const pointCloudFile = useFetch3dObject(pointCloudUrl, true)
+  const skeletonFile = useFetchObject(skeletonUrl, true)
+  const sequenceFile = useFetchObject(sequenceUrl, true)
+  const groundTruthFile = useFetch3dObject(groundTruthUrl, true)
 
-    // Fetch the skeleton file if scan exists
-    useFetchObject(scan && getFullURI(scan.skeleton), true),
-
-    // Fetch the angles file if scan exists
-    useFetchObject(scan && getFullURI(scan.angles), true),
-
-    // Fetch the ground truth PCD file if scan exists
-    useFetch3dObject(scan && getFullURI(scan.filesUri.pcdGroundTruth), true)
-  ]
+  return [meshFile, pointCloudFile, skeletonFile, sequenceFile, groundTruthFile]
 }
 
 /**
