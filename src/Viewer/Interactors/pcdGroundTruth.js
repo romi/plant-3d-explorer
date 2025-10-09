@@ -33,7 +33,8 @@ export const Container = styled.div({
 export default function GroundTruthInteractors () {
   const [layers, setLayers] = useLayers()
   const [scan] = useScan()
-  const [pointCloudGroundTruthGeometry] = useScanFiles(scan)[2]
+  const scanFiles = useScanFiles(scan) || []
+  const [pointCloudGroundTruthGeometry] = scanFiles[2] || []
 
   return <Container>
     <Tooltip>
