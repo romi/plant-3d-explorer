@@ -199,7 +199,7 @@ export const forgeCameraPointsEnhancer = (scan) => {
           point.tvec[2]
         ).applyMatrix3(m3rotation)
 
-        function createM4Rot (rotmat) {
+        function createM4Rot () {
           const m4rotation = new THREE.Matrix4()
           m4rotation.set(
             ...point.rotmat[0], 0,
