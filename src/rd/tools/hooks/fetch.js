@@ -47,12 +47,11 @@ function forgeFetchResource (url) {
  *
  * @param {string} url - The URL to fetch the data from.
  * @param {boolean} [cached=true] - Flag indicating whether to use cached data if available.
- * @param {object} [options={}] - Additional options for the fetch request.
  * @returns {[any, boolean, Error|null]} An array containing:
  *   - The fetched data or cached data (or `false` if no cache and not yet fetched).
  *   - A boolean indicating whether the fetch is in progress.
  *   - Any error encountered during the fetch. */
-const useFetch = (url, cached = true, options = {}) => {
+const useFetch = (url, cached = true) => {
   const [state, setState] = useState(() => {
     if (!url) {
       return { data: null, loading: false, error: null }
