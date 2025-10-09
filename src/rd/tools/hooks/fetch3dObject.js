@@ -41,16 +41,11 @@ export const loader = new enhancedTHREE.PLYLoader()
  */
 function loadAsync (url) {
   return new Promise((resolve, reject) => {
-    loader.load(
-      url,
-      (geometry) => {
-        resolve(geometry)
-      },
-      () => {},
-      (err) => {
-        reject(new Error(err))
-      }
-    )
+    loader.load(url, (geometry) => {
+      resolve(geometry)
+    }, () => {}, (err) => {
+      reject(new Error(err))
+    })
   })
 }
 
@@ -69,37 +64,43 @@ function useFetch3dObject (url, cached = true) {
 
   // State management for error, loading status, and fetch results
   const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(!!cachedData || true)
-  const [data, setData] = useState(!!cachedData)
+  const [loading, setLoading] = useState(!!cachedData || true) // Start as true if there's cached data or we're fetching
+  const [data, setData] = useState(!!cachedData) // Initialize with cached data if available
 
   useEffect(() => {
-    let unmounted = false
+    let unmounted = false // Flag to track component mount status
+
     if (url) {
       if (cached && cache[url]) {
+        // If using cache and data exists in cache, set it immediately
         setData(cache[url])
       } else {
+        // Otherwise, perform the async fetch operation
         (async () => {
-          if (!unmounted) {
-            setData(null)
-            setLoading(true)
+          if (!unmounted) { // Only proceed if component is still mounted
+            setData(null) // Reset current data
+            setLoading(true) // Set loading to true before fetching
+
             try {
               const data = await loadAsync(url)
-              if (cached) cache[url] = data
-              setData(data)
+              if (cached) cache[url] = data // Cache the fetched data if caching is enabled
+              setData(data) // Update state with fetched data
             } catch (e) {
-              setError(e)
+              setError(e) // Handle errors during fetch
             }
-            setLoading(false)
+
+            setLoading(false) // Set loading to false after fetch completes
           }
         })()
       }
     }
-    return () => {
-      unmounted = true
-    }
-  }, [url])
 
-  return [data, loading, error]
+    return () => {
+      unmounted = true // Cleanup function to set unmounted flag on component unmount
+    }
+  }, [url]) // Re-run effect when URL changes
+
+  return [data, loading, error] // Return current data, loading status, and any errors
 }
 
 export default useFetch3dObject
