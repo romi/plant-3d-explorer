@@ -42,79 +42,83 @@ function forgeFetchResource (url) {
   }
 }
 
+/**
+ * A custom hook for fetching data with optional caching and state management.
+ *
+ * @param {string} url - The URL to fetch the data from.
+ * @param {boolean} [cached=true] - Flag indicating whether to use cached data if available.
+ * @param {object} [options={}] - Additional options for the fetch request.
+ * @returns {[any, boolean, Error|null]} An array containing:
+ *   - The fetched data or cached data (or `false` if no cache and not yet fetched).
+ *   - A boolean indicating whether the fetch is in progress.
+ *   - Any error encountered during the fetch. */
 const useFetch = (url, cached = true, options = {}) => {
-  // Check if data exists in cache for the given URL
-  const cachedData = (cached && cache[url])
+  const [state, setState] = useState(() => {
+    if (!url) {
+      return { data: null, loading: false, error: null }
+    }
 
-  // State management for error, loading status, and fetch results
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(!!cachedData || true)
+    const cachedResource = cached && cache[url]
+    if (cachedResource && cachedResource.data) {
+      return { data: cachedResource.data, loading: false, error: null }
+    }
 
-  // Initialize data state based on cache availability
-  const [data, setData] = useState(
-    cache[url]
-      ? cache[url].query.isFulfilled
-        ? cache[url].data
-        : null
-      : false
-  )
+    return { data: null, loading: true, error: null }
+  })
 
   useEffect(() => {
-    let source // For request cancellation
-    let unmounted = false // Track component unmount state
+    let source
+    let unmounted = false
 
-    if (url) {
-      // Handle cached data scenario
-      if (cached && cache[url]) {
-        if (cache[url].data) {
-          // Use cached data if available
-          setLoading(false)
-          setData(cache[url].data)
-        } else {
-          // Wait for pending cached request to complete
-          cache[url].query
-            .then((response) => {
-              setLoading(false)
-              setData(response.data)
-            })
-        }
+    if (!url) {
+      setState({ data: null, loading: false, error: null })
+      return
+    }
+
+    if (cached && cache[url]) {
+      if (cache[url].data) {
+        setState({ data: cache[url].data, loading: false, error: null })
       } else {
-        // Handle new fetch request
-        setData(null)
-        setLoading(true)
-        source = CancelToken.source()
-
-        // Create new fetch resource
-        const fetchResource = forgeFetchResource(url, source, options)
-        if (cached) cache[url] = fetchResource // Store in cache if caching enabled
-
-        // Execute fetch request
-        fetchResource.query
-          .then((response) => {
+        cache[url].query
+          .then(response => {
             if (!unmounted) {
-              if (cached) cache[url].data = response.data
-              setData(response.data)
-              setLoading(false)
+              setState({ data: response.data, loading: false, error: null })
             }
           })
-          .catch((error) => {
+          .catch(error => {
             if (!unmounted) {
-              console.log(error)
-              setError(new Error(error))
-              setLoading(false)
+              setState({ data: null, loading: false, error: new Error(error) })
             }
           })
       }
+    } else {
+      setState({ data: null, loading: true, error: null })
+      source = CancelToken.source()
+
+      const fetchResource = forgeFetchResource(url)
+      if (cached) cache[url] = fetchResource
+
+      fetchResource.query
+        .then(response => {
+          if (!unmounted) {
+            if (cached) cache[url].data = response.data
+            setState({ data: response.data, loading: false, error: null })
+          }
+        })
+        .catch(error => {
+          if (!unmounted) {
+            setState({ data: null, loading: false, error: new Error(error) })
+          }
+        })
     }
 
-    // Cleanup function to prevent memory leaks and cancel pending requests
     return () => {
       unmounted = true
-      if (source) source.cancel('Cancelling in cleanup')
+      if (source) source.cancel('Component unmounted')
     }
-  }, [url]) // Effect depends on URL changes
+  }, [url, cached])
 
-  return [data, loading, error]
+  return [state.data, state.loading, state.error]
 }
 
 export default useFetch
