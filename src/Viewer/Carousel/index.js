@@ -37,7 +37,6 @@ import closeIco from 'common/assets/ico.deselect-white.20x20.svg'
 import { useHoveredCamera, useSelectedcamera } from 'flow/interactions/accessors' // Hooks for tracking hovered and selected cameras
 import { useCarousel } from 'flow/settings/accessors' // Hook for accessing carousel settings
 import { useFormatMessage } from 'rd/tools/intl' // Hook for internationalization
-
 import useImgLoader from './loader' // Custom hook for loading images
 import openIco from './assets/ico.open_photo.16x16.svg'
 import dragNdropIco from './assets/ico.drag_photos.40x16.svg'
@@ -50,11 +49,7 @@ export const moduleHeight = 70
  * @type {React.ComponentType}
  */
 const Container = styled.div({
-  width: '100%',
-  height: moduleHeight,
-  background: '#1f2426',
-  position: 'relative',
-  zIndex: 1000 // This is to prevent the close and open buttons to conflict
+  width: '100%', height: moduleHeight, background: '#1f2426', position: 'relative', zIndex: 1000 // This is to prevent the close and open buttons to conflict
   // with the graph on the right
 })
 
@@ -88,12 +83,7 @@ const Svg = styled.svg({
  * @property {string} pointerEvents - Pointer events are disabled for this canvas element.
  */
 const Canvas = styled.canvas({
-  width: '100%',
-  height: '100%',
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  pointerEvents: 'none'
+  width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, pointerEvents: 'none'
 })
 
 /**
@@ -128,10 +118,7 @@ const SvgDnG = styled.svg({
  * @type {import('styled-components').StyledComponent<'text', any, {}, never>}
  */
 const CTAWording = styled.text({
-  fontSize: 11,
-  fill: 'white',
-  textTransform: 'uppercase',
-  fontWeight: 600
+  fontSize: 11, fill: 'white', textTransform: 'uppercase', fontWeight: 600
 })
 
 /**
@@ -177,20 +164,13 @@ export default function Carousel () {
   // Load URLs when the image set changes
   useEffect(() => {
     if (imageSet) {
-      // Portion of code to get only 'rgb' images in dataset (doesn't work)
-      // if(carousel.photoSet == 'images'){
-      //   let index = 0
-      //   imageSet.forEach(function(image){
-      //     if(image.path.includes('rgb')){
-      //       //imageSet.splice(index, 1)
-      //       index--
-      //     }
-      //     index++
-      //   })
-      // }
-      setUrlList(imageSet.map((d) => d.path)) // Update URL list with paths from image set
+      // Prevent unnecessary state updates by comparing new URLs with current ones
+      const newUrls = imageSet.map((d) => d.path)
+      if (JSON.stringify(newUrls) !== JSON.stringify(urlList)) {
+        setUrlList(newUrls)
+      }
     }
-  }, [imageSet])
+  }, [imageSet, urlList])
 
   // Initialize canvas context when component mounts or window size changes
   useEffect(() => {
@@ -210,9 +190,7 @@ export default function Carousel () {
         width,
         large,
         normal: width / urlList.length, // Normal size for thumbnails
-        block:
-          (width - (hovered || selected ? large : 0)) /
-          (hovered || selected ? urlList.length - 1 : urlList.length) // Size for blocks when not hovered/selected
+        block: (width - (hovered || selected ? large : 0)) / (hovered || selected ? urlList.length - 1 : urlList.length) // Size for blocks when not hovered/selected
       }
 
       let last = { x: 0, width: 0, normalX: 0, normalWidth: 0 }
@@ -223,12 +201,9 @@ export default function Carousel () {
         const isSelected = selected && d.id === selected.id // Check if this camera is the selected one
         const isHovered = hovered && d.id === hovered.id // Check if this camera is currently hovered
         const x = last.x + last.width // Calculate position based on previous item's size
-        const width = selected
-          ? isSelected
-            ? newSizes.large // Use large size for selected item
-            : newSizes.block // Use block size for non-selected items when one is selected
-          : isHovered
-            ? newSizes.large // Use large size for hovered item
+        const width = selected ? isSelected ? newSizes.large // Use large size for selected item
+          : newSizes.block // Use block size for non-selected items when one is selected
+          : isHovered ? newSizes.large // Use large size for hovered item
             : newSizes.block // Use block size for non-hovered/selected items
         const normalX = last.normalX + last.normalWidth
 
@@ -254,7 +229,10 @@ export default function Carousel () {
         return obj
       })
 
-      setPicturesLayout(newPicturesLayout) // Update layout with new sizes and positions
+      // Prevent unnecessary updates
+      if (JSON.stringify(newPicturesLayout) !== JSON.stringify(picturesLayout)) {
+        setPicturesLayout(newPicturesLayout) // Update layout with new sizes and positions
+      }
     }
   }, [context, hovered, selected, urlList, cameraPoses, imageSet, large])
 
@@ -272,17 +250,7 @@ export default function Carousel () {
           const sx = imgWidth / 2 - d.width * ratio * 0.5
 
           context.globalAlpha = d.hovered || d.selected ? 1 : 0.5 // Full opacity for hovered/selected, half for others
-          context.drawImage(
-            imgs[d.item.photoUri],
-            sx,
-            0,
-            d.width * ratio,
-            imgHeight,
-            d.x,
-            0,
-            d.width,
-            moduleHeight
-          )
+          context.drawImage(imgs[d.item.photoUri], sx, 0, d.width * ratio, imgHeight, d.x, 0, d.width, moduleHeight)
 
           if (!d.item.isMatched) {
             context.fillStyle = 'rgba(255, 85, 95, 0.4)'
@@ -314,15 +282,9 @@ export default function Carousel () {
      */
     const moveHandler = (e) => {
       if (dragging && e.movementX !== 0) { // Only process if dragging and there's movement
-        const dX =
-          e.movementX < 0
-            ? e.clientX - (dragging.from - dragging.triggerLeft)
-            : e.clientX -
-            (dragging.from - (dragging.triggerLeft + dragging.triggerWidth))
+        const dX = e.movementX < 0 ? e.clientX - (dragging.from - dragging.triggerLeft) : e.clientX - (dragging.from - (dragging.triggerLeft + dragging.triggerWidth))
 
-        const pictureDragged = picturesLayout.find(
-          (d) => d.x <= dX && d.x + d.width >= dX
-        )
+        const pictureDragged = picturesLayout.find((d) => d.x <= dX && d.x + d.width >= dX)
 
         if (pictureDragged) {
           setSelected(pictureDragged.item) // Update selected item based on drag position
@@ -354,21 +316,15 @@ export default function Carousel () {
    */
   const eventsFn = {
     onMouseMove: (e) => {
-      const dX =
-        !selectedLayout.current && hoveredLayout.current
-          ? e.movementX < 0
-            ? e.clientX -
-            hoveredLayout.current.width * 0.5 +
-            hoveredLayout.current.normalWidth
-            : e.clientX + hoveredLayout.current.width * 0.5
-          : e.clientX
+      const dX = !selectedLayout.current && hoveredLayout.current ? e.movementX < 0 ? e.clientX - hoveredLayout.current.width * 0.5 + hoveredLayout.current.normalWidth : e.clientX + hoveredLayout.current.width * 0.5 : e.clientX
 
-      const pictureHovered = picturesLayout.find(
-        (d) => d.x <= dX && d.x + d.width >= dX
-      )
+      const pictureHovered = picturesLayout.find((d) => d.x <= dX && d.x + d.width >= dX)
 
-      if (pictureHovered && hovered !== pictureHovered.item) {
-        setHovered(pictureHovered ? pictureHovered.item : null)
+      // Only update hovered state if it's actually changing
+      if (pictureHovered && (!hovered || (hovered && pictureHovered.item.id !== hovered.id))) {
+        setHovered(pictureHovered.item)
+      } else if (!pictureHovered && hovered) {
+        setHovered(null)
       }
     },
     onMouseOut: () => setHovered(null),
@@ -379,53 +335,47 @@ export default function Carousel () {
     }
   }
 
-  return (
-    <Container ref={containerRef}>
-      <SVGCartridge
-        large={large}
-        hoveredLayout={hoveredLayout.current}
-        selectedLayout={selectedLayout.current}
-        eventsFn={eventsFn}
-      />
+  return (<Container ref={containerRef}>
+    <SVGCartridge
+      large={large}
+      hoveredLayout={hoveredLayout.current}
+      selectedLayout={selectedLayout.current}
+      eventsFn={eventsFn}
+    />
 
-      <Canvas ref={canvasRef} />
-      {selectedLayout.current && (
-        <SvgDnG>
-          <g transform={`translate(0, ${moduleHeight * 0.5})`}>
-            <line
-              x1={0}
-              x2={'100%'}
-              y1={0}
-              y2={0}
-              strokeWidth={1}
-              stroke={green}
-            />
-            <g transform={`translate(${selectedLayout.current.x}, 0)`}>
-              <rect
-                style={{ cursor: !dragging && 'grab' }}
-                y={-15}
-                width={selectedLayout.current.width}
-                height={30}
-                rx={15}
-                ry={15}
-                fill={green}
-                onMouseDown={(e) => {
-                  const bb = e.target.getBoundingClientRect()
-                  document.body.style.cursor = 'grabbing'
-                  setDragging({
-                    from: e.clientX,
-                    triggerLeft: bb.left,
-                    triggerWidth: bb.width
-                  })
-                }}
-              />
-              <image xlinkHref={dragNdropIco} x={large * 0.5 - 20} y={-8} />
-            </g>
-          </g>
-        </SvgDnG>
-      )}
-    </Container>
-  )
+    <Canvas ref={canvasRef} />
+    {selectedLayout.current && (<SvgDnG>
+      <g transform={`translate(0, ${moduleHeight * 0.5})`}>
+        <line
+          x1={0}
+          x2={'100%'}
+          y1={0}
+          y2={0}
+          strokeWidth={1}
+          stroke={green}
+        />
+        <g transform={`translate(${selectedLayout.current.x}, 0)`}>
+          <rect
+            style={{ cursor: !dragging && 'grab' }}
+            y={-15}
+            width={selectedLayout.current.width}
+            height={30}
+            rx={15}
+            ry={15}
+            fill={green}
+            onMouseDown={(e) => {
+              const bb = e.target.getBoundingClientRect()
+              document.body.style.cursor = 'grabbing'
+              setDragging({
+                from: e.clientX, triggerLeft: bb.left, triggerWidth: bb.width
+              })
+            }}
+          />
+          <image xlinkHref={dragNdropIco} x={large * 0.5 - 20} y={-8} />
+        </g>
+      </g>
+    </SvgDnG>)}
+  </Container>)
 }
 
 /**
@@ -437,57 +387,49 @@ export default function Carousel () {
  * @param {boolean} props.large - A boolean to determine if the cartridge should be large.
  * @param {Object} props.eventsFn - Event handlers for mouse interactions.
  */
-const SVGCartridge = React.memo(
-  ({ hoveredLayout, selectedLayout, large, eventsFn }) => {
-    const intl = useFormatMessage() // Hook to get formatted messages
+const SVGCartridge = React.memo(({ hoveredLayout, selectedLayout, large, eventsFn }) => {
+  const intl = useFormatMessage() // Hook to get formatted messages
 
-    return (
-      <Svg>
-        <g
-          onMouseMove={eventsFn.onMouseMove} // Event handler for mouse move
-          onMouseLeave={eventsFn.onMouseOut} // Event handler for mouse leave
-          onClick={eventsFn.onClick} // Event handler for click
-        >
-          {/* Render when hovered but not selected */}
-          {!selectedLayout && hoveredLayout && (
-            <g transform={`translate(${hoveredLayout.x}, 0)`}>
-              <rect
-                width={large}
-                height={moduleHeight + 30}
-                y={0}
-                fill={green} // Green background for hover state
-                rx={2}
-                ry={2}
-              />
-              <CTAWording x={10} y={20}> {/* CTA text */}
-                {intl('carrousel-open')}
-              </CTAWording>
-              <image x={large - (10 + 16)} y={7} xlinkHref={openIco} />
-              {/* Open icon */}
-            </g>
-          )}
-          {/* Render when selected */}
-          {selectedLayout && (
-            <g transform={`translate(${selectedLayout.x}, 0)`}>
-              <rect
-                width={large}
-                height={moduleHeight + 30}
-                y={0}
-                fill={red} // Red background for selected state
-                rx={2}
-                ry={2}
-              />
-              <CTAWording x={10} y={20}> {/* CTA text */}
-                {intl('carrousel-close')}
-              </CTAWording>
-              <image x={large - (10 + 16)} y={5} xlinkHref={closeIco} />
-              {/* Close icon */}
-            </g>
-          )}
-          {/* Background rectangle */}
-          <rect width='100%' height='100%' x={0} y={30} fill={'black'} />
-        </g>
-      </Svg>
-    )
-  }
-)
+  return (<Svg>
+    <g
+      onMouseMove={eventsFn.onMouseMove} // Event handler for mouse move
+      onMouseLeave={eventsFn.onMouseOut} // Event handler for mouse leave
+      onClick={eventsFn.onClick} // Event handler for click
+    >
+      {/* Render when hovered but not selected */}
+      {!selectedLayout && hoveredLayout && (<g transform={`translate(${hoveredLayout.x}, 0)`}>
+        <rect
+          width={large}
+          height={moduleHeight + 30}
+          y={0}
+          fill={green} // Green background for hover state
+          rx={2}
+          ry={2}
+        />
+        <CTAWording x={10} y={20}> {/* CTA text */}
+          {intl('carrousel-open')}
+        </CTAWording>
+        <image x={large - (10 + 16)} y={7} xlinkHref={openIco} />
+        {/* Open icon */}
+      </g>)}
+      {/* Render when selected */}
+      {selectedLayout && (<g transform={`translate(${selectedLayout.x}, 0)`}>
+        <rect
+          width={large}
+          height={moduleHeight + 30}
+          y={0}
+          fill={red} // Red background for selected state
+          rx={2}
+          ry={2}
+        />
+        <CTAWording x={10} y={20}> {/* CTA text */}
+          {intl('carrousel-close')}
+        </CTAWording>
+        <image x={large - (10 + 16)} y={5} xlinkHref={closeIco} />
+        {/* Close icon */}
+      </g>)}
+      {/* Background rectangle */}
+      <rect width='100%' height='100%' x={0} y={30} fill={'black'} />
+    </g>
+  </Svg>)
+})
