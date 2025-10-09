@@ -49,7 +49,7 @@ import {
   relativeScansPhotoURIEnhancer,
   scanDataEnhancer
 } from './enhancers'
-import useFetchObject from '../../rd/tools/hooks/useFetchObject'
+import useFetchObject from '../../rd/tools/hooks/fetchObject'
 
 /**
  * A custom hook that retrieves and enhances scan data using specific enhancers.

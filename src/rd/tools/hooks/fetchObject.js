@@ -30,12 +30,13 @@ function loadAsync (url) {
  */
 function useFetchObject (url, cached = true) {
   // Check if data exists in cache for the given URL
-  const cachedData = (cached && cache[url])
+  const cachedData = (cached && cache[url]) ? cache[url] : null
 
   // State management for error, loading status, and fetch results
   const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(!!cachedData || true)
-  const [data, setData] = useState(!!cachedData)
+  // Fix the loading state initialization
+  const [loading, setLoading] = useState(cachedData === null)
+  const [data, setData] = useState(cachedData)
 
   useEffect(() => {
     let unmounted = false
@@ -43,28 +44,41 @@ function useFetchObject (url, cached = true) {
     if (url) {
       if (cached && cache[url]) {
         setData(cache[url])
+        setLoading(false)
       } else {
-        (async () => {
+        const fetchData = async () => {
           if (!unmounted) {
             setData(null)
             setLoading(true)
             try {
-              const data = await loadAsync(url)
-              if (cached) cache[url] = data
-              setData(data)
+              const fetchedData = await loadAsync(url)
+              if (!unmounted) {
+                if (cached) cache[url] = fetchedData
+                setData(fetchedData)
+                setLoading(false)
+              }
             } catch (e) {
-              setError(e)
+              if (!unmounted) {
+                setError(e)
+                setLoading(false)
+              }
             }
-            setLoading(false)
           }
-        })()
+        }
+
+        fetchData()
       }
+    } else {
+      // No URL provided, reset states
+      setData(null)
+      setLoading(false)
+      setError(null)
     }
 
     return () => {
       unmounted = true
     }
-  }, [url])
+  }, [url, cached])
 
   return [data, loading, error]
 }
