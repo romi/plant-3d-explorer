@@ -65,7 +65,11 @@ export const Container = styled.div({
 export default function LayersInteractors () {
   const [layers, setLayers] = useLayers()
   const [scan] = useScan()
-  const [[meshGeometry], [pointCloudGeometry], [skeletonGeometry], [anglesData]] = useScanFiles(scan)
+  const scanFiles = useScanFiles(scan) || [[], [], [], [], []]
+  const [[meshGeometry] = []] = scanFiles[0] ? [scanFiles[0]] : [[]]
+  const [[pointCloudGeometry] = []] = scanFiles[1] ? [scanFiles[1]] : [[]]
+  const [[skeletonGeometry] = []] = scanFiles[2] ? [scanFiles[2]] : [[]]
+  const [[anglesData] = []] = scanFiles[3] ? [scanFiles[3]] : [[]]
   const [segmentedPointCloud] = useSegmentedPointCloud()
 
   return <Container>
