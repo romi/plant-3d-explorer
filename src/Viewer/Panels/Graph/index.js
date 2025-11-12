@@ -49,24 +49,40 @@ const Container = styled.div({
   borderTop: `1px solid ${lightGrey}`,
   borderRight: `1px solid ${lightGrey}`,
 
+  flex: 1,
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between'
 })
 
+/**
+ * Renders a panel that displays a header and a graph based on the provided data and interaction state.
+ *
+ * @param {Object} props - The component props.
+ * @param {string} props.id - Identifier passed to the {@link Header} component.
+ * @param {string} props.tooltipId - Identifier used for tooltip functionality.
+ * @param {Function} props.onClose - Callback executed when the header close action is triggered.
+ * @param {Object} props.data - Data object containing arrays of values and metadata.
+ * @param {Array<number|null|undefined>} props.data.automated - Array of automated values indexed by angle.
+ * @param {Array<number|null|undefined>|undefined} props.data.manual - Optional array of manual values indexed by angle.
+ * @param {string} props.data.unit - Unit string appended to the displayed values.
+ * @param {Function} [props.data.valueTransform] - Optional function to transform raw numeric values before display.
+ * @param {boolean} props.ifGraph - Flag indicating whether the graph should be rendered in graph mode.
+ * @returns {JSX.Element|null} The rendered panel containing a header and graph, or `null` when no automated data is available.
+ */
 export default function GraphPanel (props) {
-  const [hoveredAngle] = useHoveredAngle()
-  const [selectedAngle] = useSelectedAngle()
+  const [hoveredAngle] = useHoveredAngle() // current hovered angle
+  const [selectedAngle] = useSelectedAngle() // currently selected angle
 
   const highlightedAngle = first([hoveredAngle, selectedAngle]
-    .filter((value) => ((value !== null) && (value !== undefined))))
+    .filter((value) => ((value !== null) && (value !== undefined)))) // angle that is either hovered or selected
 
   if (!props.data.automated || props.data.automated.length === 0) return null
 
   const ifManualData = !!props.data.manual
   const ifHighligthed = highlightedAngle !== null && highlightedAngle !== undefined
 
-  const valueTransformFn = (props.data.valueTransform || ((v) => v))
+  const valueTransformFn = (props.data.valueTransform || ((v) => v)) // optional value transform function
 
   return <Container>
     <Header

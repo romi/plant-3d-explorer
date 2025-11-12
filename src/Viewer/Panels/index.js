@@ -34,7 +34,7 @@ import { extent } from 'd3-array'
 import { lightGrey } from 'common/styles/colors'
 
 import { usePanels } from 'flow/settings/accessors'
-import { useScan } from 'flow/scans/accessors'
+import { useScan, useScanFiles } from 'flow/scans/accessors'
 
 import GraphPanel from './Graph'
 
@@ -52,43 +52,82 @@ const Container = styled.div(`
   justify-content: space-between;
 `)
 
-const radianToDegree = (v) => v * 57.2958
+const radianToDegree = (v) => v * (180 / Math.PI)
 const valueToValue = (v) => v
+
+// Helper function to determine if angles are likely in radians and convert them to degrees
+const convertAnglesToDegreesIfApplicable = (anglesArray) => {
+  if (!anglesArray || anglesArray.length === 0) {
+    return anglesArray
+  }
+
+  // Heuristic: If the maximum value is within the typical 0 to 2*PI range (and not a large degree value),
+  // it's likely in radians. We add a small epsilon for floating point comparison.
+  const maxAngle = Math.max(...anglesArray)
+  const isLikelyRadians = maxAngle <= (2 * Math.PI) + 1e-6 && maxAngle > 1.0 // Also check if it's not just very small degrees
+
+  if (isLikelyRadians) {
+    return anglesArray.map(radianToDegree)
+  }
+  return anglesArray
+}
 
 export default function Panels () {
   const [scan] = useScan()
   const [panels, setPanels] = usePanels()
 
+  // Call useScanFiles to get all fetched files
+  const scanFiles = useScanFiles(scan)
+  // Destructure the angles and internodes data from scanFiles[3]
+  // useFetchObject returns [data, loading, error]
+  const [anglesAndInternodesData, isLoadingAnglesAndInternodes, anglesAndInternodesError] = scanFiles[3] || [null, true, null]
+
   const panelsData = useMemo(() => {
-    const tempFruitPoints = get(scan, 'data.angles.fruit_points')
-    const fruitPoints = tempFruitPoints
+    // If scan is not yet loaded, or angles and internodes data is loading or has an error, return an empty object
+    if (!scan || isLoadingAnglesAndInternodes || anglesAndInternodesError) {
+      if (anglesAndInternodesError) {
+        console.error('Error loading angles and internodes data:', anglesAndInternodesError)
+      } else if (isLoadingAnglesAndInternodes) {
+        console.log('Angles and internodes data is still loading...')
+      }
+      return {}
+    }
+
+    // Now, use the fetched anglesAndInternodesData object
+    const fruitPoints = get(anglesAndInternodesData, 'fruit_points')
     // ? tempFruitPoints.slice(0, tempFruitPoints.length - 1)
     // : undefined
-    const tempAutomatedAngles = get(scan, 'data.angles.angles')
-    const automatedAngles = tempAutomatedAngles
+    const tempAutomatedAngles = get(anglesAndInternodesData, 'angles')
+    const automatedAngles = convertAnglesToDegreesIfApplicable(tempAutomatedAngles)
     // ? tempAutomatedAngles.slice(0, tempAutomatedAngles.length - 1)
     // : undefined
-
-    const tempAutomatedInternodes = get(scan, 'data.angles.internodes')
-    const automatedInternodes = tempAutomatedInternodes
+    const automatedInternodes = get(anglesAndInternodesData, 'internodes')
     // ? tempAutomatedInternodes.slice(0, tempAutomatedInternodes.length - 1)
     // : undefined
     const internodes = [
-      ...(get(scan, 'data.angles.measured_internodes') || []),
-      ...(get(scan, 'data.angles.internodes') || [])
+      ...(get(anglesAndInternodesData, 'manual_internodes') || []),
+      ...(automatedInternodes || [])
     ]
     const interNodesBounds = extent(internodes)
+
+    // Handle cases where internodes might be empty, resulting in undefined bounds
+    const lowerBound = (interNodesBounds[0] !== undefined) ? Math.floor(interNodesBounds[0] / 5) * 5 : 0
+    const midBound = (interNodesBounds[0] !== undefined && interNodesBounds[1] !== undefined) ? Math.round(interNodesBounds[0] + interNodesBounds[1]) * 0.5 : 0
+    const upperBound = (interNodesBounds[1] !== undefined) ? Math.ceil(interNodesBounds[1] / 5) * 5 : 0
+
+    // Get manual angles and convert them to degrees if they appear to be in radians
+    const manualAngles = convertAnglesToDegreesIfApplicable(get(anglesAndInternodesData, 'manual_angles'))
 
     return {
       'panels-angles': {
         isBarChart: false,
         tooltipId: 'angles-tooltip',
         automated: automatedAngles,
-        manual: get(scan, 'data.angles.measured_angles'),
+        manual: manualAngles,
         fruitPoints: fruitPoints,
         unit: '°',
         bounds: [0, 360],
-        valueTransform: radianToDegree,
+        valueTransform: valueToValue,
         goal: 137.5,
         ifGraph: true
       },
@@ -96,13 +135,13 @@ export default function Panels () {
         isBarChart: false,
         tooltipId: 'internodes-tooltip',
         automated: automatedInternodes,
-        manual: get(scan, 'data.angles.measured_internodes'),
+        manual: get(anglesAndInternodesData, 'manual_internodes'),
         fruitPoints: fruitPoints,
         unit: 'mm',
         bounds: [
-          Math.floor(interNodesBounds[0] / 5) * 5,
-          Math.round(interNodesBounds[0] + interNodesBounds[1]) * 0.5,
-          Math.ceil(interNodesBounds[1] / 5) * 5
+          lowerBound,
+          midBound,
+          upperBound
         ],
         valueTransform: valueToValue,
         ifGraph: true
@@ -112,13 +151,17 @@ export default function Panels () {
         tooltipId: 'evaluation-tooltip'
       }
     }
-  }, [scan])
+  }, [scan, anglesAndInternodesData, isLoadingAnglesAndInternodes, anglesAndInternodesError]) // Add new dependencies
 
   return <Container>
     {
       Object.keys(panels)
         .filter((d) => panels[d])
         .map((d) => {
+          // Ensure panelsData[d] exists before trying to render
+          if (!panelsData[d]) {
+            return null // Don't render if data for this panel is not ready
+          }
           if (!panelsData[d].isBarChart) {
             return <GraphPanel
               key={d}

@@ -4,7 +4,7 @@ import styled from '@emotion/styled'
 import { get } from 'lodash'
 
 import { usePanels } from 'flow/settings/accessors'
-import { useScan } from 'flow/scans/accessors'
+import { useScan, useScanFiles } from 'flow/scans/accessors'
 
 import { green, darkGreen } from 'common/styles/colors'
 import { H3 } from 'common/styles/UI/Text/titles'
@@ -12,11 +12,11 @@ import { H3 } from 'common/styles/UI/Text/titles'
 import { ExpandIcon, ShrinkIcon } from './icons'
 
 const Container = styled.div`
-  position: absolute;
-  top: 35px;
-  right: 1px;
-  display: flex;
-  letter-spacing: 0px;
+    position: absolute;
+    top: 35px;
+    right: 1px;
+    display: flex;
+    letter-spacing: 0;
 `
 
 const ExpandBtn = styled.div`
@@ -40,37 +40,37 @@ const ExpandBtn = styled.div`
 const List = styled.div`
 `
 const Option = styled.div`
-  cursor: pointer;
-  padding-right: 0px;
-  width: 160px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: white;
-  padding-left: 15px;
-  height: 40px;
+    cursor: pointer;
+    padding-right: 0;
+    width: 160px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding-left: 15px;
+    height: 40px;
 
-  &:hover {
-    background: ${green};
+    &:hover {
+        background: ${green};
 
-    span {
-      color: white;
+        span {
+            color: white;
+        }
     }
-  }
 
-  &:active {
-    background: ${darkGreen};
+    &:active {
+        background: ${darkGreen};
 
-    span {
-      color: white;
+        span {
+            color: white;
+        }
     }
-  }
 `
 const OptionText = styled(H3)`
-  margin: 0px;
-  text-transform: none;
-  color: ${green};
-  letter-spacing: 0px;
+    margin: 0;
+    text-transform: none;
+    color: ${green};
+    letter-spacing: 0;
 `
 
 const ListHeader = styled(Option)`
@@ -95,6 +95,11 @@ export default function PanelsInteractor () {
   const [isOpen, setIsOpen] = useState(false)
   const [scan] = useScan()
 
+  const scanFiles = useScanFiles(scan) // Call useScanFiles to get all fetched files
+  // Destructure the angles and internodes data from scanFiles[3]
+  // useFetchObject returns [data, loading, error]
+  const anglesAndInternodesData = scanFiles[3][0] || null
+
   useEffect(() => {
     const onOutsideClick = () => setIsOpen(false)
     if (isOpen) window.addEventListener('click', onOutsideClick)
@@ -116,8 +121,8 @@ export default function PanelsInteractor () {
         return p
       }, {})
     ),
-    'panels-angles': !!get(scan, 'data.angles.angles'),
-    'panels-distances': !!get(scan, 'data.angles.internodes'),
+    'panels-angles': !!get(anglesAndInternodesData, 'angles'),
+    'panels-distances': !!get(anglesAndInternodesData, 'internodes'),
     'panels-evaluation': !!get(scan, 'data.segmentation2D') || !!get(scan, 'data.segmentedPcdEvaluation')
   }
 
