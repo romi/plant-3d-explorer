@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { get } from 'axios'
+import axios from 'axios'
 
 const cache = {}
 
@@ -11,7 +11,7 @@ const cache = {}
  */
 function loadAsync (url) {
   return new Promise((resolve, reject) => {
-    get(url)
+    axios.get(url)
       .then(response => {
         resolve(response.data)
       })

@@ -27,7 +27,7 @@ License along with this program.  If not, see
 */
 
 import { useEffect, useState } from 'react'
-import { CancelToken, get } from 'axios'
+import axios from 'axios'
 
 import { MakeQuerablePromise } from 'rd/tools/promise'
 
@@ -38,7 +38,7 @@ const cache = {}
 function forgeFetchResource (url) {
   return {
     data: null, // Initial data state
-    query: MakeQuerablePromise(get(url)) // Wraps axios get request in queryable promise
+    query: MakeQuerablePromise(axios.get(url)) // Wraps axios get request in queryable promise
   }
 }
 
@@ -92,7 +92,7 @@ const useFetch = (url, cached = true) => {
       }
     } else {
       setState({ data: null, loading: true, error: null })
-      source = CancelToken.source()
+      source = axios.CancelToken.source()
 
       const fetchResource = forgeFetchResource(url)
       if (cached) cache[url] = fetchResource
