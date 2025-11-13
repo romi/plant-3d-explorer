@@ -37,7 +37,7 @@ import { green, grey } from 'common/styles/colors'
 
 import { useSearchQuery, useScans, useFiltering } from 'flow/scans/accessors'
 
-import Logo from './assets/ico.logo.160x30.svg'
+import Logo from './assets/ico.logo.155x70.svg'
 import closePicto from 'common/assets/ico.deselect.20x20.svg'
 
 import Search from './search'
