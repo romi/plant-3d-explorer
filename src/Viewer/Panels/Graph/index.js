@@ -56,33 +56,43 @@ const Container = styled.div({
 })
 
 /**
- * Renders a panel that displays a header and a graph based on the provided data and interaction state.
+ * Renders a graph panel displaying automated and optional manual data with
+ * interactive highlighting and tooltips. The panel may be closed via a callback
+ * and can be toggled to display complementary angles.
  *
- * @param {Object} props - The component props.
- * @param {string} props.id - Identifier passed to the {@link Header} component.
- * @param {string} props.tooltipId - Identifier used for tooltip functionality.
- * @param {Function} props.onClose - Callback executed when the header close action is triggered.
- * @param {Object} props.data - Data object containing arrays of values and metadata.
+ * @param {object} props - Component properties.
+ * @param {string} props.id - Identifier for the panel header.
+ * @param {string} props.tooltipId - Identifier used for tooltip reference.
+ * @param {function} props.onClose - Callback invoked when the panel close button is pressed.
+ * @param {boolean} props.ifGraph - Flag indicating whether the graph view should be shown.
+ * @param {object} props.data - Data object containing chart information.
  * @param {Array<number|null|undefined>} props.data.automated - Array of automated values indexed by angle.
- * @param {Array<number|null|undefined>|undefined} props.data.manual - Optional array of manual values indexed by angle.
- * @param {string} props.data.unit - Unit string appended to the displayed values.
- * @param {Function} [props.data.valueTransform] - Optional function to transform raw numeric values before display.
- * @param {boolean} props.ifGraph - Flag indicating whether the graph should be rendered in graph mode.
- * @returns {JSX.Element|null} The rendered panel containing a header and graph, or `null` when no automated data is available.
+ * @param {Array<number|null|undefined>} [props.data.manual] - Optional array of manual values indexed by angle.
+ * @param {string} props.data.unit - Unit string appended to displayed values.
+ * @param {function(number): number} [props.data.valueTransform] - Optional function to transform raw data values before display.
+ * @param {boolean} props.complementaryAngleChecked - Flag indicating if the complementary angle is currently selected.
+ * @param {function(boolean): void} props.setComplementaryAngleChecked - Setter for toggling the complementary angle flag.
+ *
+ * @return {React.ReactElement|null} The rendered panel component or null if no automated data is available.
  */
 export default function GraphPanel (props) {
-  const [hoveredAngle] = useHoveredAngle() // current hovered angle
-  const [selectedAngle] = useSelectedAngle() // currently selected angle
+  // Hook to get the angle currently hovered over
+  const [hoveredAngle] = useHoveredAngle()
+  // Hook to get the angle currently selected
+  const [selectedAngle] = useSelectedAngle()
 
+  // Determine the angle that should be highlighted (hovered or selected)
   const highlightedAngle = first([hoveredAngle, selectedAngle]
-    .filter((value) => ((value !== null) && (value !== undefined)))) // angle that is either hovered or selected
+    .filter((value) => ((value !== null) && (value !== undefined))))
 
+  // If there's no automated data, render nothing
   if (!props.data.automated || props.data.automated.length === 0) return null
 
   const ifManualData = !!props.data.manual
+  // Flag indicating whether an angle is highlighted
   const ifHighligthed = highlightedAngle !== null && highlightedAngle !== undefined
-
-  const valueTransformFn = (props.data.valueTransform || ((v) => v)) // optional value transform function
+  // Optional value transformation function; defaults to identity
+  const valueTransformFn = (props.data.valueTransform || ((v) => v))
 
   return <Container>
     <Header
@@ -107,8 +117,8 @@ export default function GraphPanel (props) {
             : ''
           : ''
       }
-      complementaryAngleChecked={props.complementaryAngleChecked} // Pass new prop to Header
-      setComplementaryAngleChecked={props.setComplementaryAngleChecked} // Pass new prop to Header
+      complementaryAngleChecked={props.complementaryAngleChecked}
+      setComplementaryAngleChecked={props.setComplementaryAngleChecked}
     />
     <Graph
       unit={props.data.unit}
