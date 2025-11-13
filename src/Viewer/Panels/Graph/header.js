@@ -35,6 +35,8 @@ import { grey, blue, red } from 'common/styles/colors'
 
 import helpIcon from '../assets/ico.help.14x14.svg'
 import closeIcon from '../assets/ico.close.12.5x12.5.svg'
+import arrowCounterclockwiseIcon from '../assets/ico.counter-clockwise.16x16.svg'
+
 import Tooltip, { TooltipContent } from 'rd/UI/Tooltip'
 import { Download } from './download'
 
@@ -72,6 +74,19 @@ const CloseIcon = styled.img({
     transform: 'scale(1.20)'
   }
 })
+
+const ComplementaryAngleButton = styled.img((props) => ({
+  cursor: 'pointer',
+  marginLeft: 6,
+  marginBottom: -1,
+  transition: 'all 0.15s ease',
+  background: '#FFFFFF',
+  filter: props.active ? 'invert(1)' : 'none', // Invert colors when active, otherwise no filter
+
+  '&:hover': {
+    transform: 'scale(1.20)' // Slightly increase the size on hover to indicate interactivity
+  }
+}))
 
 const Values = styled.div({
   marginTop: 22,
@@ -158,6 +173,27 @@ export default function Header (props) {
             </TooltipContent>
           </Tooltip>
         </div>
+        {
+          // Add a button for complementary angles if it's the angles panel
+          props.id === 'panels-angles' && props.setComplementaryAngleChecked && (
+            <Tooltip>
+              <ComplementaryAngleButton
+                src={arrowCounterclockwiseIcon}
+                alt='Toggle Complementary Angle'
+                active={props.complementaryAngleChecked}
+                onClick={() => props.setComplementaryAngleChecked(!props.complementaryAngleChecked)}
+              />
+              <TooltipContent style={{
+                left: -40,
+                boxShadow: '0 1px 3px 0 rgba(10,61,33,0.2)'
+              }}>
+                <HelpContent>
+                  <FormattedMessage id='counterclockwise-tooltip' />
+                </HelpContent>
+              </TooltipContent>
+            </Tooltip>
+          )
+        }
         {
           props.ifGraph && <div>
             <Download data={props.data} />

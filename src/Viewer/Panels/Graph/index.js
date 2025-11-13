@@ -107,6 +107,8 @@ export default function GraphPanel (props) {
             : ''
           : ''
       }
+      complementaryAngleChecked={props.complementaryAngleChecked} // Pass new prop to Header
+      setComplementaryAngleChecked={props.setComplementaryAngleChecked} // Pass new prop to Header
     />
     <Graph
       unit={props.data.unit}

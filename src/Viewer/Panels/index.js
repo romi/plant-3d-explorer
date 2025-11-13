@@ -26,7 +26,7 @@ License along with this program.  If not, see
 
 */
 
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import styled from '@emotion/styled'
 import { get } from 'lodash'
 import { extent } from 'd3-array'
@@ -75,6 +75,7 @@ const convertAnglesToDegreesIfApplicable = (anglesArray) => {
 export default function Panels () {
   const [scan] = useScan()
   const [panels, setPanels] = usePanels()
+  const [complementaryAngleChecked, setComplementaryAngleChecked] = useState(false) // New state for checkbox
 
   // Call useScanFiles to get all fetched files
   const scanFiles = useScanFiles(scan)
@@ -98,7 +99,11 @@ export default function Panels () {
     // ? tempFruitPoints.slice(0, tempFruitPoints.length - 1)
     // : undefined
     const tempAutomatedAngles = get(anglesAndInternodesData, 'angles')
-    const automatedAngles = convertAnglesToDegreesIfApplicable(tempAutomatedAngles)
+    let automatedAngles = convertAnglesToDegreesIfApplicable(tempAutomatedAngles)
+    // Apply complementary angle transformation if checkbox is checked
+    if (complementaryAngleChecked) {
+      automatedAngles = automatedAngles.map(angle => 360 - angle)
+    }
     // ? tempAutomatedAngles.slice(0, tempAutomatedAngles.length - 1)
     // : undefined
     const automatedInternodes = get(anglesAndInternodesData, 'internodes')
@@ -151,7 +156,7 @@ export default function Panels () {
         tooltipId: 'evaluation-tooltip'
       }
     }
-  }, [scan, anglesAndInternodesData, isLoadingAnglesAndInternodes, anglesAndInternodesError]) // Add new dependencies
+  }, [scan, anglesAndInternodesData, isLoadingAnglesAndInternodes, anglesAndInternodesError, complementaryAngleChecked]) // Add new dependencies
 
   return <Container>
     {
@@ -169,6 +174,8 @@ export default function Panels () {
               tooltipId={panelsData[d].tooltipId}
               ifGraph={panelsData[d].ifGraph}
               data={panelsData[d]}
+              complementaryAngleChecked={d === 'panels-angles' ? complementaryAngleChecked : undefined} // Pass only to angles panel
+              setComplementaryAngleChecked={d === 'panels-angles' ? setComplementaryAngleChecked : undefined} // Pass only to angles panel
               onClose={() => {
                 setPanels({
                   ...panels,
