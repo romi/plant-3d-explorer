@@ -13,9 +13,10 @@ For comprehensive documentation on the entire ROMI project, visit the [official 
 
 ### Node.js Environment
 
-The application requires `npm`, which is included with . We recommend using: `Node.js`
+The application requires `npm`, which is included with `Node.js`.
+We recommend using: 
 
-- version 10 or higher **Node.js**
+- **Node.js** version 10 or higher
 - **npm** version 6 or higher
 
 ### Recommended Installation Method
@@ -62,10 +63,23 @@ The following commands are available in the project directory:
 | `npm start`     | Start the application in development mode |
 | `npm run build` | Build the application for production      |
 
+#### Start the PlantDB REST API
+
+To test this frontend app, you need first to start the PlantDB REST API server.
+
+Assuming you have a conda environment named `plantdb`, you may start a test server for development purpose as follows:
+```shell
+# Activate the conda environment
+conda activate plantdb
+fsdb_rest_api --test
+```
+
+You now have a PlantDB server listening to [http://localhost:5000](http://localhost:5000).
+
 #### Running Tests
 
-Tests run in watch mode and automatically rerun when files change. Each component has its test file in the same directory (e.g.,
-`src/ScanList/index.test.js` tests `src/ScanList/index.js`).
+Tests run in watch mode and automatically rerun when files change.
+Each component has its test file in the same directory (e.g., `src/ScanList/index.test.js` tests `src/ScanList/index.js`).
 
 #### Development Mode
 
@@ -85,7 +99,7 @@ Configure the PlantDB API URL by creating an `.env` file at the project root:
 REACT_APP_API_URL='plantdb_address.com'
 ```
 
-Without this configuration, the application defaults to `http://localhost:5000`.
+Without this configuration, the application defaults to [http://localhost:5000](http://localhost:5000).
 
 > **Notes:**
 > - You must run a PlantDB REST API server from the [plantdb repository](https://github.com/romi/plantdb).
