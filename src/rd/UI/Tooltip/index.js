@@ -39,6 +39,32 @@ const InivisibleContent = styled.div({
   visibility: 'hidden'
 })
 
+/**
+ * A tooltip component that displays its content only when hovered.
+ *
+ * The component renders all children that are not of type {@link TooltipContent} normally.
+ * Children that are instances of {@link TooltipContent} are rendered invisibly in the DOM
+ * to measure their dimensions, and are cloned with additional layout props
+ * (`parentBb` and `contentBb`) when the tooltip is hovered.
+ *
+ * When the mouse enters the outer `<div>` the component sets an internal hover flag,
+ * causing the measured content to be rendered. On mouse leave the flag is cleared
+ * and the content is hidden again. The outer element is given a `cursor: help`
+ * style by default, but accepts custom styles via the `style` prop.
+ *
+ * @param {Object} props - The component props.
+ * @param {React.ReactNode} props.children - All child elements of the tooltip.
+ * @param {React.CSSProperties} [props.style] - Optional custom styles applied to the outer container.
+ *
+ * @returns {React.ReactElement} The rendered tooltip container.
+ *
+ * @remarks
+ * Internally the component uses a `useRef` to obtain a reference to the hidden content,
+ * a custom `useBB` hook to capture the bounding box of the parent element,
+ * and `useState` hooks to track the bounding box of the content and the hover state.
+ * It relies on React's `cloneElement` to inject layout information into the child
+ * content when the tooltip is active.
+ */
 export default function (props) {
   const contentRef = useRef()
   const [ref, BB] = useBB(false)
@@ -110,6 +136,18 @@ const ContentContainer = styled.div({
   }
 })
 
+/**
+ * Renders a tooltip content container.
+ *
+ * @param {Object} props The component properties.
+ * @param {number|string} props.top The top position for the content container.
+ * @param {string} [props.className] Optional class name to apply to the container.
+ * @param {Object} props.parentBb The bounding box of the parent element.
+ * @param {Object} props.contentBb The bounding box of the content element.
+ * @param {Object} props.style Inline styles to apply to the container.
+ * @param {ReactNode} props.children The children to render inside the tooltip.
+ * @returns {JSX.Element} The rendered tooltip content container.
+ */
 export function TooltipContent (props) {
   return <ContentContainer
     top={props.top}
