@@ -1,50 +1,43 @@
-# ============= Builder stage =============
-FROM node:10-alpine AS builder
+# Stage 1: Build the React application
+FROM node:10-slim AS build-stage
+
 LABEL maintainer="Jonathan LEGRAND <jonathan.legrand@ens-lyon.fr>"
 
-# Set the working directory
-WORKDIR /app
-
-# Copy package files first for better caching
-COPY package.json package-lock.json ./
-
-# Install all dependencies (including dev dependencies needed for build)
-RUN npm ci
-
-# Set environment variables for the build
-ARG API_URL='http://localhost:5000'
-# Define the service basename as a build argument
+# Set environment variables for build time
+ARG API_URL='https://db.romi-project.eu'
 ARG BASENAME='/p3dx'
-# Set the React app environment variable for API URL
-ENV REACT_APP_API_URL="${API_URL}"
-# Set the React app environment variable for basename
-ENV REACT_APP_BASENAME="${BASENAME}"
-
-# Update the PATH to include node_modules/.bin
-ENV PATH="/app/node_modules/.bin:$PATH"
+ENV REACT_APP_API_URL=$API_URL
+ENV REACT_APP_BASENAME=$BASENAME
+ENV PUBLIC_URL=$BASENAME
+# Old react-scripts setups like ours, need the following line to allow absolute imports
 ENV NODE_PATH="src/"
 
-# Copy the rest of the application code
-COPY . .
+WORKDIR /app
 
-# Build the application
+# Copy dependency files first to leverage Docker layer caching
+COPY package.json package-lock.json ./
+
+# Install ALL dependencies (including devDependencies like react-scripts)
+# required to run the 'build' script.
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci
+
+COPY . ./
+
+# Build the production-ready static files
 RUN npm run build
 
-# ============= Final stage =============
-# Serve the built React application using Nginx
-FROM nginx:alpine AS runtime
+# Stage 2: Serve the application with Nginx
+FROM nginx:stable-alpine AS runtime
 
-# Set the React app environment variable for API URL
-ENV REACT_APP_API_URL="${API_URL:-http://localhost:5000}"
-# Set the React app environment variable for basename
-ENV REACT_APP_BASENAME="${BASENAME:-/p3dx}"
-
-COPY --from=builder /app/build /usr/share/nginx/html
-# Copy custom Nginx configuration file (if needed)
+# Remove default nginx config and copy your custom one
 COPY docker/production/nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 80 for HTTP traffic
+# Copy the static build to the path expected by your nginx.conf
+# We use a subfolder to match the /p3dx/ alias logic if preferred,
+# but usually, we just map the alias to the folder.
+COPY --from=build-stage /app/build /usr/share/nginx/html/p3dx
+
 EXPOSE 80
 
-# Start Nginx server
 CMD ["nginx", "-g", "daemon off;"]
