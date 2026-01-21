@@ -61,3 +61,15 @@ export const VIEWER_URL = '/viewer/:scanId'
  * @const {string}
  */
 export const BASE_PATH = process.env.REACT_APP_BASENAME || '/'
+
+/**
+ * The URL of the PlantDB REST API that the application will interact with for API calls.
+ * This value is taken from the environment variable `REACT_APP_API_URL`.
+ * If the environment variable is not set, it defaults to `http://localhost:5000`.
+ *
+ * Example scenarios:
+ * - In a development environment, the URL will default to `http://localhost:5000`.
+ * - In a production environment, this should be set to the respective API URL using `REACT_APP_API_URL`.
+ */
+export const API_BASE_URL = process.env.REACT_APP_API_URL ||
+  (process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000')

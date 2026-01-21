@@ -29,37 +29,12 @@ License along with this program.  If not, see
 /**
  * API endpoints and utility functions for interacting with the PlantDB REST API.
  * This module provides:
- * - Base URL configuration
  * - API endpoint constants
  * - URL construction utilities
  * - Functions to generate specific endpoint URLs for various resources (scans, images, etc.)
  */
 
-/**
- * The URL of the PlantDB REST API that the application will interact with for API calls.
- * This value is taken from the environment variable `REACT_APP_API_URL`.
- * If the environment variable is not set, it defaults to `http://localhost:5000`.
- *
- * Example scenarios:
- * - In a development environment, the URL will default to `http://localhost:5000`.
- * - In a production environment, this should be set to the respective API URL using `REACT_APP_API_URL`.
- */
-export const API_BASE_URL = process.env.REACT_APP_API_URL ||
-  (process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000')
-
-// Path segment constants to avoid repetition and improve maintainability
-const API_PATHS = {
-  SCANS: '/scans',
-  SCANS_INFO: '/scans_info',
-  FILES: '/files',
-  IMAGE: '/image',
-  POINTCLOUD: '/pointcloud',
-  MESH: '/mesh',
-  SKELETON: '/skeleton',
-  SEQUENCE: '/sequence',
-  ARCHIVE: '/archive',
-  REFRESH: '/refresh'
-}
+import { API_BASE_URL } from '../routing'
 
 /**
  * Safely joins URL segments, ensuring there are no duplicate or missing slashes.
@@ -84,6 +59,20 @@ const joinUrlPaths = (base, path) => {
  */
 export const getFullURI = (path) => {
   return path ? joinUrlPaths(API_BASE_URL, path) : ''
+}
+
+// Path segment constants to avoid repetition and improve maintainability
+const API_PATHS = {
+  SCANS: '/scans',
+  SCANS_INFO: '/scans_info',
+  FILES: '/files',
+  IMAGE: '/image',
+  POINTCLOUD: '/pointcloud',
+  MESH: '/mesh',
+  SKELETON: '/skeleton',
+  SEQUENCE: '/sequence',
+  ARCHIVE: '/archive',
+  REFRESH: '/refresh'
 }
 
 /**

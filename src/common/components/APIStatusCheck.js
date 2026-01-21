@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { FormattedMessage } from 'react-intl'
-import { API_BASE_URL } from 'common/api'
 import Loading from './Loading'
+import { API_BASE_URL } from '../routing'
 
 const APIStatusCheck = ({ children, fallback }) => {
   const [apiAvailable, setApiAvailable] = useState(true)
