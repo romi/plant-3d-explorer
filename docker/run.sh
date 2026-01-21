@@ -19,7 +19,7 @@ usage() {
   echo "OPTIONS:"
   echo "  -t, --tag
     Docker image tag to use, default to '${vtag}'."
-  echo "  --api_url
+  echo "  --api-url
     REACT API URL to use to retrieve dataset, default is '${api_url}'.
     Set it to '127.0.0.0:5000' if you have a local plantdb instance running."
   echo "  -c, --cmd
@@ -45,7 +45,7 @@ while [ "$1" != "" ]; do
     shift
     cmd=$1
     ;;
-  --api_url)
+  --api-url)
     shift
     api_url=$1
     ;;

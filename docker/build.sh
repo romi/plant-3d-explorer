@@ -17,8 +17,6 @@ usage() {
   echo "OPTIONS:"
   echo "  -t, --tag
     Docker image tag to use, default to '$vtag'."
-  echo "  --api_url
-    REACT API URL to use to retrieve dataset, default is '$api_url'."
   # -- Docker options:
   echo "  --no-cache
     Do not use cache when building the image, (re)start from scratch."
@@ -36,10 +34,6 @@ while [ "$1" != "" ]; do
   -t | --tag)
     shift
     vtag=$1
-    ;;
-  --api_url)
-    shift
-    api_url=$1
     ;;
   --no-cache)
     shift
