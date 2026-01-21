@@ -4,62 +4,73 @@ route: /Components/Interactors
 menu: Components
 ---
 
-import { Props, Playground } from 'docz'
-import { Interactor, DocInteractor } from './index'
-import { useState } from 'react'
-import ToolButton, { tools } from './Tools'
-import ObjectFormatter from '../../../doc/components/objectFormatter'
-import { SketchPicker } from 'react-color'
-
 # 3D view interactors
+This document details the interactive components within the 3D viewer, enabling users to control various aspects of the plant visualization, from camera manipulation to layer visibility and data analysis.
+These interactors are fundamental for navigating and customizing the 3D exploration experience.
 
 ## Types of interactors
 
-If you're launched the app and opened a plant reconstruction, you noticed there 
-are some interactors in the 3d view. Some enable or disable layers, other make
-color pickers or other tools appear (with the help of a
-[MenuBox](/Components/UI#menubox) for example).
+The 3D view incorporates several categories of interactors, each serving a distinct purpose in enhancing user interaction with the displayed plant models.
 
-Here's a quick summary of each type of interactors:
+### Camera Interactors
 
-### Camera
+These interactors, positioned centrally, provide control over the 3D camera's perspective and view.
+They allow users to manipulate the camera's position and orientation, and to reset the 3D view to a default state, facilitating navigation and focus on specific areas of the plant.
 
-These 2 interactors are in the center and control the display of 
-cameras in 3D space. The second one resets the 3D view.
+### Layer Interactors
 
-### Layers
+Layer interactors, positioned on the left side of the 3D view, control the visibility and display properties of different data layers within the 3D view.
+They can enable or disable the mesh, point cloud, skeleton, organs or bounding-box layers, allowing users to focus on specific structural or analytical data.
 
-Those are what controls the display of the different layers of the 3D view.
+### Tool Interactors
 
-### Tools
+Located below the layer controls, tool interactors provide specialized functionalities related to the displayed layers.
+A common use case includes color pickers for adjusting the visual representation of various layers, or other interactive elements that offer fine-grained control over the visualization.
 
-Those are displayed below the layers, and contain some tools related to each
-corresponding layer, for example color pickers for each layer.
+### Miscellaneous Interactors
 
-### Misc
+Positioned on the right side of the 3D view, miscellaneous interactors offer general utilities that are not specific to a particular layer or tool.
+Examples include controls for changing the background color of the 3D scene or triggering a snapshot of the current view.
 
-Those are on the right and contain miscellaneous tools like background color
-or the snapshot tool.
+### Overlay Interactors
 
-### Overlay
+Overlay interactors are a special category designed to display interactive elements directly on top of the 3D view, providing contextual information or interaction points.
+A notable example is the management of interactive bubbles that appear upon clicking on specific organs within the 3D model, offering detailed information or further interaction options.
 
-This is a special set of interactors. Designed to display stuff on top of the 
-3D view, at the time of writing this, it only manages the bubbles that appear 
-when clicking on an organ.
+### Panel Interactors
 
-## Interactor
+The `Panels` component, located in `src/Viewer/Panels/index.js`, dynamically renders data visualization panels such as `GraphPanel` and `EvalGraph`.
+These panels are displayed based on the application's state, often triggered by specific user interactions with other interactors.
+They provide detailed analytical views, such as angle distributions or internode distances, directly within the viewer interface.
+
+### PCD Ground Truth Interactor
+
+This interactor is related to Ground Truth Point Cloud data.
+It provides controls for interacting with ground truth data within the point cloud visualization, for validation or comparison purposes.
+It is specific to the _Virtual Plant_ use cases.
+
+## Interactor Component
 
 ### Description
 
-The `Interactor` component is the basic interactive building block of those 
-buttons.
+The `Interactor` component serves as the fundamental building block for all interactive buttons and toggles within the 3D view.
+It provides the basic structure and behavior for interactive elements, allowing for consistent styling and event handling across various interactors.
+It is designed to be a simple, reusable button-like component that can be easily associated with more complex UI elements like `MenuBox` for richer interactions.
 
 ### Props
 
+```jsx
 <Props of={DocInteractor} />
+```
+
+The `Interactor` component accepts the following props:
+
+*   `activated` (boolean): Determines if the interactor is in an active state. This can affect its visual appearance.
+*   `onClick` (function): A callback function that is invoked when the interactor is clicked.
 
 ### Example
 
+```jsx
 <Playground>
   { () => {
     const [active, setActive] = useState(false)
@@ -69,33 +80,42 @@ buttons.
     />
   }}
 </Playground>
+```
+This example demonstrates a basic `Interactor` that toggles its `activated` state when clicked, changing its appearance accordingly.
+Interactors are typically combined with other components, such as a [MenuBox](/Components/UI#menubox), to create more complex interactive tools.
 
-This example is simply an interactor that toggles from active to inactive
-when clicking on it. Interactors are basically a button, of course, it needs
-to be associated with things like [MenuBox](/Components/UI#menubox)
-
-## Toolbutton
+## Toolbutton Component
 
 ### Description
 
-The Toolbutton is not a functional component in itself but a group
-of components assembled together to make it easier to create tools.
+The `ToolButton` is not a standalone functional component but rather a composite group of components designed to streamline the creation of tools within the 3D view. It encapsulates common UI patterns for tools, such as an interactive button that reveals a content area (e.g., a color picker) when activated.
+This abstraction simplifies development by handling activation states and mutual exclusivity among tools.
 
-The `index.js` file contains, alongside the ToolButton component, an object
-called tools, that associates tool names with numbers to keep track
-of which tool is currently active easily.
+The `index.js` file, alongside the `ToolButton` component, exports an object named `tools`.
+This object maps descriptive tool names to numerical identifiers, facilitating the tracking of the currently active tool in a concise manner.
 
-Here's the tool object :
-
+Here's the structure of the `tools` object:
+```jsx
 <ObjectFormatter object={tools} />
-
+```
 
 ### Props
 
+```jsx
 <Props of={ToolButton} />
+```
+
+The `ToolButton` component accepts the following props:
+
+*   `toolsList` (object): A state object, typically managed by `useState`, that tracks the active tool. It should contain a property like `activeTool`.
+*   `tool` (number): The unique identifier for the specific tool associated with this `ToolButton`, usually sourced from the `tools` object.
+*   `layer` (boolean): A flag indicating if the tool is associated with a specific layer.
+*   `tooltipId` (string): An identifier used for displaying tooltips, providing descriptive text when the user hovers over the button.
+*   `children` (ReactNode): The content to be rendered when the `ToolButton` is active, such as a `SketchPicker` in the example below.
 
 ### Example
 
+```jsx
 export const divStyle={
   display: 'flex',
   flexDirection: 'row',
@@ -106,14 +126,14 @@ export const divStyle={
   { () => {
     const toolsList = useState({
       activeTool: null
-    }) 
+    })
     return <div style={divStyle}>
       <ToolButton
         toolsList={toolsList}
         tool={tools.colorPickers.mesh}
         layer={true}
         tooltipId='Tooltip 1'
-        >
+      >
         <SketchPicker />
       </ToolButton>
       <ToolButton
@@ -127,9 +147,8 @@ export const divStyle={
     </div>
   }}
 </Playground>
+```
 
-In this example, you can see we use the ToolButton to display color pickers. 
-Since the object passed to the `toolsList` component is the same in both 
-ToolButtons, the tools are mutually exclusive. Try opening the second one while
-the first one is already open, and you'll see that the first tool will close 
-on its own.
+This example showcases the use of `ToolButton` components to display color pickers.
+By passing the same `toolsList` state object to both `ToolButton` instances, the tools become mutually exclusive.
+Activating one `ToolButton` will automatically deactivate any other `ToolButton` sharing the same `toolsList`, ensuring only one color picker is open at a time.

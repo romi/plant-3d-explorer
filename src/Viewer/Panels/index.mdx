@@ -1,0 +1,82 @@
+---
+name: Panels
+route: /Components/Panels
+menu: Components
+---
+
+# Panels Component
+
+The `Panels` component (located at `src/Viewer/Panels/index.js`) serves as the central manager for displaying various data visualization panels within the 3D plant explorer.
+It dynamically renders different types of graphs, such as angle distributions, internode distances, and evaluation metrics, based on the application's state and available scan data.
+
+## Description
+
+The `Panels` component is a high-level container responsible for orchestrating the display of analytical and evaluative data visualizations.
+It acts as a smart renderer, fetching necessary scan-related data and then dynamically generating either a `GraphPanel` (for line graphs like angles and distances) or an `EvalGraph` (for bar charts and box plots used in evaluation metrics).
+
+Key functionalities of the `Panels` component include:
+
+*   **Dynamic Panel Rendering**: Determines which specific data panels should be visible based on user settings managed by the `usePanels` hook.
+*   **Data Fetching and Pre-processing**: Utilizes `useScan` and `useScanFiles` to retrieve the active 3D scan and its associated data files, particularly angles and internode measurements. It also includes logic to convert angles from radians to degrees if necessary and calculates bounds for internode data.
+*   **State Management for Interactions**: Manages a `complementaryAngleChecked` state, allowing angle-related panels to toggle between standard and complementary angle views.
+*   **Error and Loading Handling**: Includes basic logging for errors and loading states related to data fetching, preventing rendering issues when data is unavailable.
+*   **Modular Design**: Delegates the actual rendering of individual graphs to specialized child components (`GraphPanel` and `EvalGraph`), passing them processed data and control callbacks.
+
+The component is structured around a `useMemo` hook (`panelsData`) that efficiently prepares the data for each potential panel, ensuring that calculations are only re-run when their dependencies change.
+
+## Data Flow and Hooks
+
+The `Panels` component integrates several hooks to manage data and state:
+
+*   **`useScan()`**: Retrieves the currently loaded 3D scan object from the global state.
+*   **`usePanels()`**: Provides access to the application-wide settings that dictate which panels are currently active and visible. It also provides a setter function (`setPanels`) to update these settings, typically used when a child panel requests to be closed.
+*   **`useScanFiles(scan)`**: Fetches additional files associated with the active `scan`, specifically for angles and internode data (referred to as `scanFiles[3]` in the code).
+*   **`useState(false)` for `complementaryAngleChecked`**: Manages the local state for the complementary angle toggle, which is passed down to angle-specific `GraphPanel` instances.
+*   **`useMemo(() => { ... }, [dependencies])` for `panelsData`**: This crucial hook memoizes the processed data for each panel type. It performs:
+  *   Conditional data loading and error checking.
+  *   Extraction of `fruit_points`, `angles`, `internodes`, and `manual_internodes` from the fetched `anglesAndInternodesData`.
+  *   Conversion of `angles` from radians to degrees using `convertAnglesToDegreesIfApplicable`.
+  *   Application of the `complementaryAngleChecked` transformation to `automatedAngles` if the checkbox is active.
+  *   Calculation of `internodesBounds` using `d3-array`'s `extent`.
+  *   Structuring of data into objects (`panels-angles`, `panels-distances`, `panels-evaluation`) with specific properties like `isBarChart`, `tooltipId`, `automated`, `manual`, `unit`, `bounds`, `valueTransform`, and `goal`.
+
+## Rendering Logic
+
+The `Panels` component's rendering logic iterates over the keys of the `panels` state object.
+
+For each active panel (`panels[d]` is true):
+
+1.  It first checks if `panelsData[d]` (the processed data for that specific panel) is available. If not, it returns `null` to prevent rendering an incomplete panel.
+2.  It then conditionally renders either:
+  *   A `GraphPanel` (from `./Graph/index.js`) if `panelsData[d].isBarChart` is `false`. This is typically used for continuous data visualizations like angle distribution and internode distances.
+  *   An `EvalGraph` (from `./Graph/evaluationGraph.js`) if `panelsData[d].isBarChart` is `true`. This component is designed for evaluation-related visualizations like bar plots or box plots.
+
+Each child panel receives its specific `data`, `id`, `tooltipId`, and an `onClose` callback.
+The `complementaryAngleChecked` and `setComplementaryAngleChecked` props are passed exclusively to the `panels-angles` instance of `GraphPanel`.
+
+## Example Usage
+
+The `Panels` component is a self-contained unit that should be placed within the main viewer layout where data visualization panels are expected to appear.
+It requires no direct props from its parent component, as all necessary data and control states are managed internally through hooks.
+
+```jsx
+// Within the main Viewer component (e.g., src/Viewer/index.js)
+
+import React from 'react'
+import Panels from 'src/Viewer/Panels/index.js'
+
+function Viewer() {
+  // ... other viewer components and logic
+  return (
+    <div className="viewer-layout">
+      {/* ... other parts of the viewer UI */}
+      <Panels />
+      {/* ... rest of the viewer UI */}
+    </div>
+  )
+}
+
+export default Viewer
+```
+
+When rendered, the `Panels` component will automatically detect which visualizations are enabled in the application settings and display them accordingly, providing a dynamic and customizable data analysis interface.

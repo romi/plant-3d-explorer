@@ -1,0 +1,133 @@
+---
+name: GraphPanel
+route: /Components/GraphPanel
+menu: Components
+---
+
+import { useState } from 'react'
+
+# GraphPanel Component
+
+The `GraphPanel` component (located at `src/Viewer/Panels/Graph/index.js`) is a versatile container designed to display various data visualizations within the 3D plant explorer. It integrates a header for panel management and a core `Graph` component for rendering the actual data, providing an interactive and informative view of scan-related metrics such as angles and internode distances.
+
+## Description
+
+`GraphPanel` acts as an intermediary, orchestrating the presentation of graphical data.
+It combines a `Header` for titles, tooltips, and close functionality, with a `Graph` component that handles the rendering of automated and optionally manual data.
+The panel dynamically reacts to user interactions, such as hovering or selecting specific angles, to highlight relevant data points in the graph and update displayed values in its header.
+
+Key features and functionalities include:
+
+*   **Dynamic Data Display**: Renders automated and, if available, manual data sequences.
+*   **Interactive Highlighting**: Utilizes `useHoveredAngle` and `useSelectedAngle` hooks to highlight specific data points in response to user interaction, providing immediate visual feedback.
+*   **Panel Management**: Incorporates a `Header` component that offers functionalities like displaying the panel title, providing tooltips, enabling data download, and allowing the user to close the panel.
+*   **Complementary Angle Toggle**: For angle-related graphs, it supports toggling the display between standard and complementary angle values.
+*   **Responsive Rendering**: Conditional rendering ensures the panel only appears if relevant automated data is present, preventing empty displays.
+
+The component's structure is composed of:
+*   **`Container`**: A styled `div` that wraps the entire panel, defining its layout and styling.
+*   **`Header`**: A sub-component (from `./header`) responsible for the top section of the panel, including title, controls, and data summary.
+*   **`Graph`**: A sub-component (from `./graph`) responsible for drawing the actual data visualization using SVG and D3.
+
+## Props
+
+The `GraphPanel` component accepts the following props:
+
+*   `id` (string): A unique identifier for the panel, typically used for internationalization keys to display the panel's title.
+*   `tooltipId` (string): An identifier for the tooltip's content, also used with `FormattedMessage` for localization.
+*   `onClose` (function): A callback function invoked when the panel's close button is clicked, enabling the parent component to manage panel visibility.
+*   `ifGraph` (boolean): A flag indicating whether the content to be displayed is indeed a graph. This affects what the `Header` component renders.
+*   `data` (object): An object containing all the necessary data and configuration for the graph. It includes:
+*   `automated` (Array<number|null|undefined>): An array of automated data values to be plotted. If this array is empty or `null`, the `GraphPanel` will not render.
+*   `manual` (Array<number|null|undefined>, optional): An optional array of manual data values to be plotted alongside the automated data.
+*   `unit` (string): The unit of measurement for the data (e.g., '°' for degrees, 'mm' for millimeters).
+*   `valueTransform` (function(number): number, optional): A function to transform raw data values before display (e.g., toFixed(0)). Defaults to an identity function.
+*   `goal` (number, optional): A target or reference value to be displayed on the graph, typically as a horizontal line.
+*   `fruitPoints` (Array<any>, optional): Additional data points, potentially indicating specific events or markers on the graph.
+*   `bounds` (Array<number>, optional): The range for the horizontal axis of the graph.
+*   `complementaryAngleChecked` (boolean): A flag indicating if the complementary angle display is active. This prop is specifically used for angle-related panels.
+*   `setComplementaryAngleChecked` (function(boolean): void): A setter function to toggle the `complementaryAngleChecked` state. This prop is also specific to angle-related panels.
+
+## Usage
+
+The `GraphPanel` is primarily instantiated within the `Panels` component (`src/Viewer/Panels/index.js`), which is responsible for determining which panels to render based on the application's state and available scan data.
+The `Panels` component passes pre-processed data and interaction callbacks to each `GraphPanel` instance.
+
+Here's an example of how `GraphPanel` is used within `src/Viewer/Panels/index.js`:
+
+```jsx
+// Inside src/Viewer/Panels/index.js
+import React, { useMemo, useState } from 'react';
+// ... other imports
+import GraphPanel from 'src/Viewer/Panels/Graph/index.js'
+
+function Panels() {
+  const [scan] = useScan()
+  const [panels, setPanels] = usePanels()
+  const [complementaryAngleChecked, setComplementaryAngleChecked] = useState(false)
+
+  // ... logic to prepare panelsData (angles, distances, evaluation)
+  const panelsData = useMemo(() => {
+    // ... data processing and conversion
+    return {
+      'panels-angles': {
+        isBarChart: false,
+        tooltipId: 'angles-tooltip',
+        automated: /* ... automated angles ... */,
+        manual: /* ... manual angles ... */,
+        fruitPoints: /* ... fruit points ... */,
+        unit: '°',
+        bounds: [0, 360],
+        valueTransform: valueToValue,
+        goal: 137.5,
+        ifGraph: true
+      },
+      // ... other panels like 'panels-distances'
+    }
+  }, [scan, /* ... other dependencies ... */, complementaryAngleChecked])
+
+  return (
+    <Container>
+      {Object.keys(panels)
+        .filter((d) => panels[d])
+        .map((d) => {
+          if (!panelsData[d]) {
+            return null; // Don't render if data for this panel is not ready
+          }
+          if (!panelsData[d].isBarChart) {
+            return (
+              <GraphPanel
+                key={d}
+                id={d}
+                tooltipId={panelsData[d].tooltipId}
+                ifGraph={panelsData[d].ifGraph}
+                data={panelsData[d]}
+                // Pass complementary angle props only to the angles panel
+                complementaryAngleChecked={d === 'panels-angles' ? complementaryAngleChecked : undefined}
+                setComplementaryAngleChecked={d === 'panels-angles' ? setComplementaryAngleChecked : undefined}
+                onClose={() => {
+                  setPanels({
+                    ...panels,
+                    [d]: false
+                  });
+                }}
+              />
+            )
+          } else {
+            // Render EvalGraph for bar charts
+            return (
+              <div>
+                <EvalGraph /* ... props for EvalGraph ... */ />
+              </div>
+            )
+          }
+        })}
+    </Container>
+  );
+}
+
+export default Panels;
+```
+
+In this context, `GraphPanel` receives its `data` prop, `id`, `tooltipId`, and `onClose` callback directly from the `Panels` component.
+The `complementaryAngleChecked` and `setComplementaryAngleChecked` props are conditionally passed only to the "angles" panel to enable its specific functionality.

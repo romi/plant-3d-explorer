@@ -1,0 +1,142 @@
+---
+name: ScanList
+route: /Components/ScanList
+menu: Components
+---
+
+import { Props, Playground } from 'docz'
+import { useState } from 'react'
+
+# ScanList Component
+
+The `ScanList` component (located at `src/ScanList/index.js`) is the primary interface for users to browse, search, filter, and sort plant scan datasets.
+It provides an overview of available scans and allows users to select a scan to view in the 3D explorer.
+This component acts as an orchestrator, integrating several sub-components to deliver its functionality.
+
+## Description
+
+The `ScanList` component presents a user-friendly tabular view of plant scan datasets. Its core functionality revolves around:
+
+*   **Displaying Scan Metadata**: Shows essential information for each scan, such as plant name, species, environment, and acquisition date.
+*   **Search Functionality**: Allows users to search for scans based on keywords, utilizing the `Search` sub-component.
+*   **Sorting Capabilities**: Enables sorting of the scan list by various criteria (e.g., name, species, date) through the `Sorting` sub-component.
+*   **Filtering Options**: Provides filters to narrow down the list of scans based on the availability of different data types (e.g., mesh, point cloud) and measurement types (automated, manual), handled by the `Filtering` sub-component.
+*   **Navigation to Viewer**: Allows users to open a selected scan in the 3D `Viewer` component.
+
+It's important to note that, as per the code's internal comment, the current implementation of `ScanList` is largely hardcoded.
+This means that significant changes to the columns or filtering options might require a substantial rework.
+
+## Sub-components
+
+The `ScanList` component is composed of several specialized sub-components:
+
+### 1. `Search` (`src/ScanList/search/index.js`)
+
+**Description**: This component provides an input field and a submit button for users to enter and apply search queries.
+It enhances usability with dynamic placeholder text and an escape key listener to clear the input.
+
+**Props**:
+*   `search` (string): The current search query string.
+*   `onSearch` (function): A callback function that is invoked when the user submits a new search query or clears the existing one.
+
+**Internal State & Logic**:
+*   Manages its own local `value` state for the input field.
+*   Tracks `focused` state for input field interactions.
+*   Uses `useEffect` to clear the local `value` if the `search` prop from the parent becomes null/empty.
+*   Includes a keyboard event listener (`Escape` key) to clear the input value.
+
+### 2. `Sorting` (`src/ScanList/sorting/index.js`)
+
+**Description**: This component presents sorting options for the scan list.
+Users can click on column headers to sort the list by criteria such as 'name', 'species', 'environment', or 'date', with ascending or descending order.
+
+**Sub-components**:
+*   **`SortingOption`**: A styled button component that represents an individual sorting criterion. It displays the sorting label and an icon indicating the current sorting direction (neutral, ascending, or descending).
+
+**Props**: None directly, it interacts with the global `useSorting` hook.
+
+**Internal State & Logic**:
+*   Utilizes the `useSorting()` hook to access and update the current sorting state (e.g., `sorting.label`, `sorting.method`).
+*   Maps over the `sortings` array (from `useSorting`) to render a `SortingOption` for each available sorting field.
+*   Handles click events on `SortingOption` to toggle the sorting method (asc/desc) or apply a new sorting criterion.
+*   **Includes `Filtering` Component**: Renders the `Filtering` component within its layout.
+
+### 3. `Filtering` (`src/ScanList/filtering/index.js`)
+
+**Description**: This component provides interactive toggles for filtering the scan list based on various data availabilities (e.g., presence of mesh, point cloud) and measurement types (automated, manual).
+
+**Sub-components**:
+*   **`Filter`**: A generic component to represent an individual filter toggle, typically an icon.
+*   **`ClickableMeasures`**: A styled text component for toggling filters related to automated or manual measures.
+
+**Props**: None directly, it interacts with the global `useFiltering` hook.
+
+**Internal State & Logic**:
+*   Uses the `useFiltering()` hook to access and modify the current filter state.
+*   Initializes all filter fields to `false` when the component mounts.
+*   Provides `ClickableIcon` and `ClickableMeasures` for users to toggle filter states.
+*   When a filter is toggled, it updates the global filtering state, which in turn causes the `ScanList` to re-filter the displayed scans.
+
+### 4. `List` (`src/ScanList/list/index.js`)
+
+**Description**: This component is responsible for rendering the actual list of scan items, applying the current sorting and filtering logic.
+
+**Props**:
+*   `items` (Array): The raw list of scan data objects to be displayed.
+
+**Internal State & Logic**:
+*   Manages a local `items` state, which is updated if the length of `props.items` changes.
+*   Accesses the global `useSorting()` hook to retrieve the current sorting preferences.
+*   Applies a `sortingFn` based on the active sorting criteria (`natural-orderby` for text fields, custom logic for dates).
+*   Maps over the sorted items and renders an `Item` component for each.
+
+### 5. `Item` (within `src/ScanList/list/index.js`)
+
+**Description**: This memoized component represents an individual entry in the scan list, displaying a scan's thumbnail, metadata, data layer indicators, measurement types, and action links.
+
+**Props**:
+*   `item` (object): A comprehensive object containing all details for a single scan, including:
+    *   `metadata` (object): Contains `plant`, `species`, `environment`, `date`, and `files` (with `archive` and `metadata` URLs).
+    *   `thumbnailUri` (string): URL for the scan's preview image.
+    *   `id` (string): Unique identifier for the scan.
+    *   `error` (boolean): Indicates if the scan data has an error.
+    *   `hasTriangleMesh`, `hasPointCloud`, `hasSegmentedPointCloud`, `hasCurveSkeleton`, `hasAnglesAndInternodes` (booleans): Flags indicating the presence of specific data layers.
+    *   `hasAutomatedMeasures`, `hasManualMeasures` (booleans): Flags indicating the availability of automated or manual measurements.
+
+**UI Elements**:
+*   **`Thumbnail`**: Displays a preview image of the scan. Shows an error icon if `item.error` is true.
+*   **`Name`**: Shows the scan ID and plant name.
+*   **`Options`**: Displays species, environment, and formatted date.
+*   **`DataLayers`**: Icons indicating available data types (e.g., mesh, point cloud). These icons change opacity and grayscale based on data availability.
+*   **`MeasuresContainer`**: Text indicators for automated and manual measures, styled differently based on their presence.
+*   **`Actions`**: Contains links to download archive/metadata files and an "Open" button to navigate to the 3D `Viewer` for that specific scan. The "Open" button is disabled if the scan has an error.
+
+## Usage
+
+The `ScanList` component is typically rendered as a standalone page or a primary route in the application.
+```jsx
+// In your main application routing (e.g., src/App/index.js)
+
+import React from 'react'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import Viewer from 'src/Viewer/index.js'
+import ScanList from 'src/ScanList/index.js'
+
+function App() {
+return (
+<Router>
+<Switch>
+<Route path="/viewer/:scanId">
+<Viewer />
+</Route>
+<Route exact path="/">
+<ScanList /> {/* The main route for the scan list */}
+</Route>
+</Switch>
+</Router>
+)
+}
+
+export default App;
+```
+When accessed, the `ScanList` component will fetch the available scans, allow users to interact with search, sort, and filter functionalities, and enable navigation to the detailed 3D viewer for any chosen scan.

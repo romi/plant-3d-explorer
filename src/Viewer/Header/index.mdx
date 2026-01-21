@@ -1,0 +1,83 @@
+---
+name: Header
+route: /Components/Header
+menu: Components
+---
+
+# Header Component (for Graph Panels)
+
+This documentation refers to the `Header` component located at `src/Viewer/Panels/Graph/header.js`.
+This component serves as the header for individual graph panels within the 3D viewer, providing titles, help information, controls for data presentation, and options to close the panel.
+It is distinct from the main application header.
+
+## Description
+
+The `Header` component for graph panels is a sub-component responsible for presenting contextual information and interactive elements at the top of each visualization panel.
+
+Its primary functions include:
+
+*   **Displaying Panel Title**: Shows the name or identifier of the graph panel, often fetched from internationalized messages.
+*   **Contextual Help**: Provides a tooltip mechanism, accessible via a help icon, to display detailed information about the graph's content or functionality.
+*   **Data Download**: Includes a download option, allowing users to export the data presented in the graph.
+*   **Panel Closure**: Offers a close icon to dismiss the graph panel.
+*   **Complementary Angle Toggle**: For specific panels (e.g., angle-related graphs), it features a toggle to switch between standard and complementary angle representations, enhancing data analysis flexibility.
+*   **Value Display**: Presents key data values, such as automated and manual measurements, relevant to the graph's content.
+
+The component is designed to be highly configurable through its props, allowing it to adapt to different types of graph panels and their unique data presentation needs.
+
+## Props
+
+The `Header` component accepts the following props:
+
+*   `id` (string): A unique identifier for the panel, used to display the panel's title via `FormattedMessage`.
+*   `tooltipId` (string): An identifier for the help tooltip's content, also resolved via `FormattedMessage`.
+*   `onClose` (function): A callback function triggered when the panel's close icon is clicked. This function is typically used by the parent `GraphPanel` to manage its visibility.
+*   `ifGraph` (boolean): A flag indicating whether the content is a graph. This controls the conditional rendering of graph-specific elements like the title, download button, and value displays.
+*   `data` (object): The dataset associated with the graph panel. This object is passed directly to the `Download` component for data export.
+*   `automatedValue` (string): A formatted string representing the automated data value to be displayed. If `null` or `undefined`, the display might be condensed.
+*   `manualValue` (string): An optional formatted string representing the manual data value. This is displayed only if `ifManualData` is true.
+*   `ifManualData` (boolean): A flag indicating the presence of manual data, which conditionally renders the manual value display.
+*   `complementaryAngleChecked` (boolean): The current state of the complementary angle checkbox. This prop is only relevant and passed when `id` is `'panels-angles'`.
+*   `setComplementaryAngleChecked` (function): A setter function to update the `complementaryAngleChecked` state. This prop is only relevant and passed when `id` is `'panels-angles'`.
+
+## Usage
+
+The `Header` component is intended to be used as a child component within graph panel wrappers, such as the `GraphPanel` found in `src/Viewer/Panels/index.js`.
+It does not manage its own state for the panel's data or active settings (like the complementary angle); instead, it receives these as props from its parent, ensuring a unidirectional data flow.
+
+Here's an example of how the `Header` component is typically used within a parent `GraphPanel` component (simplified for clarity):
+```jsx
+// Inside src/Viewer/Panels/index.js or a similar parent component
+import React, {useState} from 'react'
+import Header from 'src/Viewer/Header/index.js'
+// ... other imports
+
+function GraphPanel(props) {
+const [complementaryAngleChecked, setComplementaryAngleChecked] = useState(false)
+// ... other logic to fetch data, handle hovered/selected angles, etc.
+
+const panelData = props.data // Data passed from the main Panels component
+
+return (
+<Container>
+  <Header
+    id={props.id} // e.g., 'panels-angles', 'panels-distances'
+    tooltipId={panelData.tooltipId} // e.g., 'angles-tooltip'
+    onClose={props.onClose}
+    ifGraph={panelData.ifGraph}
+    data={panelData}
+    automatedValue={/* ... calculated automated value ... */}
+    manualValue={/* ... calculated manual value ... */}
+    ifManualData={!!panelData.manual}
+    complementaryAngleChecked={props.id === 'panels-angles' ? complementaryAngleChecked : undefined}
+    setComplementaryAngleChecked={props.id === 'panels-angles' ? setComplementaryAngleChecked : undefined}
+    />
+  {/* ... Graph component and other panel content */}
+</Container>
+)
+}
+
+export default GraphPanel
+```
+
+In this setup, the `Header` receives all necessary information and callbacks from its parent, allowing for a clear separation of concerns where the parent manages the panel's overall state and logic, and the `Header` focuses solely on its presentation and immediate interactive elements.

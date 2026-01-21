@@ -1,0 +1,76 @@
+---
+name: Carousel
+route: /Components/Carousel
+menu: Components
+---
+
+# Carousel Component
+
+The `Carousel` component (`src/Viewer/Carousel/index.js`) is a dynamic and interactive image carousel designed to display a sequence of camera views or images associated with a 3D plant scan.
+It allows users to visually browse through available images, with interactive features like hovering, selecting, and dragging to explore the data in detail.
+This component integrates closely with the application's state management for scans, camera interactions, and settings.
+
+## Description
+
+The `Carousel` component renders a horizontal strip of images, representing different camera perspectives or data slices from a loaded plant scan.
+It utilizes HTML5 Canvas for efficient image rendering and SVG for interactive overlays, providing a responsive and fluid user experience.
+
+Key features include:
+
+*   **Dynamic Image Loading**: Images are loaded asynchronously based on the active `imageSet` determined by the `useCarousel` settings and `useImageSet` hook.
+*   **Interactive Layout**: The layout adjusts dynamically. When an image is hovered over or selected, it expands to a larger size, while other images shrink proportionally to maintain the overall width.
+*   **Hover and Selection**: Users can hover over individual images to preview them or click to select them. Selection highlights the image and allows for further interactions.
+*   **Drag Functionality**: A selected image can be dragged horizontally, potentially to reorder or perform other actions (though in the provided code, dragging primarily updates the selection based on the drag position).
+*   **Visual Feedback**: Color-coded overlays (green for hover/open, red for selected/close) and status indicators (_e.g._, for unmatched images) provide clear visual cues to the user.
+*   **Canvas Rendering**: Images are drawn onto an HTML5 Canvas element, which allows for performant rendering, especially when dealing with a large number of images or complex transformations.
+
+The `Carousel` component relies on several internal hooks and styled components to achieve its functionality and visual presentation:
+
+*   **`useImgLoader` (from `./loader.js`)**: A custom hook responsible for loading image URLs and processing them (_e.g._, cropping) before they are rendered on the canvas. It manages the asynchronous loading state of multiple images.
+*   **`SVGCartridge`**: A memoized React component that renders the interactive SVG overlays for hover and selection states, including "Open" and "Close" calls-to-action (CTAs) with icons.
+*   **Styled Components**:
+    *   `Container`: The main wrapper for the carousel, providing a dark background and positioning.
+    *   `Svg`: The primary SVG layer for interactive elements like hover/click areas.
+    *   `Canvas`: The HTML5 Canvas element where the image thumbnails are drawn.
+    *   `SvgDnG`: A specialized SVG layer for drag-and-drop interactions, specifically the draggable handle for the selected image.
+    *   `CTAWording`: Styled text for the Call-To-Action messages.
+
+## Usage
+
+The `Carousel` component is typically rendered as a self-contained unit within the `Viewer` component.
+It does not accept direct props in the conventional sense but instead leverages a reactive programming model, drawing its data and interaction state from global application stores via custom hooks.
+
+### How it integrates:
+
+*   **Scan Data**: It fetches the current 3D scan data using `useScan()`, particularly the `camera.poses` information, to determine the sequence and metadata for the images.
+*   **Image Sets**: It uses `useCarousel()` to get current carousel settings, specifically `carousel.photoSet`, which is then used by `useImageSet()` to retrieve the actual image URLs and textures.
+*   **Interactions**: `useHoveredCamera()` and `useSelectedCamera()` hooks from `flow/interactions/accessors` are used to manage the currently hovered or selected camera/image state, influencing the visual layout and interactivity of the carousel.
+*   **Internationalization**: `useFormatMessage()` is used for displaying localized text within the SVG overlays.
+
+### Example
+
+Since the `Carousel` component is designed to be a self-contained display component managing its own state and interactions through hooks, it's not directly instantiated with props in the way `Interactor` or `ToolButton` might be.
+Its behavior is driven by the global state of the application.
+```jsx
+// In a parent component (e.g., src/Viewer/index.js)
+import React from 'react'
+import Carousel from 'src/Viewer/Carousel/index.js'
+
+function Viewer() {
+// ... other viewer logic
+return (
+<div>
+{/* ... other viewer elements */}
+<Carousel />
+{/* ... rest of the viewer */}
+</div>
+)
+}
+
+export default Viewer;
+```
+
+When the `Carousel` component is rendered, it will automatically:
+1.  Access the currently loaded 3D scan and its associated camera poses.
+2.  Retrieve the relevant image set based on application settings.
+3.  Load and display these images in an interactive carousel format, allowing users to hover, select, and interact with the camera views.

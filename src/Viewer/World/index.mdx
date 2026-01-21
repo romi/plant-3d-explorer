@@ -1,0 +1,96 @@
+---
+name: World
+route: /Components/World
+menu: Components
+---
+
+# World Component
+
+The `World` component (located at `src/Viewer/World/index.js`) is the core visualization component of the Plant 3D Explorer.
+It is responsible for rendering and managing the interactive 3D and 2D environments where plant scans are displayed.
+It acts as a bridge between the React application's state and the underlying 3D rendering engine, handling data loading, user interactions, and visual updates.
+
+## Description
+
+The `World` component orchestrates the entire visualization experience.
+It initializes a 3D scene on an HTML Canvas element and populates it with various representations of a plant scan, including meshes, point clouds, skeletons, and camera positions.
+Beyond static rendering, `World` enables complex user interactions such as camera navigation, object selection, measurement tools, and dynamic styling based on application state.
+
+Its design leverages a combination of React hooks for state management and an encapsulated `WorldObject` class (likely from `./object.js`) that directly interacts with the 3D rendering library (e.g., Three.js).
+
+The React component's role is primarily to:
+
+*   **Initialize the 3D/2D Scene**: Sets up the canvas and the `WorldObject` instance.
+*   **Manage Event Listeners**: Attaches mouse and wheel event handlers to the canvas for interactive navigation and selection.
+*   **Synchronize with Application State**: Listens to changes in various global states (via custom hooks) and translates these into updates in the 3D/2D scene. This includes layer visibility, selected objects, colors, and active tools.
+*   **Data Loading and Updates**: Receives processed scan data (geometries, angles, segmentation) and passes it to the `WorldObject` for rendering.
+
+## Key Features
+
+*   **Dynamic Data Visualization**: Renders and updates mesh, point cloud, skeleton, and camera poses based on the loaded scan data.
+*   **Interactive Camera Control**: Supports both 3D perspective and 2D orthographic views, with navigation capabilities (zoom, pan, rotate).
+*   **Layer Management**: Allows toggling the visibility of different data layers (_e.g._, mesh, point cloud, ground truth, skeleton, angles).
+*   **Object Selection and Highlighting**: Enables selection of individual organs, camera points, and segments within point clouds, providing visual feedback through highlighting and information display.
+*   **Measurement Tools**: Integrates a ruler functionality for measuring distances and setting scales within the 3D environment.
+*   **Snapshot Capability**: Can capture high-resolution images of the current 3D view.
+*   **Color Customization**: Updates object and background colors dynamically based on user preferences or interaction states.
+*   **Axis-Aligned Bounding Box (AABB)**: Manages and visualizes the bounding box of the loaded models.
+*   **Selection Methods**: Supports advanced selection methods for segmented point clouds (_e.g._, proximity, same label, sphere selection).
+
+## Internal Mechanism (`WorldObject`)
+
+The `World` React component acts as a thin wrapper around an imperative `WorldObject` instance.
+
+This `WorldObject` is a JavaScript class that directly handles:
+*   The creation and management of the 3D scene (cameras, renderer, lights).
+*   Loading and manipulating 3D geometries.
+*   Applying materials and textures.
+*   Implementing rendering logic.
+*   Performing raycasting for object interaction.
+*   Handling low-level mouse and keyboard input.
+
+By separating the React component from the `WorldObject`, the application achieves better performance and maintainability, as React's rendering cycle is not burdened with direct 3D scene manipulations.
+
+## State Management and Data Flow
+
+The `World` component relies heavily on custom React hooks to interact with the application's global state, ensuring that the 3D scene accurately reflects user choices and loaded data.
+
+Key hooks utilized include:
+
+*   **For Viewer Settings**: `useLayers()`, `usePointCloudZoom()`, `usePointCloudSize()`, `useAxisAlignedBoundingBox()`, `useSnapshot()`, `useRuler()`.
+*   **For Interactions**: `useSelectedcamera()`, `useHoveredCamera()`, `useHoveredAngle()`, `useSelectedAngle()`, `useColor()`, `useLabels()`, `useSelectedLabel()`, `useSelectedPoints()`, `useSelectionMethod()`, `useOrganInfo()`, `useClickedPoint()`.
+*   **For Scan Data**: `useScan()`, `useScanFiles()`, `useSegmentedPointCloud()`.
+*   **For Viewport Control**: `useViewport2d()`, `useViewport3d()`, `useReset2dView()`, `useReset3dView()`.
+
+Each `useEffect` block in the `World` component listens to changes in specific state variables and triggers corresponding update methods on the `WorldObject` instance.
+
+## Props
+
+The `World` component does not accept any direct props.
+All necessary configuration, data, and interaction states are managed through the global application state via the numerous custom hooks it consumes.
+This makes `World` a highly self-sufficient component that integrates seamlessly with the Redux-like state management system of the application.
+
+## Example Usage
+
+The `World` component is typically rendered as a primary child within the main `Viewer` component, occupying the central display area.
+```jsx
+// Inside src/Viewer/index.js (simplified for illustration)
+
+import React from 'react'
+import World from 'src/Viewer/World/index.js' // Path to the World component
+
+function Viewer() {
+// ... other viewer components like Carousel, Interactors, Panels
+
+return (
+<div className="viewer-container">
+{/* Other UI elements */}
+<World />
+{/* Other UI elements */}
+</div>
+)
+}
+
+export default Viewer
+```
+When mounted, the `World` component automatically initializes its 3D environment and begins rendering and reacting to data and user interactions, providing the interactive visualization of plant scans.

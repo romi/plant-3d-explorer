@@ -1,0 +1,88 @@
+---
+name: Viewer
+route: /Components/Viewer
+menu: Components
+---
+
+
+# Viewer Component
+
+The `Viewer` component (located at `src/Viewer/index.js`) is the main entry point and orchestrating component for the 3D plant exploration interface.
+It serves as the top-level container that assembles and manages all the sub-components responsible for displaying the 3D model, interactive elements, data panels, and navigational tools.
+
+## Description
+
+The `Viewer` component is the central hub of the Plant 3D Explorer.
+It establishes the overall layout and integrates various specialized components to create a comprehensive and interactive user experience.
+Its primary role is to structure the UI, ensuring that the 3D visualization, control interactors, data panels, and navigation elements are properly positioned and function together.
+
+The component itself is a React functional component that renders a hierarchy of styled `div` elements, each responsible for a specific section of the layout.
+Within these sections, it instantiates other key components of the application.
+
+## Structure and Layout
+
+The `Viewer` component defines a flexible layout using `styled-components` to organize its child components into distinct areas:
+
+*   **`Container`**: The outermost wrapper, setting the full viewport size, preventing overflow, and disabling user selection.
+*   **`ModuleContainer`**: Arranges the main sections vertically (`flexDirection: 'column'`), ensuring space between them.
+*   **`Header`**: Positioned at the very top, providing global application navigation and information (_e.g._, current scan ID).
+*   **`TopContainer`**: A flex container that horizontally arranges the main interactive area and data panels.
+*   **`WorldContainer`**: Houses the primary 3D visualization (`World`) and all its overlaid interactors.
+*   **`World`**: The core 3D scene rendering component.
+*   **Interactors**: A series of overlay components (`LayersInteractors`, `CameraInteractors`, `ToolInteractors`, `MiscInteractors`, `OverlayInteractors`, `PanelsInteractor`, `GroundTruthInteractors`) that provide interactive controls and information directly on top of the `World` view.
+  *   **`Help`**: A component that likely displays contextual help or information.
+  *   **`Panels`**: Positioned to the right of the `WorldContainer`, displaying analytical data visualizations (_e.g._, graphs).
+  *   **`BottomContainer`**: A flex container at the very bottom.
+  *   **`Carousel`**: Displays an interactive image carousel, typically used for camera views or image sequences.
+
+## Sub-components
+
+The `Viewer` component composes the following key sub-components:
+
+*   **`Header` (`./Header`)**: The application's top navigation bar, displaying scan information and navigation links.
+*   **`World` (`./World`)**: The central 3D rendering engine and interaction handler, responsible for displaying the plant models and managing user input within the 3D space.
+*   **`Carousel` (`./Carousel`)**: An image carousel, usually located at the bottom of the screen, providing visual navigation through camera viewpoints or other image sequences.
+*   **`Panels` (`./Panels`)**: A container for various data visualization panels (_e.g._, graphs, charts) that provide analytical insights into the loaded plant scan data.
+*   **`Help` (`./Help`)**: A component to offer assistance or provide information to the user.
+*   **Interactor Components (`./Interactors`)**:
+  *   `LayersInteractors`: Controls the visibility of different layers (mesh, point cloud, skeleton).
+  *   `CameraInteractors`: Manages camera display and view reset functionalities.
+  *   `ToolInteractors`: Provides specific tools related to the displayed layers, such as color pickers.
+  *   `MiscInteractors`: Contains miscellaneous tools like background color adjustment or snapshot functionality.
+  *   `OverlayInteractors`: Handles interactive elements displayed as an overlay on the 3D view, such as organ click bubbles.
+  *   `PanelsInteractor`: An interactor that controls the visibility or state of the `Panels` component.
+  *   `GroundTruthInteractors`: Interactors specifically for handling Point Cloud Data (PCD) Ground Truth.
+
+## Usage
+
+The `Viewer` component is designed to be a top-level component in the application's routing structure.
+It acts as the primary screen for viewing and interacting with 3D plant scans.
+It does not accept any props directly, as all its internal components fetch their necessary data and state from the global application store (_e.g._, Redux) via custom hooks.
+
+```jsx
+// In the main App component or router (e.g., src/App/index.js)
+
+import React from 'react'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import Viewer from 'src/Viewer/index.js'
+import ScanList from 'src/ScanList/index.js'
+
+function App() {
+  return (
+    <Router>
+      <Switch>
+        <Route path="/viewer/:scanId">
+          <Viewer /> {/* Renders the Viewer when a specific scan is selected */}
+        </Route>
+        <Route path="/">
+          <ScanList /> {/* Renders the list of available scans */}
+        </Route>
+      </Switch>
+    </Router>
+  );
+}
+
+export default App
+```
+
+By encapsulating a complex set of interactive visualization components, the `Viewer` provides a clean and modular way to present the core functionality of the Plant 3D Explorer.
