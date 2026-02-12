@@ -1,6 +1,6 @@
-![badge](https://github.com/romi/plant-3d-explorer/workflows/Tests/badge.svg)
-
 # Plant 3D Explorer
+
+![badge](https://github.com/romi/plant-3d-explorer/workflows/Tests/badge.svg)
 
 Welcome to the Plant 3D Explorer - a web application for exploring 3D plant acquisitions and reconstructions developed by the ROMI project.
 
@@ -10,6 +10,8 @@ Welcome to the Plant 3D Explorer - a web application for exploring 3D plant acqu
 For comprehensive documentation on the entire ROMI project, visit the [official documentation](https://docs.romi-project.eu).
 
 ## System Requirements
+
+We recommend Docker to use this app, but if you wish to develop the app you will need to install is as follows.
 
 ### Node.js Environment
 
@@ -65,9 +67,9 @@ The following commands are available in the project directory:
 
 #### Start the PlantDB REST API
 
-To test this frontend app, you need first to start the PlantDB REST API server.
+To test this frontend app, you need first to start the [PlantDB](https://romi.github.io/plantdb/) REST API server.
 
-Assuming you have a conda environment named `plantdb`, you may start a test server for development purpose as follows:
+Assuming you have intalled `plantdb.commons` and `plantdb.server` in a conda environment named `plantdb`, you may start a test server for development purpose as follows:
 ```shell
 # Activate the conda environment
 conda activate plantdb
@@ -222,7 +224,7 @@ To build documentation in a container:
 
 ``` bash
 ./docker/run.sh -v $(pwd)/.docz:/app/.docz \
-  -c "umask 0002 && npm install docz@1.3.2 docz-theme-default --dev && npm run docz:build"
+  -c "umask 0002 && npm install docz docz-theme-default --dev && npm run docz:build"
 ```
 
 For more information on using docz, visit the [official documentation](https://docz-v1.surge.sh/).
