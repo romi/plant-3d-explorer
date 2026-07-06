@@ -44,6 +44,24 @@ imgLoader.crossOrigin = 'Anonymous'
  * @returns {Object} A new scan object with enhanced photo URIs for the poses.
  */
 export const relativeScanPhotoURIEnhancer = (scan) => {
+  // Guard against missing or non‑object input
+  if (!scan || typeof scan !== 'object') {
+    console.warn(
+      'relativeScanPhotoURIEnhancer expected a scan object but received:',
+      scan
+    )
+    return scan // Return the original value unchanged
+  }
+
+  // Ensure the scan has a camera.poses array before processing
+  if (!scan.camera || !Array.isArray(scan.camera.poses)) {
+    console.warn(
+      'relativeScanPhotoURIEnhancer: scan.camera.poses is missing or not an array for scan id=',
+      scan.id || '(unknown)'
+    )
+    return scan
+  }
+
   return {
     ...scan,
     camera: {
@@ -68,15 +86,22 @@ export const relativeScanPhotoURIEnhancer = (scan) => {
  * @param {Array<Object>} scans - An array of scan objects to be processed.
  * @returns {Array<Object>} A new array of scan objects with enhanced `thumbnailUri` properties.
  */
-export const relativeScansPhotoURIEnhancer = (scans) => {
-  return scans.map((d) => {
-    return {
-      // Spread the existing object's properties to retain all original key-value pairs
-      ...d,
-      // Update `thumbnailUri` with a full URL
-      thumbnailUri: getFullURI(d.thumbnailUri)
-    }
-  })
+export const relativeScansPhotoURIEnhancer = (scans = []) => {
+  // Guard against non‑array inputs (e.g. undefined, null, or an object)
+  if (!Array.isArray(scans)) {
+    console.warn(
+      'relativeScansPhotoURIEnhancer expected an array but received:',
+      scans
+    )
+    return []
+  }
+
+  return scans.map((d) => ({
+    // Preserve all existing properties
+    ...d,
+    // Convert the thumbnail URI to a full URL
+    thumbnailUri: getFullURI(d.thumbnailUri)
+  }))
 }
 
 /**
@@ -148,8 +173,8 @@ export const scanDataEnhancer = (scan) => {
   return {
     ...scan,
     data: {
-      skeleton: getScanSkeletonURI(scan.id),
-      angles: getScanSequenceURI(scan.id, 'all')
+      skeleton: scan && scan.hasCurveSkeleton ? getScanSkeletonURI(scan.id) : null,
+      angles: scan && scan.hasAnglesAndInternodes ? getScanSequenceURI(scan.id, 'all') : null
     }
   }
 }
@@ -173,7 +198,24 @@ export const scanDataEnhancer = (scan) => {
  *                   with transformed poses containing additional metadata and computed attributes.
  */
 export const forgeCameraPointsEnhancer = (scan) => {
-  const poses = scan.camera.poses
+  // `scan.camera` or `scan.camera.poses` may be missing – handle gracefully.
+  const poses = (scan && scan.camera && scan.camera.poses) ? scan.camera.poses : undefined
+
+  if (!Array.isArray(poses)) {
+    console.warn(
+      'forgeCameraPointsEnhancer: missing or invalid poses array in scan:',
+      scan && scan.id ? `scan id="${scan.id}"` : scan
+    )
+    // Return the original scan (or with an empty poses array if you prefer)
+    return {
+      ...scan,
+      camera: {
+        ...(scan && scan.camera ? scan.camera : {}),
+        poses: [] // safe fallback
+      }
+    }
+  }
+
   let index = 0
 
   return {

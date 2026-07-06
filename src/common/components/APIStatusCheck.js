@@ -3,6 +3,7 @@ import axios from 'axios'
 import { FormattedMessage } from 'react-intl'
 import Loading from './Loading'
 import { API_BASE_URL } from '../routing'
+import { scansURI } from '../api'
 
 const APIStatusCheck = ({ children, fallback }) => {
   const [apiAvailable, setApiAvailable] = useState(true)
@@ -12,7 +13,7 @@ const APIStatusCheck = ({ children, fallback }) => {
     const checkApiStatus = async () => {
       try {
         // Attempt to connect to the API server
-        await axios.get(`${API_BASE_URL}/scans_info`, { timeout: 5000 })
+        await axios.get(scansURI, { timeout: 5000 })
         setApiAvailable(true)
       } catch (error) {
         console.error('API server is not available:', error)

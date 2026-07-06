@@ -35,7 +35,13 @@ import useFetch3dObject from 'rd/tools/hooks/fetch3dObject'
 import { chain } from 'rd/tools/enhancers'
 
 import {
-  getFullURI, getScanFile, getScanPointCloudURI, getScanSequenceURI, getScanSkeletonURI, getScanURI, scansURIQuery
+  getScanFile,
+  getScanMeshURI,
+  getScanPointCloudURI,
+  getScanSequenceURI,
+  getScanSkeletonURI,
+  getScanURI,
+  scansURIQuery
 } from 'common/api'
 
 import { sortingMethods } from './reducer'
@@ -182,11 +188,11 @@ export function use3dFile (id, file = null, options = {}) {
  */
 export function useScanFiles (scan) {
   // Always call hooks in the same order, even when scan is null
-  const meshUrl = scan ? getFullURI(scan.filesUri.mesh) : null
-  const pointCloudUrl = scan ? getFullURI(scan.filesUri.pointCloud) : null
-  const skeletonUrl = scan ? getScanSkeletonURI(scan.id) : null
-  const sequenceUrl = scan ? getScanSequenceURI(scan.id, 'all') : null
-  const groundTruthUrl = scan && scan.filesUri && scan.filesUri.pcdGroundTruth ? getScanPointCloudURI(scan.id, 'groundTruth', scan.filesUri.pcdGroundTruth) : null
+  const meshUrl = scan && scan.hasTriangleMesh ? getScanMeshURI(scan.id) : null
+  const pointCloudUrl = scan && scan.hasPointCloud ? getScanPointCloudURI(scan.id) : null
+  const skeletonUrl = scan && scan.hasCurveSkeleton ? getScanSkeletonURI(scan.id) : null
+  const sequenceUrl = scan && scan.hasAnglesAndInternodes ? getScanSequenceURI(scan.id, 'all') : null
+  const groundTruthUrl = scan && scan.hasPcdGroundTruth ? getScanPointCloudURI(scan.id) : null
 
   // Always call the same number of hooks in the same order
   const meshFile = useFetch3dObject(meshUrl, true)

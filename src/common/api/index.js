@@ -58,21 +58,28 @@ const joinUrlPaths = (base, path) => {
  * @returns {string} The full URI to access the resource or an empty string if no path is provided.
  */
 export const getFullURI = (path) => {
-  return path ? joinUrlPaths(API_BASE_URL, path) : ''
+  if (!path) return ''
+
+  const apiBasePath = new URL(API_BASE_URL, window.location.origin).pathname
+  const cleanPath = path.startsWith(apiBasePath)
+    ? path.slice(apiBasePath.length) || '/'
+    : path
+
+  return joinUrlPaths(API_BASE_URL, cleanPath)
 }
 
 // Path segment constants to avoid repetition and improve maintainability
 const API_PATHS = {
   SCANS: '/scans',
-  SCANS_INFO: '/scans_info',
-  FILES: '/files',
-  IMAGE: '/image',
-  POINTCLOUD: '/pointcloud',
-  MESH: '/mesh',
-  SKELETON: '/skeleton',
-  SEQUENCE: '/sequence',
-  ARCHIVE: '/archive',
-  REFRESH: '/refresh'
+  SCANS_INFO: '/scans/info',
+  FILES: '/assets/files',
+  IMAGE: '/assets/image',
+  POINTCLOUD: '/assets/pointcloud',
+  MESH: '/assets/mesh',
+  SKELETON: '/assets/skeleton',
+  SEQUENCE: '/assets/sequence',
+  ARCHIVE: '/assets/archive',
+  REFRESH: '/scans/refresh'
 }
 
 /**
@@ -147,24 +154,21 @@ export const getScanImageURI = (scanId, filesetId, fileId, size = 'thumb') =>
  * Generates a URL to retrieve a point cloud file.
  *
  * @param {string} scanId - The unique identifier for the scan.
- * @param {string} filesetId - The unique identifier for the fileset within the scan.
- * @param {string} fileId - The unique identifier for the specific file within the fileset.
  * @param {string} [size='preview'] - The size of the point cloud file to retrieve. Defaults to 'preview'.
+ * @param {string} [type='default'] - The type of point cloud file to retrieve, default or ground-truth. Defaults to 'default'.
  * @returns {string} The generated URL for the point cloud file.
  */
-export const getScanPointCloudURI = (scanId, filesetId, fileId, size = 'preview') =>
-  getFullURI(`${API_PATHS.POINTCLOUD}/${scanId}/${filesetId}/${fileId}?size=${size}`)
+export const getScanPointCloudURI = (scanId, size = 'preview', type = "default") =>
+  getFullURI(`${API_PATHS.POINTCLOUD}/${scanId}?size=${size}&type=${type}`)
 
 /**
  * Constructs a URL string to retrieve a 3D mesh file.
  *
  * @param {string} scanId - The unique identifier for the scan.
- * @param {string} filesetId - The unique identifier for the fileset within the scan.
- * @param {string} fileId - The unique identifier for the specific file within the fileset.
  * @returns {string} A URL string pointing to the specified mesh file with the original size.
  */
-export const getScanMeshURI = (scanId, filesetId, fileId) =>
-  getFullURI(`${API_PATHS.MESH}/${scanId}/${filesetId}/${fileId}?size=orig`)
+export const getScanMeshURI = (scanId) =>
+  getFullURI(`${API_PATHS.MESH}/${scanId}?size=orig`)
 
 /**
  * Constructs a URL to retrieve the skeleton data for a specific scan.
