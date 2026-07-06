@@ -187,7 +187,7 @@ export default class SegmentedPointCloud extends PointCloud {
       color.toArray(this.colorsArray, i * 3)
     })
     this.geometry.removeAttribute('customColor')
-    this.geometry.setdAttribute('customColor',
+    this.geometry.setAttribute('customColor',
       new THREE.BufferAttribute(this.colorsArray, 3))
   }
 }
