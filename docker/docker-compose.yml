@@ -3,9 +3,9 @@ services:
   plantdb:
     # PlantDB REST API service, in development mode, served at http://localhost:5000
     build:
-      context: ${HOME}/Projects/plantdb
+      context: ../../plantdb/
       dockerfile: docker/Dockerfile
-    image: roboticsmicrofarms/plantdb:0.14.4
+    image: roboticsmicrofarms/plantdb:0.15.1
     container_name: plantdb
     command: "fsdb_rest_api --port 5000"
     user: "${UID:-2020}:${GID:-2020}"
@@ -17,15 +17,15 @@ services:
   p3dx:
     # P3DX service, in development mode, served at http://localhost:3000
     build:
-      context: ${HOME}/Projects/plant-3d-explorer/
+      context: ../../plant-3d-explorer/
       dockerfile: docker/Dockerfile
       args:
-        API_URL: http://localhost:5000
-    image: "roboticsmicrofarms/plant-3d-explorer:0.1.2"
+        API_URL: http://localhost:5000/api/v1
+    image: "roboticsmicrofarms/plant-3d-explorer:0.3.0"
     container_name: p3dx
     depends_on:
       - plantdb
     environment:
-      REACT_APP_API_URL: http://localhost:5000
+      REACT_APP_API_URL: http://localhost:5000/api/v1
     ports:
       - "3000:3000"
