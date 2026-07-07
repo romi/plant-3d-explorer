@@ -427,7 +427,7 @@ export default memo(
    * @param {Object} props - The component's props.
    * @param {Array} props.items - The initial list of items to display.
    *
-   * @returns {JSX.Element} A list of items rendered as `Item` components within a `Blocks` container.
+   * @returns {React.ReactElement} A list of items rendered as `Item` components within a `Blocks` container.
    *
    * @description
    * This component maintains local state for the list of items and updates it if the length

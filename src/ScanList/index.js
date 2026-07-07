@@ -197,7 +197,7 @@ const ResultsTitleContainer = styled.div({
  * @param {Array} [props.scans=[]] - An array representing the list of scans. Defaults to an empty array.
  * @param {string} props.search - The active search query string used to filter scans.
  * @param {Function} props.clear - A callback function to clear the current search.
- * @return {JSX.Element} The rendered ResultsTitle component.
+ * @return {React.ReactElement} The rendered ResultsTitle component.
  */
 function ResultsTitle ({ scans = [], search, clear }) {
   return (
@@ -245,7 +245,7 @@ function ResultsTitle ({ scans = [], search, clear }) {
  * @param {Array} props.scans - The list of scans to be filtered and displayed.
  * @param {string} props.search - The current search query used for filtering.
  * @param {Function} props.clear - A function to clear search or filter conditions.
- * @return {JSX.Element} The rendered Results component.
+ * @return {React.ReactElement} The rendered Results component.
  */
 function Results (props) {
   // Access search and filtering state via hooks

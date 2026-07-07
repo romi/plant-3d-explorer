@@ -138,7 +138,7 @@ const getSize = (elem) => elem.getBoundingClientRect()
  * to manage side effects such as updating URL list when the image set changes,
  * initializing the canvas context, and handling drag events.
  *
- * @return {JSX.Element} The rendered Carousel component.
+ * @return {React.ReactElement} The rendered Carousel component.
  */
 export default function Carousel () {
   const canvasRef = useRef(null)

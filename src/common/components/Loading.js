@@ -64,7 +64,7 @@ const LoadingMessage = styled.div`
  *
  * @param {Object} props - Component props
  * @param {string} [props.message] - Optional specific loading message to display
- * @return {JSX.Element} A styled loading component with animation
+ * @return {React.ReactElement} A styled loading component with animation
  */
 function Loading ({ message }) {
   return (

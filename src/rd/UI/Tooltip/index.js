@@ -146,7 +146,7 @@ const ContentContainer = styled.div({
  * @param {Object} props.contentBb The bounding box of the content element.
  * @param {Object} props.style Inline styles to apply to the container.
  * @param {ReactNode} props.children The children to render inside the tooltip.
- * @returns {JSX.Element} The rendered tooltip content container.
+ * @returns {React.ReactElement} The rendered tooltip content container.
  */
 export function TooltipContent (props) {
   return <ContentContainer
