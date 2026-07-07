@@ -79,12 +79,19 @@ const getSize = () => ({
 })
 
 /**
- * Component representing the World in a 3D/2D visualization environment.
+ * Renders a dynamic 2D/3D visualization of scanned data, handling camera
+ * selection, viewport management, segmentation, labels and user interactions.
  *
- * @param {Object} props - The properties passed to the component.
- * @return {JSX.Element} - The rendered WorldComponent.
- */
-export default function WorldComponent (props) {
+ * The component relies on numerous custom hooks to maintain state for the
+ * world object, selected and hovered cameras, angles, colors, snapshots,
+ * rulers, and more. It sets up a canvas reference, initializes a `WorldObject`,
+ * updates its size, viewport, workspace, camera data and layers whenever the
+ * relevant state changes, and triggers side‑effects such as resetting views,
+ * taking snapshots, or selecting organs/segment points on user input.
+ *
+ * @returns {React.ReactElement} A React element containing the world canvas and
+ *                        associated UI elements.*/
+export default function WorldComponent () {
   const canvasRef = useRef()
   // Hook to measure container size and bounds
   const [containerRef, bounds] = useMeasure()
@@ -410,12 +417,13 @@ export default function WorldComponent (props) {
     }
   }, [colors.mesh])
 
-  // Update mesh color in the world when colors.mesh changes
   useEffect(() => {
-    if (world) {
-      world.setMeshColor(colors.mesh)
+    if (world && meshGeometry) {
+      console.log('Attaching loaded mesh to the world')
+      world.setMeshGeometry(meshGeometry)
+      world.setLayers(layers) // Ensure layers are updated with the new geometry
     }
-  }, [colors.mesh])
+  }, [world, meshGeometry])
 
   // Update point cloud geometry and related properties in the world
   // It sets point cloud geometry, axis-aligned bounding box, and layers when 'pointCloudGeometry' changes.
